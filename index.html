@@ -145,7 +145,7 @@
             <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                 <i class="fa-solid fa-newspaper text-emerald-400 text-xl"></i> ভারতীয় শিক্ষা ও বোর্ড নিউজ
             </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:border-emerald-400/50 transition">
                     <span class="text-[11px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider">পশ্চিমবঙ্গ পর্ষদ</span>
                     <h3 class="font-bold text-lg text-white mt-4 mb-2">মাধ্যমিক ও উচ্চমাধ্যমিক পরীক্ষার নতুন গাইডলাইন</h3>
@@ -165,21 +165,23 @@
             <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                 <i class="fa-solid fa-brain text-emerald-400 text-xl"></i> ভারতীয় সাধারণ জ্ঞান ও কুইজ
             </h2>
-            <div class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md max-w-xl">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="text-xs text-emerald-400 font-bold">মক টেস্ট #০১</span>
-                    <span class="text-xs text-slate-300">মার্কস: ১</span>
+            <div id="quiz-container" class="space-y-6 max-w-xl">
+                 <div class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md w-full">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-xs text-emerald-400 font-bold">মক টেস্ট #০১</span>
+                        <span class="text-xs text-slate-300">মার্কস: ১</span>
+                    </div>
+                    <h3 class="font-semibold text-base md:text-lg text-white mb-5">প্রশ্ন: ভারতের জাতীয় সংগীত 'জনগণমন' প্রথম কোন অধিবেশনে গীত হয়েছিল?</h3>
+                    <div class="space-y-3 mb-6">
+                        <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400/50 transition">
+                            <input type="radio" name="quiz1" class="accent-emerald-500"> ১৯১১ সালের কলকাতা অধিবেশন
+                        </label>
+                        <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400/50 transition">
+                            <input type="radio" name="quiz1" class="accent-emerald-500"> ১৯০৬ সালের সুরাট অধিবেশন
+                        </label>
+                    </div>
+                    <button onclick="alert('সফলভাবে উত্তর সাবমিট করা হয়েছে!')" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-brand-600/30 w-full md:w-auto">উত্তর জমা দিন</button>
                 </div>
-                <h3 class="font-semibold text-base md:text-lg text-white mb-5">প্রশ্ন: ভারতের জাতীয় সংগীত 'জনগণমন' প্রথম কোন অধিবেশনে গীত হয়েছিল?</h3>
-                <div class="space-y-3 mb-6">
-                    <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400/50 transition">
-                        <input type="radio" name="quiz1" class="accent-emerald-500"> ১৯১১ সালের কলকাতা অধিবেশন
-                    </label>
-                    <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400/50 transition">
-                        <input type="radio" name="quiz1" class="accent-emerald-500"> ১৯০৬ সালের সুরাট অধিবেশন
-                    </label>
-                </div>
-                <button onclick="alert('সফলভাবে উত্তর সাবমিট করা হয়েছে!')" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-brand-600/30 w-full md:w-auto">উত্তর জমা দিন</button>
             </div>
         </section>
 
@@ -187,7 +189,7 @@
             <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                 <i class="fa-solid fa-book text-emerald-400 text-xl"></i> অনলাইন ফ্রি বই (NCERT ও পর্ষদ)
             </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div id="books-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md flex flex-col justify-between">
                     <div>
                         <div class="text-[11px] text-emerald-400 font-bold mb-1">পশ্চিমবঙ্গ মধ্যশিক্ষা পর্ষদ</div>
@@ -211,7 +213,7 @@
             <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                 <i class="fa-solid fa-feather text-emerald-400 text-xl"></i> বাংলা গল্প ও সাহিত্য
             </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div id="stories-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md flex flex-col justify-between">
                     <div>
                         <div class="text-[11px] text-emerald-400 font-bold mb-1">চিরায়ত সাহিত্য</div>
@@ -249,6 +251,7 @@
     </main>
 
     <script>
+        // UI Navigation Script
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('backdrop');
@@ -275,8 +278,105 @@
                 toggleSidebar();
             }
         }
+
+        // ==========================================
+        // Google Sheet API Fetch (ভবিষ্যতের জন্য প্রস্তুত)
+        // ==========================================
+        
+        // যখন তোমার Google Apps Script তৈরি হবে, তখন এই ফাঁকা জায়গায় URL বসিয়ে দেবে
+        const API_URL = "https://script.google.com/macros/s/AKfycbwo4OT2uaQ2cwGuJp-0jbcCk7vYcXA2VjgUQ-ZTWvbAWnxIASXMy2P9exnAtBN51jq_4A/exec"; 
+
+        async function loadAllData() {
+            // যদি API URL না থাকে, তবে কোডটি এখানেই থেমে যাবে এবং বর্তমান স্ট্যাটিক ডিজাইন দেখাবে
+            if (!API_URL) return; 
+
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json(); 
+
+                // ১. News লোড করা
+                if(data.News) {
+                    const newsContainer = document.getElementById('news-container');
+                    newsContainer.innerHTML = '';
+                    data.News.reverse().forEach(news => {
+                        if (!news.Title) return; 
+                        newsContainer.innerHTML += `
+                        <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:border-emerald-400/50 transition">
+                            <span class="text-[11px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider">${news.Category}</span>
+                            <h3 class="font-bold text-lg text-white mt-4 mb-2">${news.Title}</h3>
+                            <p class="text-slate-300 text-xs md:text-sm mb-5 leading-relaxed">${news.Description}</p>
+                            <a href="${news.Link}" target="_blank" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-brand-600/30 inline-block text-center">সম্পূর্ণ পড়ুন</a>
+                        </div>`;
+                    });
+                }
+
+                // ২. Books লোড করা
+                if(data.Books) {
+                    const booksContainer = document.getElementById('books-container');
+                    booksContainer.innerHTML = '';
+                    data.Books.reverse().forEach(book => {
+                        if (!book.Title) return;
+                        booksContainer.innerHTML += `
+                        <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md flex flex-col justify-between">
+                            <div>
+                                <div class="text-[11px] text-emerald-400 font-bold mb-1">${book.Board}</div>
+                                <h3 class="font-bold text-lg text-white mb-2">${book.Title}</h3>
+                                <p class="text-slate-300 text-xs mb-6">${book.Description}</p>
+                            </div>
+                            <a href="${book.DownloadLink}" target="_blank" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-fit shadow-lg shadow-brand-600/30">পিডিএফ ডাউনলোড</a>
+                        </div>`;
+                    });
+                }
+
+                // ৩. Stories লোড করা
+                if(data.Stories) {
+                    const storiesContainer = document.getElementById('stories-container');
+                    storiesContainer.innerHTML = '';
+                    data.Stories.reverse().forEach(story => {
+                        if (!story.Title) return;
+                        storiesContainer.innerHTML += `
+                        <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md flex flex-col justify-between">
+                            <div>
+                                <div class="text-[11px] text-emerald-400 font-bold mb-1">${story.Category}</div>
+                                <h3 class="font-bold text-lg text-white mb-2">${story.Title}</h3>
+                                <p class="text-slate-300 text-xs mb-6">${story.Description}</p>
+                            </div>
+                            <a href="${story.ReadLink}" target="_blank" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-fit shadow-lg shadow-brand-600/30">সম্পূর্ণ পড়ুন</a>
+                        </div>`;
+                    });
+                }
+
+                // ৪. Quiz লোড করা
+                if(data.Quiz) {
+                    const quizContainer = document.getElementById('quiz-container');
+                    quizContainer.innerHTML = '';
+                    data.Quiz.reverse().forEach(quiz => {
+                        if (!quiz.Question) return;
+                        quizContainer.innerHTML += `
+                        <div class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md w-full">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-xs text-emerald-400 font-bold">মক টেস্ট #${quiz.Id}</span>
+                            </div>
+                            <h3 class="font-semibold text-base md:text-lg text-white mb-5">প্রশ্ন: ${quiz.Question}</h3>
+                            <div class="space-y-3 mb-6">
+                                <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400/50 transition">
+                                    <input type="radio" name="quiz_${quiz.Id}" value="${quiz.Option1}" class="accent-emerald-500"> ${quiz.Option1}
+                                </label>
+                                <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400/50 transition">
+                                    <input type="radio" name="quiz_${quiz.Id}" value="${quiz.Option2}" class="accent-emerald-500"> ${quiz.Option2}
+                                </label>
+                            </div>
+                        </div>`;
+                    });
+                }
+
+            } catch (error) {
+                console.error("Error loading data from Google Sheet:", error);
+            }
+        }
+
+        // ওয়েবসাইট ওপেন হলেই ডেটা কল হবে
+        window.addEventListener('DOMContentLoaded', loadAllData);
     </script>
 </body>
 </html>
-
-```
