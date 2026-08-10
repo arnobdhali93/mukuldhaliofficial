@@ -38,9 +38,9 @@
         .menu-font {
             font-family: 'Tinos', 'Times New Roman', serif !important;
         }
-        /* ব্যাকগ্রাউন্ড ইমেজ উইথ ডিম লাইটিং ওভারলে */
+        /* ব্যাকগ্রাউন্ড ইমেজ উইথ হালকা ডার্ক ওভারলে (লেখা পরিষ্কার রাখার জন্য) */
         .bg-custom-image {
-            background: linear-gradient(rgba(15, 23, 42, 0.90), rgba(15, 23, 42, 0.92)), 
+            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.80)), 
                         url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
@@ -51,203 +51,203 @@
 <body class="bg-custom-image text-slate-100 min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white">
 
     <!-- Top Mobile Brand Bar (Left side 3-Line Menu Button) -->
-    <header class="md:hidden bg-slate-950/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
+    <header class="md:hidden bg-slate-950/40 backdrop-blur-md border-b border-white/10 sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-3">
-            <button onclick="toggleSidebar()" class="text-slate-300 hover:text-white text-xl focus:outline-none p-1.5 rounded-lg bg-slate-800/60 border border-slate-700/50">
+            <button onclick="toggleSidebar()" class="text-slate-200 hover:text-white text-xl focus:outline-none p-1.5 rounded-lg bg-white/10 border border-white/10">
                 <i class="fa-solid fa-bars"></i>
             </button>
             <span class="menu-font font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 text-lg">mukuldhaliofficial</span>
         </div>
-        <div class="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-xs menu-font">
+        <div class="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 font-bold text-xs menu-font">
             MD
         </div>
     </header>
 
     <!-- Sidebar / Drawer Navigation (English & Times New Roman) -->
-    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-72 bg-slate-950/95 backdrop-blur-xl border-r border-slate-800/80 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none">
+    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-72 bg-slate-950/80 backdrop-blur-2xl border-r border-white/10 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none">
         
-        <div class="p-6 border-b border-slate-800/60 flex items-center justify-between">
+        <div class="p-6 border-b border-white/10 flex items-center justify-between">
             <div>
                 <h1 class="menu-font text-lg font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">mukuldhaliofficial</h1>
-                <p class="menu-font text-[11px] text-slate-400 tracking-wide mt-0.5">Digital Learning Platform</p>
+                <p class="menu-font text-[11px] text-slate-300 tracking-wide mt-0.5">Digital Learning Platform</p>
             </div>
-            <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white text-lg">
+            <button onclick="toggleSidebar()" class="md:hidden text-slate-300 hover:text-white text-lg">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
 
         <!-- English Menu Links with Times New Roman Font -->
         <nav class="flex-1 px-4 py-6 space-y-2 menu-font text-base">
-            <button onclick="showSection('home', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold transition-all bg-brand-600 text-white shadow-lg shadow-brand-600/20">
+            <button onclick="showSection('home', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold transition-all bg-brand-600 text-white shadow-lg shadow-brand-600/30">
                 <i class="fa-solid fa-house w-5 text-center"></i> Home
             </button>
-            <button onclick="showSection('news', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
+            <button onclick="showSection('news', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-300 hover:bg-white/10 hover:text-white">
                 <i class="fa-solid fa-newspaper w-5 text-center"></i> Education News
             </button>
-            <button onclick="showSection('quiz', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
+            <button onclick="showSection('quiz', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-300 hover:bg-white/10 hover:text-white">
                 <i class="fa-solid fa-brain w-5 text-center"></i> Quiz Exam
             </button>
-            <button onclick="showSection('books', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
+            <button onclick="showSection('books', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-300 hover:bg-white/10 hover:text-white">
                 <i class="fa-solid fa-book w-5 text-center"></i> Free E-Books
             </button>
-            <button onclick="showSection('stories', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
+            <button onclick="showSection('stories', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-300 hover:bg-white/10 hover:text-white">
                 <i class="fa-solid fa-feather w-5 text-center"></i> Bangla Stories
             </button>
-            <button onclick="showSection('profile', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
+            <button onclick="showSection('profile', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-300 hover:bg-white/10 hover:text-white">
                 <i class="fa-solid fa-user-shield w-5 text-center"></i> My Profile
             </button>
         </nav>
 
-        <div class="p-4 border-t border-slate-900 m-4 rounded-2xl bg-slate-900/50 border border-slate-800/50">
+        <div class="p-4 border-t border-white/10 m-4 rounded-2xl bg-white/5 border border-white/10">
             <div class="flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                <span class="menu-font text-xs text-slate-400 font-medium">System Online</span>
+                <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                <span class="menu-font text-xs text-slate-300 font-medium">System Online</span>
             </div>
         </div>
     </aside>
 
-    <div id="backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
+    <div id="backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
 
-    <!-- Main Content Area -->
+    <!-- Main Content Area (Transparent Background, Direct Text on Image) -->
     <main class="flex-1 p-6 md:p-12 max-w-6xl mx-auto w-full overflow-y-auto">
 
         <!-- Home Section -->
-        <section id="home" class="section-content bg-slate-950/80 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-600/10 border border-emerald-600/30 text-emerald-400 text-xs font-semibold tracking-wide">
+        <section id="home" class="section-content space-y-6">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold tracking-wide backdrop-blur-md">
                 <i class="fa-solid fa-sparkles"></i> প্রিমিয়াম এডুকেশন হাব
             </div>
-            <h2 class="text-2xl md:text-4xl font-black text-white tracking-tight leading-snug">
+            <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight leading-snug drop-shadow-md">
                 স্বাগতম <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">mukuldhaliofficial</span> পোর্টালে
             </h2>
-            <p class="text-slate-300 leading-relaxed text-sm md:text-base font-normal">
+            <p class="text-slate-200 leading-relaxed text-sm md:text-base font-normal drop-shadow">
                 ভারতীয় ছাত্রছাত্রীদের জন্য এটি একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম। পশ্চিমবঙ্গ মধ্যশিক্ষা পর্ষদ, উচ্চমাধ্যমিক সংসদ এবং সিবিএসই বোর্ডের যাবতীয় আপডেট, বই এবং শিক্ষামূলক কন্টেন্ট এখানে পাবেন।
             </p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-                <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl">
+                <div class="p-5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition">
                     <i class="fa-solid fa-graduation-cap text-emerald-400 text-xl mb-3"></i>
                     <h3 class="font-bold text-white text-base mb-1">বোর্ড আপডেট</h3>
-                    <p class="text-xs text-slate-400">নিয়মিত পরীক্ষার রুটিন ও সিলেবাস আপডেট।</p>
+                    <p class="text-xs text-slate-300">নিয়মিত পরীক্ষার রুটিন ও সিলেবাস আপডেট।</p>
                 </div>
-                <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl">
+                <div class="p-5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition">
                     <i class="fa-solid fa-book-open text-emerald-400 text-xl mb-3"></i>
                     <h3 class="font-bold text-white text-base mb-1">ই-বুক লাইব্রেরি</h3>
-                    <p class="text-xs text-slate-400">বিনামূল্যে এনসিইআরটি ও পর্ষদের বই পড়ুন।</p>
+                    <p class="text-xs text-slate-300">বিনামূল্যে এনসিইআরটি ও পর্ষদের বই পড়ুন।</p>
                 </div>
-                <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl">
+                <div class="p-5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition">
                     <i class="fa-solid fa-award text-emerald-400 text-xl mb-3"></i>
                     <h3 class="font-bold text-white text-base mb-1">কুইজ প্ল্যাটফর্ম</h3>
-                    <p class="text-xs text-slate-400">নলেজ টেস্ট ও সেলফ এসেসমেন্ট সিস্টেম।</p>
+                    <p class="text-xs text-slate-300">নলেজ টেস্ট ও সেলফ এসেসমেন্ট সিস্টেম।</p>
                 </div>
             </div>
         </section>
 
         <!-- News Section -->
-        <section id="news" class="section-content hidden bg-slate-950/80 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
-            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-slate-800/80 pb-4 flex items-center gap-3">
+        <section id="news" class="section-content hidden space-y-6">
+            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                 <i class="fa-solid fa-newspaper text-emerald-400 text-xl"></i> ভারতীয় শিক্ষা ও বোর্ড নিউজ
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-slate-900/90 border border-slate-800/80 p-6 rounded-2xl hover:border-emerald-500/50 transition-all duration-300">
-                    <span class="text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full font-bold uppercase tracking-wider">পশ্চিমবঙ্গ পর্ষদ</span>
+                <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:border-emerald-400/50 transition">
+                    <span class="text-[11px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider">পশ্চিমবঙ্গ পর্ষদ</span>
                     <h3 class="font-bold text-lg text-white mt-4 mb-2">মাধ্যমিক ও উচ্চমাধ্যমিক পরীক্ষার নতুন গাইডলাইন</h3>
-                    <p class="text-slate-400 text-xs md:text-sm mb-5 leading-relaxed">চলতি শিক্ষাবর্ষের ফাইনাল পরীক্ষার ব্লু-প্রিন্ট ও নম্বর বিভাজন নিয়ে পর্ষদের অফিশিয়াল নোটিশ প্রকাশ...</p>
-                    <button onclick="alert('খবরটি লোড হচ্ছে...')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-brand-600/20">সম্পূর্ণ পড়ুন</button>
+                    <p class="text-slate-300 text-xs md:text-sm mb-5 leading-relaxed">চলতি শিক্ষাবর্ষের ফাইনাল পরীক্ষার ব্লু-প্রিন্ট ও নম্বর বিভাজন নিয়ে পর্ষদের অফিশিয়াল নোটিশ প্রকাশ...</p>
+                    <button onclick="alert('খবরটি লোড হচ্ছে...')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-brand-600/30">সম্পূর্ণ পড়ুন</button>
                 </div>
-                <div class="bg-slate-900/90 border border-slate-800/80 p-6 rounded-2xl hover:border-emerald-500/50 transition-all duration-300">
-                    <span class="text-[11px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-1 rounded-full font-bold uppercase tracking-wider">সেন্ট্রাল আপডেট</span>
+                <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:border-emerald-400/50 transition">
+                    <span class="text-[11px] bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider">সেন্ট্রাল আপডেট</span>
                     <h3 class="font-bold text-lg text-white mt-4 mb-2">জয়েন্ট এন্ট্রান্স ও নিট পরীক্ষার আবেদন শুরু</h3>
-                    <p class="text-slate-400 text-xs md:text-sm mb-5 leading-relaxed">জাতীয় স্তরের প্রফেশনাল এন্ট্রান্স এক্সামের ডেট এবং রেজিস্ট্রেশন পোর্টাল সম্পর্কিত গুরুত্বপূর্ণ তথ্য...</p>
-                    <button onclick="alert('খবরটি লোড হচ্ছে...')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-brand-600/20">সম্পূর্ণ পড়ুন</button>
+                    <p class="text-slate-300 text-xs md:text-sm mb-5 leading-relaxed">জাতীয় স্তরের প্রফেশনাল এন্ট্রান্স এক্সামের ডেট এবং রেজিস্ট্রেশন পোর্টাল সম্পর্কিত গুরুত্বপূর্ণ তথ্য...</p>
+                    <button onclick="alert('খবরটি লোড হচ্ছে...')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-brand-600/30">সম্পূর্ণ পড়ুন</button>
                 </div>
             </div>
         </section>
 
         <!-- Quiz Section -->
-        <section id="quiz" class="section-content hidden bg-slate-950/80 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
-            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-slate-800/80 pb-4 flex items-center gap-3">
+        <section id="quiz" class="section-content hidden space-y-6">
+            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                 <i class="fa-solid fa-brain text-emerald-400 text-xl"></i> ভারতীয় সাধারণ জ্ঞান ও কুইজ
             </h2>
-            <div class="bg-slate-900/90 border border-slate-800/80 p-6 md:p-8 rounded-2xl max-w-xl">
+            <div class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md max-w-xl">
                 <div class="flex justify-between items-center mb-4">
                     <span class="text-xs text-emerald-400 font-bold">মক টেস্ট #০১</span>
-                    <span class="text-xs text-slate-400">মার্কস: ১</span>
+                    <span class="text-xs text-slate-300">মার্কস: ১</span>
                 </div>
                 <h3 class="font-semibold text-base md:text-lg text-white mb-5">প্রশ্ন: ভারতের জাতীয় সংগীত 'জনগণমন' প্রথম কোন অধিবেশনে গীত হয়েছিল?</h3>
                 <div class="space-y-3 mb-6">
-                    <label class="flex items-center gap-3.5 p-3.5 bg-slate-950 border border-slate-800 rounded-xl cursor-pointer hover:border-emerald-500/50 transition">
+                    <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400/50 transition">
                         <input type="radio" name="quiz1" class="accent-emerald-500"> ১৯১১ সালের কলকাতা অধিবেশন
                     </label>
-                    <label class="flex items-center gap-3.5 p-3.5 bg-slate-950 border border-slate-800 rounded-xl cursor-pointer hover:border-emerald-500/50 transition">
+                    <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400/50 transition">
                         <input type="radio" name="quiz1" class="accent-emerald-500"> ১৯০৬ সালের সুরাট অধিবেশন
                     </label>
                 </div>
-                <button onclick="alert('সফলভাবে উত্তর সাবমিট করা হয়েছে!')" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-brand-600/20 w-full md:w-auto">উত্তর জমা দিন</button>
+                <button onclick="alert('সফলভাবে উত্তর সাবমিট করা হয়েছে!')" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-brand-600/30 w-full md:w-auto">উত্তর জমা দিন</button>
             </div>
         </section>
 
         <!-- Books Section -->
-        <section id="books" class="section-content hidden bg-slate-950/80 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
-            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-slate-800/80 pb-4 flex items-center gap-3">
+        <section id="books" class="section-content hidden space-y-6">
+            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                 <i class="fa-solid fa-book text-emerald-400 text-xl"></i> অনলাইন ফ্রি বই (NCERT ও পর্ষদ)
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-slate-900/90 border border-slate-800/80 p-6 rounded-2xl flex flex-col justify-between">
+                <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md flex flex-col justify-between">
                     <div>
                         <div class="text-[11px] text-emerald-400 font-bold mb-1">পশ্চিমবঙ্গ মধ্যশিক্ষা পর্ষদ</div>
                         <h3 class="font-bold text-lg text-white mb-2">নবম শ্রেণি: গণিত প্রকাশ</h3>
-                        <p class="text-slate-400 text-xs mb-6">সম্পূর্ণ সিলেবাস ভিত্তিক ডিজিটাল সংস্করণ পিডিএফ।</p>
+                        <p class="text-slate-300 text-xs mb-6">সম্পূর্ণ সিলেবাস ভিত্তিক ডিজিটাল সংস্করণ পিডিএফ।</p>
                     </div>
-                    <button onclick="alert('পিডিএফ ফাইল ডাউনলোড শুরু হচ্ছে...')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-fit shadow-lg shadow-brand-600/20">পিডিএফ ডাউনলোড</button>
+                    <button onclick="alert('পিডিএফ ফাইল ডাউনলোড শুরু হচ্ছে...')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-fit shadow-lg shadow-brand-600/30">পিডিএফ ডাউনলোড</button>
                 </div>
-                <div class="bg-slate-900/90 border border-slate-800/80 p-6 rounded-2xl flex flex-col justify-between">
+                <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md flex flex-col justify-between">
                     <div>
                         <div class="text-[11px] text-emerald-400 font-bold mb-1">NCERT India</div>
                         <h3 class="font-bold text-lg text-white mb-2">Class 10 Science (Bengali Medium)</h3>
-                        <p class="text-slate-400 text-xs mb-6">বিজ্ঞানের সমস্ত অধ্যায়ের বিস্তারিত ব্যাখ্যা সহ বই।</p>
+                        <p class="text-slate-300 text-xs mb-6">বিজ্ঞানের সমস্ত অধ্যায়ের বিস্তারিত ব্যাখ্যা সহ বই।</p>
                     </div>
-                    <button onclick="alert('পিডিএফ ফাইল ডাউনলোড শুরু হচ্ছে...')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-fit shadow-lg shadow-brand-600/20">পিডিএফ ডাউনলোড</button>
+                    <button onclick="alert('পিডিএফ ফাইল ডাউনলোড শুরু হচ্ছে...')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-fit shadow-lg shadow-brand-600/30">পিডিএফ ডাউনলোড</button>
                 </div>
             </div>
         </section>
 
         <!-- Stories Section -->
-        <section id="stories" class="section-content hidden bg-slate-950/80 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
-            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-slate-800/80 pb-4 flex items-center gap-3">
+        <section id="stories" class="section-content hidden space-y-6">
+            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                 <i class="fa-solid fa-feather text-emerald-400 text-xl"></i> বাংলা গল্প ও সাহিত্য
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-slate-900/90 border border-slate-800/80 p-6 rounded-2xl flex flex-col justify-between">
+                <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md flex flex-col justify-between">
                     <div>
                         <div class="text-[11px] text-emerald-400 font-bold mb-1">চিরায়ত সাহিত্য</div>
                         <h3 class="font-bold text-lg text-white mb-2">শরৎচন্দ্র চট্টোপাধ্যায়: রামের সুমতি</h3>
-                        <p class="text-slate-400 text-xs mb-6">বাংলার অন্যতম সেরা মনস্তাত্ত্বিক ও আবেগঘন ছোটগল্প...</p>
+                        <p class="text-slate-300 text-xs mb-6">বাংলার অন্যতম সেরা মনস্তাত্ত্বিক ও আবেগঘন ছোটগল্প...</p>
                     </div>
-                    <button onclick="alert('গল্প পড়া শুরু হচ্ছে...')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-fit shadow-lg shadow-brand-600/20">সম্পূর্ণ পড়ুন</button>
+                    <button onclick="alert('গল্প পড়া শুরু হচ্ছে...')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-fit shadow-lg shadow-brand-600/30">সম্পূর্ণ পড়ুন</button>
                 </div>
             </div>
         </section>
 
         <!-- Profile Section -->
-        <section id="profile" class="section-content hidden bg-slate-950/80 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
-            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-slate-800/80 pb-4 flex items-center gap-3">
+        <section id="profile" class="section-content hidden space-y-6">
+            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                 <i class="fa-solid fa-user-shield text-emerald-400 text-xl"></i> আমার প্রোফাইল
             </h2>
-            <div class="bg-slate-900/90 border border-slate-800/80 p-6 md:p-8 rounded-2xl max-w-md space-y-4">
+            <div class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md max-w-md space-y-4">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-xl">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 font-bold text-xl">
                         MD
                     </div>
                     <div>
                         <h3 class="font-bold text-lg text-white">Mukul Dhali</h3>
-                        <p class="text-xs text-slate-400">mukuldhaliofficial@admin</p>
+                        <p class="text-xs text-slate-300">mukuldhaliofficial@admin</p>
                     </div>
                 </div>
-                <div class="space-y-2 pt-2 border-t border-slate-800 text-xs">
-                    <p class="text-slate-300 flex justify-between menu-font"><span>Account Type:</span> <span class="text-emerald-400 font-bold menu-font">Admin / Creator</span></p>
-                    <p class="text-slate-300 flex justify-between menu-font"><span>Location:</span> <span class="text-white menu-font">India</span></p>
-                    <p class="text-slate-300 flex justify-between menu-font"><span>Status:</span> <span class="text-emerald-400 font-bold menu-font">Active</span></p>
+                <div class="space-y-2 pt-2 border-t border-white/10 text-xs">
+                    <p class="text-slate-200 flex justify-between menu-font"><span>Account Type:</span> <span class="text-emerald-400 font-bold menu-font">Admin / Creator</span></p>
+                    <p class="text-slate-200 flex justify-between menu-font"><span>Location:</span> <span class="text-white menu-font">India</span></p>
+                    <p class="text-slate-200 flex justify-between menu-font"><span>Status:</span> <span class="text-emerald-400 font-bold menu-font">Active</span></p>
                 </div>
-                <button onclick="alert('প্রোফাইল সেটিংস আপডেট সফল হয়েছে!')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-brand-600/20 w-full mt-2 menu-font">Edit Profile</button>
+                <button onclick="alert('প্রোফাইল সেটিংস আপডেট সফল হয়েছে!')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-brand-600/30 w-full mt-2 menu-font">Edit Profile</button>
             </div>
         </section>
 
@@ -268,14 +268,14 @@
 
             const buttons = document.querySelectorAll('.nav-btn');
             buttons.forEach(btn => {
-                btn.classList.remove('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/20');
-                btn.classList.add('text-slate-400', 'hover:bg-slate-900', 'hover:text-white');
+                btn.classList.remove('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/30');
+                btn.classList.add('text-slate-300', 'hover:bg-white/10', 'hover:text-white');
             });
 
             document.getElementById(sectionId).classList.remove('hidden');
 
-            event.currentTarget.classList.remove('text-slate-400', 'hover:bg-slate-900', 'hover:text-white');
-            event.currentTarget.classList.add('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/20');
+            event.currentTarget.classList.remove('text-slate-300', 'hover:bg-white/10', 'hover:text-white');
+            event.currentTarget.classList.add('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/30');
 
             if (window.innerWidth < 768) {
                 toggleSidebar();
