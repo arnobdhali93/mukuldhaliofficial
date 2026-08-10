@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mukuldhaliofficial - প্রিমিয়াম শিক্ষা ও জ্ঞান পোর্টাল</title>
-    <!-- Google Bangla Font -->
+    <title>mukuldhaliofficial - Premium Education & Knowledge Portal</title>
+    <!-- Google Fonts for Kalpurush & Times New Roman -->
+    <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,93 +16,104 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['"Hind Siliguri"', 'sans-serif'],
+                        'bangla': ['"Hind Siliguri"', 'sans-serif'], // কালপুরুষ ভাইবের জন্য
+                        'times': ['"Tinos"', 'Times New Roman', 'serif'], // মেনুর জন্য Times New Roman স্টাইল
                     },
                     colors: {
                         brand: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
                             600: '#16a34a',
                             700: '#15803d',
-                            900: '#14532d',
                         }
                     }
                 }
             }
         }
     </script>
+    <style>
+        /* কালপুরুষ বা নিখুঁত বাংলা ফন্ট স্টাইল */
+        .kalpurush-text {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        /* মেনুর জন্য Times New Roman */
+        .menu-font {
+            font-family: 'Tinos', 'Times New Roman', serif;
+        }
+        /* ব্যাকগ্রাউন্ড ইমেজ উইথ ওভারলে (যাতে লেখা পরিষ্কার বোঝা যায়) */
+        .bg-custom-image {
+            background: linear-gradient(rgba(15, 23, 42, 0.90), rgba(15, 23, 42, 0.92)), 
+                        url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white">
+<body class="bg-custom-image text-slate-100 min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white kalpurush-text">
 
     <!-- Top Mobile Brand Bar (Left side 3-Line Menu Button) -->
     <header class="md:hidden bg-slate-950/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-3">
-            <!-- 3-Line Hamburger Menu Button (Left Side) -->
             <button onclick="toggleSidebar()" class="text-slate-300 hover:text-white text-xl focus:outline-none p-1.5 rounded-lg bg-slate-800/60 border border-slate-700/50">
                 <i class="fa-solid fa-bars"></i>
             </button>
-            <span class="font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 text-lg">mukuldhaliofficial</span>
+            <span class="menu-font font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 text-lg">mukuldhaliofficial</span>
         </div>
-        <div class="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-xs">
+        <div class="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-xs menu-font">
             MD
         </div>
     </header>
 
-    <!-- Sidebar / Drawer Navigation (Brand Style) -->
-    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-72 bg-slate-950 border-r border-slate-800/80 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none">
+    <!-- Sidebar / Drawer Navigation (English & Times New Roman) -->
+    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-72 bg-slate-950/95 backdrop-blur-xl border-r border-slate-800/80 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none">
         
-        <!-- Sidebar Header -->
         <div class="p-6 border-b border-slate-800/60 flex items-center justify-between">
             <div>
-                <h1 class="text-lg font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">mukuldhaliofficial</h1>
-                <p class="text-[11px] text-slate-400 font-medium tracking-wide mt-0.5">ডিজিটাল লার্নিং প্ল্যাটফর্ম</p>
+                <h1 class="menu-font text-lg font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">mukuldhaliofficial</h1>
+                <p class="menu-font text-[11px] text-slate-400 tracking-wide mt-0.5">Digital Learning Platform</p>
             </div>
-            <!-- Close button for mobile sidebar -->
             <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white text-lg">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
 
-        <!-- Navigation Links -->
-        <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
-            <button onclick="showSection('home', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all bg-brand-600 text-white shadow-lg shadow-brand-600/20">
-                <i class="fa-solid fa-house w-5 text-center"></i> হোমপেজ
+        <!-- English Menu Links with Times New Roman Font -->
+        <nav class="flex-1 px-4 py-6 space-y-2 menu-font text-base">
+            <button onclick="showSection('home', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold transition-all bg-brand-600 text-white shadow-lg shadow-brand-600/20">
+                <i class="fa-solid fa-house w-5 text-center"></i> Home
             </button>
-            <button onclick="showSection('news', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
-                <i class="fa-solid fa-newspaper w-5 text-center"></i> শিক্ষার খবর (WB/CBSE)
+            <button onclick="showSection('news', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
+                <i class="fa-solid fa-newspaper w-5 text-center"></i> Education News
             </button>
-            <button onclick="showSection('quiz', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
-                <i class="fa-solid fa-brain w-5 text-center"></i> জিকে ও কুইজ এক্সাম
+            <button onclick="showSection('quiz', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
+                <i class="fa-solid fa-brain w-5 text-center"></i> Quiz Exam
             </button>
-            <button onclick="showSection('books', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
-                <i class="fa-solid fa-book w-5 text-center"></i> এনসিইআরটি ফ্রি বই
+            <button onclick="showSection('books', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
+                <i class="fa-solid fa-book w-5 text-center"></i> Free E-Books
             </button>
-            <button onclick="showSection('stories', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
-                <i class="fa-solid fa-feather w-5 text-center"></i> বাংলা গল্প ও সাহিত্য
+            <button onclick="showSection('stories', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
+                <i class="fa-solid fa-feather w-5 text-center"></i> Bangla Stories
             </button>
-            <button onclick="showSection('profile', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
-                <i class="fa-solid fa-user-shield w-5 text-center"></i> আমার প্রোফাইল
+            <button onclick="showSection('profile', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
+                <i class="fa-solid fa-user-shield w-5 text-center"></i> My Profile
             </button>
         </nav>
 
-        <!-- Sidebar Footer Badge -->
         <div class="p-4 border-t border-slate-900 m-4 rounded-2xl bg-slate-900/50 border border-slate-800/50">
             <div class="flex items-center gap-3">
                 <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                <span class="text-xs text-slate-400 font-medium">লাইভ সিস্টেম (সক্রিয়)</span>
+                <span class="menu-font text-xs text-slate-400 font-medium">System Online</span>
             </div>
         </div>
     </aside>
 
-    <!-- Backdrop for Mobile Drawer -->
     <div id="backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
 
-    <!-- Main Content Area (Brand Aesthetic) -->
+    <!-- Main Content Area (Kalpurush Bangla Font Applied) -->
     <main class="flex-1 p-6 md:p-12 max-w-6xl mx-auto w-full overflow-y-auto">
 
         <!-- Home Section -->
-        <section id="home" class="section-content bg-slate-950/60 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-600/10 border border-brand-600/30 text-emerald-400 text-xs font-semibold tracking-wide">
+        <section id="home" class="section-content bg-slate-950/80 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-600/10 border border-emerald-600/30 text-emerald-400 text-xs font-semibold tracking-wide">
                 <i class="fa-solid fa-sparkles"></i> প্রিমিয়াম এডুকেশন হাব
             </div>
             <h2 class="text-2xl md:text-4xl font-black text-white tracking-tight leading-snug">
@@ -111,17 +123,17 @@
                 ভারতীয় ছাত্রছাত্রীদের জন্য এটি একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম। পশ্চিমবঙ্গ মধ্যশিক্ষা পর্ষদ, উচ্চমাধ্যমিক সংসদ এবং সিবিএসই বোর্ডের যাবতীয় আপডেট, বই এবং শিক্ষামূলক কন্টেন্ট এখানে পাবেন।
             </p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-                <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl">
+                <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl">
                     <i class="fa-solid fa-graduation-cap text-emerald-400 text-xl mb-3"></i>
                     <h3 class="font-bold text-white text-base mb-1">বোর্ড আপডেট</h3>
                     <p class="text-xs text-slate-400">নিয়মিত পরীক্ষার রুটিন ও সিলেবাস আপডেট।</p>
                 </div>
-                <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl">
+                <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl">
                     <i class="fa-solid fa-book-open text-emerald-400 text-xl mb-3"></i>
                     <h3 class="font-bold text-white text-base mb-1">ই-বুক লাইব্রেরি</h3>
                     <p class="text-xs text-slate-400">বিনামূল্যে এনসিইআরটি ও পর্ষদের বই পড়ুন।</p>
                 </div>
-                <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl">
+                <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl">
                     <i class="fa-solid fa-award text-emerald-400 text-xl mb-3"></i>
                     <h3 class="font-bold text-white text-base mb-1">কুইজ প্ল্যাটফর্ম</h3>
                     <p class="text-xs text-slate-400">নলেজ টেস্ট ও সেলফ এসেসমেন্ট সিস্টেম।</p>
@@ -130,7 +142,7 @@
         </section>
 
         <!-- News Section -->
-        <section id="news" class="section-content hidden bg-slate-950/60 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
+        <section id="news" class="section-content hidden bg-slate-950/80 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
             <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-slate-800/80 pb-4 flex items-center gap-3">
                 <i class="fa-solid fa-newspaper text-emerald-400 text-xl"></i> ভারতীয় শিক্ষা ও বোর্ড নিউজ
             </h2>
@@ -151,7 +163,7 @@
         </section>
 
         <!-- Quiz Section -->
-        <section id="quiz" class="section-content hidden bg-slate-950/60 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
+        <section id="quiz" class="section-content hidden bg-slate-950/80 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
             <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-slate-800/80 pb-4 flex items-center gap-3">
                 <i class="fa-solid fa-brain text-emerald-400 text-xl"></i> ভারতীয় সাধারণ জ্ঞান ও কুইজ
             </h2>
@@ -174,7 +186,7 @@
         </section>
 
         <!-- Books Section -->
-        <section id="books" class="section-content hidden bg-slate-950/60 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
+        <section id="books" class="section-content hidden bg-slate-950/80 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
             <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-slate-800/80 pb-4 flex items-center gap-3">
                 <i class="fa-solid fa-book text-emerald-400 text-xl"></i> অনলাইন ফ্রি বই (NCERT ও পর্ষদ)
             </h2>
@@ -199,7 +211,7 @@
         </section>
 
         <!-- Stories Section -->
-        <section id="stories" class="section-content hidden bg-slate-950/60 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
+        <section id="stories" class="section-content hidden bg-slate-950/80 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
             <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-slate-800/80 pb-4 flex items-center gap-3">
                 <i class="fa-solid fa-feather text-emerald-400 text-xl"></i> বাংলা গল্প ও সাহিত্য
             </h2>
@@ -216,7 +228,7 @@
         </section>
 
         <!-- Profile Section -->
-        <section id="profile" class="section-content hidden bg-slate-950/60 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
+        <section id="profile" class="section-content hidden bg-slate-950/80 border border-slate-800/80 p-8 md:p-10 rounded-3xl shadow-2xl backdrop-blur-xl space-y-6">
             <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-slate-800/80 pb-4 flex items-center gap-3">
                 <i class="fa-solid fa-user-shield text-emerald-400 text-xl"></i> আমার প্রোফাইল
             </h2>
@@ -231,17 +243,17 @@
                     </div>
                 </div>
                 <div class="space-y-2 pt-2 border-t border-slate-800 text-xs">
-                    <p class="text-slate-300 flex justify-between"><span>অ্যাকাউন্ট টাইপ:</span> <span class="text-emerald-400 font-bold">অ্যাডমিন / ক্রিয়েটর</span></p>
-                    <p class="text-slate-300 flex justify-between"><span>লোকেশন:</span> <span class="text-white">ভারত (India)</span></p>
-                    <p class="text-slate-300 flex justify-between"><span>স্ট্যাটাস:</span> <span class="text-emerald-400 font-bold">অ্যাক্টিভ</span></p>
+                    <p class="text-slate-300 flex justify-between"><span>Account Type:</span> <span class="text-emerald-400 font-bold">Admin / Creator</span></p>
+                    <p class="text-slate-300 flex justify-between"><span>Location:</span> <span class="text-white">India</span></p>
+                    <p class="text-slate-300 flex justify-between"><span>Status:</span> <span class="text-emerald-400 font-bold">Active</span></p>
                 </div>
-                <button onclick="alert('প্রোফাইল সেটিংস আপডেট সফল হয়েছে!')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-brand-600/20 w-full mt-2">প্রোফাইল এডিট করুন</button>
+                <button onclick="alert('প্রোফাইল সেটিংস আপডেট সফল হয়েছে!')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-brand-600/20 w-full mt-2">Edit Profile</button>
             </div>
         </section>
 
     </main>
 
-    <!-- Professional JavaScript Controller -->
+    <!-- JavaScript Controller -->
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -251,25 +263,20 @@
         }
 
         function showSection(sectionId, event) {
-            // Hide all sections
             const sections = document.querySelectorAll('.section-content');
             sections.forEach(sec => sec.classList.add('hidden'));
 
-            // Remove active styles from all buttons
             const buttons = document.querySelectorAll('.nav-btn');
             buttons.forEach(btn => {
                 btn.classList.remove('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/20');
                 btn.classList.add('text-slate-400', 'hover:bg-slate-900', 'hover:text-white');
             });
 
-            // Show target section
             document.getElementById(sectionId).classList.remove('hidden');
 
-            // Apply active styles to clicked button
             event.currentTarget.classList.remove('text-slate-400', 'hover:bg-slate-900', 'hover:text-white');
             event.currentTarget.classList.add('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/20');
 
-            // Close mobile sidebar automatically on selection
             if (window.innerWidth < 768) {
                 toggleSidebar();
             }
