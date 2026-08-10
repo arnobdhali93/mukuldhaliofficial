@@ -250,7 +250,7 @@
 
     </main>
 
-    <script>
+     <script>
         // UI Navigation Script
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -259,6 +259,7 @@
             backdrop.classList.toggle('hidden');
         }
 
+        // আপডেট করা showSection ফাংশন (যাতে রিলোড দিলে পেজ মনে রাখে)
         function showSection(sectionId, event) {
             const sections = document.querySelectorAll('.section-content');
             sections.forEach(sec => sec.classList.add('hidden'));
@@ -271,24 +272,34 @@
 
             document.getElementById(sectionId).classList.remove('hidden');
 
-            event.currentTarget.classList.remove('text-slate-300', 'hover:bg-white/10', 'hover:text-white');
-            event.currentTarget.classList.add('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/30');
+            if (event) {
+                event.currentTarget.classList.remove('text-slate-300', 'hover:bg-white/10', 'hover:text-white');
+                event.currentTarget.classList.add('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/30');
+            } else {
+                const targetBtn = document.querySelector(`button[onclick*="${sectionId}"]`);
+                if (targetBtn) {
+                    targetBtn.classList.remove('text-slate-300', 'hover:bg-white/10', 'hover:text-white');
+                    targetBtn.classList.add('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/30');
+                }
+            }
 
-            if (window.innerWidth < 768) {
+            if (event && window.innerWidth < 768) {
                 toggleSidebar();
             }
+
+            // URL-এর শেষে হ্যাশ (#) যুক্ত করা
+            window.history.replaceState(null, null, `#${sectionId}`);
         }
 
         // ==========================================
-        // Google Sheet API Fetch (ভবিষ্যতের জন্য প্রস্তুত)
+        // Google Sheet API Fetch
         // ==========================================
         
-        // যখন তোমার Google Apps Script তৈরি হবে, তখন এই ফাঁকা জায়গায় URL বসিয়ে দেবে
+        // তোমার Google Apps Script-এর URL টি এখানে বসাও
         const API_URL = "https://script.google.com/macros/s/AKfycbwo4OT2uaQ2cwGuJp-0jbcCk7vYcXA2VjgUQ-ZTWvbAWnxIASXMy2P9exnAtBN51jq_4A/exec"; 
 
         async function loadAllData() {
-            // যদি API URL না থাকে, তবে কোডটি এখানেই থেমে যাবে এবং বর্তমান স্ট্যাটিক ডিজাইন দেখাবে
-            if (!API_URL) return; 
+            if (!API_URL || API_URL === "এখানে_তোমার_লিংকটি_দাও") return; 
 
             try {
                 const response = await fetch(API_URL);
@@ -375,8 +386,16 @@
             }
         }
 
-        // ওয়েবসাইট ওপেন হলেই ডেটা কল হবে
-        window.addEventListener('DOMContentLoaded', loadAllData);
+        // পেজ লোড বা রিলোড হওয়ার সময় কী হবে (আপডেট করা)
+        window.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.replace('#', '');
+            
+            if (hash && document.getElementById(hash)) {
+                showSection(hash, null);
+            } else {
+                showSection('home', null);
+            }
+
+            loadAllData();
+        });
     </script>
-</body>
-</html>
