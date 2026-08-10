@@ -146,17 +146,9 @@
                 <i class="fa-solid fa-newspaper text-emerald-400 text-xl"></i> ভারতীয় শিক্ষা ও বোর্ড নিউজ
             </h2>
             <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:border-emerald-400/50 transition">
-                    <span class="text-[11px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider">পশ্চিমবঙ্গ পর্ষদ</span>
-                    <h3 class="font-bold text-lg text-white mt-4 mb-2">মাধ্যমিক ও উচ্চমাধ্যমিক পরীক্ষার নতুন গাইডলাইন</h3>
-                    <p class="text-slate-300 text-xs md:text-sm mb-5 leading-relaxed">চলতি শিক্ষাবর্ষের ফাইনাল পরীক্ষার ব্লু-প্রিন্ট ও নম্বর বিভাজন নিয়ে পর্ষদের অফিশিয়াল নোটিশ প্রকাশ...</p>
-                    <button onclick="alert('খবরটি লোড হচ্ছে...')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-brand-600/30">সম্পূর্ণ পড়ুন</button>
-                </div>
-                <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:border-emerald-400/50 transition">
-                    <span class="text-[11px] bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider">সেন্ট্রাল আপডেট</span>
-                    <h3 class="font-bold text-lg text-white mt-4 mb-2">জয়েন্ট এন্ট্রান্স ও নিট পরীক্ষার আবেদন শুরু</h3>
-                    <p class="text-slate-300 text-xs md:text-sm mb-5 leading-relaxed">জাতীয় স্তরের প্রফেশনাল এন্ট্রান্স এক্সামের ডেট এবং রেজিস্ট্রেশন পোর্টাল সম্পর্কিত গুরুত্বপূর্ণ তথ্য...</p>
-                    <button onclick="alert('খবরটি লোড হচ্ছে...')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-brand-600/30">সম্পূর্ণ পড়ুন</button>
+                <div class="col-span-full text-center py-10">
+                    <i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-3xl mb-3"></i>
+                    <p class="text-slate-400 text-sm">খবর লোড হচ্ছে...</p>
                 </div>
             </div>
         </section>
@@ -166,21 +158,9 @@
                 <i class="fa-solid fa-brain text-emerald-400 text-xl"></i> ভারতীয় সাধারণ জ্ঞান ও কুইজ
             </h2>
             <div id="quiz-container" class="space-y-6 max-w-xl">
-                 <div class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md w-full">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-xs text-emerald-400 font-bold">মক টেস্ট #০১</span>
-                        <span class="text-xs text-slate-300">মার্কস: ১</span>
-                    </div>
-                    <h3 class="font-semibold text-base md:text-lg text-white mb-5">প্রশ্ন: ভারতের জাতীয় সংগীত 'জনগণমন' প্রথম কোন অধিবেশনে গীত হয়েছিল?</h3>
-                    <div class="space-y-3 mb-6">
-                        <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400/50 transition">
-                            <input type="radio" name="quiz1" class="accent-emerald-500"> ১৯১১ সালের কলকাতা অধিবেশন
-                        </label>
-                        <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400/50 transition">
-                            <input type="radio" name="quiz1" class="accent-emerald-500"> ১৯০৬ সালের সুরাট অধিবেশন
-                        </label>
-                    </div>
-                    <button onclick="alert('সফলভাবে উত্তর সাবমিট করা হয়েছে!')" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-brand-600/30 w-full md:w-auto">উত্তর জমা দিন</button>
+                 <div class="text-center py-10 w-full">
+                    <i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-3xl mb-3"></i>
+                    <p class="text-slate-400 text-sm">কুইজ লোড হচ্ছে...</p>
                 </div>
             </div>
         </section>
@@ -190,21 +170,9 @@
                 <i class="fa-solid fa-book text-emerald-400 text-xl"></i> অনলাইন ফ্রি বই (NCERT ও পর্ষদ)
             </h2>
             <div id="books-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md flex flex-col justify-between">
-                    <div>
-                        <div class="text-[11px] text-emerald-400 font-bold mb-1">পশ্চিমবঙ্গ মধ্যশিক্ষা পর্ষদ</div>
-                        <h3 class="font-bold text-lg text-white mb-2">নবম শ্রেণি: গণিত প্রকাশ</h3>
-                        <p class="text-slate-300 text-xs mb-6">সম্পূর্ণ সিলেবাস ভিত্তিক ডিজিটাল সংস্করণ পিডিএফ।</p>
-                    </div>
-                    <button onclick="alert('পিডিএফ ফাইল ডাউনলোড শুরু হচ্ছে...')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-fit shadow-lg shadow-brand-600/30">পিডিএফ ডাউনলোড</button>
-                </div>
-                <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md flex flex-col justify-between">
-                    <div>
-                        <div class="text-[11px] text-emerald-400 font-bold mb-1">NCERT India</div>
-                        <h3 class="font-bold text-lg text-white mb-2">Class 10 Science (Bengali Medium)</h3>
-                        <p class="text-slate-300 text-xs mb-6">বিজ্ঞানের সমস্ত অধ্যায়ের বিস্তারিত ব্যাখ্যা সহ বই।</p>
-                    </div>
-                    <button onclick="alert('পিডিএফ ফাইল ডাউনলোড শুরু হচ্ছে...')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-fit shadow-lg shadow-brand-600/30">পিডিএফ ডাউনলোড</button>
+                <div class="col-span-full text-center py-10">
+                    <i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-3xl mb-3"></i>
+                    <p class="text-slate-400 text-sm">বইয়ের তালিকা লোড হচ্ছে...</p>
                 </div>
             </div>
         </section>
@@ -214,13 +182,9 @@
                 <i class="fa-solid fa-feather text-emerald-400 text-xl"></i> বাংলা গল্প ও সাহিত্য
             </h2>
             <div id="stories-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md flex flex-col justify-between">
-                    <div>
-                        <div class="text-[11px] text-emerald-400 font-bold mb-1">চিরায়ত সাহিত্য</div>
-                        <h3 class="font-bold text-lg text-white mb-2">শরৎচন্দ্র চট্টোপাধ্যায়: রামের সুমতি</h3>
-                        <p class="text-slate-300 text-xs mb-6">বাংলার অন্যতম সেরা মনস্তাত্ত্বিক ও আবেগঘন ছোটগল্প...</p>
-                    </div>
-                    <button onclick="alert('গল্প পড়া শুরু হচ্ছে...')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-fit shadow-lg shadow-brand-600/30">সম্পূর্ণ পড়ুন</button>
+                <div class="col-span-full text-center py-10">
+                    <i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-3xl mb-3"></i>
+                    <p class="text-slate-400 text-sm">গল্প লোড হচ্ছে...</p>
                 </div>
             </div>
         </section>
@@ -250,7 +214,7 @@
 
     </main>
 
-     <script>
+    <script>
         // UI Navigation Script
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -295,7 +259,7 @@
         // Google Sheet API Fetch
         // ==========================================
         
-        // তোমার Google Apps Script-এর URL টি এখানে বসাও
+        // এখানে তোমার Google Apps Script-এর URL টি বসাও
         const API_URL = "https://script.google.com/macros/s/AKfycbwo4OT2uaQ2cwGuJp-0jbcCk7vYcXA2VjgUQ-ZTWvbAWnxIASXMy2P9exnAtBN51jq_4A/exec"; 
 
         async function loadAllData() {
@@ -308,7 +272,7 @@
                 // ১. News লোড করা
                 if(data.News) {
                     const newsContainer = document.getElementById('news-container');
-                    newsContainer.innerHTML = '';
+                    newsContainer.innerHTML = ''; // স্পিনার সরিয়ে ফেলা
                     data.News.reverse().forEach(news => {
                         if (!news.Title) return; 
                         newsContainer.innerHTML += `
@@ -324,7 +288,7 @@
                 // ২. Books লোড করা
                 if(data.Books) {
                     const booksContainer = document.getElementById('books-container');
-                    booksContainer.innerHTML = '';
+                    booksContainer.innerHTML = ''; // স্পিনার সরিয়ে ফেলা
                     data.Books.reverse().forEach(book => {
                         if (!book.Title) return;
                         booksContainer.innerHTML += `
@@ -342,7 +306,7 @@
                 // ৩. Stories লোড করা
                 if(data.Stories) {
                     const storiesContainer = document.getElementById('stories-container');
-                    storiesContainer.innerHTML = '';
+                    storiesContainer.innerHTML = ''; // স্পিনার সরিয়ে ফেলা
                     data.Stories.reverse().forEach(story => {
                         if (!story.Title) return;
                         storiesContainer.innerHTML += `
@@ -360,7 +324,7 @@
                 // ৪. Quiz লোড করা
                 if(data.Quiz) {
                     const quizContainer = document.getElementById('quiz-container');
-                    quizContainer.innerHTML = '';
+                    quizContainer.innerHTML = ''; // স্পিনার সরিয়ে ফেলা
                     data.Quiz.reverse().forEach(quiz => {
                         if (!quiz.Question) return;
                         quizContainer.innerHTML += `
@@ -386,7 +350,7 @@
             }
         }
 
-        // পেজ লোড বা রিলোড হওয়ার সময় কী হবে (আপডেট করা)
+        // পেজ লোড বা রিলোড হওয়ার সময় কী হবে
         window.addEventListener('DOMContentLoaded', () => {
             const hash = window.location.hash.replace('#', '');
             
@@ -399,3 +363,5 @@
             loadAllData();
         });
     </script>
+</body>
+</html>
