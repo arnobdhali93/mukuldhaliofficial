@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mukuldhaliofficial - শিক্ষা ও বিনোদন পোর্টাল</title>
+    <title>mukuldhaliofficial - ভারতীয় শিক্ষা ও বিনোদন পোর্টাল</title>
     <!-- Google Bangla Font -->
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Tailwind CSS for Professional Design -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -22,176 +22,163 @@
         }
     </script>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col md:flex-row">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
-    <!-- Sidebar Navigation (Professional Dark Theme) -->
-    <aside class="w-full md:w-72 bg-slate-900 text-slate-300 md:min-h-screen flex flex-col shadow-xl">
-        <div class="p-6 text-center border-b border-slate-800">
-            <h1 class="text-xl font-bold text-teal-400 tracking-wide">mukuldhaliofficial</h1>
-            <p class="text-xs text-slate-400 mt-1">শিক্ষা ও বিনোদন প্ল্যাটফর্ম</p>
+    <!-- Top Header with 3-Dot / Hamburger Menu for Mobile -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50 flex justify-between items-center px-6 py-4">
+        <div>
+            <h1 class="text-lg font-bold text-teal-400 tracking-wide">mukuldhaliofficial</h1>
+            <p class="text-[11px] text-slate-400">ভারতীয় শিক্ষা ও পঠন-পাঠন পোর্টাল</p>
         </div>
-        <ul class="flex md:flex-col overflow-x-auto md:overflow-visible p-3 gap-1 md:space-y-1">
-            <li>
-                <button onclick="showSection('home', event)" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all bg-teal-600 text-white shadow-md">
-                    <i class="fa-solid fa-house w-5"></i> হোমপেজ
-                </button>
-            </li>
-            <li>
-                <button onclick="showSection('news', event)" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all hover:bg-slate-800 hover:text-white">
-                    <i class="fa-solid fa-newspaper w-5"></i> এডুকেশন নিউজ
-                </button>
-            </li>
-            <li>
-                <button onclick="showSection('quiz', event)" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all hover:bg-slate-800 hover:text-white">
-                    <i class="fa-solid fa-brain w-5"></i> কুইজ এক্সাম
-                </button>
-            </li>
-            <li>
-                <button onclick="showSection('books', event)" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all hover:bg-slate-800 hover:text-white">
-                    <i class="fa-solid fa-book w-5"></i> ফ্রি বই
-                </button>
-            </li>
-            <li>
-                <button onclick="showSection('stories', event)" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all hover:bg-slate-800 hover:text-white">
-                    <i class="fa-solid fa-feather w-5"></i> বাংলা গল্প
-                </button>
-            </li>
-            <li>
-                <button onclick="showSection('profile', event)" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all hover:bg-slate-800 hover:text-white">
-                    <i class="fa-solid fa-user w-5"></i> আমার প্রোফাইল
-                </button>
-            </li>
-        </ul>
-    </aside>
+        <!-- Mobile Menu Button (3-Dot / Hamburger Icon) -->
+        <button onclick="toggleMobileMenu()" class="md:hidden text-white text-2xl focus:outline-none">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+        </button>
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex gap-2">
+            <button onclick="showSection('home', event)" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all bg-teal-600 text-white shadow">হোম</button>
+            <button onclick="showSection('news', event)" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-slate-800 text-slate-300">শিক্ষার খবর</button>
+            <button onclick="showSection('quiz', event)" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-slate-800 text-slate-300">কুইজ</button>
+            <button onclick="showSection('books', event)" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-slate-800 text-slate-300">ফ্রি বই</button>
+            <button onclick="showSection('stories', event)" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-slate-800 text-slate-300">বাংলা গল্প</button>
+            <button onclick="showSection('profile', event)" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-slate-800 text-slate-300">প্রোফাইল</button>
+        </nav>
+    </header>
+
+    <!-- Mobile Dropdown Menu (Hidden by default) -->
+    <div id="mobile-menu" class="hidden md:hidden bg-slate-900 border-t border-slate-800 text-slate-300 flex flex-col p-4 space-y-2 shadow-lg sticky top-[73px] z-40">
+        <button onclick="showSection('home', event); toggleMobileMenu();" class="mobile-nav-btn text-left px-4 py-2.5 rounded-lg text-sm font-medium bg-teal-600 text-white"><i class="fa-solid fa-house w-6"></i> হোমপেজ</button>
+        <button onclick="showSection('news', event); toggleMobileMenu();" class="mobile-nav-btn text-left px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800"><i class="fa-solid fa-newspaper w-6"></i> শিক্ষার খবর (WB/CBSE)</button>
+        <button onclick="showSection('quiz', event); toggleMobileMenu();" class="mobile-nav-btn text-left px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800"><i class="fa-solid fa-brain w-6"></i> জিকে ও কুইজ</button>
+        <button onclick="showSection('books', event); toggleMobileMenu();" class="mobile-nav-btn text-left px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800"><i class="fa-solid fa-book w-6"></i> এনসিইআরটি বই</button>
+        <button onclick="showSection('stories', event); toggleMobileMenu();" class="mobile-nav-btn text-left px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800"><i class="fa-solid fa-feather w-6"></i> বাংলা গল্প</button>
+        <button onclick="showSection('profile', event); toggleMobileMenu();" class="mobile-nav-btn text-left px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800"><i class="fa-solid fa-user w-6"></i> আমার প্রোফাইল</button>
+    </div>
 
     <!-- Main Content Area -->
-    <main class="flex-1 p-6 md:p-10 max-w-6xl mx-auto w-full">
+    <main class="flex-1 p-4 md:p-10 max-w-5xl mx-auto w-full space-y-6">
 
         <!-- Home Section -->
-        <section id="home" class="section-content bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-            <h2 class="text-2xl font-bold text-slate-900 border-b pb-3 border-slate-100 flex items-center gap-2">
-                <i class="fa-solid fa-house text-teal-600"></i> স্বাগতম mukuldhaliofficial-এ
+        <section id="home" class="section-content bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+            <h2 class="text-xl md:text-2xl font-bold text-slate-900 border-b pb-3 border-slate-100 flex items-center gap-2">
+                <i class="fa-solid fa-house text-teal-600"></i> mukuldhaliofficial পোর্টালে স্বাগতম
             </h2>
-            <p class="text-slate-600 leading-relaxed">
-                এখানে আপনি পড়াশোনার পাশাপাশি কুইজ দিয়ে নিজেকে যাচাই করতে পারবেন, নতুন শিক্ষা সংবাদ পড়তে পারবেন এবং পছন্দের বাংলা গল্প ও বই পড়তে পারবেন। বাম পাশের মেনু থেকে আপনার পছন্দের অপشنটি বেছে নিন।
+            <p class="text-slate-600 leading-relaxed text-sm md:text-base">
+                এটি ভারতের ছাত্রছাত্রীদের জন্য তৈরি একটি শিক্ষা পোর্টাল। এখানে আপনারা পশ্চিমবঙ্গ মধ্যশিক্ষা পর্ষদ (WBBSE), উচ্চমাধ্যমিক শিক্ষা সংসদ (WBCHSE) এবং সিবিএসই (CBSE) সংক্রান্ত পড়াশোনার আপডেট, কুইজ এবং বাংলা সাহিত্য ও বই পাবেন।
             </p>
-            <div class="bg-teal-50 border-l-4 border-teal-500 p-4 rounded-r-lg text-teal-800 text-sm">
-                💡 টিপস: এই ওয়েবসাইটটি সম্পূর্ণ মোবাইল ফ্রেন্ডলি ও আধুনিক প্রযুক্তিতে তৈরি।
+            <div class="bg-teal-50 border-l-4 border-teal-500 p-4 rounded-r-lg text-teal-800 text-xs md:text-sm">
+                📌 ওপরে থাকা থ্রি-ডট (3-Dot) মেনু ব্যবহার করে খুব সহজেই বিভিন্ন পাতায় যাতায়াত করতে পারবেন।
             </div>
         </section>
 
-        <!-- News Section -->
-        <section id="news" class="section-content hidden bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6">
-            <h2 class="text-2xl font-bold text-slate-900 border-b pb-3 border-slate-100 flex items-center gap-2">
-                <i class="fa-solid fa-newspaper text-teal-600"></i> শিক্ষা বিষয়ক নিউজ
+        <!-- News Section (Indian Context) -->
+        <section id="news" class="section-content hidden bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6">
+            <h2 class="text-xl md:text-2xl font-bold text-slate-900 border-b pb-3 border-slate-100 flex items-center gap-2">
+                <i class="fa-solid fa-newspaper text-teal-600"></i> ভারতীয় শিক্ষা ও বোর্ড নিউজ
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 hover:shadow-md transition-shadow">
-                    <h3 class="font-bold text-lg text-slate-800 mb-2">আসন্ন শিক্ষা বোর্ড পরীক্ষার রুটিন প্রকাশ</h3>
-                    <p class="text-slate-600 text-sm mb-4">চলতি বছরের পরীক্ষার সময়সূচি এবং নির্দেশিকা নিয়ে বিস্তারিত তথ্য...</p>
-                    <button class="bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-700 transition">বিস্তারিত পড়ুন</button>
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 hover:shadow-md transition">
+                    <span class="text-xs bg-teal-100 text-teal-800 px-2.5 py-1 rounded-full font-semibold">পশ্চিমবঙ্গ পর্ষদ</span>
+                    <h3 class="font-bold text-base md:text-lg text-slate-800 mt-3 mb-2">মাধ্যমিক ও উচ্চমাধ্যমিক পরীক্ষার নতুন রুটিন ঘোষণা</h3>
+                    <p class="text-slate-600 text-xs md:text-sm mb-4">চলতি শিক্ষাবর্ষের ফাইনাল পরীক্ষার সূচি এবং সিলেবাস নিয়ে পর্ষদের গুরুত্বপূর্ণ নির্দেশিকা...</p>
+                    <button class="bg-teal-600 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-medium hover:bg-teal-700 transition">সম্পূর্ণ পড়ুন</button>
                 </div>
-                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 hover:shadow-md transition-shadow">
-                    <h3 class="font-bold text-lg text-slate-800 mb-2">নতুন শিক্ষাক্রম ও পাঠ্যবই আপডেট</h3>
-                    <p class="text-slate-600 text-sm mb-4">মাধ্যমিক ও উচ্চমাধ্যমিক স্তরের নতুন শিক্ষা সিলেবাস সম্পর্কিত সর্বশেষ খবর...</p>
-                    <button class="bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-700 transition">বিস্তারিত পড়ুন</button>
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 hover:shadow-md transition">
+                    <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-semibold">সেন্ট্রাল আপডেট</span>
+                    <h3 class="font-bold text-base md:text-lg text-slate-800 mt-3 mb-2">ইউজিসি নেট (UGC NET) ও প্রবেশিকা পরীক্ষার তারিখ</h3>
+                    <p class="text-slate-600 text-xs md:text-sm mb-4">জাতীয় স্তরের উচ্চশিক্ষা ও স্কলারশিপ পরীক্ষার আবেদন প্রক্রিয়া শুরু...</p>
+                    <button class="bg-teal-600 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-medium hover:bg-teal-700 transition">সম্পূর্ণ পড়ুন</button>
                 </div>
             </div>
         </section>
 
-        <!-- Quiz Section -->
-        <section id="quiz" class="section-content hidden bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6">
-            <h2 class="text-2xl font-bold text-slate-900 border-b pb-3 border-slate-100 flex items-center gap-2">
-                <i class="fa-solid fa-brain text-teal-600"></i> কুইজ এক্সাম
+        <!-- Quiz Section (Indian GK) -->
+        <section id="quiz" class="section-content hidden bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6">
+            <h2 class="text-xl md:text-2xl font-bold text-slate-900 border-b pb-3 border-slate-100 flex items-center gap-2">
+                <i class="fa-solid fa-brain text-teal-600"></i> ভারতীয় সাধারণ জ্ঞান ও কুইজ
             </h2>
-            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 max-w-xl">
-                <h3 class="font-semibold text-lg text-slate-800 mb-4">প্রশ্ন ১: বাংলাদেশের জাতীয় ফুল কোনটি?</h3>
-                <div class="space-y-3 mb-4">
+            <div class="bg-slate-50 p-5 md:p-6 rounded-xl border border-slate-200 max-w-xl">
+                <h3 class="font-semibold text-base md:text-lg text-slate-800 mb-4">প্রশ্ন ১: ভারতের জাতীয় সংগীত 'জনগণমন' কোন কবির রচনা?</h3>
+                <div class="space-y-3 mb-4 text-sm md:text-base">
                     <label class="flex items-center gap-3 p-3 bg-white rounded-lg border border-slate-200 cursor-pointer hover:border-teal-500">
-                        <input type="radio" name="q1" class="text-teal-600 focus:ring-teal-500"> গোলাপ
+                        <input type="radio" name="q1" class="text-teal-600 focus:ring-teal-500"> বঙ্কিমচন্দ্র চট্টোপাধ্যায়
                     </label>
                     <label class="flex items-center gap-3 p-3 bg-white rounded-lg border border-slate-200 cursor-pointer hover:border-teal-500">
-                        <input type="radio" name="q1" class="text-teal-600 focus:ring-teal-500"> শাপলা
+                        <input type="radio" name="q1" class="text-teal-600 focus:ring-teal-500"> রবীন্দ্রনাথ ঠাকুর
                     </label>
                 </div>
-                <button onclick="alert('আপনার উত্তর জমা দেওয়া হয়েছে!')" class="bg-teal-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-teal-700 transition shadow">উত্তর জমা দিন</button>
+                <button onclick="alert('আপনার উত্তর জমা দেওয়া হয়েছে!')" class="bg-teal-600 text-white px-5 py-2.5 rounded-lg text-xs md:text-sm font-medium hover:bg-teal-700 transition shadow">উত্তর জমা দিন</button>
             </div>
         </section>
 
-        <!-- Books Section -->
-        <section id="books" class="section-content hidden bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6">
-            <h2 class="text-2xl font-bold text-slate-900 border-b pb-3 border-slate-100 flex items-center gap-2">
-                <i class="fa-solid fa-book text-teal-600"></i> অনলাইন ফ্রি বই
+        <!-- Books Section (NCERT / WBBSE) -->
+        <section id="books" class="section-content hidden bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6">
+            <h2 class="text-xl md:text-2xl font-bold text-slate-900 border-b pb-3 border-slate-100 flex items-center gap-2">
+                <i class="fa-solid fa-book text-teal-600"></i> অনলাইন ফ্রি বই (NCERT ও পর্ষদ)
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between">
                     <div>
-                        <h3 class="font-bold text-lg text-slate-800 mb-1">বাংলা ব্যাকরণ ও নির্মিতি</h3>
-                        <p class="text-slate-500 text-sm mb-4">লেখক: বিশেষজ্ঞ প্যানেল</p>
+                        <h3 class="font-bold text-base md:text-lg text-slate-800 mb-1">পশ্চিমবঙ্গ পর্ষদ: নবম শ্রেণি বাংলা সাহিত্য</h3>
+                        <p class="text-slate-500 text-xs md:text-sm mb-4">প্রকাশক: WBBSE</p>
                     </div>
-                    <button class="bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-700 transition w-fit">ডাউনলোড / পড়ুন</button>
+                    <button onclick="alert('বইটি ডাউনলোড শুরু হচ্ছে...')" class="bg-teal-600 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-medium hover:bg-teal-700 transition w-fit">পিডিএফ ডাউনলোড</button>
                 </div>
                 <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between">
                     <div>
-                        <h3 class="font-bold text-lg text-slate-800 mb-1">ইংরেজি গ্রামার সহজ পাঠ</h3>
-                        <p class="text-slate-500 text-sm mb-4">লেখক: এডমিন টিম</p>
+                        <h3 class="font-bold text-base md:text-lg text-slate-800 mb-1">NCERT Class 10 Mathematics (Bengali Version)</h3>
+                        <p class="text-slate-500 text-xs md:text-sm mb-4">প্রকাশক: NCERT India</p>
                     </div>
-                    <button class="bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-700 transition w-fit">ডাউনলোড / পড়ুন</button>
+                    <button onclick="alert('বইটি ডাউনলোড শুরু হচ্ছে...')" class="bg-teal-600 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-medium hover:bg-teal-700 transition w-fit">পিডিএফ ডাউনলোড</button>
                 </div>
             </div>
         </section>
 
-        <!-- Stories Section -->
-        <section id="stories" class="section-content hidden bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6">
-            <h2 class="text-2xl font-bold text-slate-900 border-b pb-3 border-slate-100 flex items-center gap-2">
-                <i class="fa-solid fa-feather text-teal-600"></i> বাংলা গল্প
+        <!-- Stories Section (Indian/Bengali Literature) -->
+        <section id="stories" class="section-content hidden bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6">
+            <h2 class="text-xl md:text-2xl font-bold text-slate-900 border-b pb-3 border-slate-100 flex items-center gap-2">
+                <i class="fa-solid fa-feather text-teal-600"></i> বাংলা গল্প ও সাহিত্য
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between">
                     <div>
-                        <h3 class="font-bold text-lg text-slate-800 mb-1">কিশোর গল্প: নদীর ধারে বিকেল</h3>
-                        <p class="text-slate-600 text-sm mb-4">ছোটবেলার স্মৃতিবিজড়িত একটি সুন্দর ও শিক্ষণীয় গ্রামীণ গল্প...</p>
+                        <h3 class="font-bold text-base md:text-lg text-slate-800 mb-1">উপেন্দ্রকিশোর রায়চৌধুরী: গুপী গাইন বাঘা বাইন</h3>
+                        <p class="text-slate-600 text-xs md:text-sm mb-4">বাংলার চিরায়ত ক্লাসিক কিশোর কল্পবিজ্ঞানের একটি চমৎকার গল্প...</p>
                     </div>
-                    <button class="bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-700 transition w-fit">সম্পূর্ণ পড়ুন</button>
+                    <button onclick="alert('গল্প পড়া শুরু হচ্ছে...')" class="bg-teal-600 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-medium hover:bg-teal-700 transition w-fit">সম্পূর্ণ পড়ুন</button>
                 </div>
             </div>
         </section>
 
         <!-- Profile Section -->
-        <section id="profile" class="section-content hidden bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6">
-            <h2 class="text-2xl font-bold text-slate-900 border-b pb-3 border-slate-100 flex items-center gap-2">
+        <section id="profile" class="section-content hidden bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6">
+            <h2 class="text-xl md:text-2xl font-bold text-slate-900 border-b pb-3 border-slate-100 flex items-center gap-2">
                 <i class="fa-solid fa-user text-teal-600"></i> আমার প্রোফাইল
             </h2>
             <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 max-w-md space-y-3">
-                <h3 class="font-bold text-xl text-slate-800">Mukul Dhali</h3>
-                <p class="text-slate-600 text-sm">স্ট্যাটাস: <span class="text-green-600 font-semibold">একটিভ</span></p>
-                <p class="text-slate-600 text-sm">অংশগ্রহণকৃত কুইজ: ১টি</p>
-                <button onclick="alert('প্রোফাইল এডিট অপশন খুব শীঘ্রই আসছে!')" class="bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-700 transition mt-2">প্রোফাইল এডিট করুন</button>
+                <h3 class="font-bold text-lg md:text-xl text-slate-800">Mukul Dhali</h3>
+                <p class="text-slate-600 text-xs md:text-sm">অবস্থান: ভারত (India)</p>
+                <p class="text-slate-600 text-xs md:text-sm">স্ট্যাটাস: <span class="text-green-600 font-semibold">একটিভ</span></p>
+                <button onclick="alert('প্রোফাইল সেটিংস আপডেট করা হয়েছে!')" class="bg-teal-600 text-white px-4 py-2 rounded-lg text-xs md:text-sm font-medium hover:bg-teal-700 transition mt-2">প্রোফাইল এডিট করুন</button>
             </div>
         </section>
 
     </main>
 
-    <!-- JavaScript for Modern Interactive Tabs -->
+    <!-- JavaScript for Mobile 3-Dot Menu & Tabs -->
     <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
         function showSection(sectionId, event) {
             // Hide all sections
             const sections = document.querySelectorAll('.section-content');
             sections.forEach(sec => sec.classList.add('hidden'));
 
-            // Remove active styles from all buttons
-            const buttons = document.querySelectorAll('.nav-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('bg-teal-600', 'text-white', 'shadow-md');
-                btn.classList.add('hover:bg-slate-800', 'hover:text-white');
-            });
-
             // Show target section
             document.getElementById(sectionId).classList.remove('hidden');
-
-            // Apply active styles to clicked button
-            event.currentTarget.classList.remove('hover:bg-slate-800', 'hover:text-white');
-            event.currentTarget.classList.add('bg-teal-600', 'text-white', 'shadow-md');
         }
     </script>
 </body>
