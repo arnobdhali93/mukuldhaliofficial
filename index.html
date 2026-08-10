@@ -6,6 +6,7 @@
     <title>mukuldhaliofficial - Premium Education & Knowledge Portal</title>
     <!-- Google Fonts: Tinos (Times New Roman style) & SolaimanLipi/Traditional Bangla Font -->
     <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=SolaimanLipi&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,7 +17,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        'bangla': ['"SolaimanLipi"', 'sans-serif'],
+                        'bangla': ['"SolaimanLipi"', '"Hind Siliguri"', 'sans-serif'],
                         'times': ['"Tinos"', 'Times New Roman', 'serif'],
                     },
                     colors: {
@@ -30,15 +31,15 @@
         }
     </script>
     <style>
-        /* ওয়েবসাইটের সব বাংলা লেখার জন্য SolaimanLipi ফন্ট */
-        body, p, h2, h3, span, div, button:not(.menu-font) {
-            font-family: 'SolaimanLipi', sans-serif !important;
+        /* নিশ্চিত বাংলা ফন্ট প্রয়োগ */
+        body, p, h2, h3, span, div, button:not(.menu-font), input, label {
+            font-family: 'SolaimanLipi', 'Hind Siliguri', sans-serif !important;
         }
         /* মেনুর জন্য English Times New Roman ফন্ট */
         .menu-font {
             font-family: 'Tinos', 'Times New Roman', serif !important;
         }
-        /* ব্যাকগ্রাউন্ড ইমেজ উইথ হালকা ডার্ক ওভারলে (লেখা পরিষ্কার রাখার জন্য) */
+        /* ব্যাকগ্রাউন্ড ইমেজ উইথ হালকা ডার্ক ওভারলে */
         .bg-custom-image {
             background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.80)), 
                         url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop');
@@ -50,7 +51,7 @@
 </head>
 <body class="bg-custom-image text-slate-100 min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white">
 
-    <!-- Top Mobile Brand Bar (Left side 3-Line Menu Button) -->
+    <!-- Top Mobile Brand Bar -->
     <header class="md:hidden bg-slate-950/40 backdrop-blur-md border-b border-white/10 sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-3">
             <button onclick="toggleSidebar()" class="text-slate-200 hover:text-white text-xl focus:outline-none p-1.5 rounded-lg bg-white/10 border border-white/10">
@@ -63,7 +64,7 @@
         </div>
     </header>
 
-    <!-- Sidebar / Drawer Navigation (English & Times New Roman) -->
+    <!-- Sidebar / Drawer Navigation -->
     <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-72 bg-slate-950/80 backdrop-blur-2xl border-r border-white/10 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none">
         
         <div class="p-6 border-b border-white/10 flex items-center justify-between">
@@ -76,7 +77,7 @@
             </button>
         </div>
 
-        <!-- English Menu Links with Times New Roman Font -->
+        <!-- English Menu Links -->
         <nav class="flex-1 px-4 py-6 space-y-2 menu-font text-base">
             <button onclick="showSection('home', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold transition-all bg-brand-600 text-white shadow-lg shadow-brand-600/30">
                 <i class="fa-solid fa-house w-5 text-center"></i> Home
@@ -108,7 +109,7 @@
 
     <div id="backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
 
-    <!-- Main Content Area (Transparent Background, Direct Text on Image) -->
+    <!-- Main Content Area -->
     <main class="flex-1 p-6 md:p-12 max-w-6xl mx-auto w-full overflow-y-auto">
 
         <!-- Home Section -->
