@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>mukuldhaliofficial - Premium Education & Knowledge Portal</title>
-    <!-- Google Fonts for Kalpurush & Times New Roman -->
+    <!-- Google Fonts: Tinos (Times New Roman style) & SolaimanLipi/Traditional Bangla Font -->
     <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=SolaimanLipi&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Tailwind CSS -->
@@ -16,8 +16,8 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        'bangla': ['"Hind Siliguri"', 'sans-serif'], // কালপুরুষ ভাইবের জন্য
-                        'times': ['"Tinos"', 'Times New Roman', 'serif'], // মেনুর জন্য Times New Roman স্টাইল
+                        'bangla': ['"SolaimanLipi"', 'sans-serif'],
+                        'times': ['"Tinos"', 'Times New Roman', 'serif'],
                     },
                     colors: {
                         brand: {
@@ -30,15 +30,15 @@
         }
     </script>
     <style>
-        /* কালপুরুষ বা নিখুঁত বাংলা ফন্ট স্টাইল */
-        .kalpurush-text {
-            font-family: 'Hind Siliguri', sans-serif;
+        /* ওয়েবসাইটের সব বাংলা লেখার জন্য SolaimanLipi ফন্ট */
+        body, p, h2, h3, span, div, button:not(.menu-font) {
+            font-family: 'SolaimanLipi', sans-serif !important;
         }
-        /* মেনুর জন্য Times New Roman */
+        /* মেনুর জন্য English Times New Roman ফন্ট */
         .menu-font {
-            font-family: 'Tinos', 'Times New Roman', serif;
+            font-family: 'Tinos', 'Times New Roman', serif !important;
         }
-        /* ব্যাকগ্রাউন্ড ইমেজ উইথ ওভারলে (যাতে লেখা পরিষ্কার বোঝা যায়) */
+        /* ব্যাকগ্রাউন্ড ইমেজ উইথ ডিম লাইটিং ওভারলে */
         .bg-custom-image {
             background: linear-gradient(rgba(15, 23, 42, 0.90), rgba(15, 23, 42, 0.92)), 
                         url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop');
@@ -48,7 +48,7 @@
         }
     </style>
 </head>
-<body class="bg-custom-image text-slate-100 min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white kalpurush-text">
+<body class="bg-custom-image text-slate-100 min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white">
 
     <!-- Top Mobile Brand Bar (Left side 3-Line Menu Button) -->
     <header class="md:hidden bg-slate-950/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
@@ -78,22 +78,22 @@
 
         <!-- English Menu Links with Times New Roman Font -->
         <nav class="flex-1 px-4 py-6 space-y-2 menu-font text-base">
-            <button onclick="showSection('home', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold transition-all bg-brand-600 text-white shadow-lg shadow-brand-600/20">
+            <button onclick="showSection('home', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold transition-all bg-brand-600 text-white shadow-lg shadow-brand-600/20">
                 <i class="fa-solid fa-house w-5 text-center"></i> Home
             </button>
-            <button onclick="showSection('news', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
+            <button onclick="showSection('news', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
                 <i class="fa-solid fa-newspaper w-5 text-center"></i> Education News
             </button>
-            <button onclick="showSection('quiz', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
+            <button onclick="showSection('quiz', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
                 <i class="fa-solid fa-brain w-5 text-center"></i> Quiz Exam
             </button>
-            <button onclick="showSection('books', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
+            <button onclick="showSection('books', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
                 <i class="fa-solid fa-book w-5 text-center"></i> Free E-Books
             </button>
-            <button onclick="showSection('stories', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
+            <button onclick="showSection('stories', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
                 <i class="fa-solid fa-feather w-5 text-center"></i> Bangla Stories
             </button>
-            <button onclick="showSection('profile', event)" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
+            <button onclick="showSection('profile', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-white">
                 <i class="fa-solid fa-user-shield w-5 text-center"></i> My Profile
             </button>
         </nav>
@@ -108,7 +108,7 @@
 
     <div id="backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
 
-    <!-- Main Content Area (Kalpurush Bangla Font Applied) -->
+    <!-- Main Content Area -->
     <main class="flex-1 p-6 md:p-12 max-w-6xl mx-auto w-full overflow-y-auto">
 
         <!-- Home Section -->
@@ -243,11 +243,11 @@
                     </div>
                 </div>
                 <div class="space-y-2 pt-2 border-t border-slate-800 text-xs">
-                    <p class="text-slate-300 flex justify-between"><span>Account Type:</span> <span class="text-emerald-400 font-bold">Admin / Creator</span></p>
-                    <p class="text-slate-300 flex justify-between"><span>Location:</span> <span class="text-white">India</span></p>
-                    <p class="text-slate-300 flex justify-between"><span>Status:</span> <span class="text-emerald-400 font-bold">Active</span></p>
+                    <p class="text-slate-300 flex justify-between menu-font"><span>Account Type:</span> <span class="text-emerald-400 font-bold menu-font">Admin / Creator</span></p>
+                    <p class="text-slate-300 flex justify-between menu-font"><span>Location:</span> <span class="text-white menu-font">India</span></p>
+                    <p class="text-slate-300 flex justify-between menu-font"><span>Status:</span> <span class="text-emerald-400 font-bold menu-font">Active</span></p>
                 </div>
-                <button onclick="alert('প্রোফাইল সেটিংস আপডেট সফল হয়েছে!')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-brand-600/20 w-full mt-2">Edit Profile</button>
+                <button onclick="alert('প্রোফাইল সেটিংস আপডেট সফল হয়েছে!')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-brand-600/20 w-full mt-2 menu-font">Edit Profile</button>
             </div>
         </section>
 
