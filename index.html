@@ -112,7 +112,6 @@
         <div class="bg-slate-950/80 border-b border-emerald-500/20 py-2.5 px-4 flex items-center gap-3 backdrop-blur-md">
             <span class="bg-emerald-600 text-white px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider flex-shrink-0">ব্রেকিং নিউজ</span>
             <marquee id="breaking-news-marquee" class="text-slate-300 text-xs md:text-sm font-medium">
-                খবর লোড হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন।
             </marquee>
         </div>
 
@@ -385,7 +384,7 @@
                 const response = await fetch(API_URL);
                 const data = await response.json(); 
 
-                // Breaking News
+                // Breaking News (Google Sheet: "Breaking News" Tab & "Title" Column)
                 if(data["Breaking News"]) {
                     const marqueeElement = document.getElementById('breaking-news-marquee');
                     let breakingText = "";
@@ -396,11 +395,7 @@
                         }
                     });
                     
-                    if(breakingText !== "") {
-                        marqueeElement.innerHTML = breakingText;
-                    } else {
-                        marqueeElement.innerHTML = "বর্তমানে কোনো ব্রেকিং নিউজ নেই।";
-                    }
+                    marqueeElement.innerHTML = breakingText;
                 }
 
                 // News
