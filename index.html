@@ -1,147 +1,106 @@
 <!DOCTYPE html>
-<html lang="bn" class="scroll-smooth">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MukulPortal - Advanced AI Dashboard</title>
+    <title>MukulPortal - Modern Light Mode</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .hero-bg { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072'); background-size: cover; animation: zoom 20s infinite alternate; }
-        @keyframes zoom { from { transform: scale(1); } to { transform: scale(1.1); } }
-        .hide { display: none; }
+        body { background-color: #f8fafc; color: #1e293b; }
+        .card { background: white; border: 1px solid #e2e8f0; }
+        .hide { display: none !important; }
     </style>
 </head>
-<body class="bg-slate-900 text-white font-sans">
+<body>
+
+    <!-- Breaking News -->
+    <div class="fixed top-0 w-full z-50 bg-blue-600 text-white py-1 text-sm overflow-hidden shadow-md">
+        <marquee>🚀 স্বাগতম MukulPortal-এ! | আপনার এআই অ্যাসিস্ট্যান্টের মাধ্যমে যেকোনো তথ্য দ্রুত পেতে পারেন। | আপনার প্রোফাইল আপডেট করুন।</marquee>
+    </div>
 
     <!-- Navbar -->
-    <nav class="fixed w-full z-40 glass px-10 py-5 flex justify-between items-center shadow-lg">
-        <h1 class="text-2xl font-bold tracking-tighter">Mukul<span class="text-blue-500">Portal</span></h1>
-        <div class="space-x-8 font-medium">
-            <button onclick="showSection('home')" class="hover:text-blue-400 transition">Home</button>
-            <button onclick="showSection('profile')" class="hover:text-blue-400 transition">Profile</button>
+    <nav class="fixed top-8 w-full z-40 bg-white/80 backdrop-blur-md px-8 py-4 flex justify-between items-center shadow-sm">
+        <h1 class="text-2xl font-bold text-blue-600">Mukul<span class="text-slate-800">Portal</span></h1>
+        <div class="space-x-6 font-medium text-slate-600">
+            <button onclick="showSection('home')" class="hover:text-blue-600 transition">Home</button>
+            <button onclick="showSection('profile')" class="hover:text-blue-600 transition">Profile</button>
         </div>
     </nav>
 
-    <!-- Content -->
-    <div id="content" class="pt-20">
-        <!-- Home -->
-        <section id="home" class="hero-bg h-screen flex items-center justify-center animate__animated animate__fadeIn">
-            <div class="text-center p-10 glass rounded-3xl max-w-lg">
-                <h2 class="text-5xl font-extrabold mb-4">Welcome Back!</h2>
-                <p class="text-gray-300">আপনার ব্যক্তিগত ড্যাশবোর্ডে স্বাগতম। নিচে থাকা এআই অ্যাসিস্ট্যান্ট ব্যবহার করে যেকোনো প্রশ্ন করুন।</p>
+    <!-- Main Content -->
+    <div class="pt-32 px-6">
+        <!-- Home Section -->
+        <section id="home" class="max-w-4xl mx-auto text-center mt-20">
+            <h2 class="text-5xl font-extrabold text-slate-900 mb-6">আপনার ব্যক্তিগত এআই ড্যাশবোর্ড</h2>
+            <p class="text-slate-500 text-lg mb-10">আধুনিক এবং দ্রুতগতিসম্পন্ন এই পোর্টালে আপনাকে স্বাগতম। নিচে থাকা রোবট আইকনে ক্লিক করে এআই অ্যাসিস্ট্যান্টের সাথে কথা বলুন।</p>
+            <div class="card p-10 rounded-3xl shadow-lg">
+                <i class="fa-solid fa-microchip text-6xl text-blue-500 mb-4"></i>
+                <h3 class="text-2xl font-bold">স্মার্ট প্রযুক্তি</h3>
             </div>
         </section>
 
-        <!-- Profile -->
-        <section id="profile" class="hide min-h-screen pt-20 px-10 animate__animated animate__fadeIn">
-            <div class="max-w-md mx-auto glass p-8 rounded-3xl shadow-2xl">
-                <img id="profilePreview" src="https://via.placeholder.com/150" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-blue-500">
+        <!-- Profile Section -->
+        <section id="profile" class="hide max-w-md mx-auto mt-10">
+            <div class="card p-8 rounded-3xl shadow-xl">
+                <h2 class="text-xl font-bold mb-6 text-center">User Profile</h2>
+                <img id="profilePreview" src="https://via.placeholder.com/150" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-blue-100">
                 <input type="file" id="photoInput" class="hidden" onchange="uploadPhoto(this)">
-                <button onclick="document.getElementById('photoInput').click()" class="block w-full text-center text-blue-400 mb-6 hover:underline">প্রোফাইল ফটো পরিবর্তন করুন</button>
-                
-                <input type="text" id="editName" placeholder="Full Name" class="w-full p-3 mb-4 bg-white/5 rounded-xl border border-white/10 outline-none focus:border-blue-500">
-                <input type="text" id="editMobile" placeholder="Mobile Number" class="w-full p-3 mb-6 bg-white/5 rounded-xl border border-white/10 outline-none focus:border-blue-500">
-                <button onclick="saveProfile()" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-xl font-bold transition">Save Profile</button>
+                <button onclick="document.getElementById('photoInput').click()" class="block w-full text-center text-blue-500 mb-6 hover:underline">প্রোফাইল ফটো পরিবর্তন</button>
+                <input type="text" id="editName" placeholder="Full Name" class="w-full p-3 mb-4 bg-slate-50 rounded-xl border border-slate-200 outline-none">
+                <input type="text" id="editMobile" placeholder="Mobile Number" class="w-full p-3 mb-6 bg-slate-50 rounded-xl border border-slate-200 outline-none">
+                <button onclick="alert('Saved!')" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition">Save Profile</button>
             </div>
         </section>
     </div>
 
-    <!-- Floating AI Chatbot -->
-    <div id="ai-chat-container" class="fixed bottom-6 right-6 z-50">
-        <div id="chat-window" class="hide w-80 h-96 glass bg-slate-900 border border-white/20 rounded-3xl flex flex-col p-5 shadow-2xl mb-4">
+    <!-- AI Chatbot -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <div id="chat-window" class="hide w-80 h-96 card rounded-3xl flex flex-col p-5 shadow-2xl mb-4">
             <div class="flex justify-between items-center mb-2">
-                <h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-robot text-blue-400"></i> AI Assistant</h3>
-                <div class="flex items-center gap-2">
-                    <button onclick="resetApiKey()" title="Reset API Key" class="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded hover:bg-red-500/40">Reset Key</button>
-                    <button onclick="toggleChat()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-                </div>
+                <h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-robot text-blue-500"></i> AI Assistant</h3>
+                <button onclick="localStorage.removeItem('gemini_api_key'); alert('Key Reset!');" class="text-xs text-red-400 underline">Reset Key</button>
             </div>
-            <div id="chat-history" class="flex-1 overflow-y-auto space-y-3 mb-4 text-sm text-gray-300">
+            <div id="chat-history" class="flex-1 overflow-y-auto space-y-3 mb-4 text-sm text-slate-600">
                 <p>হ্যালো! আমি আপনার এআই অ্যাসিস্ট্যান্ট। কীভাবে সাহায্য করতে পারি?</p>
             </div>
             <div class="flex gap-2">
-                <input id="userQuery" type="text" placeholder="প্রশ্ন করুন..." class="flex-1 p-3 rounded-xl bg-white/10 text-white outline-none">
-                <button onclick="askGemini()" class="bg-blue-600 px-4 rounded-xl hover:bg-blue-700"><i class="fa-solid fa-paper-plane"></i></button>
+                <input id="userQuery" type="text" placeholder="প্রশ্ন করুন..." class="flex-1 p-3 rounded-xl bg-slate-100 outline-none">
+                <button onclick="askGemini()" class="bg-blue-600 text-white px-4 rounded-xl hover:bg-blue-700"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
-        <button onclick="toggleChat()" class="bg-blue-600 w-16 h-16 rounded-full shadow-2xl hover:scale-110 transition flex items-center justify-center">
+        <button onclick="document.getElementById('chat-window').classList.toggle('hide')" class="bg-blue-600 text-white w-16 h-16 rounded-full shadow-2xl hover:scale-105 transition flex items-center justify-center">
             <i class="fa-solid fa-robot text-2xl"></i>
         </button>
     </div>
 
     <script>
-        function toggleChat() { 
-            document.getElementById('chat-window').classList.toggle('hide'); 
-        }
-
-        // API Key রিসেট করার ফাংশন
-        function resetApiKey() {
-            localStorage.removeItem('gemini_api_key');
-            alert("পূর্বের API Key মুছে ফেলা হয়েছে। এখন নতুন প্রশ্ন করলে নতুন কি দেওয়ার অপশন আসবে।");
-            document.getElementById('chat-history.innerHTML').innerHTML = `<p>হ্যালো! আমি আপনার এআই অ্যাসিস্ট্যান্ট। নতুন API Key দিয়ে শুরু করুন।</p>`;
-        }
-
-        async function askGemini() {
+        function askGemini() {
             const queryInput = document.getElementById('userQuery');
             const query = queryInput.value.trim();
             if(!query) return;
 
-            const history = document.getElementById('chat-history');
-            
             let apiKey = localStorage.getItem('gemini_api_key');
             if (!apiKey) {
-                apiKey = prompt("আপনার Google Gemini API Key দিন (Google AI Studio থেকে সংগ্রহ করুন):");
+                apiKey = prompt("আপনার Google Gemini API Key দিন:");
                 if (!apiKey) return;
                 localStorage.setItem('gemini_api_key', apiKey.trim());
             }
             
-            history.innerHTML += `<p class="text-right text-white"><b>You:</b> ${query}</p>`;
+            document.getElementById('chat-history').innerHTML += `<p class="text-right text-blue-600"><b>You:</b> ${query}</p>`;
             queryInput.value = '';
-            history.scrollTop = history.scrollHeight;
             
-            try {
-                // সঠিক gemini-1.5-flash মডেল এন্ডপয়েন্ট
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: query }] }] })
-                });
-                const data = await response.json();
-                
-                if(data.candidates && data.candidates[0].content) {
-                    const aiReply = data.candidates[0].content.parts[0].text;
-                    history.innerHTML += `<p class="text-left text-blue-300"><b>AI:</b> ${aiReply}</p>`;
-                } else {
-                    history.innerHTML += `<p class="text-red-400">Error: API Key সঠিক নয়। ওপরের 'Reset Key' বাটনে ক্লিক করে সঠিক কি দিন।</p>`;
-                    localStorage.removeItem('gemini_api_key');
-                }
-            } catch (e) {
-                history.innerHTML += `<p class="text-red-400">Error: সংযোগ স্থাপন করা যায়নি।</p>`;
-            }
-            history.scrollTop = history.scrollHeight;
+            fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: query }] }] })
+            }).then(r => r.json()).then(data => {
+                const reply = data.candidates[0].content.parts[0].text;
+                document.getElementById('chat-history').innerHTML += `<p class="text-left text-slate-800"><b>AI:</b> ${reply}</p>`;
+            }).catch(() => alert("Error!"));
         }
-
-        // Section Logic
-        function showSection(id) {
-            document.querySelectorAll('section').forEach(s => s.classList.add('hide'));
-            document.getElementById(id).classList.remove('hide');
-        }
-
-        // Profile Logic
-        function saveProfile() {
-            localStorage.setItem('userName', document.getElementById('editName').value);
-            localStorage.setItem('userMobile', document.getElementById('editMobile').value);
-            alert("Profile Saved!");
-        }
-
-        function uploadPhoto(input) {
-            const file = input.files[0];
-            if (file) document.getElementById('profilePreview').src = URL.createObjectURL(file);
-        }
+        function showSection(id) { document.querySelectorAll('section').forEach(s => s.classList.add('hide')); document.getElementById(id).classList.remove('hide'); }
+        function uploadPhoto(input) { if (input.files[0]) document.getElementById('profilePreview').src = URL.createObjectURL(input.files[0]); }
     </script>
 </body>
 </html>
