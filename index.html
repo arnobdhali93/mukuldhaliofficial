@@ -13,6 +13,9 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -50,6 +53,7 @@
 </head>
 <body class="bg-custom-image text-slate-100 min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white">
 
+    <!-- Mobile Header -->
     <header class="md:hidden bg-slate-950/40 backdrop-blur-md border-b border-white/10 sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-3">
             <button onclick="toggleSidebar()" class="text-slate-200 hover:text-white text-xl focus:outline-none p-1.5 rounded-lg bg-white/10 border border-white/10">
@@ -57,11 +61,12 @@
             </button>
             <span class="menu-font font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 text-lg">mukuldhaliofficial</span>
         </div>
-        <div class="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 font-bold text-xs menu-font">
+        <div id="mobile-user-badge" class="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 font-bold text-xs menu-font">
             MD
         </div>
     </header>
 
+    <!-- Sidebar Navigation -->
     <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-72 bg-slate-950/80 backdrop-blur-2xl border-r border-white/10 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none">
         
         <div class="p-6 border-b border-white/10 flex items-center justify-between">
@@ -105,87 +110,116 @@
 
     <div id="backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
 
-    <main class="flex-1 p-6 md:p-12 max-w-6xl mx-auto w-full overflow-y-auto">
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col min-h-screen">
+        
+        <!-- Breaking News Marquee Section -->
+        <div class="bg-slate-950/80 border-b border-emerald-500/20 py-2.5 px-4 flex items-center gap-3 backdrop-blur-md">
+            <span class="bg-emerald-600 text-white px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider flex-shrink-0">ব্রেকিং নিউজ</span>
+            <marquee class="text-slate-300 text-xs md:text-sm font-medium">
+                👉 mukuldhaliofficial পোর্টালে স্বাগতম! নিয়মিত মক টেস্ট এবং নতুন আপডেট পেতে আমাদের সাথে থাকুন। বোর্ড পরীক্ষার রুটিন শীঘ্রই প্রকাশিত হবে।
+            </marquee>
+        </div>
 
-        <!-- Home Section -->
-        <section id="home" class="section-content space-y-6">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold tracking-wide backdrop-blur-md">
-                <i class="fa-solid fa-sparkles"></i> প্রিমিয়াম এডুকেশন হাব
-            </div>
-            <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight leading-snug drop-shadow-md">
-                স্বাগতম <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">mukuldhaliofficial</span> পোর্টালে
-            </h2>
-            <p class="text-slate-200 leading-relaxed text-sm md:text-base font-normal drop-shadow">
-                 ছাত্রছাত্রীদের জন্য এটি একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম। পশ্চিমবঙ্গ মধ্যশিক্ষা পর্ষদ, উচ্চমাধ্যমিক সংসদ এবং সিবিএসই বোর্ডের যাবতীয় আপডেট, বই এবং শিক্ষামূলক কন্টেন্ট এখানে পাবেন।
-            </p>
-        </section>
+        <div class="p-6 md:p-12 max-w-6xl mx-auto w-full overflow-y-auto flex-1">
 
-        <!-- News Section -->
-        <section id="news" class="section-content hidden space-y-6">
-            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
-                <i class="fa-solid fa-newspaper text-emerald-400 text-xl"></i> ভারতীয় শিক্ষা ও বোর্ড নিউজ
-            </h2>
-            <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="col-span-full text-center py-10">
-                    <i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-3xl mb-3"></i>
-                    <p class="text-slate-400 text-sm">খবর লোড হচ্ছে...</p>
+            <!-- Home Section -->
+            <section id="home" class="section-content space-y-6">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold tracking-wide backdrop-blur-md">
+                    <i class="fa-solid fa-sparkles"></i> প্রিমিয়াম এডুকেশন হাব
                 </div>
-            </div>
-        </section>
+                <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight leading-snug drop-shadow-md">
+                    স্বাগতম <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">mukuldhaliofficial</span> পোর্টালে
+                </h2>
+                <p class="text-slate-200 leading-relaxed text-sm md:text-base font-normal drop-shadow">
+                     ছাত্রছাত্রীদের জন্য এটি একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম। পশ্চিমবঙ্গ মধ্যশিক্ষা পর্ষদ, উচ্চমাধ্যমিক সংসদ এবং সিবিএসই বোর্ডের যাবতীয় আপডেট, বই এবং শিক্ষামূলক কন্টেন্ট এখানে পাবেন।
+                </p>
+            </section>
 
-        <!-- Quiz Section -->
-        <section id="quiz" class="section-content hidden space-y-6">
-            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
-                <i class="fa-solid fa-brain text-emerald-400 text-xl"></i> ভারতীয় সাধারণ জ্ঞান ও কুইজ
-            </h2>
-            <div id="quiz-container" class="space-y-6 max-w-xl">
-                 <div class="text-center py-10 w-full">
-                    <i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-3xl mb-3"></i>
-                    <p class="text-slate-400 text-sm">কুইজ লোড হচ্ছে...</p>
+            <!-- News Section -->
+            <section id="news" class="section-content hidden space-y-6">
+                <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
+                    <i class="fa-solid fa-newspaper text-emerald-400 text-xl"></i> ভারতীয় শিক্ষা ও বোর্ড নিউজ
+                </h2>
+                <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="col-span-full text-center py-10">
+                        <i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-3xl mb-3"></i>
+                        <p class="text-slate-400 text-sm">খবর লোড হচ্ছে...</p>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Books Section -->
-        <section id="books" class="section-content hidden space-y-6">
-            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
-                <i class="fa-solid fa-book text-emerald-400 text-xl"></i> অনলাইন ফ্রি বই (NCERT ও পর্ষদ)
-            </h2>
-            <div id="books-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="col-span-full text-center py-10">
-                    <i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-3xl mb-3"></i>
-                    <p class="text-slate-400 text-sm">বইয়ের তালিকা লোড হচ্ছে...</p>
+            <!-- Quiz Section -->
+            <section id="quiz" class="section-content hidden space-y-6">
+                <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
+                    <i class="fa-solid fa-brain text-emerald-400 text-xl"></i> ভারতীয় সাধারণ জ্ঞান ও কুইজ
+                </h2>
+                <div id="quiz-container" class="space-y-6 max-w-xl">
+                     <div class="text-center py-10 w-full">
+                        <i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-3xl mb-3"></i>
+                        <p class="text-slate-400 text-sm">কুইজ লোড হচ্ছে...</p>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Stories Section -->
-        <section id="stories" class="section-content hidden space-y-6">
-            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
-                <i class="fa-solid fa-feather text-emerald-400 text-xl"></i> বাংলা গল্প ও সাহিত্য
-            </h2>
-            <div id="stories-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="col-span-full text-center py-10">
-                    <i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-3xl mb-3"></i>
-                    <p class="text-slate-400 text-sm">গল্প লোড হচ্ছে...</p>
+            <!-- Books Section -->
+            <section id="books" class="section-content hidden space-y-6">
+                <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
+                    <i class="fa-solid fa-book text-emerald-400 text-xl"></i> অনলাইন ফ্রি বই (NCERT ও পর্ষদ)
+                </h2>
+                <div id="books-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="col-span-full text-center py-10">
+                        <i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-3xl mb-3"></i>
+                        <p class="text-slate-400 text-sm">বইয়ের তালিকা লোড হচ্ছে...</p>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Profile Section (Dynamic Login/Signup or User Info) -->
-        <section id="profile" class="section-content hidden space-y-6">
-            <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
-                <i class="fa-solid fa-user-shield text-emerald-400 text-xl"></i> আমার প্রোফাইল
-            </h2>
-            <div id="profile-content" class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md max-w-md space-y-4">
-                <!-- JavaScript দিয়ে ডাইনামিকালি লোড হবে -->
-            </div>
-        </section>
+            <!-- Stories Section -->
+            <section id="stories" class="section-content hidden space-y-6">
+                <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
+                    <i class="fa-solid fa-feather text-emerald-400 text-xl"></i> বাংলা গল্প ও সাহিত্য
+                </h2>
+                <div id="stories-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="col-span-full text-center py-10">
+                        <i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-3xl mb-3"></i>
+                        <p class="text-slate-400 text-sm">গল্প লোড হচ্ছে...</p>
+                    </div>
+                </div>
+            </section>
 
+            <!-- Profile Section -->
+            <section id="profile" class="section-content hidden space-y-6">
+                <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
+                    <i class="fa-solid fa-user-shield text-emerald-400 text-xl"></i> আমার প্রোফাইল
+                </h2>
+                <div id="profile-content" class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md max-w-md space-y-4">
+                    <!-- Dynamic Profile Info -->
+                </div>
+            </section>
+
+        </div>
     </main>
 
     <script>
-        // UI Navigation Script
+        // ==========================================
+        // 1. SUPABASE & API CONFIGURATION
+        // ==========================================
+        const SUPABASE_URL = 'https://dfipruqyziperjzbnesh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmaXBydXF5emlwZXJqemJuZXNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzOTMxNjgsImV4cCI6MjEwMTk2OTE2OH0.8BUsSOSTYK2-NjsSXbiVRPEj7gOJ3Co2H0eq1V9WlHc';
+        
+        // Supabase ইনিশিয়ালাইজেশন
+        const { createClient } = supabase;
+        const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Google Sheet Apps Script API URL
+        const API_URL = "https://script.google.com/macros/s/AKfycbwo4OT2uaQ2cwGuJp-0jbcCk7vYcXA2VjgUQ-ZTWvbAWnxIASXMy2P9exnAtBN51jq_4A/exec"; 
+
+        let globalQuizData = [];
+
+        // ==========================================
+        // 2. UI NAVIGATION & STATE
+        // ==========================================
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('backdrop');
@@ -222,32 +256,32 @@
 
             window.history.replaceState(null, null, `#${sectionId}`);
             
-            // প্রোফাইল সেকশনে গেলে স্ট্যাটাস চেক করবে
             if(sectionId === 'profile') {
                 renderProfileSection();
             }
         }
 
         // ==========================================
-        // Login / Signup Simulation Logic
+        // 3. USER AUTHENTICATION & PROFILE
         // ==========================================
         function renderProfileSection() {
             const profileContainer = document.getElementById('profile-content');
-            const loggedInUser = localStorage.getItem('portalUser');
+            const loggedInUser = localStorage.getItem('portalUserEmail');
+            const loggedInName = localStorage.getItem('portalUserName');
 
             if (loggedInUser) {
                 profileContainer.innerHTML = `
                     <div class="flex items-center gap-4">
                         <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 font-bold text-xl">
-                            ${loggedInUser.substring(0, 2).toUpperCase()}
+                            ${loggedInName.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
-                            <h3 class="font-bold text-lg text-white">${loggedInUser}</h3>
-                            <p class="text-xs text-slate-300">Registered Member</p>
+                            <h3 class="font-bold text-lg text-white">${loggedInName}</h3>
+                            <p class="text-xs text-slate-300">${loggedInUser}</p>
                         </div>
                     </div>
                     <div class="space-y-2 pt-2 border-t border-white/10 text-xs menu-font">
-                        <p class="text-slate-200 flex justify-between"><span>Status:</span> <span class="text-emerald-400 font-bold">Active</span></p>
+                        <p class="text-slate-200 flex justify-between"><span>Status:</span> <span class="text-emerald-400 font-bold">Registered & Active</span></p>
                     </div>
                     <button onclick="logoutUser()" class="bg-red-600/80 hover:bg-red-600 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-full shadow-lg">লগআউট করুন</button>
                 `;
@@ -258,49 +292,47 @@
                             <i class="fa-solid fa-user"></i>
                         </div>
                         <h3 class="font-bold text-white text-base">আপনার অ্যাকাউন্টে প্রবেশ করুন</h3>
-                        <p class="text-slate-300 text-xs">কুইজ ও অন্যান্য সুবিধা পেতে লগইন বা সাইন আপ করুন।</p>
-                        <div class="flex gap-3 pt-2">
-                            <button onclick="simulateLogin()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-lg">লগইন</button>
-                            <button onclick="simulateSignup()" class="flex-1 bg-white/10 hover:bg-white/20 text-white py-2.5 rounded-xl text-xs font-bold transition border border-white/10">সাইন আপ</button>
-                        </div>
+                        <p class="text-slate-300 text-xs">কুইজ ও অন্যান্য সুবিধা পেতে রেজিস্টার বা লগইন করুন।</p>
+                        <button onclick="triggerRegisterPopup()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-lg">রেজিস্ট্রেশন / লগইন করুন</button>
                     </div>
                 `;
             }
+            updateHeaderBadge();
         }
 
-        function simulateLogin() {
-            const name = prompt("আপনার নাম লিখুন (লগইন করার জন্য):", "ছাত্রছাত্রী");
-            if(name) {
-                localStorage.setItem('portalUser', name);
-                renderProfileSection();
-                alert("সফলভাবে লগইন হয়েছে!");
-            }
-        }
+        function triggerRegisterPopup() {
+            const name = prompt("আপনার নাম লিখুন:");
+            if (!name) return;
+            const email = prompt("আপনার ইমেইল বা মোবাইল নম্বর লিখুন:");
+            if (!email) return;
 
-        function simulateSignup() {
-            const name = prompt("নতুন অ্যাকাউন্ট তৈরি করতে আপনার নাম লিখুন:", "");
-            if(name) {
-                localStorage.setItem('portalUser', name);
-                renderProfileSection();
-                alert("সফলভাবে সাইন আপ এবং লগইন সম্পন্ন হয়েছে!");
-            }
+            localStorage.setItem('portalUserName', name);
+            localStorage.setItem('portalUserEmail', email);
+            
+            alert("অভিনন্দন! আপনার রেজিস্ট্রেশন সফল হয়েছে। এখন থেকে আপনি লগইন অবস্থায় আছেন।");
+            renderProfileSection();
         }
 
         function logoutUser() {
-            localStorage.removeItem('portalUser');
+            localStorage.removeItem('portalUserName');
+            localStorage.removeItem('portalUserEmail');
             renderProfileSection();
-            alert("লগআউট করা হয়েছে।");
+            alert("সফলভাবে লগআউট করা হয়েছে।");
         }
 
+        function updateHeaderBadge() {
+            const name = localStorage.getItem('portalUserName');
+            const badge = document.getElementById('mobile-user-badge');
+            if (name) {
+                badge.innerText = name.substring(0, 2).toUpperCase();
+            } else {
+                badge.innerText = "MD";
+            }
+        }
 
         // ==========================================
-        // Google Sheet API Fetch & Quiz Handler
+        // 4. DATA FETCHING (GOOGLE SHEET)
         // ==========================================
-        const API_URL = "https://script.google.com/macros/s/AKfycbwo4OT2uaQ2cwGuJp-0jbcCk7vYcXA2VjgUQ-ZTWvbAWnxIASXMy2P9exnAtBN51jq_4A/exec"; 
-
-        // গ্লোবাল ভ্যারিয়েবল কুইজ ডেটা রাখার জন্য
-        let globalQuizData = [];
-
         async function loadAllData() {
             if (!API_URL) return; 
 
@@ -308,7 +340,7 @@
                 const response = await fetch(API_URL);
                 const data = await response.json(); 
 
-                // ১. News লোড করা
+                // News
                 if(data.News) {
                     const newsContainer = document.getElementById('news-container');
                     newsContainer.innerHTML = ''; 
@@ -324,7 +356,7 @@
                     });
                 }
 
-                // ২. Books লোড করা
+                // Books
                 if(data.Books) {
                     const booksContainer = document.getElementById('books-container');
                     booksContainer.innerHTML = ''; 
@@ -342,7 +374,7 @@
                     });
                 }
 
-                // ৩. Stories লোড করা
+                // Stories
                 if(data.Stories) {
                     const storiesContainer = document.getElementById('stories-container');
                     storiesContainer.innerHTML = ''; 
@@ -360,7 +392,7 @@
                     });
                 }
 
-                // ৪. Quiz লোড করা (আলাদা name অ্যাট্রিবিউট এবং সাবমিট বাটন সহ)
+                // Quiz
                 if(data.Quiz) {
                     globalQuizData = data.Quiz;
                     const quizContainer = document.getElementById('quiz-container');
@@ -389,12 +421,23 @@
                 }
 
             } catch (error) {
-                console.error("Error loading data from Google Sheet:", error);
+                console.error("Error loading data:", error);
             }
         }
 
-        // সিঙ্গেল কুইজ উত্তর যাচাই করার ফাংশন
+        // ==========================================
+        // 5. QUIZ INTERCEPTION (MANDATORY LOGIN CHECK)
+        // ==========================================
         function submitSingleQuiz(index) {
+            const loggedInUser = localStorage.getItem('portalUserEmail');
+            
+            // যদি ইউজার রেজিস্টার করা না থাকে, তবে পপআপ দেখাবে
+            if (!loggedInUser) {
+                alert("কুইজের উত্তর জমা দেওয়ার জন্য প্রথমে নাম ও ইমেইল দিয়ে রেজিস্ট্রেশন করতে হবে!");
+                triggerRegisterPopup();
+                return;
+            }
+
             const radios = document.getElementsByName(`quiz_group_${index}`);
             let selectedVal = null;
             for (const radio of radios) {
@@ -407,36 +450,35 @@
             const resultDiv = document.getElementById(`quiz_result_${index}`);
             if (!selectedVal) {
                 resultDiv.className = "mt-3 text-xs font-semibold text-amber-400";
-                resultDiv.innerText = "দয়া করে যেকোনো একটি অপশন সিলেক্ট করুন!";
+                resultDiv.innerText = "দয়া করে যেকোনো একটি অপশন সিলেক্ট করুন!";
                 return;
             }
 
             const currentQuiz = globalQuizData[index];
-            // যদি আপনার গুগল শিটে 'CorrectAnswer' কলাম থাকে, তবে সেটি দিয়ে চেক করবে
             if (currentQuiz.CorrectAnswer) {
                 if (selectedVal.trim().toLowerCase() === currentQuiz.CorrectAnswer.trim().toLowerCase()) {
                     resultDiv.className = "mt-3 text-xs font-semibold text-emerald-400";
-                    resultDiv.innerText = "অভিনন্দন! আপনার উত্তরটি সঠিক হয়েছে।";
+                    resultDiv.innerText = "অভিনন্দন! আপনার উত্তরটি সঠিক হয়েছে।";
                 } else {
                     resultDiv.className = "mt-3 text-xs font-semibold text-red-400";
-                    resultDiv.innerText = "দুঃখিত, উত্তরটি সঠিক হয়নি।";
+                    resultDiv.innerText = "দুঃখিত, উত্তরটি সঠিক হয়নি।";
                 }
             } else {
-                // যদি সঠিক উত্তর শিটে সেট করা না থাকে, তবে সাধারণ সাবমিটেড মেসেজ দেখাবে
                 resultDiv.className = "mt-3 text-xs font-semibold text-emerald-400";
-                resultDiv.innerText = `আপনার উত্তর (${selectedVal}) সফলভাবে জমা দেওয়া হয়েছে!`;
+                resultDiv.innerText = `আপনার উত্তর (${selectedVal}) সফলভাবে জমা দেওয়া হয়েছে!`;
             }
         }
 
+        // Initialization on Load
         window.addEventListener('DOMContentLoaded', () => {
             const hash = window.location.hash.replace('#', '');
-            
             if (hash && document.getElementById(hash)) {
                 showSection(hash, null);
             } else {
                 showSection('home', null);
             }
 
+            updateHeaderBadge();
             loadAllData();
         });
     </script>
