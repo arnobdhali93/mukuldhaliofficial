@@ -148,7 +148,7 @@
                 </div>
             </section>
 
-            <!-- Quiz Section (Redesigned with Subjects, Multi-questions, Timer & Score) -->
+            <!-- Quiz Section -->
             <section id="quiz" class="section-content hidden space-y-6">
                 <h2 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight border-b border-slate-200 pb-4 flex items-center gap-3">
                     <i class="fa-solid fa-brain text-brand-600 text-xl"></i> অনলাইন কুইজ ও মক টেস্ট
@@ -274,7 +274,7 @@
         const { createClient } = supabase;
         const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const API_URL = "https://script.google.com/macros/s/AKfycbwo4OT2uaQ2cwGuJp-0jbcCk7vYcXA2VjgUQ-ZTWvbAWnxIASXMy2P9exnAtBN51jq_4A/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbxl0VdkZHzuRP-fLU8CasftjRDNsvqyyJTDRvB2VRO9J4uHo3Ld1rtbajVAC_5C9nIlYw/exec"; 
 
         let groupedQuizData = {};
         let currentActiveSubject = null;
@@ -458,7 +458,7 @@
                 const response = await fetch(API_URL);
                 const data = await response.json(); 
 
-                // Dynamic Breaking News Binding
+                // Dynamic Breaking News Binding (From 'Title' Header row)
                 if(data.BreakingNews) {
                     const breakingMarquee = document.getElementById('breaking-news-text');
                     breakingMarquee.innerHTML = `👉 ${data.BreakingNews}`;
