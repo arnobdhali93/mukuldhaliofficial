@@ -3,31 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mukuldhaliofficial - Premium Education & Knowledge Portal</title>
+    <title>mukuldhaliofficial - Professional Financial & Education Portal</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tiro+Bangla&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        'bangla': ['"Tiro Bangla"', '"Hind Siliguri"', 'serif'],
-                        'times': ['"Tinos"', 'Times New Roman', 'serif'],
+                        'sans': ['"Plus Jakarta Sans"', '"Tiro Bangla"', 'sans-serif'],
                     },
                     colors: {
-                        brand: {
-                            600: '#16a34a',
-                            700: '#15803d',
+                        corporate: {
+                            900: '#0b192c',
+                            800: '#1e3e62',
+                            600: '#008DDA',
+                            500: '#41C9E2',
+                            accent: '#FF6500'
                         }
                     }
                 }
@@ -35,163 +36,204 @@
         }
     </script>
     <style>
-        body, p, h2, h3, span, div, button:not(.menu-font), input, label {
-            font-family: 'Tiro Bangla', 'Hind Siliguri', serif !important;
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
         }
-        .menu-font {
-            font-family: 'Tinos', 'Times New Roman', serif !important;
-        }
-        .bg-custom-image {
-            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.80)), 
-                        url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+        /* Corporate Hero Gradient Background like the image */
+        .hero-corporate-bg {
+            background: linear-gradient(135deg, #0b192c 0%, #1e3e62 100%);
         }
     </style>
 </head>
-<body class="bg-custom-image text-slate-100 min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white">
+<body class="font-sans antialiased flex flex-col min-h-screen selection:bg-corporate-600 selection:text-white">
 
-    <header class="md:hidden bg-slate-950/40 backdrop-blur-md border-b border-white/10 sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <button onclick="toggleSidebar()" class="text-slate-200 hover:text-white text-xl focus:outline-none p-1.5 rounded-lg bg-white/10 border border-white/10">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <span class="menu-font font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 text-lg">mukuldhaliofficial</span>
-        </div>
-        <div id="mobile-user-badge" class="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 font-bold text-xs menu-font">
-            <i class="fa-solid fa-user"></i>
+    <!-- Top Announcement Bar (Breaking News) -->
+    <div class="bg-corporate-900 text-slate-200 text-xs py-2 px-4 border-b border-white/10 flex items-center gap-3">
+        <span class="bg-corporate-accent text-white font-bold px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">ব্রেকিং</span>
+        <marquee class="font-medium">
+            mukuldhaliofficial পোর্টালে স্বাগতম! নতুন মক টেস্ট এবং আপডেট নোটিশ প্রকাশিত হয়েছে। দ্রুত চেক করুন।
+        </marquee>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Logo Area -->
+            <div class="flex items-center gap-2">
+                <a href="#home" class="text-2xl font-extrabold tracking-tight text-corporate-900">
+                    mukul<span class="text-corporate-600">dhali</span>.official
+                </a>
+            </div>
+
+            <!-- Desktop Menu -->
+            <nav class="hidden md:flex items-center gap-8 font-semibold text-sm text-slate-600">
+                <button onclick="showSection('home')" class="nav-link hover:text-corporate-600 transition text-corporate-600">Home</button>
+                <button onclick="showSection('news')" class="nav-link hover:text-corporate-600 transition">News</button>
+                <button onclick="showSection('quiz')" class="nav-link hover:text-corporate-600 transition">Quiz Exam</button>
+                <button onclick="showSection('books')" class="nav-link hover:text-corporate-600 transition">E-Books</button>
+                <button onclick="showSection('stories')" class="nav-link hover:text-corporate-600 transition">Stories</button>
+                <button onclick="showSection('profile')" class="nav-link hover:text-corporate-600 transition">Profile</button>
+            </nav>
+
+            <!-- Right Action / Profile Badge -->
+            <div class="flex items-center gap-4">
+                <div id="header-user-badge" class="w-10 h-10 rounded-full bg-corporate-600/10 border border-corporate-600/20 text-corporate-600 font-bold flex items-center justify-center text-sm shadow-sm">
+                    MD
+                </div>
+                <button onclick="toggleMobileMenu()" class="md:hidden text-slate-700 text-xl focus:outline-none">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
         </div>
     </header>
 
-    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-72 bg-slate-950/80 backdrop-blur-2xl border-r border-white/10 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none">
-        
-        <div class="p-6 border-b border-white/10 flex items-center justify-between">
-            <div>
-                <h1 class="menu-font text-lg font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">mukuldhaliofficial</h1>
-                <p class="menu-font text-[11px] text-slate-300 tracking-wide mt-0.5">Digital Learning Platform</p>
+    <!-- Mobile Drawer Menu -->
+    <div id="mobile-menu" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden md:hidden flex justify-end">
+        <div class="w-72 bg-white h-full shadow-2xl p-6 flex flex-col justify-between">
+            <div class="space-y-6">
+                <div class="flex items-center justify-between border-b pb-4">
+                    <span class="font-bold text-lg text-corporate-900">Menu</span>
+                    <button onclick="toggleMobileMenu()" class="text-slate-500 text-xl"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="flex flex-col space-y-3 font-semibold text-sm text-slate-700">
+                    <button onclick="showSection('home'); toggleMobileMenu();" class="text-left py-2 px-3 rounded-lg hover:bg-slate-100">Home</button>
+                    <button onclick="showSection('news'); toggleMobileMenu();" class="text-left py-2 px-3 rounded-lg hover:bg-slate-100">News</button>
+                    <button onclick="showSection('quiz'); toggleMobileMenu();" class="text-left py-2 px-3 rounded-lg hover:bg-slate-100">Quiz Exam</button>
+                    <button onclick="showSection('books'); toggleMobileMenu();" class="text-left py-2 px-3 rounded-lg hover:bg-slate-100">E-Books</button>
+                    <button onclick="showSection('stories'); toggleMobileMenu();" class="text-left py-2 px-3 rounded-lg hover:bg-slate-100">Stories</button>
+                    <button onclick="showSection('profile'); toggleMobileMenu();" class="text-left py-2 px-3 rounded-lg hover:bg-slate-100">Profile</button>
+                </div>
             </div>
-            <button onclick="toggleSidebar()" class="md:hidden text-slate-300 hover:text-white text-lg">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+            <div class="text-xs text-slate-400 text-center border-t pt-4">mukuldhaliofficial &copy; 2026</div>
         </div>
+    </div>
 
-        <nav class="flex-1 px-4 py-6 space-y-2 menu-font text-base">
-            <button onclick="showSection('home', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold transition-all bg-brand-600 text-white shadow-lg shadow-brand-600/30">
-                <i class="fa-solid fa-house w-5 text-center"></i> Home
-            </button>
-            <button onclick="showSection('news', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-300 hover:bg-white/10 hover:text-white">
-                <i class="fa-solid fa-newspaper w-5 text-center"></i> Education News
-            </button>
-            <button onclick="showSection('quiz', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-300 hover:bg-white/10 hover:text-white">
-                <i class="fa-solid fa-brain w-5 text-center"></i> Quiz Exam
-            </button>
-            <button onclick="showSection('books', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-300 hover:bg-white/10 hover:text-white">
-                <i class="fa-solid fa-book w-5 text-center"></i> Free E-Books
-            </button>
-            <button onclick="showSection('stories', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-300 hover:bg-white/10 hover:text-white">
-                <i class="fa-solid fa-feather w-5 text-center"></i> Bangla Stories
-            </button>
-            <button onclick="showSection('profile', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-300 hover:bg-white/10 hover:text-white">
-                <i class="fa-solid fa-user-shield w-5 text-center"></i> My Profile
-            </button>
-        </nav>
+    <!-- Main Dynamic Content Container -->
+    <main class="flex-1">
 
-        <div class="p-4 border-t border-white/10 m-4 rounded-2xl bg-white/5 border border-white/10">
-            <div class="flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-                <span class="menu-font text-xs text-slate-300 font-medium">System Online</span>
+        <!-- HOME / HERO SECTION (Inspired by your image layout) -->
+        <section id="home" class="section-content hero-corporate-bg text-white py-16 md:py-24 px-4 relative overflow-hidden">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6 z-10">
+                    <span class="bg-corporate-500/20 text-corporate-500 border border-corporate-500/30 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+                        Professional Digital Platform
+                    </span>
+                    <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
+                        mukuldhaliofficial <span class="text-transparent bg-clip-text bg-gradient-to-r from-corporate-500 to-teal-300">Funds Excellence.</span>
+                    </h1>
+                    <p class="text-slate-300 text-base md:text-lg leading-relaxed font-normal">
+                        ছাত্রছাত্রী ও প্রফেশনালদের জন্য একটি প্রিমিয়াম ডিজিটাল প্ল্যাটফর্ম। যেখানে পাবেন গুরুত্বপূর্ণ নিউজ, ফ্রি ই-বুক, বাংলা সাহিত্য এবং লাইভ কুইজ মক টেস্ট।
+                    </p>
+                    <div class="pt-4 flex flex-wrap gap-4">
+                        <button onclick="showSection('quiz')" class="bg-corporate-500 hover:bg-corporate-600 text-corporate-900 font-bold px-6 py-3.5 rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
+                            কুইজ শুরু করুন
+                        </button>
+                        <button onclick="showSection('news')" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-6 py-3.5 rounded-xl backdrop-blur-md transition">
+                            লেটেস্ট নিউজ দেখুন
+                        </button>
+                    </div>
+                </div>
+                <div class="relative flex justify-center">
+                    <!-- Mockup simulation container matching the vibe -->
+                    <div class="w-full max-w-md bg-slate-900/80 border border-white/10 p-6 rounded-3xl shadow-2xl backdrop-blur-md space-y-4">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                            <span class="text-xs font-bold text-corporate-500">QUICK ACCESS PANEL</span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                        </div>
+                        <div class="space-y-3 text-xs text-slate-300">
+                            <div class="p-3 bg-white/5 rounded-xl border border-white/5 flex items-center justify-between">
+                                <span>সর্বশেষ মক টেস্ট আপডেট</span>
+                                <i class="fa-solid fa-arrow-right text-corporate-500"></i>
+                            </div>
+                            <div class="p-3 bg-white/5 rounded-xl border border-white/5 flex items-center justify-between">
+                                <span>নতুন পর্ষদ বই সংযোজন</span>
+                                <i class="fa-solid fa-arrow-right text-corporate-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </aside>
+        </section>
 
-    <div id="backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
-
-    <main class="flex-1 flex flex-col min-h-screen">
-        
-        <div class="bg-slate-950/80 border-b border-emerald-500/20 py-2.5 px-4 flex items-center gap-3 backdrop-blur-md">
-            <span class="bg-emerald-600 text-white px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider flex-shrink-0">ব্রেকিং নিউজ</span>
-            <marquee id="breaking-news-marquee" class="text-slate-300 text-xs md:text-sm font-medium">
-            </marquee>
-        </div>
-
-        <div class="p-6 md:p-12 max-w-6xl mx-auto w-full overflow-y-auto flex-1">
-
-            <section id="home" class="section-content space-y-6">
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold tracking-wide backdrop-blur-md">
-                    <i class="fa-solid fa-sparkles"></i> প্রিমিয়াম এডুকেশন হাব
+        <!-- NEWS SECTION -->
+        <section id="news" class="section-content hidden max-w-7xl mx-auto px-4 py-12 space-y-8">
+            <div class="border-b pb-4">
+                <h2 class="text-3xl font-extrabold text-corporate-900">শিক্ষা ও বোর্ড নিউজ</h2>
+                <p class="text-slate-500 text-sm mt-1">সর্বশেষ আপডেট ও খবরাখবর এক নজরে।</p>
+            </div>
+            <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="col-span-full text-center py-12 text-slate-400">
+                    <i class="fa-solid fa-circle-notch fa-spin text-corporate-600 text-3xl mb-2"></i>
+                    <p>নিউজ লোড হচ্ছে...</p>
                 </div>
-                <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight leading-snug drop-shadow-md">
-                    স্বাগতম <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">mukuldhaliofficial</span> পোর্টালে
-                </h2>
-                <p class="text-slate-200 leading-relaxed text-sm md:text-base font-normal drop-shadow">
-                     ছাত্রছাত্রীদের জন্য এটি একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম। পশ্চিমবঙ্গ মধ্যশিক্ষা পর্ষদ, উচ্চমাধ্যমিক সংসদ এবং সিবিএসই বোর্ডের যাবতীয় আপডেট, বই এবং শিক্ষামূলক কন্টেন্ট এখানে পাবেন।
-                </p>
-            </section>
+            </div>
+        </section>
 
-            <section id="news" class="section-content hidden space-y-6">
-                <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
-                    <i class="fa-solid fa-newspaper text-emerald-400 text-xl"></i> ভারতীয় শিক্ষা ও বোর্ড নিউজ
-                </h2>
-                <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="col-span-full text-center py-10">
-                        <i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-3xl mb-3"></i>
-                        <p class="text-slate-400 text-sm">খবর লোড হচ্ছে...</p>
-                    </div>
+        <!-- QUIZ EXAM SECTION -->
+        <section id="quiz" class="section-content hidden max-w-4xl mx-auto px-4 py-12 space-y-8">
+            <div class="border-b pb-4">
+                <h2 class="text-3xl font-extrabold text-corporate-900">অনলাইন কুইজ ও মক টেস্ট</h2>
+                <p class="text-slate-500 text-sm mt-1">অংশগ্রহণের জন্য অবশ্যই রেজিস্টার্ড থাকতে হবে।</p>
+            </div>
+            <div id="quiz-container" class="space-y-6">
+                <div class="text-center py-12 text-slate-400">
+                    <i class="fa-solid fa-circle-notch fa-spin text-corporate-600 text-3xl mb-2"></i>
+                    <p>কুইজ লোড হচ্ছে...</p>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <section id="quiz" class="section-content hidden space-y-6">
-                <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
-                    <i class="fa-solid fa-brain text-emerald-400 text-xl"></i> ভারতীয় সাধারণ জ্ঞান ও কুইজ
-                </h2>
-                <div id="quiz-container" class="space-y-6 max-w-xl">
-                     <div class="text-center py-10 w-full">
-                        <i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-3xl mb-3"></i>
-                        <p class="text-slate-400 text-sm">কুইজ লোড হচ্ছে...</p>
-                    </div>
+        <!-- E-BOOKS SECTION -->
+        <section id="books" class="section-content hidden max-w-7xl mx-auto px-4 py-12 space-y-8">
+            <div class="border-b pb-4">
+                <h2 class="text-3xl font-extrabold text-corporate-900">ফ্রি ই-বুক ও স্টাডি মেটেরিয়াল</h2>
+                <p class="text-slate-500 text-sm mt-1">প্রয়োজনীয় বইগুলো সহজে ডাউনলোড করুন।</p>
+            </div>
+            <div id="books-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="col-span-full text-center py-12 text-slate-400">
+                    <i class="fa-solid fa-circle-notch fa-spin text-corporate-600 text-3xl mb-2"></i>
+                    <p>বই লোড হচ্ছে...</p>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <section id="books" class="section-content hidden space-y-6">
-                <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
-                    <i class="fa-solid fa-book text-emerald-400 text-xl"></i> অনলাইন ফ্রি বই (NCERT ও পর্ষদ)
-                </h2>
-                <div id="books-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="col-span-full text-center py-10">
-                        <i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-3xl mb-3"></i>
-                        <p class="text-slate-400 text-sm">বইয়ের তালিকা লোড হচ্ছে...</p>
-                    </div>
+        <!-- STORIES SECTION -->
+        <section id="stories" class="section-content hidden max-w-7xl mx-auto px-4 py-12 space-y-8">
+            <div class="border-b pb-4">
+                <h2 class="text-3xl font-extrabold text-corporate-900">বাংলা গল্প ও সাহিত্য</h2>
+                <p class="text-slate-500 text-sm mt-1">মনোরম সব ছোটগল্প ও সাহিত্য সম্ভার।</p>
+            </div>
+            <div id="stories-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="col-span-full text-center py-12 text-slate-400">
+                    <i class="fa-solid fa-circle-notch fa-spin text-corporate-600 text-3xl mb-2"></i>
+                    <p>গল্প লোড হচ্ছে...</p>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <section id="stories" class="section-content hidden space-y-6">
-                <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
-                    <i class="fa-solid fa-feather text-emerald-400 text-xl"></i> বাংলা গল্প ও সাহিত্য
-                </h2>
-                <div id="stories-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="col-span-full text-center py-10">
-                        <i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-3xl mb-3"></i>
-                        <p class="text-slate-400 text-sm">গল্প লোড হচ্ছে...</p>
-                    </div>
-                </div>
-            </section>
+        <!-- PROFILE SECTION -->
+        <section id="profile" class="section-content hidden max-w-lg mx-auto px-4 py-12 space-y-8">
+            <div class="border-b pb-4 text-center">
+                <h2 class="text-3xl font-extrabold text-corporate-900">ইউজার প্রোফাইল</h2>
+                <p class="text-slate-500 text-sm mt-1">আপনার অ্যাকাউন্ট ও অ্যাক্টিভিটি তথ্য।</p>
+            </div>
+            <div id="profile-content" class="bg-white p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
+                <!-- Dynamic profile populated by JS -->
+            </div>
+        </section>
 
-            <section id="profile" class="section-content hidden space-y-6">
-                <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
-                    <i class="fa-solid fa-user-shield text-emerald-400 text-xl"></i> আমার প্রোফাইল
-                </h2>
-                <div id="profile-content" class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md max-w-md space-y-4">
-                    </div>
-            </section>
-
-        </div>
     </main>
 
+    <!-- Footer -->
+    <footer class="bg-corporate-900 text-slate-400 py-8 px-4 mt-16 border-t border-white/10 text-center text-xs">
+        <p>&copy; 2026 mukuldhaliofficial. All rights reserved. Designed with professional corporate layout.</p>
+    </footer>
+
+    <!-- JavaScript Logic & Integration -->
     <script>
-        // ==========================================
-        // 1. SUPABASE CONFIGURATION
-        // ==========================================
+        // Supabase Configuration
         const SUPABASE_URL = 'https://dfipruqyziperjzbnesh.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmaXBydXF5emlwZXJqemJuZXNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzOTMxNjgsImV4cCI6MjEwMTk2OTE2OH0.8BUsSOSTYK2-NjsSXbiVRPEj7gOJ3Co2H0eq1V9WlHc';
         
@@ -202,250 +244,157 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbwo4OT2uaQ2cwGuJp-0jbcCk7vYcXA2VjgUQ-ZTWvbAWnxIASXMy2P9exnAtBN51jq_4A/exec"; 
 
         let globalQuizData = [];
-        let currentUser = null; 
 
-        // ==========================================
-        // 2. UI NAVIGATION & STATE
-        // ==========================================
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const backdrop = document.getElementById('backdrop');
-            sidebar.classList.toggle('-translate-x-full');
-            backdrop.classList.toggle('hidden');
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
         }
 
-        function showSection(sectionId, event) {
-            const sections = document.querySelectorAll('.section-content');
-            sections.forEach(sec => sec.classList.add('hidden'));
-
-            const buttons = document.querySelectorAll('.nav-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/30');
-                btn.classList.add('text-slate-300', 'hover:bg-white/10', 'hover:text-white');
-            });
-
+        function showSection(sectionId) {
+            document.querySelectorAll('.section-content').forEach(sec => sec.classList.add('hidden'));
             document.getElementById(sectionId).classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            if (event) {
-                event.currentTarget.classList.remove('text-slate-300', 'hover:bg-white/10', 'hover:text-white');
-                event.currentTarget.classList.add('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/30');
-            } else {
-                const targetBtn = document.querySelector(`button[onclick*="${sectionId}"]`);
-                if (targetBtn) {
-                    targetBtn.classList.remove('text-slate-300', 'hover:bg-white/10', 'hover:text-white');
-                    targetBtn.classList.add('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/30');
-                }
-            }
-
-            if (event && window.innerWidth < 768) {
-                toggleSidebar();
-            }
-
-            window.history.replaceState(null, null, `#${sectionId}`);
-            
             if(sectionId === 'profile') {
                 renderProfileSection();
             }
         }
 
-        // ==========================================
-        // 3. USER AUTHENTICATION (SUPABASE)
-        // ==========================================
-        async function checkUserStatus() {
-            const { data: { user } } = await _supabase.auth.getUser();
-            currentUser = user;
+        // Profile System
+        function renderProfileSection() {
+            const container = document.getElementById('profile-content');
+            const email = localStorage.getItem('portalUserEmail');
+            const name = localStorage.getItem('portalUserName');
+
+            if (email) {
+                container.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 rounded-2xl bg-corporate-600/10 text-corporate-600 font-bold text-xl flex items-center justify-center border border-corporate-600/20">
+                            ${name.substring(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-900">${name}</h3>
+                            <p class="text-xs text-slate-500">${email}</p>
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 text-xs space-y-2">
+                        <p class="text-slate-600 flex justify-between"><span>Account Status:</span> <span class="text-emerald-600 font-bold">Active & Logged In</span></p>
+                    </div>
+                    <button onclick="logoutUser()" class="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl text-xs font-bold transition shadow-md">লগআউট করুন</button>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="text-center space-y-4 py-4">
+                        <div class="w-12 h-12 bg-corporate-600/10 text-corporate-600 rounded-full flex items-center justify-center mx-auto text-lg">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-base">অ্যাকাউন্টে প্রবেশ করুন</h3>
+                        <p class="text-slate-500 text-xs">কুইজ ও ডাউনলোড সুবিধা পেতে রেজিস্ট্রেশন করুন।</p>
+                        <button onclick="triggerRegisterPopup()" class="w-full bg-corporate-600 hover:bg-corporate-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-lg">রেজিস্ট্রেশন / লগইন</button>
+                    </div>
+                `;
+            }
             updateHeaderBadge();
         }
 
-        async function renderProfileSection() {
-            const profileContainer = document.getElementById('profile-content');
-            profileContainer.innerHTML = `<div class="text-center py-4"><i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-2xl"></i></div>`;
-            
-            await checkUserStatus();
+        function triggerRegisterPopup() {
+            const name = prompt("আপনার নাম লিখুন:");
+            if (!name) return;
+            const email = prompt("আপনার ইমেইল বা মোবাইল নম্বর লিখুন:");
+            if (!email) return;
 
-            if (currentUser) {
-                profileContainer.innerHTML = `
-                    <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 font-bold text-xl">
-                            ${currentUser.email ? currentUser.email.substring(0, 2).toUpperCase() : 'MD'}
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-base text-white break-all">${currentUser.email || 'Social User'}</h3>
-                        </div>
-                    </div>
-                    <div class="space-y-2 pt-2 border-t border-white/10 text-xs menu-font mt-4">
-                        <p class="text-slate-200 flex justify-between"><span>Status:</span> <span class="text-emerald-400 font-bold">Verified User</span></p>
-                    </div>
-                    <button onclick="logoutUser()" class="bg-red-600/80 hover:bg-red-600 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-full shadow-lg mt-4">লগআউট করুন</button>
-                `;
-            } else {
-                profileContainer.innerHTML = `
-                    <div class="text-center space-y-3 mb-4">
-                        <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-lg">
-                            <i class="fa-solid fa-user-lock"></i>
-                        </div>
-                        <h3 class="font-bold text-white text-base">আপনার অ্যাকাউন্টে প্রবেশ করুন</h3>
-                        <p class="text-slate-300 text-[11px]">কুইজ ও অন্যান্য সুবিধা পেতে লগইন বা রেজিস্ট্রেশন করুন।</p>
-                    </div>
-                    
-                    <div class="space-y-3">
-                        <div class="flex flex-col gap-2 mb-4 border-b border-white/10 pb-4">
-                            <button onclick="loginWithGoogle()" class="w-full bg-white text-slate-800 hover:bg-slate-200 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg">
-                                <i class="fa-brands fa-google text-red-500 text-base"></i> Google দিয়ে লগইন
-                            </button>
-                            <button onclick="loginWithFacebook()" class="w-full bg-[#1877F2] hover:bg-[#1865F2] text-white py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg">
-                                <i class="fa-brands fa-facebook text-white text-base"></i> Facebook দিয়ে লগইন
-                            </button>
-                        </div>
-                        <div class="text-center text-xs text-slate-400 mb-2">অথবা ইমেইল দিয়ে</div>
-                        <input type="email" id="auth-email" placeholder="আপনার ইমেইল" class="w-full bg-black/30 border border-white/10 text-white px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition">
-                        <input type="password" id="auth-password" placeholder="পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)" class="w-full bg-black/30 border border-white/10 text-white px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition">
-                        
-                        <div class="flex gap-3 pt-2">
-                            <button onclick="handleLogin()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-lg">লগইন</button>
-                            <button onclick="handleRegister()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-lg">রেজিস্ট্রেশন</button>
-                        </div>
-                    </div>
-                `;
-            }
+            localStorage.setItem('portalUserName', name);
+            localStorage.setItem('portalUserEmail', email);
+            alert("রেজিস্ট্রেশন সফল হয়েছে!");
+            renderProfileSection();
         }
 
-        async function loginWithGoogle() {
-            const { data, error } = await _supabase.auth.signInWithOAuth({ provider: 'google' });
-            if (error) alert("Google লগইন এ সমস্যা হয়েছে: " + error.message);
-        }
-
-        async function loginWithFacebook() {
-            const { data, error } = await _supabase.auth.signInWithOAuth({ provider: 'facebook' });
-            if (error) alert("Facebook লগইন এ সমস্যা হয়েছে: " + error.message);
-        }
-
-        async function handleRegister() {
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-
-            if(!email || password.length < 6) {
-                alert("সঠিক ইমেইল দিন এবং পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।");
-                return;
-            }
-
-            const { data, error } = await _supabase.auth.signUp({ email: email, password: password });
-            if (error) {
-                alert("ত্রুটি: " + error.message);
-            } else {
-                alert("সফলভাবে রেজিস্ট্রেশন হয়েছে! অনুগ্রহ করে আপনার ইমেইলের ইনবক্স চেক করে অ্যাকাউন্টটি ভেরিফাই করুন।");
-            }
-        }
-
-        async function handleLogin() {
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-
-            if(!email || !password) {
-                alert("ইমেইল এবং পাসওয়ার্ড দুটিই দিতে হবে।");
-                return;
-            }
-
-            const { data, error } = await _supabase.auth.signInWithPassword({ email: email, password: password });
-            if (error) {
-                alert("লগইন ব্যর্থ হয়েছে: " + error.message);
-            } else {
-                alert("সফলভাবে লগইন হয়েছে!");
-                renderProfileSection();
-            }
-        }
-
-        async function logoutUser() {
-            const { error } = await _supabase.auth.signOut();
-            if (!error) {
-                currentUser = null;
-                alert("সফলভাবে লগআউট করা হয়েছে।");
-                renderProfileSection();
-                updateHeaderBadge();
-            }
+        function logoutUser() {
+            localStorage.removeItem('portalUserName');
+            localStorage.removeItem('portalUserEmail');
+            renderProfileSection();
+            alert("লগআউট করা হয়েছে।");
         }
 
         function updateHeaderBadge() {
-            const badge = document.getElementById('mobile-user-badge');
-            if (currentUser && currentUser.email) {
-                badge.innerText = currentUser.email.substring(0, 2).toUpperCase();
+            const name = localStorage.getItem('portalUserName');
+            const badge = document.getElementById('header-user-badge');
+            if (name) {
+                badge.innerText = name.substring(0, 2).toUpperCase();
             } else {
-                badge.innerHTML = '<i class="fa-solid fa-user"></i>';
+                badge.innerText = "MD";
             }
         }
 
-        // ==========================================
-        // 4. DATA FETCHING (GOOGLE SHEET)
-        // ==========================================
+        // Book Download Tracking & Supabase Save
+        async function trackBookDownload(bookTitle) {
+            const email = localStorage.getItem('portalUserEmail');
+            if (!email) {
+                alert("বই ডাউনলোড করার জন্য প্রথমে প্রোফাইল থেকে রেজিস্ট্রেশন করুন!");
+                showSection('profile');
+                return false;
+            }
+            await _supabase.from('book_downloads').insert([{ user_email: email, book_title: bookTitle }]);
+            return true;
+        }
+
+        // Fetch Data from Google Sheet
         async function loadAllData() {
-            if (!API_URL) return; 
-
+            if(!API_URL) return;
             try {
-                const response = await fetch(API_URL);
-                const data = await response.json(); 
-
-                // Breaking News (Google Sheet: "Breaking News" Tab & "Title" Column)
-                if(data["Breaking News"]) {
-                    const marqueeElement = document.getElementById('breaking-news-marquee');
-                    let breakingText = "";
-                    data["Breaking News"].forEach(item => {
-                        const title = item.Title || item.title;
-                        if (title) {
-                            breakingText += ` 👉 ${title} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `;
-                        }
-                    });
-                    
-                    marqueeElement.innerHTML = breakingText;
-                }
+                const res = await fetch(API_URL);
+                const data = await res.json();
 
                 // News
                 if(data.News) {
-                    const newsContainer = document.getElementById('news-container');
-                    newsContainer.innerHTML = ''; 
-                    data.News.reverse().forEach(news => {
-                        if (!news.Title) return; 
-                        newsContainer.innerHTML += `
-                        <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:border-emerald-400/50 transition">
-                            <span class="text-[11px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider">${news.Category}</span>
-                            <h3 class="font-bold text-lg text-white mt-4 mb-2">${news.Title}</h3>
-                            <p class="text-slate-300 text-xs md:text-sm mb-5 leading-relaxed">${news.Description}</p>
-                            <a href="${news.Link}" target="_blank" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-brand-600/30 inline-block text-center">সম্পূর্ণ পড়ুন</a>
+                    const c = document.getElementById('news-container');
+                    c.innerHTML = '';
+                    data.News.reverse().forEach(item => {
+                        if(!item.Title) return;
+                        c.innerHTML += `
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                            <div>
+                                <span class="text-[10px] bg-corporate-600/10 text-corporate-600 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">${item.Category}</span>
+                                <h3 class="font-bold text-lg text-slate-900 mt-3 mb-2">${item.Title}</h3>
+                                <p class="text-slate-600 text-xs leading-relaxed mb-4">${item.Description}</p>
+                            </div>
+                            <a href="${item.Link}" target="_blank" class="text-corporate-600 hover:text-corporate-700 text-xs font-bold inline-flex items-center gap-1">সম্পূর্ণ পড়ুন <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
                         </div>`;
                     });
                 }
 
                 // Books
                 if(data.Books) {
-                    const booksContainer = document.getElementById('books-container');
-                    booksContainer.innerHTML = ''; 
-                    data.Books.reverse().forEach(book => {
-                        if (!book.Title) return;
-                        booksContainer.innerHTML += `
-                        <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md flex flex-col justify-between">
+                    const c = document.getElementById('books-container');
+                    c.innerHTML = '';
+                    data.Books.reverse().forEach(item => {
+                        if(!item.Title) return;
+                        c.innerHTML += `
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
                             <div>
-                                <div class="text-[11px] text-emerald-400 font-bold mb-1">${book.Board}</div>
-                                <h3 class="font-bold text-lg text-white mb-2">${book.Title}</h3>
-                                <p class="text-slate-300 text-xs mb-6">${book.Description}</p>
+                                <span class="text-[10px] text-corporate-600 font-bold">${item.Board}</span>
+                                <h3 class="font-bold text-lg text-slate-900 mb-2">${item.Title}</h3>
+                                <p class="text-slate-600 text-xs mb-4">${item.Description}</p>
                             </div>
-                            <a href="${book.DownloadLink}" target="_blank" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-fit shadow-lg shadow-brand-600/30">পিডিএফ ডাউনলোড</a>
+                            <a href="${item.DownloadLink}" target="_blank" onclick="return trackBookDownload('${item.Title}')" class="bg-corporate-600 hover:bg-corporate-700 text-white text-center py-2.5 rounded-xl text-xs font-bold transition shadow-md">পিডিএফ ডাউনলোড</a>
                         </div>`;
                     });
                 }
 
                 // Stories
                 if(data.Stories) {
-                    const storiesContainer = document.getElementById('stories-container');
-                    storiesContainer.innerHTML = ''; 
-                    data.Stories.reverse().forEach(story => {
-                        if (!story.Title) return;
-                        storiesContainer.innerHTML += `
-                        <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md flex flex-col justify-between">
+                    const c = document.getElementById('stories-container');
+                    c.innerHTML = '';
+                    data.Stories.reverse().forEach(item => {
+                        if(!item.Title) return;
+                        c.innerHTML += `
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
                             <div>
-                                <div class="text-[11px] text-emerald-400 font-bold mb-1">${story.Category}</div>
-                                <h3 class="font-bold text-lg text-white mb-2">${story.Title}</h3>
-                                <p class="text-slate-300 text-xs mb-6">${story.Description}</p>
+                                <span class="text-[10px] text-corporate-600 font-bold">${item.Category}</span>
+                                <h3 class="font-bold text-lg text-slate-900 mb-2">${item.Title}</h3>
+                                <p class="text-slate-600 text-xs mb-4">${item.Description}</p>
                             </div>
-                            <a href="${story.ReadLink}" target="_blank" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-fit shadow-lg shadow-brand-600/30">সম্পূর্ণ পড়ুন</a>
+                            <a href="${item.ReadLink}" target="_blank" class="text-corporate-600 text-xs font-bold inline-flex items-center gap-1">গল্পটি পড়ুন <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
                         </div>`;
                     });
                 }
@@ -453,98 +402,76 @@
                 // Quiz
                 if(data.Quiz) {
                     globalQuizData = data.Quiz;
-                    const quizContainer = document.getElementById('quiz-container');
-                    quizContainer.innerHTML = ''; 
-                    
-                    globalQuizData.forEach((quiz, index) => {
-                        const qQuestion = quiz.Question || quiz.question;
-                        const qId = quiz.Id || quiz.id || (index + 1);
-                        const qOpt1 = quiz.Option1 || quiz.option1 || quiz.OptionA || quiz.optionA;
-                        const qOpt2 = quiz.Option2 || quiz.option2 || quiz.OptionB || quiz.optionB;
-                        
-                        if (!qQuestion) return;
-
-                        quizContainer.innerHTML += `
-                        <div class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md w-full">
-                            <div class="flex justify-between items-center mb-4">
-                                <span class="text-xs text-emerald-400 font-bold">মক টেস্ট #${qId}</span>
-                            </div>
-                            <h3 class="font-semibold text-base md:text-lg text-white mb-5">প্রশ্ন: ${qQuestion}</h3>
-                            <div class="space-y-3 mb-6">
-                                <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400/50 transition">
-                                    <input type="radio" name="quiz_group_${index}" value="${qOpt1}" class="accent-emerald-500"> ${qOpt1}
+                    const c = document.getElementById('quiz-container');
+                    c.innerHTML = '';
+                    globalQuizData.forEach((q, index) => {
+                        if(!q.Question) return;
+                        c.innerHTML += `
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                            <span class="text-xs text-corporate-600 font-bold">মক টেস্ট প্রশ্ন #${q.Id || (index+1)}</span>
+                            <h3 class="font-semibold text-base text-slate-900 mt-2 mb-4">${q.Question}</h3>
+                            <div class="space-y-2 mb-4">
+                                <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:border-corporate-600 text-xs font-medium">
+                                    <input type="radio" name="quiz_${index}" value="${q.Option1}" class="accent-corporate-600"> ${q.Option1}
                                 </label>
-                                <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400/50 transition">
-                                    <input type="radio" name="quiz_group_${index}" value="${qOpt2}" class="accent-emerald-500"> ${qOpt2}
+                                <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:border-corporate-600 text-xs font-medium">
+                                    <input type="radio" name="quiz_${index}" value="${q.Option2}" class="accent-corporate-600"> ${q.Option2}
                                 </label>
                             </div>
-                            <button onclick="submitSingleQuiz(${index})" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-xl text-xs font-bold transition shadow-md">উত্তর জমা দিন</button>
-                            <div id="quiz_result_${index}" class="mt-3 text-xs font-semibold"></div>
+                            <button onclick="submitQuiz(${index})" class="bg-corporate-600 hover:bg-corporate-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition shadow-md">উত্তর জমা দিন</button>
+                            <div id="q_result_${index}" class="mt-2 text-xs font-semibold"></div>
                         </div>`;
                     });
                 }
 
-            } catch (error) {
-                console.error("Error loading data:", error);
+            } catch (err) {
+                console.error("Data load error:", err);
             }
         }
 
-        // ==========================================
-        // 5. QUIZ INTERCEPTION
-        // ==========================================
-        async function submitSingleQuiz(index) {
-            const { data: { user } } = await _supabase.auth.getUser();
-            
-            if (!user) {
-                alert("কুইজের উত্তর জমা দেওয়ার জন্য আপনাকে প্রথমে লগইন বা রেজিস্ট্রেশন করতে হবে!");
-                showSection('profile', null); 
+        // Quiz Submission with Supabase Log
+        async function submitQuiz(index) {
+            const email = localStorage.getItem('portalUserEmail');
+            if (!email) {
+                alert("কুইজ সাবমিট করার জন্য আগে রেজিস্টার করুন!");
+                triggerRegisterPopup();
                 return;
             }
 
-            const radios = document.getElementsByName(`quiz_group_${index}`);
-            let selectedVal = null;
-            for (const radio of radios) {
-                if (radio.checked) {
-                    selectedVal = radio.value;
-                    break;
-                }
+            const radios = document.getElementsByName(`quiz_${index}`);
+            let selected = null;
+            for(let r of radios) {
+                if(r.checked) { selected = r.value; break; }
             }
 
-            const resultDiv = document.getElementById(`quiz_result_${index}`);
-            if (!selectedVal) {
-                resultDiv.className = "mt-3 text-xs font-semibold text-amber-400";
-                resultDiv.innerText = "দয়া করে যেকোনো একটি অপশন সিলেক্ট করুন!";
+            const resDiv = document.getElementById(`q_result_${index}`);
+            if(!selected) {
+                resDiv.className = "mt-2 text-xs font-semibold text-amber-500";
+                resDiv.innerText = "দয়া করে যেকোনো একটি অপশন সিলেক্ট করুন।";
                 return;
             }
 
-            const currentQuiz = globalQuizData[index];
-            const correctAns = currentQuiz.CorrectAnswer || currentQuiz.correctanswer;
-            
-            if (correctAns) {
-                if (selectedVal.trim().toLowerCase() === correctAns.trim().toLowerCase()) {
-                    resultDiv.className = "mt-3 text-xs font-semibold text-emerald-400";
-                    resultDiv.innerText = "অভিনন্দন! আপনার উত্তরটি সঠিক হয়েছে।";
-                } else {
-                    resultDiv.className = "mt-3 text-xs font-semibold text-red-400";
-                    resultDiv.innerText = "দুঃখিত, উত্তরটি সঠিক হয়নি।";
-                }
+            const q = globalQuizData[index];
+            let isCorrect = false;
+            if(q.CorrectAnswer && selected.trim().toLowerCase() === q.CorrectAnswer.trim().toLowerCase()) {
+                isCorrect = true;
+                resDiv.className = "mt-2 text-xs font-semibold text-emerald-600";
+                resDiv.innerText = "অভিনন্দন! আপনার উত্তর সঠিক হয়েছে।";
             } else {
-                resultDiv.className = "mt-3 text-xs font-semibold text-emerald-400";
-                resultDiv.innerText = `আপনার উত্তর (${selectedVal}) সফলভাবে জমা দেওয়া হয়েছে!`;
+                resDiv.className = "mt-2 text-xs font-semibold text-red-500";
+                resDiv.innerText = "দুঃখিত, উত্তরটি সঠিক হয়নি।";
             }
+
+            await _supabase.from('quiz_submissions').insert([{
+                user_email: email,
+                quiz_id: q.Id || (index+1),
+                selected_answer: selected,
+                is_correct: isCorrect
+            }]);
         }
 
-        // Initialization on Load
-        window.addEventListener('DOMContentLoaded', async () => {
-            await checkUserStatus(); 
-
-            const hash = window.location.hash.replace('#', '');
-            if (hash && document.getElementById(hash)) {
-                showSection(hash, null);
-            } else {
-                showSection('home', null);
-            }
-
+        window.addEventListener('DOMContentLoaded', () => {
+            updateHeaderBadge();
             loadAllData();
         });
     </script>
