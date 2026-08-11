@@ -33,17 +33,12 @@
         }
     </script>
     <style>
-        /* Kalpurush/SutonnyMJ এর মতো দেখতে Tiro Bangla ফন্ট প্রয়োগ */
         body, p, h2, h3, span, div, button:not(.menu-font), input, label {
             font-family: 'Tiro Bangla', 'Hind Siliguri', serif !important;
         }
-        
-        /* মেনুর জন্য English Times New Roman ফন্ট */
         .menu-font {
             font-family: 'Tinos', 'Times New Roman', serif !important;
         }
-        
-        /* ব্যাকগ্রাউন্ড ইমেজ উইথ হালকা ডার্ক ওভারলে */
         .bg-custom-image {
             background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.80)), 
                         url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop');
@@ -112,6 +107,7 @@
 
     <main class="flex-1 p-6 md:p-12 max-w-6xl mx-auto w-full overflow-y-auto">
 
+        <!-- Home Section -->
         <section id="home" class="section-content space-y-6">
             <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold tracking-wide backdrop-blur-md">
                 <i class="fa-solid fa-sparkles"></i> প্রিমিয়াম এডুকেশন হাব
@@ -122,25 +118,9 @@
             <p class="text-slate-200 leading-relaxed text-sm md:text-base font-normal drop-shadow">
                  ছাত্রছাত্রীদের জন্য এটি একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম। পশ্চিমবঙ্গ মধ্যশিক্ষা পর্ষদ, উচ্চমাধ্যমিক সংসদ এবং সিবিএসই বোর্ডের যাবতীয় আপডেট, বই এবং শিক্ষামূলক কন্টেন্ট এখানে পাবেন।
             </p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-                <div class="p-5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition">
-                    <i class="fa-solid fa-graduation-cap text-emerald-400 text-xl mb-3"></i>
-                    <h3 class="font-bold text-white text-base mb-1">বোর্ড আপডেট</h3>
-                    <p class="text-xs text-slate-300">নিয়মিত পরীক্ষার রুটিন ও সিলেবাস আপডেট।</p>
-                </div>
-                <div class="p-5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition">
-                    <i class="fa-solid fa-book-open text-emerald-400 text-xl mb-3"></i>
-                    <h3 class="font-bold text-white text-base mb-1">ই-বুক লাইব্রেরি</h3>
-                    <p class="text-xs text-slate-300">বিনামূল্যে এনসিইআরটি ও পর্ষদের বই পড়ুন।</p>
-                </div>
-                <div class="p-5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition">
-                    <i class="fa-solid fa-award text-emerald-400 text-xl mb-3"></i>
-                    <h3 class="font-bold text-white text-base mb-1">কুইজ প্ল্যাটফর্ম</h3>
-                    <p class="text-xs text-slate-300">নলেজ টেস্ট ও সেলফ এসেসমেন্ট সিস্টেম।</p>
-                </div>
-            </div>
         </section>
 
+        <!-- News Section -->
         <section id="news" class="section-content hidden space-y-6">
             <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                 <i class="fa-solid fa-newspaper text-emerald-400 text-xl"></i> ভারতীয় শিক্ষা ও বোর্ড নিউজ
@@ -153,6 +133,7 @@
             </div>
         </section>
 
+        <!-- Quiz Section -->
         <section id="quiz" class="section-content hidden space-y-6">
             <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                 <i class="fa-solid fa-brain text-emerald-400 text-xl"></i> ভারতীয় সাধারণ জ্ঞান ও কুইজ
@@ -165,6 +146,7 @@
             </div>
         </section>
 
+        <!-- Books Section -->
         <section id="books" class="section-content hidden space-y-6">
             <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                 <i class="fa-solid fa-book text-emerald-400 text-xl"></i> অনলাইন ফ্রি বই (NCERT ও পর্ষদ)
@@ -177,6 +159,7 @@
             </div>
         </section>
 
+        <!-- Stories Section -->
         <section id="stories" class="section-content hidden space-y-6">
             <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                 <i class="fa-solid fa-feather text-emerald-400 text-xl"></i> বাংলা গল্প ও সাহিত্য
@@ -189,26 +172,13 @@
             </div>
         </section>
 
+        <!-- Profile Section (Dynamic Login/Signup or User Info) -->
         <section id="profile" class="section-content hidden space-y-6">
             <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                 <i class="fa-solid fa-user-shield text-emerald-400 text-xl"></i> আমার প্রোফাইল
             </h2>
-            <div class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md max-w-md space-y-4">
-                <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 font-bold text-xl">
-                        MD
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-lg text-white">Mukul Dhali</h3>
-                        <p class="text-xs text-slate-300">mukuldhaliofficial@admin</p>
-                    </div>
-                </div>
-                <div class="space-y-2 pt-2 border-t border-white/10 text-xs">
-                    <p class="text-slate-200 flex justify-between menu-font"><span>Account Type:</span> <span class="text-emerald-400 font-bold menu-font">Admin / Creator</span></p>
-                    <p class="text-slate-200 flex justify-between menu-font"><span>Location:</span> <span class="text-white menu-font">India</span></p>
-                    <p class="text-slate-200 flex justify-between menu-font"><span>Status:</span> <span class="text-emerald-400 font-bold menu-font">Active</span></p>
-                </div>
-                <button onclick="alert('প্রোফাইল সেটিংস আপডেট সফল হয়েছে!')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition shadow-lg shadow-brand-600/30 w-full mt-2 menu-font">Edit Profile</button>
+            <div id="profile-content" class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md max-w-md space-y-4">
+                <!-- JavaScript দিয়ে ডাইনামিকালি লোড হবে -->
             </div>
         </section>
 
@@ -223,7 +193,6 @@
             backdrop.classList.toggle('hidden');
         }
 
-        // আপডেট করা showSection ফাংশন (যাতে রিলোড দিলে পেজ মনে রাখে)
         function showSection(sectionId, event) {
             const sections = document.querySelectorAll('.section-content');
             sections.forEach(sec => sec.classList.add('hidden'));
@@ -251,19 +220,89 @@
                 toggleSidebar();
             }
 
-            // URL-এর শেষে হ্যাশ (#) যুক্ত করা
             window.history.replaceState(null, null, `#${sectionId}`);
+            
+            // প্রোফাইল সেকশনে গেলে স্ট্যাটাস চেক করবে
+            if(sectionId === 'profile') {
+                renderProfileSection();
+            }
         }
 
         // ==========================================
-        // Google Sheet API Fetch
+        // Login / Signup Simulation Logic
         // ==========================================
-        
-        // এখানে তোমার Google Apps Script-এর URL টি বসাও
+        function renderProfileSection() {
+            const profileContainer = document.getElementById('profile-content');
+            const loggedInUser = localStorage.getItem('portalUser');
+
+            if (loggedInUser) {
+                profileContainer.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 font-bold text-xl">
+                            ${loggedInUser.substring(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-white">${loggedInUser}</h3>
+                            <p class="text-xs text-slate-300">Registered Member</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2 pt-2 border-t border-white/10 text-xs menu-font">
+                        <p class="text-slate-200 flex justify-between"><span>Status:</span> <span class="text-emerald-400 font-bold">Active</span></p>
+                    </div>
+                    <button onclick="logoutUser()" class="bg-red-600/80 hover:bg-red-600 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-full shadow-lg">লগআউট করুন</button>
+                `;
+            } else {
+                profileContainer.innerHTML = `
+                    <div class="text-center space-y-4 py-2">
+                        <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-lg">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base">আপনার অ্যাকাউন্টে প্রবেশ করুন</h3>
+                        <p class="text-slate-300 text-xs">কুইজ ও অন্যান্য সুবিধা পেতে লগইন বা সাইন আপ করুন।</p>
+                        <div class="flex gap-3 pt-2">
+                            <button onclick="simulateLogin()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-lg">লগইন</button>
+                            <button onclick="simulateSignup()" class="flex-1 bg-white/10 hover:bg-white/20 text-white py-2.5 rounded-xl text-xs font-bold transition border border-white/10">সাইন আপ</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function simulateLogin() {
+            const name = prompt("আপনার নাম লিখুন (লগইন করার জন্য):", "ছাত্রছাত্রী");
+            if(name) {
+                localStorage.setItem('portalUser', name);
+                renderProfileSection();
+                alert("সফলভাবে লগইন হয়েছে!");
+            }
+        }
+
+        function simulateSignup() {
+            const name = prompt("নতুন অ্যাকাউন্ট তৈরি করতে আপনার নাম লিখুন:", "");
+            if(name) {
+                localStorage.setItem('portalUser', name);
+                renderProfileSection();
+                alert("সফলভাবে সাইন আপ এবং লগইন সম্পন্ন হয়েছে!");
+            }
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('portalUser');
+            renderProfileSection();
+            alert("লগআউট করা হয়েছে।");
+        }
+
+
+        // ==========================================
+        // Google Sheet API Fetch & Quiz Handler
+        // ==========================================
         const API_URL = "https://script.google.com/macros/s/AKfycbwo4OT2uaQ2cwGuJp-0jbcCk7vYcXA2VjgUQ-ZTWvbAWnxIASXMy2P9exnAtBN51jq_4A/exec"; 
 
+        // গ্লোবাল ভ্যারিয়েবল কুইজ ডেটা রাখার জন্য
+        let globalQuizData = [];
+
         async function loadAllData() {
-            if (!API_URL || API_URL === "এখানে_তোমার_লিংকটি_দাও") return; 
+            if (!API_URL) return; 
 
             try {
                 const response = await fetch(API_URL);
@@ -272,7 +311,7 @@
                 // ১. News লোড করা
                 if(data.News) {
                     const newsContainer = document.getElementById('news-container');
-                    newsContainer.innerHTML = ''; // স্পিনার সরিয়ে ফেলা
+                    newsContainer.innerHTML = ''; 
                     data.News.reverse().forEach(news => {
                         if (!news.Title) return; 
                         newsContainer.innerHTML += `
@@ -288,7 +327,7 @@
                 // ২. Books লোড করা
                 if(data.Books) {
                     const booksContainer = document.getElementById('books-container');
-                    booksContainer.innerHTML = ''; // স্পিনার সরিয়ে ফেলা
+                    booksContainer.innerHTML = ''; 
                     data.Books.reverse().forEach(book => {
                         if (!book.Title) return;
                         booksContainer.innerHTML += `
@@ -306,7 +345,7 @@
                 // ৩. Stories লোড করা
                 if(data.Stories) {
                     const storiesContainer = document.getElementById('stories-container');
-                    storiesContainer.innerHTML = ''; // স্পিনার সরিয়ে ফেলা
+                    storiesContainer.innerHTML = ''; 
                     data.Stories.reverse().forEach(story => {
                         if (!story.Title) return;
                         storiesContainer.innerHTML += `
@@ -321,26 +360,30 @@
                     });
                 }
 
-                // ৪. Quiz লোড করা
+                // ৪. Quiz লোড করা (আলাদা name অ্যাট্রিবিউট এবং সাবমিট বাটন সহ)
                 if(data.Quiz) {
+                    globalQuizData = data.Quiz;
                     const quizContainer = document.getElementById('quiz-container');
-                    quizContainer.innerHTML = ''; // স্পিনার সরিয়ে ফেলা
-                    data.Quiz.reverse().forEach(quiz => {
+                    quizContainer.innerHTML = ''; 
+                    
+                    globalQuizData.forEach((quiz, index) => {
                         if (!quiz.Question) return;
                         quizContainer.innerHTML += `
                         <div class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md w-full">
                             <div class="flex justify-between items-center mb-4">
-                                <span class="text-xs text-emerald-400 font-bold">মক টেস্ট #${quiz.Id}</span>
+                                <span class="text-xs text-emerald-400 font-bold">মক টেস্ট #${quiz.Id || (index + 1)}</span>
                             </div>
                             <h3 class="font-semibold text-base md:text-lg text-white mb-5">প্রশ্ন: ${quiz.Question}</h3>
                             <div class="space-y-3 mb-6">
                                 <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400/50 transition">
-                                    <input type="radio" name="quiz_${quiz.Id}" value="${quiz.Option1}" class="accent-emerald-500"> ${quiz.Option1}
+                                    <input type="radio" name="quiz_group_${index}" value="${quiz.Option1}" class="accent-emerald-500"> ${quiz.Option1}
                                 </label>
                                 <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400/50 transition">
-                                    <input type="radio" name="quiz_${quiz.Id}" value="${quiz.Option2}" class="accent-emerald-500"> ${quiz.Option2}
+                                    <input type="radio" name="quiz_group_${index}" value="${quiz.Option2}" class="accent-emerald-500"> ${quiz.Option2}
                                 </label>
                             </div>
+                            <button onclick="submitSingleQuiz(${index})" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-xl text-xs font-bold transition shadow-md">উত্তর জমা দিন</button>
+                            <div id="quiz_result_${index}" class="mt-3 text-xs font-semibold"></div>
                         </div>`;
                     });
                 }
@@ -350,7 +393,41 @@
             }
         }
 
-        // পেজ লোড বা রিলোড হওয়ার সময় কী হবে
+        // সিঙ্গেল কুইজ উত্তর যাচাই করার ফাংশন
+        function submitSingleQuiz(index) {
+            const radios = document.getElementsByName(`quiz_group_${index}`);
+            let selectedVal = null;
+            for (const radio of radios) {
+                if (radio.checked) {
+                    selectedVal = radio.value;
+                    break;
+                }
+            }
+
+            const resultDiv = document.getElementById(`quiz_result_${index}`);
+            if (!selectedVal) {
+                resultDiv.className = "mt-3 text-xs font-semibold text-amber-400";
+                resultDiv.innerText = "দয়া করে যেকোনো একটি অপশন সিলেক্ট করুন!";
+                return;
+            }
+
+            const currentQuiz = globalQuizData[index];
+            // যদি আপনার গুগল শিটে 'CorrectAnswer' কলাম থাকে, তবে সেটি দিয়ে চেক করবে
+            if (currentQuiz.CorrectAnswer) {
+                if (selectedVal.trim().toLowerCase() === currentQuiz.CorrectAnswer.trim().toLowerCase()) {
+                    resultDiv.className = "mt-3 text-xs font-semibold text-emerald-400";
+                    resultDiv.innerText = "অভিনন্দন! আপনার উত্তরটি সঠিক হয়েছে।";
+                } else {
+                    resultDiv.className = "mt-3 text-xs font-semibold text-red-400";
+                    resultDiv.innerText = "দুঃখিত, উত্তরটি সঠিক হয়নি।";
+                }
+            } else {
+                // যদি সঠিক উত্তর শিটে সেট করা না থাকে, তবে সাধারণ সাবমিটেড মেসেজ দেখাবে
+                resultDiv.className = "mt-3 text-xs font-semibold text-emerald-400";
+                resultDiv.innerText = `আপনার উত্তর (${selectedVal}) সফলভাবে জমা দেওয়া হয়েছে!`;
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             const hash = window.location.hash.replace('#', '');
             
