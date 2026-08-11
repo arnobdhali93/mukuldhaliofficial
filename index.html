@@ -52,11 +52,13 @@
 
     <!-- Floating AI Chatbot -->
     <div id="ai-chat-container" class="fixed bottom-6 right-6 z-50">
-        <!-- চ্যাট উইন্ডো ডিফল্টভাবে hide থাকবে -->
         <div id="chat-window" class="hide w-80 h-96 glass bg-slate-900 border border-white/20 rounded-3xl flex flex-col p-5 shadow-2xl mb-4">
-            <div class="flex justify-between items-center mb-4">
+            <div class="flex justify-between items-center mb-2">
                 <h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-robot text-blue-400"></i> AI Assistant</h3>
-                <button onclick="toggleChat()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                <div class="flex items-center gap-2">
+                    <button onclick="resetApiKey()" title="Reset API Key" class="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded hover:bg-red-500/40">Reset Key</button>
+                    <button onclick="toggleChat()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                </div>
             </div>
             <div id="chat-history" class="flex-1 overflow-y-auto space-y-3 mb-4 text-sm text-gray-300">
                 <p>হ্যালো! আমি আপনার এআই অ্যাসিস্ট্যান্ট। কীভাবে সাহায্য করতে পারি?</p>
@@ -66,19 +68,23 @@
                 <button onclick="askGemini()" class="bg-blue-600 px-4 rounded-xl hover:bg-blue-700"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
-        <!-- রোবট আইকন বাটন -->
         <button onclick="toggleChat()" class="bg-blue-600 w-16 h-16 rounded-full shadow-2xl hover:scale-110 transition flex items-center justify-center">
             <i class="fa-solid fa-robot text-2xl"></i>
         </button>
     </div>
 
     <script>
-        // AI Chat Toggle Logic
         function toggleChat() { 
             document.getElementById('chat-window').classList.toggle('hide'); 
         }
 
-        // Gemini API Call with Dynamic API Key prompt
+        // API Key রিসেট করার ফাংশন
+        function resetApiKey() {
+            localStorage.removeItem('gemini_api_key');
+            alert("পূর্বের API Key মুছে ফেলা হয়েছে। এখন নতুন প্রশ্ন করলে নতুন কি দেওয়ার অপশন আসবে।");
+            document.getElementById('chat-history.innerHTML').innerHTML = `<p>হ্যালো! আমি আপনার এআই অ্যাসিস্ট্যান্ট। নতুন API Key দিয়ে শুরু করুন।</p>`;
+        }
+
         async function askGemini() {
             const queryInput = document.getElementById('userQuery');
             const query = queryInput.value.trim();
@@ -86,10 +92,9 @@
 
             const history = document.getElementById('chat-history');
             
-            // ব্রাউজারে API Key সেভ করা আছে কি না চেক করা, না থাকলে প্রম্পট দিয়ে নেওয়া
             let apiKey = localStorage.getItem('gemini_api_key');
             if (!apiKey) {
-                apiKey = prompt("আপনার Google Gemini API Key দিন (এটি শুধু একবারই দিতে হবে):");
+                apiKey = prompt("আপনার Google Gemini API Key দিন (Google AI Studio থেকে সংগ্রহ করুন):");
                 if (!apiKey) return;
                 localStorage.setItem('gemini_api_key', apiKey.trim());
             }
@@ -99,7 +104,8 @@
             history.scrollTop = history.scrollHeight;
             
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                // সঠিক gemini-1.5-flash মডেল এন্ডপয়েন্ট
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: query }] }] })
@@ -110,11 +116,11 @@
                     const aiReply = data.candidates[0].content.parts[0].text;
                     history.innerHTML += `<p class="text-left text-blue-300"><b>AI:</b> ${aiReply}</p>`;
                 } else {
-                    history.innerHTML += `<p class="text-red-400">Error: ভুল API Key দিয়েছেন। আবার কি সেট করতে চাইলে ব্রাউজারের লোকাল স্টোরেজ ক্লিয়ার করুন।</p>`;
+                    history.innerHTML += `<p class="text-red-400">Error: API Key সঠিক নয়। ওপরের 'Reset Key' বাটনে ক্লিক করে সঠিক কি দিন।</p>`;
                     localStorage.removeItem('gemini_api_key');
                 }
             } catch (e) {
-                history.innerHTML += `<p class="text-red-400">Error: নেটওয়ার্ক সমস্যা বা ইনভ্যালিড কি।</p>`;
+                history.innerHTML += `<p class="text-red-400">Error: সংযোগ স্থাপন করা যায়নি।</p>`;
             }
             history.scrollTop = history.scrollHeight;
         }
