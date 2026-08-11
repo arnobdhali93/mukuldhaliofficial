@@ -13,7 +13,6 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -53,7 +52,6 @@
 </head>
 <body class="bg-custom-image text-slate-100 min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white">
 
-    <!-- Mobile Header -->
     <header class="md:hidden bg-slate-950/40 backdrop-blur-md border-b border-white/10 sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-3">
             <button onclick="toggleSidebar()" class="text-slate-200 hover:text-white text-xl focus:outline-none p-1.5 rounded-lg bg-white/10 border border-white/10">
@@ -62,11 +60,10 @@
             <span class="menu-font font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 text-lg">mukuldhaliofficial</span>
         </div>
         <div id="mobile-user-badge" class="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 font-bold text-xs menu-font">
-            MD
+            <i class="fa-solid fa-user"></i>
         </div>
     </header>
 
-    <!-- Sidebar Navigation -->
     <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-72 bg-slate-950/80 backdrop-blur-2xl border-r border-white/10 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none">
         
         <div class="p-6 border-b border-white/10 flex items-center justify-between">
@@ -110,20 +107,17 @@
 
     <div id="backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
 
-    <!-- Main Content Area -->
     <main class="flex-1 flex flex-col min-h-screen">
         
-        <!-- Breaking News Marquee Section -->
         <div class="bg-slate-950/80 border-b border-emerald-500/20 py-2.5 px-4 flex items-center gap-3 backdrop-blur-md">
             <span class="bg-emerald-600 text-white px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider flex-shrink-0">ব্রেকিং নিউজ</span>
-            <marquee class="text-slate-300 text-xs md:text-sm font-medium">
-                👉 mukuldhaliofficial পোর্টালে স্বাগতম! নিয়মিত মক টেস্ট এবং নতুন আপডেট পেতে আমাদের সাথে থাকুন। বোর্ড পরীক্ষার রুটিন শীঘ্রই প্রকাশিত হবে।
+            <marquee id="breaking-news-marquee" class="text-slate-300 text-xs md:text-sm font-medium">
+                খবর লোড হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন।
             </marquee>
         </div>
 
         <div class="p-6 md:p-12 max-w-6xl mx-auto w-full overflow-y-auto flex-1">
 
-            <!-- Home Section -->
             <section id="home" class="section-content space-y-6">
                 <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold tracking-wide backdrop-blur-md">
                     <i class="fa-solid fa-sparkles"></i> প্রিমিয়াম এডুকেশন হাব
@@ -136,7 +130,6 @@
                 </p>
             </section>
 
-            <!-- News Section -->
             <section id="news" class="section-content hidden space-y-6">
                 <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                     <i class="fa-solid fa-newspaper text-emerald-400 text-xl"></i> ভারতীয় শিক্ষা ও বোর্ড নিউজ
@@ -149,7 +142,6 @@
                 </div>
             </section>
 
-            <!-- Quiz Section -->
             <section id="quiz" class="section-content hidden space-y-6">
                 <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                     <i class="fa-solid fa-brain text-emerald-400 text-xl"></i> ভারতীয় সাধারণ জ্ঞান ও কুইজ
@@ -162,7 +154,6 @@
                 </div>
             </section>
 
-            <!-- Books Section -->
             <section id="books" class="section-content hidden space-y-6">
                 <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                     <i class="fa-solid fa-book text-emerald-400 text-xl"></i> অনলাইন ফ্রি বই (NCERT ও পর্ষদ)
@@ -175,7 +166,6 @@
                 </div>
             </section>
 
-            <!-- Stories Section -->
             <section id="stories" class="section-content hidden space-y-6">
                 <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                     <i class="fa-solid fa-feather text-emerald-400 text-xl"></i> বাংলা গল্প ও সাহিত্য
@@ -188,14 +178,12 @@
                 </div>
             </section>
 
-            <!-- Profile Section -->
             <section id="profile" class="section-content hidden space-y-6">
                 <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3 drop-shadow-md">
                     <i class="fa-solid fa-user-shield text-emerald-400 text-xl"></i> আমার প্রোফাইল
                 </h2>
                 <div id="profile-content" class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md max-w-md space-y-4">
-                    <!-- Dynamic Profile Info -->
-                </div>
+                    </div>
             </section>
 
         </div>
@@ -203,12 +191,11 @@
 
     <script>
         // ==========================================
-        // 1. SUPABASE & API CONFIGURATION
+        // 1. SUPABASE CONFIGURATION
         // ==========================================
         const SUPABASE_URL = 'https://dfipruqyziperjzbnesh.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmaXBydXF5emlwZXJqemJuZXNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzOTMxNjgsImV4cCI6MjEwMTk2OTE2OH0.8BUsSOSTYK2-NjsSXbiVRPEj7gOJ3Co2H0eq1V9WlHc';
         
-        // Supabase ইনিশিয়ালাইজেশন
         const { createClient } = supabase;
         const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -216,6 +203,7 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbwo4OT2uaQ2cwGuJp-0jbcCk7vYcXA2VjgUQ-ZTWvbAWnxIASXMy2P9exnAtBN51jq_4A/exec"; 
 
         let globalQuizData = [];
+        let currentUser = null; 
 
         // ==========================================
         // 2. UI NAVIGATION & STATE
@@ -262,71 +250,128 @@
         }
 
         // ==========================================
-        // 3. USER AUTHENTICATION & PROFILE
+        // 3. USER AUTHENTICATION (SUPABASE)
         // ==========================================
-        function renderProfileSection() {
-            const profileContainer = document.getElementById('profile-content');
-            const loggedInUser = localStorage.getItem('portalUserEmail');
-            const loggedInName = localStorage.getItem('portalUserName');
-
-            if (loggedInUser) {
-                profileContainer.innerHTML = `
-                    <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 font-bold text-xl">
-                            ${loggedInName.substring(0, 2).toUpperCase()}
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-white">${loggedInName}</h3>
-                            <p class="text-xs text-slate-300">${loggedInUser}</p>
-                        </div>
-                    </div>
-                    <div class="space-y-2 pt-2 border-t border-white/10 text-xs menu-font">
-                        <p class="text-slate-200 flex justify-between"><span>Status:</span> <span class="text-emerald-400 font-bold">Registered & Active</span></p>
-                    </div>
-                    <button onclick="logoutUser()" class="bg-red-600/80 hover:bg-red-600 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-full shadow-lg">লগআউট করুন</button>
-                `;
-            } else {
-                profileContainer.innerHTML = `
-                    <div class="text-center space-y-4 py-2">
-                        <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-lg">
-                            <i class="fa-solid fa-user"></i>
-                        </div>
-                        <h3 class="font-bold text-white text-base">আপনার অ্যাকাউন্টে প্রবেশ করুন</h3>
-                        <p class="text-slate-300 text-xs">কুইজ ও অন্যান্য সুবিধা পেতে রেজিস্টার বা লগইন করুন।</p>
-                        <button onclick="triggerRegisterPopup()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-lg">রেজিস্ট্রেশন / লগইন করুন</button>
-                    </div>
-                `;
-            }
+        async function checkUserStatus() {
+            const { data: { user } } = await _supabase.auth.getUser();
+            currentUser = user;
             updateHeaderBadge();
         }
 
-        function triggerRegisterPopup() {
-            const name = prompt("আপনার নাম লিখুন:");
-            if (!name) return;
-            const email = prompt("আপনার ইমেইল বা মোবাইল নম্বর লিখুন:");
-            if (!email) return;
-
-            localStorage.setItem('portalUserName', name);
-            localStorage.setItem('portalUserEmail', email);
+        async function renderProfileSection() {
+            const profileContainer = document.getElementById('profile-content');
+            profileContainer.innerHTML = `<div class="text-center py-4"><i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-2xl"></i></div>`;
             
-            alert("অভিনন্দন! আপনার রেজিস্ট্রেশন সফল হয়েছে। এখন থেকে আপনি লগইন অবস্থায় আছেন।");
-            renderProfileSection();
+            await checkUserStatus();
+
+            if (currentUser) {
+                profileContainer.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 font-bold text-xl">
+                            ${currentUser.email ? currentUser.email.substring(0, 2).toUpperCase() : 'MD'}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-base text-white break-all">${currentUser.email || 'Social User'}</h3>
+                        </div>
+                    </div>
+                    <div class="space-y-2 pt-2 border-t border-white/10 text-xs menu-font mt-4">
+                        <p class="text-slate-200 flex justify-between"><span>Status:</span> <span class="text-emerald-400 font-bold">Verified User</span></p>
+                    </div>
+                    <button onclick="logoutUser()" class="bg-red-600/80 hover:bg-red-600 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-full shadow-lg mt-4">লগআউট করুন</button>
+                `;
+            } else {
+                profileContainer.innerHTML = `
+                    <div class="text-center space-y-3 mb-4">
+                        <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-lg">
+                            <i class="fa-solid fa-user-lock"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base">আপনার অ্যাকাউন্টে প্রবেশ করুন</h3>
+                        <p class="text-slate-300 text-[11px]">কুইজ ও অন্যান্য সুবিধা পেতে লগইন বা রেজিস্ট্রেশন করুন।</p>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex flex-col gap-2 mb-4 border-b border-white/10 pb-4">
+                            <button onclick="loginWithGoogle()" class="w-full bg-white text-slate-800 hover:bg-slate-200 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg">
+                                <i class="fa-brands fa-google text-red-500 text-base"></i> Google দিয়ে লগইন
+                            </button>
+                            <button onclick="loginWithFacebook()" class="w-full bg-[#1877F2] hover:bg-[#1865F2] text-white py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg">
+                                <i class="fa-brands fa-facebook text-white text-base"></i> Facebook দিয়ে লগইন
+                            </button>
+                        </div>
+                        <div class="text-center text-xs text-slate-400 mb-2">অথবা ইমেইল দিয়ে</div>
+                        <input type="email" id="auth-email" placeholder="আপনার ইমেইল" class="w-full bg-black/30 border border-white/10 text-white px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition">
+                        <input type="password" id="auth-password" placeholder="পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)" class="w-full bg-black/30 border border-white/10 text-white px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition">
+                        
+                        <div class="flex gap-3 pt-2">
+                            <button onclick="handleLogin()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-lg">লগইন</button>
+                            <button onclick="handleRegister()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-lg">রেজিস্ট্রেশন</button>
+                        </div>
+                    </div>
+                `;
+            }
         }
 
-        function logoutUser() {
-            localStorage.removeItem('portalUserName');
-            localStorage.removeItem('portalUserEmail');
-            renderProfileSection();
-            alert("সফলভাবে লগআউট করা হয়েছে।");
+        async function loginWithGoogle() {
+            const { data, error } = await _supabase.auth.signInWithOAuth({ provider: 'google' });
+            if (error) alert("Google লগইন এ সমস্যা হয়েছে: " + error.message);
+        }
+
+        async function loginWithFacebook() {
+            const { data, error } = await _supabase.auth.signInWithOAuth({ provider: 'facebook' });
+            if (error) alert("Facebook লগইন এ সমস্যা হয়েছে: " + error.message);
+        }
+
+        async function handleRegister() {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+
+            if(!email || password.length < 6) {
+                alert("সঠিক ইমেইল দিন এবং পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।");
+                return;
+            }
+
+            const { data, error } = await _supabase.auth.signUp({ email: email, password: password });
+            if (error) {
+                alert("ত্রুটি: " + error.message);
+            } else {
+                alert("সফলভাবে রেজিস্ট্রেশন হয়েছে! অনুগ্রহ করে আপনার ইমেইলের ইনবক্স চেক করে অ্যাকাউন্টটি ভেরিফাই করুন।");
+            }
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+
+            if(!email || !password) {
+                alert("ইমেইল এবং পাসওয়ার্ড দুটিই দিতে হবে।");
+                return;
+            }
+
+            const { data, error } = await _supabase.auth.signInWithPassword({ email: email, password: password });
+            if (error) {
+                alert("লগইন ব্যর্থ হয়েছে: " + error.message);
+            } else {
+                alert("সফলভাবে লগইন হয়েছে!");
+                renderProfileSection();
+            }
+        }
+
+        async function logoutUser() {
+            const { error } = await _supabase.auth.signOut();
+            if (!error) {
+                currentUser = null;
+                alert("সফলভাবে লগআউট করা হয়েছে।");
+                renderProfileSection();
+                updateHeaderBadge();
+            }
         }
 
         function updateHeaderBadge() {
-            const name = localStorage.getItem('portalUserName');
             const badge = document.getElementById('mobile-user-badge');
-            if (name) {
-                badge.innerText = name.substring(0, 2).toUpperCase();
+            if (currentUser && currentUser.email) {
+                badge.innerText = currentUser.email.substring(0, 2).toUpperCase();
             } else {
-                badge.innerText = "MD";
+                badge.innerHTML = '<i class="fa-solid fa-user"></i>';
             }
         }
 
@@ -339,6 +384,24 @@
             try {
                 const response = await fetch(API_URL);
                 const data = await response.json(); 
+
+                // Breaking News
+                if(data["Breaking News"]) {
+                    const marqueeElement = document.getElementById('breaking-news-marquee');
+                    let breakingText = "";
+                    data["Breaking News"].forEach(item => {
+                        const title = item.Title || item.title;
+                        if (title) {
+                            breakingText += ` 👉 ${title} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `;
+                        }
+                    });
+                    
+                    if(breakingText !== "") {
+                        marqueeElement.innerHTML = breakingText;
+                    } else {
+                        marqueeElement.innerHTML = "বর্তমানে কোনো ব্রেকিং নিউজ নেই।";
+                    }
+                }
 
                 // News
                 if(data.News) {
@@ -399,19 +462,25 @@
                     quizContainer.innerHTML = ''; 
                     
                     globalQuizData.forEach((quiz, index) => {
-                        if (!quiz.Question) return;
+                        const qQuestion = quiz.Question || quiz.question;
+                        const qId = quiz.Id || quiz.id || (index + 1);
+                        const qOpt1 = quiz.Option1 || quiz.option1 || quiz.OptionA || quiz.optionA;
+                        const qOpt2 = quiz.Option2 || quiz.option2 || quiz.OptionB || quiz.optionB;
+                        
+                        if (!qQuestion) return;
+
                         quizContainer.innerHTML += `
                         <div class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md w-full">
                             <div class="flex justify-between items-center mb-4">
-                                <span class="text-xs text-emerald-400 font-bold">মক টেস্ট #${quiz.Id || (index + 1)}</span>
+                                <span class="text-xs text-emerald-400 font-bold">মক টেস্ট #${qId}</span>
                             </div>
-                            <h3 class="font-semibold text-base md:text-lg text-white mb-5">প্রশ্ন: ${quiz.Question}</h3>
+                            <h3 class="font-semibold text-base md:text-lg text-white mb-5">প্রশ্ন: ${qQuestion}</h3>
                             <div class="space-y-3 mb-6">
                                 <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400/50 transition">
-                                    <input type="radio" name="quiz_group_${index}" value="${quiz.Option1}" class="accent-emerald-500"> ${quiz.Option1}
+                                    <input type="radio" name="quiz_group_${index}" value="${qOpt1}" class="accent-emerald-500"> ${qOpt1}
                                 </label>
                                 <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400/50 transition">
-                                    <input type="radio" name="quiz_group_${index}" value="${quiz.Option2}" class="accent-emerald-500"> ${quiz.Option2}
+                                    <input type="radio" name="quiz_group_${index}" value="${qOpt2}" class="accent-emerald-500"> ${qOpt2}
                                 </label>
                             </div>
                             <button onclick="submitSingleQuiz(${index})" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-xl text-xs font-bold transition shadow-md">উত্তর জমা দিন</button>
@@ -426,15 +495,14 @@
         }
 
         // ==========================================
-        // 5. QUIZ INTERCEPTION (MANDATORY LOGIN CHECK)
+        // 5. QUIZ INTERCEPTION
         // ==========================================
-        function submitSingleQuiz(index) {
-            const loggedInUser = localStorage.getItem('portalUserEmail');
+        async function submitSingleQuiz(index) {
+            const { data: { user } } = await _supabase.auth.getUser();
             
-            // যদি ইউজার রেজিস্টার করা না থাকে, তবে পপআপ দেখাবে
-            if (!loggedInUser) {
-                alert("কুইজের উত্তর জমা দেওয়ার জন্য প্রথমে নাম ও ইমেইল দিয়ে রেজিস্ট্রেশন করতে হবে!");
-                triggerRegisterPopup();
+            if (!user) {
+                alert("কুইজের উত্তর জমা দেওয়ার জন্য আপনাকে প্রথমে লগইন বা রেজিস্ট্রেশন করতে হবে!");
+                showSection('profile', null); 
                 return;
             }
 
@@ -455,8 +523,10 @@
             }
 
             const currentQuiz = globalQuizData[index];
-            if (currentQuiz.CorrectAnswer) {
-                if (selectedVal.trim().toLowerCase() === currentQuiz.CorrectAnswer.trim().toLowerCase()) {
+            const correctAns = currentQuiz.CorrectAnswer || currentQuiz.correctanswer;
+            
+            if (correctAns) {
+                if (selectedVal.trim().toLowerCase() === correctAns.trim().toLowerCase()) {
                     resultDiv.className = "mt-3 text-xs font-semibold text-emerald-400";
                     resultDiv.innerText = "অভিনন্দন! আপনার উত্তরটি সঠিক হয়েছে।";
                 } else {
@@ -470,7 +540,9 @@
         }
 
         // Initialization on Load
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
+            await checkUserStatus(); 
+
             const hash = window.location.hash.replace('#', '');
             if (hash && document.getElementById(hash)) {
                 showSection(hash, null);
@@ -478,7 +550,6 @@
                 showSection('home', null);
             }
 
-            updateHeaderBadge();
             loadAllData();
         });
     </script>
