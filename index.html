@@ -52,6 +52,7 @@
 
     <!-- Floating AI Chatbot -->
     <div id="ai-chat-container" class="fixed bottom-6 right-6 z-50">
+        <!-- চ্যাট উইন্ডো ডিফল্টভাবে hide থাকবে -->
         <div id="chat-window" class="hide w-80 h-96 glass bg-slate-900 border border-white/20 rounded-3xl flex flex-col p-5 shadow-2xl mb-4">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold flex items-center gap-2"><i class="fa-solid fa-robot text-blue-400"></i> AI Assistant</h3>
@@ -65,21 +66,37 @@
                 <button onclick="askGemini()" class="bg-blue-600 px-4 rounded-xl hover:bg-blue-700"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
+        <!-- রোবট আইকন বাটন -->
         <button onclick="toggleChat()" class="bg-blue-600 w-16 h-16 rounded-full shadow-2xl hover:scale-110 transition flex items-center justify-center">
             <i class="fa-solid fa-robot text-2xl"></i>
         </button>
     </div>
 
     <script>
-        // AI Logic
-        function toggleChat() { document.getElementById('chat-window').classList.toggle('hide'); }
+        // AI Chat Toggle Logic
+        function toggleChat() { 
+            document.getElementById('chat-window').classList.toggle('hide'); 
+        }
 
+        // Gemini API Call with Dynamic API Key prompt
         async function askGemini() {
-            const query = document.getElementById('userQuery').value;
+            const queryInput = document.getElementById('userQuery');
+            const query = queryInput.value.trim();
+            if(!query) return;
+
             const history = document.getElementById('chat-history');
-            const apiKey = ""; // এখানে আপনার API Key বসান
+            
+            // ব্রাউজারে API Key সেভ করা আছে কি না চেক করা, না থাকলে প্রম্পট দিয়ে নেওয়া
+            let apiKey = localStorage.getItem('gemini_api_key');
+            if (!apiKey) {
+                apiKey = prompt("আপনার Google Gemini API Key দিন (এটি শুধু একবারই দিতে হবে):");
+                if (!apiKey) return;
+                localStorage.setItem('gemini_api_key', apiKey.trim());
+            }
             
             history.innerHTML += `<p class="text-right text-white"><b>You:</b> ${query}</p>`;
+            queryInput.value = '';
+            history.scrollTop = history.scrollHeight;
             
             try {
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
@@ -88,12 +105,18 @@
                     body: JSON.stringify({ contents: [{ parts: [{ text: query }] }] })
                 });
                 const data = await response.json();
-                const aiReply = data.candidates[0].content.parts[0].text;
-                history.innerHTML += `<p class="text-left text-blue-300"><b>AI:</b> ${aiReply}</p>`;
+                
+                if(data.candidates && data.candidates[0].content) {
+                    const aiReply = data.candidates[0].content.parts[0].text;
+                    history.innerHTML += `<p class="text-left text-blue-300"><b>AI:</b> ${aiReply}</p>`;
+                } else {
+                    history.innerHTML += `<p class="text-red-400">Error: ভুল API Key দিয়েছেন। আবার কি সেট করতে চাইলে ব্রাউজারের লোকাল স্টোরেজ ক্লিয়ার করুন।</p>`;
+                    localStorage.removeItem('gemini_api_key');
+                }
             } catch (e) {
-                history.innerHTML += `<p class="text-red-400">Error: API Key চেক করুন।</p>`;
+                history.innerHTML += `<p class="text-red-400">Error: নেটওয়ার্ক সমস্যা বা ইনভ্যালিড কি।</p>`;
             }
-            document.getElementById('userQuery').value = '';
+            history.scrollTop = history.scrollHeight;
         }
 
         // Section Logic
