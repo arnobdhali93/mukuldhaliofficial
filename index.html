@@ -13,7 +13,6 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -63,32 +62,37 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+        .bg-custom-image {
+            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.80)), 
+                        url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative">
+<body class="bg-custom-image text-slate-100 min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative">
 
-    <!-- Mobile Header -->
-    <header class="md:hidden bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 px-4 py-3 flex items-center justify-between shadow-xs">
+    <header class="md:hidden bg-slate-950/40 backdrop-blur-md border-b border-white/10 sticky top-0 z-50 px-4 py-3 flex items-center justify-between shadow-xs">
         <div class="flex items-center gap-3">
-            <button onclick="toggleSidebar()" class="text-slate-700 hover:text-black text-lg focus:outline-none p-2 rounded-xl bg-slate-100 border border-slate-200 transition active:scale-95">
+            <button onclick="toggleSidebar()" class="text-slate-200 hover:text-white text-lg focus:outline-none p-2 rounded-xl bg-white/10 border border-white/10 transition active:scale-95">
                 <i class="fa-solid fa-bars"></i>
             </button>
-            <span class="menu-font font-bold tracking-wider text-brand-600 text-base">mukuldhaliofficial</span>
+            <span class="menu-font font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 text-lg">mukuldhaliofficial</span>
         </div>
         <div id="mobile-user-badge" onclick="showSection('profile', event)" class="w-9 h-9 rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 font-bold text-xs menu-font cursor-pointer hover:bg-brand-100 transition shadow-xs">
-            MD
+            <i class="fa-solid fa-user"></i>
         </div>
     </header>
 
-    <!-- Sidebar Navigation -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 transform -translate-x-full md:translate-x-0 md:static md:inset-auto transition-transform duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none">
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-slate-950/80 backdrop-blur-2xl border-r border-white/10 transform -translate-x-full md:translate-x-0 md:static md:inset-auto transition-transform duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none">
         
-        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+        <div class="p-6 border-b border-white/10 flex items-center justify-between">
             <div>
-                <h1 class="menu-font text-lg font-black tracking-tight text-brand-600">mukuldhaliofficial</h1>
-                <p class="menu-font text-[11px] text-slate-400 tracking-wide mt-0.5">Digital Learning Platform</p>
+                <h1 class="menu-font text-lg font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">mukuldhaliofficial</h1>
+                <p class="menu-font text-[11px] text-slate-300 tracking-wide mt-0.5">Digital Learning Platform</p>
             </div>
-            <button onclick="toggleSidebar()" class="md:hidden text-slate-500 hover:text-slate-800 text-lg p-2 rounded-lg hover:bg-slate-100">
+            <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white text-lg p-2 rounded-lg hover:bg-white/10">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
@@ -97,139 +101,118 @@
             <button onclick="showSection('home', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold transition-all bg-brand-600 text-white shadow-lg shadow-brand-600/20">
                 <i class="fa-solid fa-house w-5 text-center"></i> Home
             </button>
-            <button onclick="showSection('news', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 hover:bg-slate-50 hover:text-brand-600">
+            <button onclick="showSection('news', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-300 hover:bg-white/10 hover:text-white">
                 <i class="fa-solid fa-newspaper w-5 text-center"></i> Education News
             </button>
-            <button onclick="showSection('quiz', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 hover:bg-slate-50 hover:text-brand-600">
+            <button onclick="showSection('quiz', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-300 hover:bg-white/10 hover:text-white">
                 <i class="fa-solid fa-brain w-5 text-center"></i> Quiz Exam
             </button>
-            <button onclick="showSection('books', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 hover:bg-slate-50 hover:text-brand-600">
+            <button onclick="showSection('books', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-300 hover:bg-white/10 hover:text-white">
                 <i class="fa-solid fa-book w-5 text-center"></i> Free E-Books
             </button>
-            <button onclick="showSection('stories', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 hover:bg-slate-50 hover:text-brand-600">
+            <button onclick="showSection('stories', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-300 hover:bg-white/10 hover:text-white">
                 <i class="fa-solid fa-feather w-5 text-center"></i> Bangla Stories
             </button>
-            <button onclick="showSection('profile', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 hover:bg-slate-50 hover:text-brand-600">
+            <button onclick="showSection('profile', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-300 hover:bg-white/10 hover:text-white">
                 <i class="fa-solid fa-user-shield w-5 text-center"></i> My Profile
             </button>
         </nav>
 
-        <div class="p-4 border-t border-slate-100 m-4 rounded-2xl bg-slate-50/80 border border-slate-200/60 flex items-center justify-between">
+        <div class="p-4 border-t border-white/10 m-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></div>
-                <span class="menu-font text-xs text-slate-600 font-medium">System Online</span>
+                <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
+                <span class="menu-font text-xs text-slate-300 font-medium">System Online</span>
             </div>
             <span class="text-[10px] text-slate-400 font-mono">v2.6</span>
         </div>
     </aside>
 
-    <!-- Backdrop for Mobile Sidebar -->
-    <div id="backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 hidden md:hidden transition-opacity"></div>
+    <div id="backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
 
-    <!-- Main Content Area -->
     <main class="flex-1 flex flex-col min-h-screen w-full overflow-hidden">
         
-        <!-- Breaking News Marquee Section -->
-        <div class="bg-brand-600 text-white py-2.5 px-4 flex items-center gap-3 shadow-xs">
-            <span class="bg-white text-brand-700 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider flex-shrink-0 shadow-xs">
-                <i class="fa-solid fa-bullhorn mr-1"></i> ব্রেকিং নিউজ
-            </span>
-            <marquee id="breaking-news-text" class="text-xs md:text-sm font-medium">
-                👉 mukuldhaliofficial পোর্টালে স্বাগতম! নিয়মিত মক টেস্ট এবং নতুন আপডেট পেতে আমাদের সাথে থাকুন।
+        <div class="bg-slate-950/80 border-b border-emerald-500/20 py-2.5 px-4 flex items-center gap-3 backdrop-blur-md">
+            <span class="bg-emerald-600 text-white px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider flex-shrink-0">ব্রেকিং নিউজ</span>
+            <marquee id="breaking-news-text" class="text-slate-300 text-xs md:text-sm font-medium">
+                খবর লোড হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন।
             </marquee>
         </div>
 
-        <div class="p-4 md:p-12 max-w-6xl mx-auto w-full flex-1">
+        <div class="p-4 md:p-12 max-w-6xl mx-auto w-full flex-1 overflow-y-auto">
 
-            <!-- Home Section -->
-            <section id="home" class="section-content space-y-8">
-                <div class="p-8 md:p-12 rounded-3xl bg-gradient-to-br from-white to-brand-50/50 border border-slate-200/80 shadow-sm space-y-6 relative overflow-hidden">
-                    <div class="absolute -right-10 -bottom-10 text-brand-100/60 text-9xl pointer-events-none select-none">
-                        <i class="fa-solid fa-graduation-cap"></i>
-                    </div>
-                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-100/70 border border-brand-200 text-brand-700 text-xs font-semibold tracking-wide">
-                        <i class="fa-solid fa-sparkles"></i> প্রিমিয়াম এডুকেশন হাব
-                    </div>
-                    <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-snug">
-                        স্বাগতম <span class="text-brand-600">mukuldhaliofficial</span> পোর্টালে
-                    </h2>
-                    <p class="text-slate-600 leading-relaxed text-sm md:text-base font-normal max-w-3xl">
-                         ছাত্রছাত্রীদের জন্য এটি একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম। পশ্চিমবঙ্গ মধ্যশিক্ষা পর্ষদ, উচ্চমাধ্যমিক সংসদ এবং সিবিএসই বোর্ডের যাবতীয় আপডেট, বই এবং শিক্ষামূলক কন্টেন্ট এখানে খুব সহজেই পাবেন।
-                    </p>
-                    <div class="flex flex-wrap gap-4 pt-2">
-                        <button onclick="showSection('quiz', null)" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-xl text-xs font-bold transition shadow-md shadow-brand-600/20 flex items-center gap-2">
-                            <i class="fa-solid fa-brain"></i> কুইজ মক টেস্ট দিন
-                        </button>
-                        <button onclick="showSection('books', null)" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-6 py-3 rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-2">
-                            <i class="fa-solid fa-book"></i> ফ্রি বই ডাউনলোড করুন
-                        </button>
-                    </div>
+            <section id="home" class="section-content space-y-6">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold tracking-wide backdrop-blur-md">
+                    <i class="fa-solid fa-sparkles"></i> প্রিমিয়াম এডুকেশন হাব
                 </div>
-
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-xs text-center space-y-1">
-                        <div class="text-brand-600 text-xl font-bold"><i class="fa-solid fa-newspaper"></i></div>
-                        <h4 class="font-bold text-slate-800 text-sm">প্রতিদিনের নিউজ</h4>
-                        <p class="text-[11px] text-slate-500">বোর্ড ও শিক্ষামূলক আপডেট</p>
+                <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight leading-snug drop-shadow-md">
+                    স্বাগতম <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">mukuldhaliofficial</span> পোর্টালে
+                </h2>
+                <p class="text-slate-200 leading-relaxed text-sm md:text-base font-normal drop-shadow">
+                     ছাত্রছাত্রীদের জন্য এটি একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম। পশ্চিমবঙ্গ মধ্যশিক্ষা পর্ষদ, উচ্চমাধ্যমিক সংসদ এবং সিবিএসই বোর্ডের যাবতীয় আপডেট, বই এবং শিক্ষামূলক কন্টেন্ট এখানে পাবেন।
+                </p>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+                    <div class="p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md text-center space-y-1">
+                        <div class="text-emerald-400 text-xl font-bold"><i class="fa-solid fa-newspaper"></i></div>
+                        <h4 class="font-bold text-white text-sm">প্রতিদিনের নিউজ</h4>
+                        <p class="text-[11px] text-slate-400">বোর্ড ও শিক্ষামূলক আপডেট</p>
                     </div>
-                    <div class="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-xs text-center space-y-1">
-                        <div class="text-brand-600 text-xl font-bold"><i class="fa-solid fa-brain"></i></div>
-                        <h4 class="font-bold text-slate-800 text-sm">অনলাইন কুইজ</h4>
-                        <p class="text-[11px] text-slate-500">নিজেকে যাচাই করুন</p>
+                    <div class="p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md text-center space-y-1">
+                        <div class="text-emerald-400 text-xl font-bold"><i class="fa-solid fa-brain"></i></div>
+                        <h4 class="font-bold text-white text-sm">অনলাইন কুইজ</h4>
+                        <p class="text-[11px] text-slate-400">নিজেকে যাচাই করুন</p>
                     </div>
-                    <div class="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-xs text-center space-y-1">
-                        <div class="text-brand-600 text-xl font-bold"><i class="fa-solid fa-book"></i></div>
-                        <h4 class="font-bold text-slate-800 text-sm">ফ্রি ই-বুক</h4>
-                        <p class="text-[11px] text-slate-500">সহজে পিডিএফ সংগ্রহ</p>
+                    <div class="p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md text-center space-y-1">
+                        <div class="text-emerald-400 text-xl font-bold"><i class="fa-solid fa-book"></i></div>
+                        <h4 class="font-bold text-white text-sm">ফ্রি ই-বুক</h4>
+                        <p class="text-[11px] text-slate-400">সহজে পিডিএফ সংগ্রহ</p>
                     </div>
-                    <div class="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-xs text-center space-y-1">
-                        <div class="text-brand-600 text-xl font-bold"><i class="fa-solid fa-feather"></i></div>
-                        <h4 class="font-bold text-slate-800 text-sm">বাংলা গল্প</h4>
-                        <p class="text-[11px] text-slate-500">সাহিত্য ও পঠন পাঠন</p>
+                    <div class="p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md text-center space-y-1">
+                        <div class="text-emerald-400 text-xl font-bold"><i class="fa-solid fa-feather"></i></div>
+                        <h4 class="font-bold text-white text-sm">বাংলা গল্প</h4>
+                        <p class="text-[11px] text-slate-400">সাহিত্য ও পঠন পাঠন</p>
                     </div>
                 </div>
             </section>
 
-            <!-- News Section -->
             <section id="news" class="section-content hidden space-y-6">
-                <h2 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight border-b border-slate-200 pb-4 flex items-center gap-3">
-                    <i class="fa-solid fa-newspaper text-brand-600 text-xl"></i> ভারতীয় শিক্ষা ও বোর্ড নিউজ
+                <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3">
+                    <i class="fa-solid fa-newspaper text-emerald-400 text-xl"></i> ভারতীয় শিক্ষা ও বোর্ড নিউজ
                 </h2>
                 <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="col-span-full text-center py-16 bg-white rounded-2xl border border-slate-200">
-                        <i class="fa-solid fa-circle-notch fa-spin text-brand-600 text-3xl mb-3"></i>
-                        <p class="text-slate-500 text-sm">খবর লোড হচ্ছে...</p>
+                    <div class="col-span-full text-center py-16 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md">
+                        <i class="fa-solid fa-circle-notch fa-spin text-emerald-400 text-3xl mb-3"></i>
+                        <p class="text-slate-300 text-sm">খবর লোড হচ্ছে...</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Quiz Section -->
             <section id="quiz" class="section-content hidden space-y-6">
-                <h2 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight border-b border-slate-200 pb-4 flex items-center gap-3">
-                    <i class="fa-solid fa-brain text-brand-600 text-xl"></i> অনলাইন কুইজ ও মক টেস্ট
+                <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3">
+                    <i class="fa-solid fa-brain text-emerald-400 text-xl"></i> অনলাইন কুইজ ও মক টেস্ট
                 </h2>
                 
                 <div id="quiz-subject-view" class="space-y-4">
-                    <p class="text-slate-500 text-xs md:text-sm">নিচের যেকোনো বিষয়ে ক্লিক করে কুইজ পরীক্ষা শুরু করুন:</p>
+                    <p class="text-slate-300 text-xs md:text-sm">নিচের যেকোনো বিষয়ে ক্লিক করে কুইজ পরীক্ষা শুরু করুন:</p>
                     <div id="quiz-subjects-container" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="text-center py-16 col-span-full bg-white rounded-2xl border border-slate-200">
-                            <i class="fa-solid fa-circle-notch fa-spin text-brand-600 text-3xl mb-3"></i>
-                            <p class="text-slate-500 text-sm">বিষয়ের তালিকা লোড হচ্ছে...</p>
+                        <div class="text-center py-16 col-span-full bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md">
+                            <i class="fa-solid fa-circle-notch fa-spin text-emerald-400 text-3xl mb-3"></i>
+                            <p class="text-slate-300 text-sm">বিষয়ের তালিকা লোড হচ্ছে...</p>
                         </div>
                     </div>
                 </div>
 
-                <div id="quiz-exam-view" class="hidden space-y-6 max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm">
-                    <div class="flex flex-wrap justify-between items-center pb-4 border-b border-slate-100 gap-2">
-                        <button onclick="backToQuizSubjects()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5">
-                            <i class="fa-solid fa-arrow-left"></i> বিষয়সমূহে ফিরে যান
+                <div id="quiz-exam-view" class="hidden space-y-6 max-w-2xl mx-auto bg-white/5 p-6 md:p-8 rounded-2xl border border-white/10 backdrop-blur-md shadow-sm">
+                    <div class="flex flex-wrap justify-between items-center pb-4 border-b border-white/10 gap-2">
+                        <button onclick="backToQuizSubjects()" class="text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-arrow-left"></i> বিষয়সমূহে ফিরে যান
                         </button>
-                        <div id="quiz-timer-box" class="flex items-center gap-2 bg-brand-50 text-brand-700 px-3.5 py-1.5 rounded-lg text-xs font-bold border border-brand-200">
-                            <i class="fa-solid fa-clock"></i> সময় বাকি: <span id="time-remaining">02:00</span>
+                        <div id="quiz-timer-box" class="flex items-center gap-2 bg-emerald-500/20 text-emerald-300 px-3.5 py-1.5 rounded-lg text-xs font-bold border border-emerald-500/30">
+                            <i class="fa-solid fa-clock"></i> সময় বাকি: <span id="time-remaining">02:00</span>
                         </div>
                     </div>
 
-                    <div id="active-quiz-title" class="text-lg font-bold text-slate-900"></div>
+                    <div id="active-quiz-title" class="text-lg font-bold text-emerald-400"></div>
 
                     <div id="active-questions-container" class="space-y-6"></div>
 
@@ -238,76 +221,71 @@
                     </button>
                 </div>
 
-                <div id="quiz-result-view" class="hidden space-y-6 max-w-md mx-auto bg-white p-8 rounded-2xl border border-slate-200 shadow-sm text-center">
-                    <div class="w-16 h-16 bg-brand-50 text-brand-600 rounded-full flex items-center justify-center mx-auto text-2xl border border-brand-200 shadow-sm">
+                <div id="quiz-result-view" class="hidden space-y-6 max-w-md mx-auto bg-white/5 p-8 rounded-2xl border border-white/10 backdrop-blur-md text-center">
+                    <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-2xl border border-emerald-500/30 shadow-sm">
                         <i class="fa-solid fa-trophy"></i>
                     </div>
-                    <h3 class="text-xl font-black text-slate-900">পরীক্ষা সম্পন্ন হয়েছে!</h3>
-                    <div id="score-display-box" class="text-sm font-bold text-brand-700 bg-slate-50 p-4 rounded-xl border border-slate-100 leading-relaxed"></div>
+                    <h3 class="text-xl font-black text-white">পরীক্ষা সম্পন্ন হয়েছে!</h3>
+                    <div id="score-display-box" class="text-sm font-bold text-emerald-300 bg-black/30 p-4 rounded-xl border border-white/10 leading-relaxed"></div>
                     <button onclick="backToQuizSubjects()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-sm">
-                        অন্য বিষয় নির্বাচন করুন
+                        অন্য বিষয় নির্বাচন করুন
                     </button>
                 </div>
             </section>
 
-            <!-- Books Section -->
             <section id="books" class="section-content hidden space-y-6">
-                <h2 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight border-b border-slate-200 pb-4 flex items-center gap-3">
-                    <i class="fa-solid fa-book text-brand-600 text-xl"></i> অনলাইন ফ্রি বই (NCERT ও পর্ষদ)
+                <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3">
+                    <i class="fa-solid fa-book text-emerald-400 text-xl"></i> অনলাইন ফ্রি বই (NCERT ও পর্ষদ)
                 </h2>
                 <div id="books-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="col-span-full text-center py-16 bg-white rounded-2xl border border-slate-200">
-                        <i class="fa-solid fa-circle-notch fa-spin text-brand-600 text-3xl mb-3"></i>
-                        <p class="text-slate-500 text-sm">বইয়ের তালিকা লোড হচ্ছে...</p>
+                    <div class="col-span-full text-center py-16 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md">
+                        <i class="fa-solid fa-circle-notch fa-spin text-emerald-400 text-3xl mb-3"></i>
+                        <p class="text-slate-300 text-sm">বইয়ের তালিকা লোড হচ্ছে...</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Stories Section -->
             <section id="stories" class="section-content hidden space-y-6">
-                <h2 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight border-b border-slate-200 pb-4 flex items-center gap-3">
-                    <i class="fa-solid fa-feather text-brand-600 text-xl"></i> বাংলা গল্প ও সাহিত্য
+                <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3">
+                    <i class="fa-solid fa-feather text-emerald-400 text-xl"></i> বাংলা গল্প ও সাহিত্য
                 </h2>
                 <div id="stories-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="col-span-full text-center py-16 bg-white rounded-2xl border border-slate-200">
-                        <i class="fa-solid fa-circle-notch fa-spin text-brand-600 text-3xl mb-3"></i>
-                        <p class="text-slate-500 text-sm">গল্প লোড হচ্ছে...</p>
+                    <div class="col-span-full text-center py-16 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md">
+                        <i class="fa-solid fa-circle-notch fa-spin text-emerald-400 text-3xl mb-3"></i>
+                        <p class="text-slate-300 text-sm">গল্প লোড হচ্ছে...</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Profile Section -->
             <section id="profile" class="section-content hidden space-y-6">
-                <h2 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight border-b border-slate-200 pb-4 flex items-center gap-3">
-                    <i class="fa-solid fa-user-shield text-brand-600 text-xl"></i> আমার প্রোফাইল
+                <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight border-b border-white/10 pb-4 flex items-center gap-3">
+                    <i class="fa-solid fa-user-shield text-emerald-400 text-xl"></i> আমার প্রোফাইল
                 </h2>
-                <div id="profile-content" class="p-6 md:p-8 rounded-2xl border border-slate-200 bg-white shadow-sm max-w-md space-y-4 mx-auto"></div>
+                <div id="profile-content" class="p-6 md:p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md max-w-md space-y-4 mx-auto"></div>
             </section>
 
         </div>
     </main>
 
-    <!-- Floating AI Chatbot -->
     <div class="fixed bottom-6 right-6 z-50">
-        <div id="chat-window" class="hidden w-80 h-96 bg-white border border-slate-200 rounded-3xl flex flex-col p-4 shadow-2xl mb-4">
-            <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-100">
-                <h3 class="font-bold flex items-center gap-2 text-slate-800 text-sm"><i class="fa-solid fa-robot text-brand-600"></i> AI Assistant</h3>
+        <div id="chat-window" class="hidden w-80 h-96 bg-slate-900 border border-slate-700 rounded-3xl flex flex-col p-4 shadow-2xl mb-4">
+            <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-800">
+                <h3 class="font-bold flex items-center gap-2 text-white text-sm"><i class="fa-solid fa-robot text-brand-500"></i> AI Assistant</h3>
                 <div class="flex items-center gap-2">
-                    <button onclick="resetApiKey()" title="Reset Key" class="text-[10px] text-red-500 bg-red-50 px-2 py-0.5 rounded hover:bg-red-100 font-semibold">Reset</button>
-                    <button onclick="toggleChat()" class="text-slate-400 hover:text-slate-700 p-1"><i class="fa-solid fa-xmark"></i></button>
+                    <button onclick="toggleChat()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark"></i></button>
                 </div>
             </div>
-            <div id="chat-history" class="flex-1 overflow-y-auto space-y-3 mb-3 text-xs text-slate-600 pr-1">
-                <p class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">হ্যালো! আমি আপনার এআই অ্যাসিস্ট্যান্ট। যেকোনো প্রশ্ন করুন।</p>
+            <div id="chat-history" class="flex-1 overflow-y-auto space-y-3 mb-3 text-xs text-slate-300 pr-1">
+                <p class="bg-slate-800 p-2.5 rounded-xl border border-slate-700">হ্যালো! আমি আপনার এআই অ্যাসিস্ট্যান্ট। যেকোনো প্রশ্ন করুন।</p>
             </div>
             <div class="flex gap-2">
-                <input id="userQuery" type="text" placeholder="প্রশ্ন করুন..." class="flex-1 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-xs outline-none focus:border-brand-600" onkeydown="if(event.key === 'Enter') askGemini()">
+                <input id="userQuery" type="text" placeholder="প্রশ্ন করুন..." class="flex-1 p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs outline-none focus:border-brand-500" onkeydown="if(event.key === 'Enter') askGemini()">
                 <button onclick="askGemini()" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2.5 rounded-xl text-xs transition shadow-sm"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
         <button onclick="toggleChat()" class="bg-brand-600 hover:bg-brand-700 text-white w-14 h-14 rounded-full shadow-lg hover:scale-105 transition flex items-center justify-center relative">
             <i class="fa-solid fa-robot text-xl"></i>
-            <span class="absolute top-0 right-0 w-3.5 h-3.5 bg-emerald-400 border-2 border-white rounded-full"></span>
+            <span class="absolute top-0 right-0 w-3.5 h-3.5 bg-emerald-400 border-2 border-slate-900 rounded-full"></span>
         </button>
     </div>
 
@@ -321,12 +299,17 @@
         const { createClient } = supabase;
         const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // Google Sheet Apps Script API URL
         const API_URL = "https://script.google.com/macros/s/AKfycbxl0VdkZHzuRP-fLU8CasftjRDNsvqyyJTDRvB2VRO9J4uHo3Ld1rtbajVAC_5C9nIlYw/exec"; 
+
+        // তোমার Google AI Studio থেকে পাওয়া আসল API Key (যা AIza... দিয়ে শুরু হয়) ঠিক এখানে বসাও:
+        const GEMINI_API_KEY = "এখানে_তোমার_GEMINI_API_KEY_বসাও";
 
         let groupedQuizData = {};
         let currentActiveSubject = null;
         let examTimer = null;
         let timeLeftSeconds = 120;
+        let currentUser = null;
 
         // ==========================================
         // 2. UI NAVIGATION & STATE MANAGEMENT
@@ -338,10 +321,6 @@
             backdrop.classList.toggle('hidden');
         }
 
-        function toggleChat() {
-            document.getElementById('chat-window').classList.toggle('hidden');
-        }
-
         function showSection(sectionId, event) {
             const sections = document.querySelectorAll('.section-content');
             sections.forEach(sec => sec.classList.add('hidden'));
@@ -349,19 +328,19 @@
             const buttons = document.querySelectorAll('.nav-btn');
             buttons.forEach(btn => {
                 btn.classList.remove('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/20');
-                btn.classList.add('text-slate-600', 'hover:bg-slate-50', 'hover:text-brand-600');
+                btn.classList.add('text-slate-300', 'hover:bg-white/10', 'hover:text-white');
             });
 
             const targetSection = document.getElementById(sectionId);
             if (targetSection) targetSection.classList.remove('hidden');
 
             if (event) {
-                event.currentTarget.classList.remove('text-slate-600', 'hover:bg-slate-50', 'hover:text-brand-600');
+                event.currentTarget.classList.remove('text-slate-300', 'hover:bg-white/10', 'hover:text-white');
                 event.currentTarget.classList.add('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/20');
             } else {
                 const targetBtn = document.querySelector(`button[onclick*="${sectionId}"]`);
                 if (targetBtn) {
-                    targetBtn.classList.remove('text-slate-600', 'hover:bg-slate-50', 'hover:text-brand-600');
+                    targetBtn.classList.remove('text-slate-300', 'hover:bg-white/10', 'hover:text-white');
                     targetBtn.classList.add('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/20');
                 }
             }
@@ -381,121 +360,7 @@
         }
 
         // ==========================================
-        // 3. AI ASSISTANT (GEMINI API)
-        // ==========================================
-        function resetApiKey() {
-            localStorage.removeItem('AQ.Ab8RN6KRKitrPXHj8pgSSzDgAE5Uu49IJmp_UyD9Jeko6UhTyQ');
-            alert("API Key সফলভাবে রিসেট করা হয়েছে।");
-        }
-
-        async function askGemini() {
-            const queryInput = document.getElementById('userQuery');
-            const query = queryInput.value.trim();
-            if(!query) return;
-
-            const history = document.getElementById('chat-history');
-            
-            let apiKey = localStorage.getItem('gemini_api_key');
-            if (!apiKey) {
-                apiKey = prompt("আপনার Google Gemini API Key দিন (Google AI Studio থেকে সংগ্রহ করুন):");
-                if (!apiKey) return;
-                localStorage.setItem('gemini_api_key', apiKey.trim());
-            }
-            
-            history.innerHTML += `<p class="text-right text-brand-700 bg-brand-50/60 p-2 rounded-xl"><b>You:</b> ${query}</p>`;
-            queryInput.value = '';
-            history.scrollTop = history.scrollHeight;
-            
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: query }] }] })
-                });
-                const data = await response.json();
-                
-                if(data.candidates && data.candidates[0].content) {
-                    const aiReply = data.candidates[0].content.parts[0].text;
-                    history.innerHTML += `<p class="text-left text-slate-800 bg-slate-50 p-2.5 rounded-xl border border-slate-100"><b>AI:</b> ${aiReply}</p>`;
-                } else {
-                    history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl">Error: ভুল API Key দিয়েছেন। Reset বাটনে ক্লিক করে সঠিক কি দিন।</p>`;
-                    localStorage.removeItem('gemini_api_key');
-                }
-            } catch (e) {
-                history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl">Error: সংযোগ স্থাপন করা যায়নি।</p>`;
-            }
-            history.scrollTop = history.scrollHeight;
-        }
-
-        // ==========================================
-        // 4. USER AUTHENTICATION & PROFILE
-        // ==========================================
-        function renderProfileSection() {
-            const profileContainer = document.getElementById('profile-content');
-            const loggedInUser = localStorage.getItem('portalUserEmail');
-            const loggedInName = localStorage.getItem('portalUserName');
-
-            if (loggedInUser) {
-                profileContainer.innerHTML = `
-                    <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-2xl bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 font-bold text-xl shadow-xs">
-                            ${loggedInName.substring(0, 2).toUpperCase()}
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-slate-900">${loggedInName}</h3>
-                            <p class="text-xs text-slate-500">${loggedInUser}</p>
-                        </div>
-                    </div>
-                    <div class="space-y-2 pt-2 border-t border-slate-100 text-xs menu-font">
-                        <p class="text-slate-600 flex justify-between"><span>Status:</span> <span class="text-brand-600 font-bold">Registered & Active</span></p>
-                    </div>
-                    <button onclick="logoutUser()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-full shadow-sm">লগআউট করুন</button>
-                `;
-            } else {
-                profileContainer.innerHTML = `
-                    <div class="text-center space-y-4 py-2">
-                        <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-brand-600 text-lg shadow-xs">
-                            <i class="fa-solid fa-user"></i>
-                        </div>
-                        <h3 class="font-bold text-slate-900 text-base">আপনার অ্যাকাউন্টে প্রবেশ করুন</h3>
-                        <p class="text-slate-500 text-xs">কুইজ ও অন্যান্য সুবিধা পেতে রেজিস্টার বা লগইন করুন।</p>
-                        <button onclick="triggerRegisterPopup()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-sm">রেজিস্ট্রেশন / লগইন করুন</button>
-                    </div>
-                `;
-            }
-            updateHeaderBadge();
-        }
-
-        function triggerRegisterPopup() {
-            const name = prompt("আপনার নাম লিখুন:");
-            if (!name) return;
-            const email = prompt("আপনার ইমেইল বা মোবাইল নম্বর লিখুন:");
-            if (!email) return;
-
-            localStorage.setItem('portalUserName', name);
-            localStorage.setItem('portalUserEmail', email);
-            
-            alert("অভিনন্দন! আপনার রেজিস্ট্রেশন সফল হয়েছে।");
-            renderProfileSection();
-        }
-
-        function logoutUser() {
-            localStorage.removeItem('portalUserName');
-            localStorage.removeItem('portalUserEmail');
-            renderProfileSection();
-            alert("সফলভাবে লগআউট করা হয়েছে।");
-        }
-
-        function updateHeaderBadge() {
-            const name = localStorage.getItem('portalUserName');
-            const badge = document.getElementById('mobile-user-badge');
-            if (badge) {
-                badge.innerText = name ? name.substring(0, 2).toUpperCase() : "MD";
-            }
-        }
-
-        // ==========================================
-        // 5. EXPANDABLE TEXT TOGGLE SYSTEM
+        // 3. EXPANDABLE TEXT TOGGLE SYSTEM
         // ==========================================
         function toggleExpandText(id, btnElement) {
             const descElement = document.getElementById(id);
@@ -511,6 +376,176 @@
         }
 
         // ==========================================
+        // 4. AI ASSISTANT (GEMINI API)
+        // ==========================================
+        function toggleChat() {
+            document.getElementById('chat-window').classList.toggle('hidden');
+        }
+
+        async function askGemini() {
+            const queryInput = document.getElementById('userQuery');
+            const query = queryInput.value.trim();
+            if(!query) return;
+
+            const history = document.getElementById('chat-history');
+            
+            history.innerHTML += `<p class="text-right text-emerald-300 bg-emerald-500/20 p-2 rounded-xl border border-emerald-500/30"><b>You:</b> ${query}</p>`;
+            queryInput.value = '';
+            history.scrollTop = history.scrollHeight;
+            
+            if (!GEMINI_API_KEY || GEMINI_API_KEY === "এখানে_তোমার_GEMINI_API_KEY_বসাও") {
+                history.innerHTML += `<p class="text-red-400 bg-red-500/20 p-2 rounded-xl border border-red-500/30">Error: কোডে API Key বসানো নেই!</p>`;
+                history.scrollTop = history.scrollHeight;
+                return;
+            }
+            
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: query }] }] })
+                });
+                const data = await response.json();
+                
+                if(data.candidates && data.candidates[0].content) {
+                    const aiReply = data.candidates[0].content.parts[0].text;
+                    history.innerHTML += `<p class="text-left text-white bg-slate-800 p-2.5 rounded-xl border border-slate-700"><b>AI:</b> ${aiReply}</p>`;
+                } else {
+                    history.innerHTML += `<p class="text-red-400 bg-red-500/20 p-2 rounded-xl">Error: API Key ভুল হতে পারে।</p>`;
+                }
+            } catch (e) {
+                history.innerHTML += `<p class="text-red-400 bg-red-500/20 p-2 rounded-xl">Error: সংযোগ স্থাপন করা যায়নি।</p>`;
+            }
+            history.scrollTop = history.scrollHeight;
+        }
+
+        // ==========================================
+        // 5. USER AUTHENTICATION & PROFILE
+        // ==========================================
+        async function checkUserStatus() {
+            const { data: { user } } = await _supabase.auth.getUser();
+            currentUser = user;
+            updateHeaderBadge();
+        }
+
+        async function renderProfileSection() {
+            const profileContainer = document.getElementById('profile-content');
+            profileContainer.innerHTML = `<div class="text-center py-4"><i class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-2xl"></i></div>`;
+            
+            await checkUserStatus();
+
+            if (currentUser) {
+                profileContainer.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-300 font-bold text-xl">
+                            ${currentUser.email ? currentUser.email.substring(0, 2).toUpperCase() : 'MD'}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-base text-white break-all">${currentUser.email || 'Social User'}</h3>
+                        </div>
+                    </div>
+                    <div class="space-y-2 pt-4 border-t border-white/10 text-xs menu-font mt-4">
+                        <p class="text-slate-200 flex justify-between"><span>Status:</span> <span class="text-emerald-400 font-bold">Verified User</span></p>
+                    </div>
+                    <button onclick="logoutUser()" class="bg-red-600/80 hover:bg-red-600 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-full shadow-lg mt-4">লগআউট করুন</button>
+                `;
+            } else {
+                profileContainer.innerHTML = `
+                    <div class="text-center space-y-3 mb-4">
+                        <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-lg">
+                            <i class="fa-solid fa-user-lock"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base">আপনার অ্যাকাউন্টে প্রবেশ করুন</h3>
+                        <p class="text-slate-300 text-[11px]">কুইজ ও অন্যান্য সুবিধা পেতে লগইন বা রেজিস্ট্রেশন করুন।</p>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex flex-col gap-2 mb-4 border-b border-white/10 pb-4">
+                            <button onclick="loginWithGoogle()" class="w-full bg-white text-slate-800 hover:bg-slate-200 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg">
+                                <i class="fa-brands fa-google text-red-500 text-base"></i> Google দিয়ে লগইন
+                            </button>
+                            <button onclick="loginWithFacebook()" class="w-full bg-[#1877F2] hover:bg-[#1865F2] text-white py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg">
+                                <i class="fa-brands fa-facebook text-white text-base"></i> Facebook দিয়ে লগইন
+                            </button>
+                        </div>
+                        <div class="text-center text-xs text-slate-400 mb-2">অথবা ইমেইল দিয়ে</div>
+                        <input type="email" id="auth-email" placeholder="আপনার ইমেইল" class="w-full bg-black/30 border border-white/10 text-white px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition">
+                        <input type="password" id="auth-password" placeholder="পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)" class="w-full bg-black/30 border border-white/10 text-white px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition">
+                        
+                        <div class="flex gap-3 pt-2">
+                            <button onclick="handleLogin()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-lg">লগইন</button>
+                            <button onclick="handleRegister()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-lg">রেজিস্ট্রেশন</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        async function loginWithGoogle() {
+            const { data, error } = await _supabase.auth.signInWithOAuth({ provider: 'google' });
+            if (error) alert("Google লগইন এ সমস্যা হয়েছে: " + error.message);
+        }
+
+        async function loginWithFacebook() {
+            const { data, error } = await _supabase.auth.signInWithOAuth({ provider: 'facebook' });
+            if (error) alert("Facebook লগইন এ সমস্যা হয়েছে: " + error.message);
+        }
+
+        async function handleRegister() {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+
+            if(!email || password.length < 6) {
+                alert("সঠিক ইমেইল দিন এবং পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।");
+                return;
+            }
+
+            const { data, error } = await _supabase.auth.signUp({ email: email, password: password });
+            if (error) {
+                alert("ত্রুটি: " + error.message);
+            } else {
+                alert("সফলভাবে রেজিস্ট্রেশন হয়েছে! অনুগ্রহ করে আপনার ইমেইলের ইনবক্স চেক করে অ্যাকাউন্টটি ভেরিফাই করুন।");
+            }
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+
+            if(!email || !password) {
+                alert("ইমেইল এবং পাসওয়ার্ড দুটিই দিতে হবে।");
+                return;
+            }
+
+            const { data, error } = await _supabase.auth.signInWithPassword({ email: email, password: password });
+            if (error) {
+                alert("লগইন ব্যর্থ হয়েছে: " + error.message);
+            } else {
+                alert("সফলভাবে লগইন হয়েছে!");
+                renderProfileSection();
+            }
+        }
+
+        async function logoutUser() {
+            const { error } = await _supabase.auth.signOut();
+            if (!error) {
+                currentUser = null;
+                alert("সফলভাবে লগআউট করা হয়েছে।");
+                renderProfileSection();
+                updateHeaderBadge();
+            }
+        }
+
+        function updateHeaderBadge() {
+            const badge = document.getElementById('mobile-user-badge');
+            if (currentUser && currentUser.email) {
+                badge.innerText = currentUser.email.substring(0, 2).toUpperCase();
+            } else {
+                badge.innerHTML = '<i class="fa-solid fa-user"></i>';
+            }
+        }
+
+        // ==========================================
         // 6. DATA FETCHING (GOOGLE SHEET API)
         // ==========================================
         async function loadAllData() {
@@ -521,12 +556,21 @@
                 const data = await response.json(); 
 
                 // Dynamic Breaking News
-                if(data.BreakingNews) {
+                if(data["Breaking News"]) {
                     const breakingMarquee = document.getElementById('breaking-news-text');
-                    if(breakingMarquee) breakingMarquee.innerHTML = `👉 ${data.BreakingNews}`;
+                    let breakingText = "";
+                    data["Breaking News"].forEach(item => {
+                        const title = item.Title || item.title;
+                        if (title) {
+                            breakingText += ` 👉 ${title} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `;
+                        }
+                    });
+                    if(breakingMarquee) {
+                        breakingMarquee.innerHTML = breakingText !== "" ? breakingText : "বর্তমানে কোনো ব্রেকিং নিউজ নেই।";
+                    }
                 }
 
-                // News Data Binding with Expandable Description
+                // News Data Binding
                 if(data.News) {
                     const newsContainer = document.getElementById('news-container');
                     newsContainer.innerHTML = ''; 
@@ -534,17 +578,17 @@
                         if (!news.Title) return; 
                         const uniqueId = `news_desc_${index}`;
                         newsContainer.innerHTML += `
-                        <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm hover:border-brand-300 hover:shadow-md transition flex flex-col justify-between">
+                        <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:border-emerald-500/50 hover:shadow-md transition flex flex-col justify-between">
                             <div>
-                                <span class="text-[11px] bg-brand-50 text-brand-700 border border-brand-200 px-3 py-1 rounded-full font-bold uppercase tracking-wider">${news.Category || 'নিউজ'}</span>
-                                <h3 class="font-bold text-lg text-slate-900 mt-4 mb-2">${news.Title}</h3>
-                                <p id="${uniqueId}" class="text-slate-600 text-xs md:text-sm mb-5 leading-relaxed line-clamp-4 overflow-hidden transition-all duration-300">${news.Description}</p>
+                                <span class="text-[11px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3 py-1 rounded-full font-bold uppercase tracking-wider">${news.Category || 'নিউজ'}</span>
+                                <h3 class="font-bold text-lg text-white mt-4 mb-2">${news.Title}</h3>
+                                <p id="${uniqueId}" class="text-slate-300 text-xs md:text-sm mb-5 leading-relaxed line-clamp-4 overflow-hidden transition-all duration-300">${news.Description}</p>
                             </div>
                             <div class="flex items-center gap-3">
                                 <button onclick="toggleExpandText('${uniqueId}', this)" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-semibold transition shadow-sm inline-flex items-center">
                                     <i class="fa-solid fa-arrow-right mr-1"></i> সম্পূর্ণ পড়ুন
                                 </button>
-                                ${news.Link ? `<a href="${news.Link}" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-semibold transition inline-flex items-center"><i class="fa-solid fa-external-link mr-1"></i> অফিশিয়াল লিংক</a>` : ''}
+                                ${news.Link ? `<a href="${news.Link}" target="_blank" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-xl text-xs font-semibold transition inline-flex items-center"><i class="fa-solid fa-external-link mr-1"></i> অফিশিয়াল লিংক</a>` : ''}
                             </div>
                         </div>`;
                     });
@@ -557,18 +601,18 @@
                     data.Books.reverse().forEach(book => {
                         if (!book.Title) return;
                         booksContainer.innerHTML += `
-                        <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm hover:border-brand-300 hover:shadow-md transition flex flex-col justify-between">
+                        <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:border-emerald-500/50 hover:shadow-md transition flex flex-col justify-between">
                             <div>
-                                <div class="text-[11px] text-brand-600 font-bold mb-1">${book.Board}</div>
-                                <h3 class="font-bold text-lg text-slate-900 mb-2">${book.Title}</h3>
-                                <p class="text-slate-600 text-xs mb-6 leading-relaxed">${book.Description}</p>
+                                <div class="text-[11px] text-emerald-400 font-bold mb-1">${book.Board}</div>
+                                <h3 class="font-bold text-lg text-white mb-2">${book.Title}</h3>
+                                <p class="text-slate-300 text-xs mb-6 leading-relaxed">${book.Description}</p>
                             </div>
                             <a href="${book.DownloadLink}" target="_blank" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition w-fit shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-download"></i> পিডিএফ ডাউনলোড</a>
                         </div>`;
                     });
                 }
 
-                // Stories Data Binding with Expandable Description
+                // Stories Data Binding
                 if(data.Stories) {
                     const storiesContainer = document.getElementById('stories-container');
                     storiesContainer.innerHTML = ''; 
@@ -576,17 +620,17 @@
                         if (!story.Title) return;
                         const uniqueId = `story_desc_${index}`;
                         storiesContainer.innerHTML += `
-                        <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm hover:border-brand-300 hover:shadow-md transition flex flex-col justify-between">
+                        <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:border-emerald-500/50 hover:shadow-md transition flex flex-col justify-between">
                             <div>
-                                <div class="text-[11px] text-brand-600 font-bold mb-1">${story.Category || 'গল্প'}</div>
-                                <h3 class="font-bold text-lg text-slate-900 mb-2">${story.Title}</h3>
-                                <p id="${uniqueId}" class="text-slate-600 text-xs mb-5 leading-relaxed line-clamp-4 overflow-hidden transition-all duration-300">${story.Description}</p>
+                                <div class="text-[11px] text-emerald-400 font-bold mb-1">${story.Category || 'গল্প'}</div>
+                                <h3 class="font-bold text-lg text-white mb-2">${story.Title}</h3>
+                                <p id="${uniqueId}" class="text-slate-300 text-xs mb-5 leading-relaxed line-clamp-4 overflow-hidden transition-all duration-300">${story.Description}</p>
                             </div>
                             <div class="flex items-center gap-3">
                                 <button onclick="toggleExpandText('${uniqueId}', this)" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-semibold transition shadow-sm inline-flex items-center">
                                     <i class="fa-solid fa-arrow-right mr-1"></i> সম্পূর্ণ পড়ুন
                                 </button>
-                                ${story.ReadLink ? `<a href="${story.ReadLink}" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs font-semibold transition inline-flex items-center"><i class="fa-solid fa-external-link mr-1"></i> অন্য সোর্স</a>` : ''}
+                                ${story.ReadLink ? `<a href="${story.ReadLink}" target="_blank" class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-xl text-xs font-semibold transition inline-flex items-center"><i class="fa-solid fa-external-link mr-1"></i> অন্য সোর্স</a>` : ''}
                             </div>
                         </div>`;
                     });
@@ -621,22 +665,22 @@
 
             const subjects = Object.keys(groupedQuizData);
             if (subjects.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-6 text-slate-500 text-sm bg-white rounded-2xl border border-slate-200">কোনো কুইজ পাওয়া যায়নি।</div>`;
+                container.innerHTML = `<div class="col-span-full text-center py-6 text-slate-300 text-sm bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md">কোনো কুইজ পাওয়া যায়নি।</div>`;
                 return;
             }
 
             subjects.forEach(subject => {
                 const count = groupedQuizData[subject].length;
                 container.innerHTML += `
-                <div onclick="startQuizExam('${subject}')" class="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm hover:border-brand-500 hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
+                <div onclick="startQuizExam('${subject}')" class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-sm hover:border-emerald-500 hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
                     <div>
-                        <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold mb-4 border border-brand-200 group-hover:bg-brand-600 group-hover:text-white transition">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold mb-4 border border-emerald-500/30 group-hover:bg-brand-600 group-hover:text-white group-hover:border-brand-600 transition">
                             <i class="fa-solid fa-book-open"></i>
                         </div>
-                        <h3 class="font-bold text-lg text-slate-900 mb-1">${subject}</h3>
-                        <p class="text-slate-500 text-xs">${count} টি প্রশ্ন রয়েছে</p>
+                        <h3 class="font-bold text-lg text-white mb-1">${subject}</h3>
+                        <p class="text-slate-400 text-xs">${count} টি প্রশ্ন রয়েছে</p>
                     </div>
-                    <div class="mt-6 flex items-center gap-1 text-brand-600 text-xs font-bold">
+                    <div class="mt-6 flex items-center gap-1 text-emerald-400 text-xs font-bold">
                         পরীক্ষা শুরু করুন <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
                     </div>
                 </div>`;
@@ -651,32 +695,39 @@
             document.getElementById('quiz-result-view').classList.add('hidden');
             document.getElementById('quiz-exam-view').classList.remove('hidden');
 
-            document.getElementById('active-quiz-title').innerText = `বিষয়: ${subject}`;
+            document.getElementById('active-quiz-title').innerText = `বিষয়: ${subject}`;
 
             const qContainer = document.getElementById('active-questions-container');
             qContainer.innerHTML = '';
 
             questions.forEach((q, index) => {
                 let optionsHtml = '';
-                ['Option1', 'Option2', 'Option3', 'Option4'].forEach(optKey => {
-                    if (q[optKey]) {
-                        optionsHtml += `
-                        <label class="flex items-center gap-3.5 p-3.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-brand-400 hover:bg-brand-50/30 transition text-xs md:text-sm">
-                            <input type="radio" name="exam_question_${index}" value="${q[optKey]}" class="accent-brand-600"> ${q[optKey]}
-                        </label>`;
-                    }
+                // Handle different possible column names for options
+                const qOpt1 = q.Option1 || q.option1 || q.OptionA || q.optionA;
+                const qOpt2 = q.Option2 || q.option2 || q.OptionB || q.optionB;
+                const qOpt3 = q.Option3 || q.option3 || q.OptionC || q.optionc;
+                const qOpt4 = q.Option4 || q.option4 || q.OptionD || q.optiond;
+                
+                const optionsArray = [qOpt1, qOpt2, qOpt3, qOpt4].filter(Boolean);
+
+                optionsArray.forEach(opt => {
+                    optionsHtml += `
+                    <label class="flex items-center gap-3.5 p-3.5 bg-black/30 border border-white/10 rounded-xl cursor-pointer hover:border-emerald-400 hover:bg-emerald-500/10 transition text-xs md:text-sm text-slate-200">
+                        <input type="radio" name="exam_question_${index}" value="${opt}" class="accent-emerald-500"> ${opt}
+                    </label>`;
                 });
 
+                const qQuestion = q.Question || q.question;
                 qContainer.innerHTML += `
-                <div class="p-5 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3 shadow-xs">
-                    <p class="font-semibold text-slate-900 text-sm md:text-base">${index + 1}. ${q.Question}</p>
+                <div class="p-5 rounded-xl border border-white/10 bg-black/20 space-y-3 shadow-xs">
+                    <p class="font-semibold text-white text-sm md:text-base">${index + 1}. ${qQuestion}</p>
                     <div class="space-y-2">
                         ${optionsHtml}
                     </div>
                 </div>`;
             });
 
-            timeLeftSeconds = 120;
+            timeLeftSeconds = 120; // 2 Minutes (Update this logic if you want dynamic time)
             clearInterval(examTimer);
             updateTimerDisplay();
             examTimer = setInterval(() => {
@@ -684,7 +735,7 @@
                 updateTimerDisplay();
                 if (timeLeftSeconds <= 0) {
                     clearInterval(examTimer);
-                    alert("সময় শেষ! আপনার উত্তরগুলি অটোমেটিক জমা দেওয়া হচ্ছে।");
+                    alert("সময় শেষ! আপনার উত্তরগুলি অটোমেটিক জমা দেওয়া হচ্ছে।");
                     submitExam();
                 }
             }, 1000);
@@ -699,7 +750,16 @@
             }
         }
 
-        function submitExam() {
+        async function submitExam() {
+            // Check if logged in before submitting exam
+            const { data: { user } } = await _supabase.auth.getUser();
+            if (!user) {
+                clearInterval(examTimer);
+                alert("কুইজের উত্তর জমা দেওয়ার জন্য আপনাকে প্রথমে লগইন বা রেজিস্ট্রেশন করতে হবে!");
+                showSection('profile', null); 
+                return;
+            }
+
             clearInterval(examTimer);
             const questions = groupedQuizData[currentActiveSubject];
             let score = 0;
@@ -714,8 +774,9 @@
                     }
                 }
 
-                if (selectedVal && q.CorrectAnswer) {
-                    if (selectedVal.trim().toLowerCase() === q.CorrectAnswer.trim().toLowerCase()) {
+                const correctAns = q.CorrectAnswer || q.correctanswer;
+                if (selectedVal && correctAns) {
+                    if (selectedVal.trim().toLowerCase() === correctAns.trim().toLowerCase()) {
                         score++;
                     }
                 }
@@ -726,7 +787,7 @@
 
             document.getElementById('score-display-box').innerHTML = `
                 মোট প্রশ্ন: ${questions.length}<br>
-                সঠিক উত্তর হয়েছে: <span class="text-emerald-600 text-base">${score}</span> টি
+                সঠিক উত্তর হয়েছে: <span class="text-emerald-400 text-base font-black">${score}</span> টি
             `;
         }
 
@@ -739,7 +800,9 @@
         }
 
         // App Initialization on DOM Load
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
+            await checkUserStatus(); 
+
             const hash = window.location.hash.replace('#', '');
             if (hash && document.getElementById(hash)) {
                 showSection(hash, null);
@@ -747,7 +810,6 @@
                 showSection('home', null);
             }
 
-            updateHeaderBadge();
             loadAllData();
         });
     </script>
