@@ -233,8 +233,7 @@
 
                     <div id="active-quiz-title" class="text-lg font-black text-slate-900 border-l-4 border-brand-600 pl-3"></div>
 
-                    <div id="active-questions-container" class="space-y-6">
-                        </div>
+                    <div id="active-questions-container" class="space-y-6"></div>
 
                     <button onclick="submitExam()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3.5 rounded-xl text-xs font-bold transition shadow-md hover:shadow-lg shadow-brand-600/20 hover:-translate-y-1">
                         সব উত্তর জমা দিন (Submit Exam)
@@ -246,8 +245,7 @@
                         <i class="fa-solid fa-trophy"></i>
                     </div>
                     <h3 class="text-xl font-black text-slate-900">পরীক্ষা সম্পন্ন হয়েছে!</h3>
-                    <div id="score-display-box" class="text-sm font-bold text-brand-700 bg-slate-50 p-4 rounded-xl border border-slate-100 leading-relaxed shadow-inner">
-                        </div>
+                    <div id="score-display-box" class="text-sm font-bold text-brand-700 bg-slate-50 p-4 rounded-xl border border-slate-100 leading-relaxed shadow-inner"></div>
                     <button onclick="backToQuizSubjects()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-sm hover:shadow-md hover:-translate-y-1">
                         অন্য বিষয় নির্বাচন করুন
                     </button>
@@ -282,8 +280,7 @@
                 <h2 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight border-b border-slate-200 pb-4 flex items-center gap-3">
                     <i class="fa-solid fa-user-shield text-brand-600 text-xl"></i> আমার প্রোফাইল
                 </h2>
-                <div id="profile-content" class="p-6 md:p-8 rounded-2xl border border-slate-200 bg-white shadow-md max-w-md space-y-4 mx-auto">
-                    </div>
+                <div id="profile-content" class="p-6 md:p-8 rounded-2xl border border-slate-200 bg-white shadow-md max-w-md space-y-4 mx-auto"></div>
             </section>
 
         </div>
@@ -312,22 +309,14 @@
     </div>
 
     <script>
-        // ==========================================
-        // 1. API CONFIGURATION
-        // ==========================================
         const API_URL = "https://script.google.com/macros/s/AKfycbxl0VdkZHzuRP-fLU8CasftjRDNsvqyyJTDRvB2VRO9J4uHo3Ld1rtbajVAC_5C9nIlYw/exec"; 
-        
-        // এখানে আপনার আসল Gemini API Key টি বসান (যেমন: 'AIzaSy...')
-        const GEMINI_API_KEY = "আপনার_এপিআই_কি_এখানে_দিন"; 
+        const GEMINI_API_KEY = "AQ.Ab8RN6KRKitrPXHj8pgSSzDgAE5Uu49IJmp_UyD9Jeko6UhTyQ"; 
 
         let groupedQuizData = {};
         let currentActiveSubject = null;
         let examTimer = null;
-        let timeLeftSeconds = 120; // 2 minutes default timer
+        let timeLeftSeconds = 120;
 
-        // ==========================================
-        // 2. UI NAVIGATION & STATE
-        // ==========================================
         function setDailyDate() {
             const today = new Date();
             const day = String(today.getDate()).padStart(2, '0');
@@ -354,11 +343,9 @@
         function toggleReadMore(id, btnElement) {
             const textElement = document.getElementById(id);
             if (textElement.classList.contains('line-clamp-3')) {
-                // টেক্সট ওপেন করার কোড
                 textElement.classList.remove('line-clamp-3');
                 btnElement.innerHTML = '<i class="fa-solid fa-chevron-up mr-1"></i> সংক্ষিপ্ত করুন';
             } else {
-                // টেক্সট ছোট করার কোড
                 textElement.classList.add('line-clamp-3');
                 btnElement.innerHTML = '<i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন';
             }
@@ -398,9 +385,6 @@
             if(sectionId === 'profile') renderProfileSection();
         }
 
-        // ==========================================
-        // 3. AI ASSISTANT (GEMINI API) LOGIC
-        // ==========================================
         async function askGemini() {
             const queryInput = document.getElementById('userQuery');
             const query = queryInput.value.trim();
@@ -408,8 +392,8 @@
 
             const history = document.getElementById('chat-history');
             
-            if (!GEMINI_API_KEY || GEMINI_API_KEY === "AQ.Ab8RN6KRKitrPXHj8pgSSzDgAE5Uu49IJmp_UyD9Jeko6UhTyQ") {
-                history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200">Error: দয়া করে কোডে আপনার সঠিক Google Gemini API Key বসান।</p>`;
+            if (!GEMINI_API_KEY) {
+                history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200">Error: API Key missing.</p>`;
                 history.scrollTop = history.scrollHeight;
                 return;
             }
@@ -430,17 +414,14 @@
                     const aiReply = data.candidates[0].content.parts[0].text;
                     history.innerHTML += `<p class="text-left text-slate-800 bg-slate-50 p-2.5 rounded-xl border border-slate-100 shadow-sm"><b>AI:</b> ${aiReply}</p>`;
                 } else {
-                    history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">Error: API Key টি ভুল হতে পারে বা কাজ করছে না।</p>`;
+                    history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">Error: Invalid response.</p>`;
                 }
             } catch (e) {
-                history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">Error: সংযোগ স্থাপন করা যায়নি। ইন্টারনেট কানেকশন চেক করুন।</p>`;
+                history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">Error: Network connection failed.</p>`;
             }
             history.scrollTop = history.scrollHeight;
         }
 
-        // ==========================================
-        // 4. USER AUTHENTICATION & PROFILE
-        // ==========================================
         function renderProfileSection() {
             const profileContainer = document.getElementById('profile-content');
             const loggedInUser = localStorage.getItem('portalUserEmail');
@@ -507,9 +488,6 @@
             }
         }
 
-        // ==========================================
-        // 5. DATA FETCHING (GOOGLE SHEET)
-        // ==========================================
         async function loadAllData() {
             if (!API_URL) return; 
 
@@ -517,13 +495,11 @@
                 const response = await fetch(API_URL);
                 const data = await response.json(); 
 
-                // Dynamic Breaking News Binding
                 if(data.BreakingNews) {
                     const breakingMarquee = document.getElementById('breaking-news-text');
                     breakingMarquee.innerHTML = `👉 ${data.BreakingNews}`;
                 }
 
-                // News Data Mapping with Toggle Feature
                 if(data.News) {
                     const newsContainer = document.getElementById('news-container');
                     newsContainer.innerHTML = ''; 
@@ -546,7 +522,6 @@
                     });
                 }
 
-                // Books Data Mapping
                 if(data.Books) {
                     const booksContainer = document.getElementById('books-container');
                     booksContainer.innerHTML = ''; 
@@ -564,7 +539,6 @@
                     });
                 }
 
-                // Stories Data Mapping with Toggle Feature
                 if(data.Stories) {
                     const storiesContainer = document.getElementById('stories-container');
                     storiesContainer.innerHTML = ''; 
@@ -587,7 +561,6 @@
                     });
                 }
 
-                // Quiz Setup (Group by Subject)
                 if(data.Quiz) {
                     groupedQuizData = {};
                     data.Quiz.forEach(q => {
@@ -606,9 +579,6 @@
             }
         }
 
-        // ==========================================
-        // 6. QUIZ SUBJECTS & EXAM LOGIC
-        // ==========================================
         function renderQuizSubjects() {
             const container = document.getElementById('quiz-subjects-container');
             container.innerHTML = '';
@@ -706,7 +676,6 @@
                     }
                 }
 
-                // String conversion is CRITICAL here to prevent trim() crashes if answer is a number in Sheets
                 let correctAns = q.CorrectAnswer != null ? String(q.CorrectAnswer).trim().toLowerCase() : "";
                 let selectedAns = selectedVal != null ? String(selectedVal).trim().toLowerCase() : "";
 
@@ -734,7 +703,6 @@
             renderQuizSubjects();
         }
 
-        // Initialization
         window.addEventListener('DOMContentLoaded', () => {
             const hash = window.location.hash.replace('#', '');
             if (hash && document.getElementById(hash)) {
