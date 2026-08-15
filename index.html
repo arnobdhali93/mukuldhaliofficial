@@ -12,8 +12,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
@@ -383,11 +381,6 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbxl0VdkZHzuRP-fLU8CasftjRDNsvqyyJTDRvB2VRO9J4uHo3Ld1rtbajVAC_5C9nIlYw/exec"; 
         const GEMINI_API_KEY = "AQ.Ab8RN6KRKitrPXHj8pgSSzDgAE5Uu49IJmp_UyD9Jeko6UhTyQ"; 
 
-        // Supabase Client Config
-        const SUPABASE_URL = 'https://syixygylfzzugpsdffrr.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN5aXh5Z3lsZnp6dWdwc2RmZnJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEyMzg2MjUsImV4cCI6MjA1NjzgNDYyNX0.GUp9sWJ_UvEeytX0n-s0eO-Y3q4i9i-B5F-uH-gVn_g';
-        const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
-
         let rawNewsData = [];
         let rawBooksData = [];
         let groupedQuizData = {};
@@ -469,7 +462,7 @@
 
             if (window.innerWidth < 768) {
                 const sidebar = document.getElementById('sidebar');
-                if(!sidebar.classList.contains('-translate-x-full')) {
+                if(sidebar && !sidebar.classList.contains('-translate-x-full')) {
                     toggleSidebar();
                 }
             }
@@ -501,10 +494,10 @@
                     const aiReply = data.candidates[0].content.parts[0].text;
                     history.innerHTML += `<p class="text-left text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 shadow-sm"><b>AI:</b> ${escapeHTML(aiReply)}</p>`;
                 } else {
-                    history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">দুঃখিত, কোনো উত্তর পাওয়া যায়নি।</p>`;
+                    history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">দুঃখিত, কোনো উত্তর পাওয়া যায়নি।</p>`;
                 }
             } catch (e) {
-                history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">নেটওয়ার্ক সমস্যার কারণে উত্তর দেওয়া সম্ভব হয়নি।</p>`;
+                history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">নেটওয়ার্ক সমস্যার কারণে উত্তর দেওয়া সম্ভব হয়নি।</p>`;
             }
             history.scrollTop = history.scrollHeight;
         }
@@ -576,67 +569,21 @@
             }
         }
 
-        async function handleAuthSubmit(e, type) {
+        function handleAuthSubmit(e, type) {
             e.preventDefault();
             
             if (type === 'register') {
                 const name = document.getElementById('reg-name').value.trim();
                 const email = document.getElementById('reg-email').value.trim();
-                const btn = document.getElementById('reg-btn');
                 
-                btn.disabled = true;
-                btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> প্রসেস হচ্ছে...`;
-
-                if (supabase) {
-                    const { data, error } = await supabase
-                        .from('profiles')
-                        .insert([{ full_name: name, email: email }]);
-
-                    if (error) {
-                        showAuthMsg(error.code === '23505' ? 'এই ইমেইল দিয়ে ইতোমধ্যেই অ্যাকাউন্ট খোলা হয়েছে।' : 'রেজিস্ট্রেশনে ত্রুটি হয়েছে। পুনরায় চেষ্টা করুন।', 'error');
-                        btn.disabled = false;
-                        btn.innerHTML = `<span>অ্যাকাউন্ট খুলুন</span>`;
-                        return;
-                    }
-                }
-
                 localStorage.setItem('portalUserName', name);
                 localStorage.setItem('portalUserEmail', email);
-                btn.disabled = false;
-                btn.innerHTML = `<span>অ্যাকাউন্ট খুলুন</span>`;
                 closeAuthModal();
                 renderProfileSection();
-
             } else {
                 const email = document.getElementById('login-id').value.trim();
-                const btn = document.getElementById('login-btn');
-
-                btn.disabled = true;
-                btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> প্রসেস হচ্ছে...`;
-
-                if (supabase) {
-                    const { data, error } = await supabase
-                        .from('profiles')
-                        .select('full_name, email')
-                        .eq('email', email)
-                        .single();
-
-                    if (error || !data) {
-                        showAuthMsg('এই ইমেইল দিয়ে কোনো অ্যাকাউন্ট পাওয়া যায়নি।', 'error');
-                        btn.disabled = false;
-                        btn.innerHTML = `<span>লগইন করুন</span>`;
-                        return;
-                    }
-
-                    localStorage.setItem('portalUserName', data.full_name);
-                    localStorage.setItem('portalUserEmail', data.email);
-                } else {
-                    localStorage.setItem('portalUserName', email.split('@')[0]);
-                    localStorage.setItem('portalUserEmail', email);
-                }
-
-                btn.disabled = false;
-                btn.innerHTML = `<span>লগইন করুন</span>`;
+                localStorage.setItem('portalUserName', email.split('@')[0]);
+                localStorage.setItem('portalUserEmail', email);
                 closeAuthModal();
                 renderProfileSection();
             }
@@ -659,7 +606,7 @@
                         </div>
                     </div>
                     <div class="space-y-2 pt-3 border-t border-slate-100 dark:border-slate-700 text-sm menu-font">
-                        <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>স্ট্যাটাস:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">Supabase Verified Account</span></p>
+                        <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>স্ট্যাটাস:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">Active User</span></p>
                     </div>
                     <button onclick="logoutUser()" class="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-xl text-xs font-bold transition w-full shadow-md hover:-translate-y-0.5 cursor-pointer">লগআউট করুন</button>
                 `;
@@ -687,9 +634,9 @@
         function updateHeaderBadge() {
             const name = localStorage.getItem('portalUserName');
             const badge = document.getElementById('mobile-user-badge');
-            if (name) {
+            if (name && badge) {
                 badge.innerText = name.substring(0, 2).toUpperCase();
-            } else {
+            } else if (badge) {
                 badge.innerText = "MD";
             }
         }
@@ -950,4 +897,4 @@
         });
     </script>
 </body>
-    </html>
+</html>
