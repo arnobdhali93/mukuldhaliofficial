@@ -73,13 +73,13 @@
 
     <header class="md:hidden bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50 px-4 py-3 flex items-center justify-between shadow-sm">
         <div class="flex items-center gap-3">
-            <button onclick="toggleSidebar()" aria-label="Toggle Menu" class="text-slate-700 dark:text-slate-200 hover:text-black text-lg focus:outline-none p-2 rounded-xl bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 transition active:scale-95">
+            <button onclick="toggleSidebar()" aria-label="Toggle Menu" class="text-slate-700 dark:text-slate-200 hover:text-black text-lg focus:outline-none p-2 rounded-xl bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 transition active:scale-95 cursor-pointer">
                 <i class="fa-solid fa-bars"></i>
             </button>
             <span class="menu-font font-bold tracking-wider text-brand-600 text-base">mukuldhaliofficial</span>
         </div>
         <div class="flex items-center gap-3">
-            <span class="current-date-display text-[11px] font-extrabold text-brand-800 bg-brand-100 border border-brand-200 px-2.5 py-1 rounded-md shadow-sm font-mono tracking-wide"></span>
+            <span class="current-date-display text-[11px] font-extrabold text-brand-800 bg-brand-100 border border-brand-200 px-2.5 py-1 rounded-md shadow-sm font-mono tracking-wide">--.--.--</span>
             
             <div id="mobile-user-badge" onclick="showSection('profile', event)" class="w-9 h-9 rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 font-bold text-xs menu-font cursor-pointer hover:bg-brand-100 transition shadow-sm">
                 MD
@@ -93,32 +93,32 @@
                 <h1 class="menu-font text-lg font-black tracking-tight text-brand-600">mukuldhaliofficial</h1>
                 <p class="menu-font text-[11px] text-slate-400 tracking-wide mt-0.5">Digital Learning Platform</p>
             </div>
-            <button onclick="toggleSidebar()" aria-label="Close Sidebar" class="md:hidden text-slate-500 hover:text-slate-800 text-lg p-2 rounded-lg hover:bg-slate-100">
+            <button onclick="toggleSidebar()" aria-label="Close Sidebar" class="md:hidden text-slate-500 hover:text-slate-800 text-lg p-2 rounded-lg hover:bg-slate-100 cursor-pointer">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
 
         <nav class="flex-1 px-4 py-6 space-y-2 menu-font text-base overflow-y-auto">
-            <button onclick="showSection('home', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold transition-all bg-brand-600 text-white shadow-lg shadow-brand-600/20">
+            <button onclick="showSection('home', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold transition-all bg-brand-600 text-white shadow-lg shadow-brand-600/20 cursor-pointer">
                 <i class="fa-solid fa-house w-5 text-center"></i> Home
             </button>
-            <button onclick="showSection('news', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-brand-600">
+            <button onclick="showSection('news', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-brand-600 cursor-pointer">
                 <i class="fa-solid fa-newspaper w-5 text-center"></i> Education News
             </button>
-            <button onclick="showSection('quiz', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-brand-600">
+            <button onclick="showSection('quiz', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-brand-600 cursor-pointer">
                 <i class="fa-solid fa-brain w-5 text-center"></i> Quiz Exam
             </button>
-            <button onclick="showSection('books', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-brand-600">
+            <button onclick="showSection('books', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-brand-600 cursor-pointer">
                 <i class="fa-solid fa-book w-5 text-center"></i> Free E-Books
             </button>
-            <button onclick="showSection('stories', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-brand-600">
+            <button onclick="showSection('stories', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-brand-600 cursor-pointer">
                 <i class="fa-solid fa-feather w-5 text-center"></i> Bangla Stories
             </button>
-            <button onclick="showSection('profile', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-brand-600">
+            <button onclick="showSection('profile', event)" class="nav-btn menu-font w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-brand-600 cursor-pointer">
                 <i class="fa-solid fa-user-shield w-5 text-center"></i> My Profile
             </button>
             
-            <button onclick="toggleDarkMode()" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 mt-4">
+            <button onclick="toggleDarkMode()" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 mt-4 cursor-pointer">
                 <i class="fa-solid fa-moon w-5 text-center" id="dark-icon"></i> <span id="dark-text">Dark Mode</span>
             </button>
         </nav>
@@ -147,7 +147,7 @@
             </div>
             <div class="hidden md:flex items-center gap-2 bg-slate-900/20 backdrop-blur-sm px-3.5 py-1.5 rounded-lg border border-white/20 flex-shrink-0 text-[11px] font-mono font-extrabold tracking-widest shadow-inner">
                 <i class="fa-regular fa-calendar-days text-brand-200 text-sm"></i>
-                <span class="current-date-display text-white"></span>
+                <span class="current-date-display text-white">--.--.--</span>
             </div>
         </div>
 
@@ -168,10 +168,10 @@
                          ছাত্রছাত্রীদের জন্য এটি একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম। পশ্চিমবঙ্গ মধ্যশিক্ষা পর্ষদ, উচ্চমাধ্যমিক সংসদ এবং সিবিএসই বোর্ডের যাবতীয় আপডেট, বই এবং শিক্ষামূলক কন্টেন্ট এখানে খুব সহজেই পাবেন।
                     </p>
                     <div class="flex flex-wrap gap-4 pt-2">
-                        <button onclick="showSection('quiz', null)" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-xl text-xs font-bold transition shadow-md shadow-brand-600/20 flex items-center gap-2 hover:-translate-y-1">
+                        <button onclick="showSection('quiz', null)" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-xl text-xs font-bold transition shadow-md shadow-brand-600/20 flex items-center gap-2 hover:-translate-y-1 cursor-pointer">
                             <i class="fa-solid fa-brain"></i> কুইজ মক টেস্ট দিন
                         </button>
-                        <button onclick="showSection('books', null)" class="bg-white dark:bg-slate-700 hover:bg-slate-50 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 px-6 py-3 rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-2 hover:-translate-y-1">
+                        <button onclick="showSection('books', null)" class="bg-white dark:bg-slate-700 hover:bg-slate-50 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 px-6 py-3 rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-2 hover:-translate-y-1 cursor-pointer">
                             <i class="fa-solid fa-book"></i> ফ্রি বই ডাউনলোড করুন
                         </button>
                     </div>
@@ -233,7 +233,7 @@
 
                 <div id="quiz-exam-view" class="hidden space-y-6 max-w-2xl mx-auto bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md">
                     <div class="flex flex-wrap justify-between items-center pb-4 border-b border-slate-100 dark:border-slate-700 gap-2">
-                        <button onclick="backToQuizSubjects()" class="text-xs bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm">
+                        <button onclick="backToQuizSubjects()" class="text-xs bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer">
                             <i class="fa-solid fa-arrow-left"></i> ফিরে যান
                         </button>
                         <div id="quiz-timer-box" class="flex items-center gap-2 bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 px-3.5 py-1.5 rounded-lg text-xs font-bold border border-brand-200 dark:border-slate-600 shadow-sm">
@@ -245,7 +245,7 @@
 
                     <div id="active-questions-container" class="space-y-6"></div>
 
-                    <button onclick="submitExam()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3.5 rounded-xl text-xs font-bold transition shadow-md hover:shadow-lg shadow-brand-600/20 hover:-translate-y-1">
+                    <button onclick="submitExam()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3.5 rounded-xl text-xs font-bold transition shadow-md hover:shadow-lg shadow-brand-600/20 hover:-translate-y-1 cursor-pointer">
                         সব উত্তর জমা দিন (Submit Exam)
                     </button>
                 </div>
@@ -256,7 +256,7 @@
                     </div>
                     <h3 class="text-xl font-black text-slate-900 dark:text-white">পরীক্ষা সম্পন্ন হয়েছে!</h3>
                     <div id="score-display-box" class="text-sm font-bold text-brand-700 dark:text-brand-300 bg-slate-50 dark:bg-slate-700/50 p-4 rounded-xl border border-slate-100 dark:border-slate-600 leading-relaxed shadow-inner"></div>
-                    <button onclick="backToQuizSubjects()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-sm hover:shadow-md hover:-translate-y-1">
+                    <button onclick="backToQuizSubjects()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-sm hover:shadow-md hover:-translate-y-1 cursor-pointer">
                         অন্য বিষয় নির্বাচন করুন
                     </button>
                 </div>
@@ -301,14 +301,14 @@
 
     <!-- Professional Auth Modal -->
     <div id="auth-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-6 md:p-8 shadow-2xl relative animate-fade-in">
-            <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-2 rounded-xl transition">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-6 md:p-8 shadow-2xl relative">
+            <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-2 rounded-xl transition cursor-pointer">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
             
             <div class="flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-4 mb-6">
-                <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2 rounded-xl font-bold text-sm bg-brand-600 text-white shadow-sm transition">লগইন</button>
-                <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2 rounded-xl font-bold text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition">রেজিস্ট্রেশন</button>
+                <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2 rounded-xl font-bold text-sm bg-brand-600 text-white shadow-sm transition cursor-pointer">লগইন</button>
+                <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2 rounded-xl font-bold text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer">রেজিস্ট্রেশন</button>
             </div>
 
             <div id="auth-msg" class="hidden p-3 rounded-xl text-xs font-bold mb-4 text-center"></div>
@@ -327,7 +327,7 @@
                         <i onclick="togglePassVisibility('login-pass', this)" class="fa-solid fa-eye absolute right-3.5 top-3.5 text-slate-400 cursor-pointer text-xs"></i>
                     </div>
                 </div>
-                <button type="submit" id="login-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5 flex justify-center items-center gap-2">
+                <button type="submit" id="login-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5 flex justify-center items-center gap-2 cursor-pointer">
                     <span>লগইন করুন</span>
                 </button>
             </form>
@@ -350,8 +350,8 @@
                         <i onclick="togglePassVisibility('reg-pass', this)" class="fa-solid fa-eye absolute right-3.5 top-3.5 text-slate-400 cursor-pointer text-xs"></i>
                     </div>
                 </div>
-                <button type="submit" id="reg-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5 flex justify-center items-center gap-2">
-                    <span>অ্যালাউন্ট খুলুন</span>
+                <button type="submit" id="reg-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5 flex justify-center items-center gap-2 cursor-pointer">
+                    <span>অ্যাকাউন্ট খুলুন</span>
                 </button>
             </form>
         </div>
@@ -362,7 +362,7 @@
             <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-100 dark:border-slate-700">
                 <h3 class="font-bold flex items-center gap-2 text-slate-800 dark:text-slate-200 text-sm"><i class="fa-solid fa-robot text-brand-600"></i> AI Assistant</h3>
                 <div class="flex items-center gap-2">
-                    <button onclick="toggleChat()" aria-label="Close Chat" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1 bg-slate-100 dark:bg-slate-700 rounded-lg transition"><i class="fa-solid fa-xmark"></i></button>
+                    <button onclick="toggleChat()" aria-label="Close Chat" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1 bg-slate-100 dark:bg-slate-700 rounded-lg transition cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
                 </div>
             </div>
             <div id="chat-history" class="flex-1 overflow-y-auto space-y-3 mb-3 text-xs text-slate-600 dark:text-slate-300 pr-1">
@@ -370,10 +370,10 @@
             </div>
             <div class="flex gap-2">
                 <input id="userQuery" type="text" placeholder="প্রশ্ন করুন..." class="flex-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-800 dark:text-slate-100 text-xs outline-none focus:border-brand-600 shadow-inner" onkeydown="if(event.key === 'Enter') askGemini()">
-                <button onclick="askGemini()" aria-label="Send Message" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2.5 rounded-xl text-xs transition shadow-sm hover:shadow-md hover:-translate-y-0.5"><i class="fa-solid fa-paper-plane"></i></button>
+                <button onclick="askGemini()" aria-label="Send Message" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2.5 rounded-xl text-xs transition shadow-sm hover:shadow-md hover:-translate-y-0.5 cursor-pointer"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
-        <button onclick="toggleChat()" aria-label="Open Chat Window" class="bg-brand-600 hover:bg-brand-700 text-white w-14 h-14 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition duration-300 flex items-center justify-center relative">
+        <button onclick="toggleChat()" aria-label="Open Chat Window" class="bg-brand-600 hover:bg-brand-700 text-white w-14 h-14 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition duration-300 flex items-center justify-center relative cursor-pointer">
             <i class="fa-solid fa-robot text-xl"></i>
             <span class="absolute top-0 right-0 w-3.5 h-3.5 bg-emerald-400 border-2 border-white dark:border-slate-800 rounded-full"></span>
         </button>
@@ -409,16 +409,21 @@
             const year = String(today.getFullYear()).slice(-2);
             const formattedDate = `${day}.${month}.${year}`;
             
-            document.querySelectorAll('.current-date-display').forEach(el => {
-                el.innerText = formattedDate;
-            });
+            const dateElements = document.getElementsByClassName('current-date-display');
+            for(let i = 0; i < dateElements.length; i++) {
+                dateElements[i].innerText = formattedDate;
+            }
         }
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('backdrop');
-            sidebar.classList.toggle('-translate-x-full');
-            backdrop.classList.toggle('hidden');
+            if(sidebar) {
+                sidebar.classList.toggle('-translate-x-full');
+            }
+            if(backdrop) {
+                backdrop.classList.toggle('hidden');
+            }
         }
 
         function toggleChat() {
@@ -535,13 +540,13 @@
             if (type === 'login') {
                 loginForm.classList.remove('hidden');
                 regForm.classList.add('hidden');
-                tabLogin.className = "flex-1 py-2 rounded-xl font-bold text-sm bg-brand-600 text-white shadow-sm transition";
-                tabReg.className = "flex-1 py-2 rounded-xl font-bold text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition";
+                tabLogin.className = "flex-1 py-2 rounded-xl font-bold text-sm bg-brand-600 text-white shadow-sm transition cursor-pointer";
+                tabReg.className = "flex-1 py-2 rounded-xl font-bold text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer";
             } else {
                 regForm.classList.remove('hidden');
                 loginForm.classList.add('hidden');
-                tabReg.className = "flex-1 py-2 rounded-xl font-bold text-sm bg-brand-600 text-white shadow-sm transition";
-                tabLogin.className = "flex-1 py-2 rounded-xl font-bold text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition";
+                tabReg.className = "flex-1 py-2 rounded-xl font-bold text-sm bg-brand-600 text-white shadow-sm transition cursor-pointer";
+                tabLogin.className = "flex-1 py-2 rounded-xl font-bold text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer";
             }
         }
 
@@ -656,7 +661,7 @@
                     <div class="space-y-2 pt-3 border-t border-slate-100 dark:border-slate-700 text-sm menu-font">
                         <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>স্ট্যাটাস:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">Supabase Verified Account</span></p>
                     </div>
-                    <button onclick="logoutUser()" class="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-xl text-xs font-bold transition w-full shadow-md hover:-translate-y-0.5">লগআউট করুন</button>
+                    <button onclick="logoutUser()" class="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-xl text-xs font-bold transition w-full shadow-md hover:-translate-y-0.5 cursor-pointer">লগআউট করুন</button>
                 `;
             } else {
                 profileContainer.innerHTML = `
@@ -666,7 +671,7 @@
                         </div>
                         <h3 class="font-black text-slate-900 dark:text-white text-lg">আপনার অ্যাকাউন্টে প্রবেশ করুন</h3>
                         <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">কুইজ ও অন্যান্য সুবিধা পেতে রেজিস্টার বা লগইন করুন।</p>
-                        <button onclick="triggerRegisterPopup()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3.5 rounded-xl text-xs font-bold transition shadow-md hover:shadow-lg hover:-translate-y-1">রেজিস্ট্রেশন / লগইন করুন</button>
+                        <button onclick="triggerRegisterPopup()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3.5 rounded-xl text-xs font-bold transition shadow-md hover:shadow-lg hover:-translate-y-1 cursor-pointer">রেজিস্ট্রেশন / লগইন করুন</button>
                     </div>
                 `;
             }
@@ -724,7 +729,7 @@
                                 <p id="story-desc-${index}" class="text-slate-600 dark:text-slate-300 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${story.Description || ''}</p>
                             </div>
                             <div class="flex flex-wrap gap-2">
-                                <button onclick="toggleReadMore('story-desc-${index}', this)" class="bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 hover:bg-brand-100 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block">
+                                <button onclick="toggleReadMore('story-desc-${index}', this)" class="bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 hover:bg-brand-100 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block cursor-pointer">
                                     <i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন
                                 </button>
                                 ${story.ReadLink ? `<a href="${story.ReadLink}" target="_blank" rel="noopener noreferrer" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block"><i class="fa-solid fa-book-reader mr-1"></i> বিস্তারিত পড়ুন</a>` : ''}
@@ -764,7 +769,7 @@
                         <p id="news-desc-${index}" class="text-slate-600 dark:text-slate-300 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${news.Description || ''}</p>
                     </div>
                     <div class="flex flex-wrap gap-2">
-                        <button onclick="toggleReadMore('news-desc-${index}', this)" class="bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 hover:bg-brand-100 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block">
+                        <button onclick="toggleReadMore('news-desc-${index}', this)" class="bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 hover:bg-brand-100 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block cursor-pointer">
                             <i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন
                         </button>
                         ${news.Link ? `<a href="${news.Link}" target="_blank" rel="noopener noreferrer" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block"><i class="fa-solid fa-link mr-1"></i> মূল লিংক</a>` : ''}
@@ -931,6 +936,8 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            setDailyDate();
+            
             const hash = window.location.hash.replace('#', '');
             if (hash && document.getElementById(hash)) {
                 showSection(hash, null);
@@ -938,10 +945,9 @@
                 showSection('home', null);
             }
 
-            setDailyDate();
             updateHeaderBadge();
             loadAllData();
         });
     </script>
 </body>
-                </html>
+    </html>
