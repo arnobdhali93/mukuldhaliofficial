@@ -128,7 +128,7 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></div>
                 <span class="menu-font text-xs text-slate-600 dark:text-slate-300 font-medium">System Online</span>
             </div>
-            <span class="text-[10px] text-slate-400 font-mono">v3.5 Pro</span>
+            <span class="text-[10px] text-slate-400 font-mono">v4.0 Pro</span>
         </div>
     </aside>
 
@@ -311,12 +311,14 @@
                 <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2 rounded-xl font-bold text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition">রেজিস্ট্রেশন</button>
             </div>
 
+            <div id="auth-msg" class="hidden p-3 rounded-xl text-xs font-bold mb-4 text-center"></div>
+
             <!-- Login Form -->
             <form id="login-form" onsubmit="handleAuthSubmit(event, 'login')" class="space-y-4">
                 <h3 class="font-black text-xl text-slate-900 dark:text-white">স্বাগতম! লগইন করুন</h3>
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">ইমেইল বা মোবাইল নম্বর</label>
-                    <input type="text" id="login-id" required placeholder="আপনার ইমেইল বা নম্বর লিখুন" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600">
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">ইমেইল ঠিকানা</label>
+                    <input type="email" id="login-id" required placeholder="আপনার ইমেইল লিখুন" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">পাসওয়ার্ড</label>
@@ -325,7 +327,9 @@
                         <i onclick="togglePassVisibility('login-pass', this)" class="fa-solid fa-eye absolute right-3.5 top-3.5 text-slate-400 cursor-pointer text-xs"></i>
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5">লগইন করুন</button>
+                <button type="submit" id="login-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5 flex justify-center items-center gap-2">
+                    <span>লগইন করুন</span>
+                </button>
             </form>
 
             <!-- Register Form -->
@@ -346,7 +350,9 @@
                         <i onclick="togglePassVisibility('reg-pass', this)" class="fa-solid fa-eye absolute right-3.5 top-3.5 text-slate-400 cursor-pointer text-xs"></i>
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5">অ্যালাউন্ট খুলুন</button>
+                <button type="submit" id="reg-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5 flex justify-center items-center gap-2">
+                    <span>অ্যালাউন্ট খুলুন</span>
+                </button>
             </form>
         </div>
     </div>
@@ -376,6 +382,11 @@
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxl0VdkZHzuRP-fLU8CasftjRDNsvqyyJTDRvB2VRO9J4uHo3Ld1rtbajVAC_5C9nIlYw/exec"; 
         const GEMINI_API_KEY = "AQ.Ab8RN6KRKitrPXHj8pgSSzDgAE5Uu49IJmp_UyD9Jeko6UhTyQ"; 
+
+        // Supabase Client Config
+        const SUPABASE_URL = 'https://syixygylfzzugpsdffrr.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN5aXh5Z3lsZnp6dWdwc2RmZnJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEyMzg2MjUsImV4cCI6MjA1NjzgNDYyNX0.GUp9sWJ_UvEeytX0n-s0eO-Y3q4i9i-B5F-uH-gVn_g';
+        const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
         let rawNewsData = [];
         let rawBooksData = [];
@@ -494,7 +505,7 @@
         }
 
         function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, 
+            return str ? str.replace(/[&<>'"]/g, 
                 tag => ({
                     '&': '&amp;',
                     '<': '&lt;',
@@ -502,10 +513,11 @@
                     "'": '&#39;',
                     '"': '&quot;'
                 }[tag] || tag)
-            );
+            ) : '';
         }
 
         function triggerRegisterPopup() {
+            showAuthMsg('', '');
             document.getElementById('auth-modal').classList.remove('hidden');
         }
 
@@ -514,6 +526,7 @@
         }
 
         function switchAuthTab(type) {
+            showAuthMsg('', '');
             const loginForm = document.getElementById('login-form');
             const regForm = document.getElementById('register-form');
             const tabLogin = document.getElementById('tab-login');
@@ -532,6 +545,21 @@
             }
         }
 
+        function showAuthMsg(msg, type) {
+            const msgBox = document.getElementById('auth-msg');
+            if(!msg) {
+                msgBox.classList.add('hidden');
+                return;
+            }
+            msgBox.classList.remove('hidden', 'bg-red-50', 'text-red-600', 'bg-emerald-50', 'text-emerald-600');
+            if(type === 'error') {
+                msgBox.classList.add('bg-red-50', 'text-red-600');
+            } else {
+                msgBox.classList.add('bg-emerald-50', 'text-emerald-600');
+            }
+            msgBox.innerText = msg;
+        }
+
         function togglePassVisibility(id, icon) {
             const input = document.getElementById(id);
             if(input.type === 'password') {
@@ -543,20 +571,70 @@
             }
         }
 
-        function handleAuthSubmit(e, type) {
+        async function handleAuthSubmit(e, type) {
             e.preventDefault();
-            if (type === 'login') {
-                const id = document.getElementById('login-id').value.trim();
-                localStorage.setItem('portalUserName', id.split('@')[0] || id);
-                localStorage.setItem('portalUserEmail', id);
-            } else {
+            
+            if (type === 'register') {
                 const name = document.getElementById('reg-name').value.trim();
                 const email = document.getElementById('reg-email').value.trim();
+                const btn = document.getElementById('reg-btn');
+                
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> প্রসেস হচ্ছে...`;
+
+                if (supabase) {
+                    const { data, error } = await supabase
+                        .from('profiles')
+                        .insert([{ full_name: name, email: email }]);
+
+                    if (error) {
+                        showAuthMsg(error.code === '23505' ? 'এই ইমেইল দিয়ে ইতোমধ্যেই অ্যাকাউন্ট খোলা হয়েছে।' : 'রেজিস্ট্রেশনে ত্রুটি হয়েছে। পুনরায় চেষ্টা করুন।', 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = `<span>অ্যাকাউন্ট খুলুন</span>`;
+                        return;
+                    }
+                }
+
                 localStorage.setItem('portalUserName', name);
                 localStorage.setItem('portalUserEmail', email);
+                btn.disabled = false;
+                btn.innerHTML = `<span>অ্যাকাউন্ট খুলুন</span>`;
+                closeAuthModal();
+                renderProfileSection();
+
+            } else {
+                const email = document.getElementById('login-id').value.trim();
+                const btn = document.getElementById('login-btn');
+
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> প্রসেস হচ্ছে...`;
+
+                if (supabase) {
+                    const { data, error } = await supabase
+                        .from('profiles')
+                        .select('full_name, email')
+                        .eq('email', email)
+                        .single();
+
+                    if (error || !data) {
+                        showAuthMsg('এই ইমেইল দিয়ে কোনো অ্যাকাউন্ট পাওয়া যায়নি।', 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = `<span>লগইন করুন</span>`;
+                        return;
+                    }
+
+                    localStorage.setItem('portalUserName', data.full_name);
+                    localStorage.setItem('portalUserEmail', data.email);
+                } else {
+                    localStorage.setItem('portalUserName', email.split('@')[0]);
+                    localStorage.setItem('portalUserEmail', email);
+                }
+
+                btn.disabled = false;
+                btn.innerHTML = `<span>লগইন করুন</span>`;
+                closeAuthModal();
+                renderProfileSection();
             }
-            closeAuthModal();
-            renderProfileSection();
         }
 
         function renderProfileSection() {
@@ -576,7 +654,7 @@
                         </div>
                     </div>
                     <div class="space-y-2 pt-3 border-t border-slate-100 dark:border-slate-700 text-sm menu-font">
-                        <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2 rounded-lg"><span>Status:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">Registered & Active</span></p>
+                        <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>স্ট্যাটাস:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">Supabase Verified Account</span></p>
                     </div>
                     <button onclick="logoutUser()" class="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-xl text-xs font-bold transition w-full shadow-md hover:-translate-y-0.5">লগআউট করুন</button>
                 `;
