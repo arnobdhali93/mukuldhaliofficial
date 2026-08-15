@@ -128,7 +128,7 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></div>
                 <span class="menu-font text-xs text-slate-600 dark:text-slate-300 font-medium">System Online</span>
             </div>
-            <span class="text-[10px] text-slate-400 font-mono">v3.0 Pro</span>
+            <span class="text-[10px] text-slate-400 font-mono">v3.5 Pro</span>
         </div>
     </aside>
 
@@ -299,6 +299,58 @@
         </div>
     </main>
 
+    <!-- Professional Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-6 md:p-8 shadow-2xl relative animate-fade-in">
+            <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-2 rounded-xl transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <div class="flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-4 mb-6">
+                <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2 rounded-xl font-bold text-sm bg-brand-600 text-white shadow-sm transition">লগইন</button>
+                <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2 rounded-xl font-bold text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition">রেজিস্ট্রেশন</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" onsubmit="handleAuthSubmit(event, 'login')" class="space-y-4">
+                <h3 class="font-black text-xl text-slate-900 dark:text-white">স্বাগতম! লগইন করুন</h3>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">ইমেইল বা মোবাইল নম্বর</label>
+                    <input type="text" id="login-id" required placeholder="আপনার ইমেইল বা নম্বর লিখুন" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">পাসওয়ার্ড</label>
+                    <div class="relative">
+                        <input type="password" id="login-pass" required placeholder="পাসওয়ার্ড" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600">
+                        <i onclick="togglePassVisibility('login-pass', this)" class="fa-solid fa-eye absolute right-3.5 top-3.5 text-slate-400 cursor-pointer text-xs"></i>
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5">লগইন করুন</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" onsubmit="handleAuthSubmit(event, 'register')" class="space-y-4 hidden">
+                <h3 class="font-black text-xl text-slate-900 dark:text-white">নতুন অ্যাকাউন্ট তৈরি করুন</h3>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">সম্পূর্ণ নাম</label>
+                    <input type="text" id="reg-name" required placeholder="আপনার নাম লিখুন" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">ইমেইল ঠিকানা</label>
+                    <input type="email" id="reg-email" required placeholder="name@example.com" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">পাসওয়ার্ড</label>
+                    <div class="relative">
+                        <input type="password" id="reg-pass" required placeholder="কমপক্ষে ৬ সংখ্যার পাসওয়ার্ড" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600">
+                        <i onclick="togglePassVisibility('reg-pass', this)" class="fa-solid fa-eye absolute right-3.5 top-3.5 text-slate-400 cursor-pointer text-xs"></i>
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5">অ্যালাউন্ট খুলুন</button>
+            </form>
+        </div>
+    </div>
+
     <div class="fixed bottom-6 right-6 z-50">
         <div id="chat-window" class="hidden w-80 h-96 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl flex flex-col p-4 shadow-2xl mb-4 transition-all">
             <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-100 dark:border-slate-700">
@@ -453,6 +505,60 @@
             );
         }
 
+        function triggerRegisterPopup() {
+            document.getElementById('auth-modal').classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+
+        function switchAuthTab(type) {
+            const loginForm = document.getElementById('login-form');
+            const regForm = document.getElementById('register-form');
+            const tabLogin = document.getElementById('tab-login');
+            const tabReg = document.getElementById('tab-register');
+
+            if (type === 'login') {
+                loginForm.classList.remove('hidden');
+                regForm.classList.add('hidden');
+                tabLogin.className = "flex-1 py-2 rounded-xl font-bold text-sm bg-brand-600 text-white shadow-sm transition";
+                tabReg.className = "flex-1 py-2 rounded-xl font-bold text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition";
+            } else {
+                regForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+                tabReg.className = "flex-1 py-2 rounded-xl font-bold text-sm bg-brand-600 text-white shadow-sm transition";
+                tabLogin.className = "flex-1 py-2 rounded-xl font-bold text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition";
+            }
+        }
+
+        function togglePassVisibility(id, icon) {
+            const input = document.getElementById(id);
+            if(input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        function handleAuthSubmit(e, type) {
+            e.preventDefault();
+            if (type === 'login') {
+                const id = document.getElementById('login-id').value.trim();
+                localStorage.setItem('portalUserName', id.split('@')[0] || id);
+                localStorage.setItem('portalUserEmail', id);
+            } else {
+                const name = document.getElementById('reg-name').value.trim();
+                const email = document.getElementById('reg-email').value.trim();
+                localStorage.setItem('portalUserName', name);
+                localStorage.setItem('portalUserEmail', email);
+            }
+            closeAuthModal();
+            renderProfileSection();
+        }
+
         function renderProfileSection() {
             const profileContainer = document.getElementById('profile-content');
             const loggedInUser = localStorage.getItem('portalUserEmail');
@@ -489,24 +595,10 @@
             updateHeaderBadge();
         }
 
-        function triggerRegisterPopup() {
-            const name = prompt("আপনার নাম লিখুন:");
-            if (!name || !name.trim()) return;
-            const email = prompt("আপনার ইমেইল বা মোবাইল নম্বর লিখুন:");
-            if (!email || !email.trim()) return;
-
-            localStorage.setItem('portalUserName', name.trim());
-            localStorage.setItem('portalUserEmail', email.trim());
-            
-            alert("অভিনন্দন! আপনার রেজিস্ট্রেশন সফল হয়েছে।");
-            renderProfileSection();
-        }
-
         function logoutUser() {
             localStorage.removeItem('portalUserName');
             localStorage.removeItem('portalUserEmail');
             renderProfileSection();
-            alert("সফলভাবে লগআউট করা হয়েছে।");
         }
 
         function updateHeaderBadge() {
@@ -701,7 +793,6 @@
                 updateTimerDisplay();
                 if (timeLeftSeconds <= 0) {
                     clearInterval(examTimer);
-                    alert("সময় শেষ! আপনার উত্তরগুলি অটোমেটিক জমা দেওয়া হচ্ছে।");
                     submitExam();
                 }
             }, 1000);
@@ -775,4 +866,4 @@
         });
     </script>
 </body>
-    </html>
+                </html>
