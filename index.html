@@ -14,8 +14,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <script>
         tailwind.config = {
             theme: {
@@ -48,7 +48,6 @@
             background-color: #f8fafc;
             color: #1e293b;
         }
-        /* Custom Scrollbar for sleek UI */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -69,7 +68,7 @@
 
     <header class="md:hidden bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 px-4 py-3 flex items-center justify-between shadow-sm">
         <div class="flex items-center gap-3">
-            <button onclick="toggleSidebar()" class="text-slate-700 hover:text-black text-lg focus:outline-none p-2 rounded-xl bg-slate-100 border border-slate-200 transition active:scale-95">
+            <button onclick="toggleSidebar()" aria-label="Toggle Menu" class="text-slate-700 hover:text-black text-lg focus:outline-none p-2 rounded-xl bg-slate-100 border border-slate-200 transition active:scale-95">
                 <i class="fa-solid fa-bars"></i>
             </button>
             <span class="menu-font font-bold tracking-wider text-brand-600 text-base">mukuldhaliofficial</span>
@@ -84,13 +83,12 @@
     </header>
 
     <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 transform -translate-x-full md:translate-x-0 md:static md:inset-auto transition-transform duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none">
-        
         <div class="p-6 border-b border-slate-100 flex items-center justify-between">
             <div>
                 <h1 class="menu-font text-lg font-black tracking-tight text-brand-600">mukuldhaliofficial</h1>
                 <p class="menu-font text-[11px] text-slate-400 tracking-wide mt-0.5">Digital Learning Platform</p>
             </div>
-            <button onclick="toggleSidebar()" class="md:hidden text-slate-500 hover:text-slate-800 text-lg p-2 rounded-lg hover:bg-slate-100">
+            <button onclick="toggleSidebar()" aria-label="Close Sidebar" class="md:hidden text-slate-500 hover:text-slate-800 text-lg p-2 rounded-lg hover:bg-slate-100">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
@@ -146,7 +144,7 @@
 
         <div class="p-4 md:p-12 max-w-6xl mx-auto w-full flex-1">
 
-            <section id="home" class="section-content space-y-8 animate-fadeIn">
+            <section id="home" class="section-content space-y-8">
                 <div class="p-8 md:p-12 rounded-3xl bg-gradient-to-br from-white to-brand-50/50 border border-slate-200/80 shadow-md space-y-6 relative overflow-hidden transition hover:shadow-lg">
                     <div class="absolute -right-10 -bottom-10 text-brand-100/60 text-9xl pointer-events-none select-none">
                         <i class="fa-solid fa-graduation-cap"></i>
@@ -171,22 +169,22 @@
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 text-center space-y-1">
+                    <div onclick="showSection('news', null)" class="cursor-pointer p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 text-center space-y-1">
                         <div class="text-brand-600 text-xl font-bold"><i class="fa-solid fa-newspaper"></i></div>
                         <h4 class="font-bold text-slate-800 text-sm">প্রতিদিনের নিউজ</h4>
                         <p class="text-[11px] text-slate-500">বোর্ড ও শিক্ষামূলক আপডেট</p>
                     </div>
-                    <div class="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 text-center space-y-1">
+                    <div onclick="showSection('quiz', null)" class="cursor-pointer p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 text-center space-y-1">
                         <div class="text-brand-600 text-xl font-bold"><i class="fa-solid fa-brain"></i></div>
                         <h4 class="font-bold text-slate-800 text-sm">অনলাইন কুইজ</h4>
                         <p class="text-[11px] text-slate-500">নিজেকে যাচাই করুন</p>
                     </div>
-                    <div class="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 text-center space-y-1">
+                    <div onclick="showSection('books', null)" class="cursor-pointer p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 text-center space-y-1">
                         <div class="text-brand-600 text-xl font-bold"><i class="fa-solid fa-book"></i></div>
                         <h4 class="font-bold text-slate-800 text-sm">ফ্রি ই-বুক</h4>
                         <p class="text-[11px] text-slate-500">সহজে পিডিএফ সংগ্রহ</p>
                     </div>
-                    <div class="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 text-center space-y-1">
+                    <div onclick="showSection('stories', null)" class="cursor-pointer p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 text-center space-y-1">
                         <div class="text-brand-600 text-xl font-bold"><i class="fa-solid fa-feather"></i></div>
                         <h4 class="font-bold text-slate-800 text-sm">বাংলা গল্প</h4>
                         <p class="text-[11px] text-slate-500">সাহিত্য ও পঠন পাঠন</p>
@@ -287,11 +285,11 @@
     </main>
 
     <div class="fixed bottom-6 right-6 z-50">
-        <div id="chat-window" class="hidden w-80 h-96 bg-white border border-slate-200 rounded-3xl flex flex-col p-4 shadow-2xl mb-4 animate-fadeIn">
+        <div id="chat-window" class="hidden w-80 h-96 bg-white border border-slate-200 rounded-3xl flex flex-col p-4 shadow-2xl mb-4 transition-all">
             <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-100">
                 <h3 class="font-bold flex items-center gap-2 text-slate-800 text-sm"><i class="fa-solid fa-robot text-brand-600"></i> AI Assistant</h3>
                 <div class="flex items-center gap-2">
-                    <button onclick="toggleChat()" class="text-slate-400 hover:text-slate-700 p-1 bg-slate-100 hover:bg-slate-200 rounded-lg transition"><i class="fa-solid fa-xmark"></i></button>
+                    <button onclick="toggleChat()" aria-label="Close Chat" class="text-slate-400 hover:text-slate-700 p-1 bg-slate-100 hover:bg-slate-200 rounded-lg transition"><i class="fa-solid fa-xmark"></i></button>
                 </div>
             </div>
             <div id="chat-history" class="flex-1 overflow-y-auto space-y-3 mb-3 text-xs text-slate-600 pr-1">
@@ -299,10 +297,10 @@
             </div>
             <div class="flex gap-2">
                 <input id="userQuery" type="text" placeholder="প্রশ্ন করুন..." class="flex-1 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-xs outline-none focus:border-brand-600 shadow-inner" onkeydown="if(event.key === 'Enter') askGemini()">
-                <button onclick="askGemini()" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2.5 rounded-xl text-xs transition shadow-sm hover:shadow-md hover:-translate-y-0.5"><i class="fa-solid fa-paper-plane"></i></button>
+                <button onclick="askGemini()" aria-label="Send Message" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2.5 rounded-xl text-xs transition shadow-sm hover:shadow-md hover:-translate-y-0.5"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
-        <button onclick="toggleChat()" class="bg-brand-600 hover:bg-brand-700 text-white w-14 h-14 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition duration-300 flex items-center justify-center relative">
+        <button onclick="toggleChat()" aria-label="Open Chat Window" class="bg-brand-600 hover:bg-brand-700 text-white w-14 h-14 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition duration-300 flex items-center justify-center relative">
             <i class="fa-solid fa-robot text-xl"></i>
             <span class="absolute top-0 right-0 w-3.5 h-3.5 bg-emerald-400 border-2 border-white rounded-full"></span>
         </button>
@@ -361,13 +359,16 @@
                 btn.classList.add('text-slate-600', 'hover:bg-slate-50', 'hover:text-brand-600');
             });
 
-            document.getElementById(sectionId).classList.remove('hidden');
+            const targetSection = document.getElementById(sectionId);
+            if(targetSection) {
+                targetSection.classList.remove('hidden');
+            }
 
-            if (event) {
+            if (event && event.currentTarget) {
                 event.currentTarget.classList.remove('text-slate-600', 'hover:bg-slate-50', 'hover:text-brand-600');
                 event.currentTarget.classList.add('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/20');
             } else {
-                const targetBtn = document.querySelector(`button[onclick*="${sectionId}"]`);
+                const targetBtn = document.querySelector(`button[onclick*="'${sectionId}'"]`);
                 if (targetBtn) {
                     targetBtn.classList.remove('text-slate-600', 'hover:bg-slate-50', 'hover:text-brand-600');
                     targetBtn.classList.add('bg-brand-600', 'text-white', 'shadow-lg', 'shadow-brand-600/20');
@@ -392,13 +393,7 @@
 
             const history = document.getElementById('chat-history');
             
-            if (!GEMINI_API_KEY) {
-                history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200">Error: API Key missing.</p>`;
-                history.scrollTop = history.scrollHeight;
-                return;
-            }
-            
-            history.innerHTML += `<p class="text-right text-brand-700 bg-brand-50/60 p-2 rounded-xl shadow-sm"><b>You:</b> ${query}</p>`;
+            history.innerHTML += `<p class="text-right text-brand-700 bg-brand-50/60 p-2 rounded-xl shadow-sm"><b>You:</b> ${escapeHTML(query)}</p>`;
             queryInput.value = '';
             history.scrollTop = history.scrollHeight;
             
@@ -410,16 +405,28 @@
                 });
                 const data = await response.json();
                 
-                if(data.candidates && data.candidates[0].content) {
+                if(data.candidates && data.candidates[0] && data.candidates[0].content) {
                     const aiReply = data.candidates[0].content.parts[0].text;
-                    history.innerHTML += `<p class="text-left text-slate-800 bg-slate-50 p-2.5 rounded-xl border border-slate-100 shadow-sm"><b>AI:</b> ${aiReply}</p>`;
+                    history.innerHTML += `<p class="text-left text-slate-800 bg-slate-50 p-2.5 rounded-xl border border-slate-100 shadow-sm"><b>AI:</b> ${escapeHTML(aiReply)}</p>`;
                 } else {
-                    history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">Error: Invalid response.</p>`;
+                    history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">দুঃখিত, কোনো উত্তর পাওয়া যায়নি।</p>`;
                 }
             } catch (e) {
-                history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">Error: Network connection failed.</p>`;
+                history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">নেটওয়ার্ক সমস্যার কারণে উত্তর দেওয়া সম্ভব হয়নি।</p>`;
             }
             history.scrollTop = history.scrollHeight;
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
         }
 
         function renderProfileSection() {
@@ -427,15 +434,15 @@
             const loggedInUser = localStorage.getItem('portalUserEmail');
             const loggedInName = localStorage.getItem('portalUserName');
 
-            if (loggedInUser) {
+            if (loggedInUser && loggedInName) {
                 profileContainer.innerHTML = `
                     <div class="flex items-center gap-4">
                         <div class="w-16 h-16 rounded-2xl bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 font-bold text-2xl shadow-sm">
                             ${loggedInName.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
-                            <h3 class="font-black text-xl text-slate-900">${loggedInName}</h3>
-                            <p class="text-sm font-semibold text-slate-500 mt-0.5">${loggedInUser}</p>
+                            <h3 class="font-black text-xl text-slate-900">${escapeHTML(loggedInName)}</h3>
+                            <p class="text-sm font-semibold text-slate-500 mt-0.5">${escapeHTML(loggedInUser)}</p>
                         </div>
                     </div>
                     <div class="space-y-2 pt-3 border-t border-slate-100 text-sm menu-font">
@@ -460,12 +467,12 @@
 
         function triggerRegisterPopup() {
             const name = prompt("আপনার নাম লিখুন:");
-            if (!name) return;
+            if (!name || !name.trim()) return;
             const email = prompt("আপনার ইমেইল বা মোবাইল নম্বর লিখুন:");
-            if (!email) return;
+            if (!email || !email.trim()) return;
 
-            localStorage.setItem('portalUserName', name);
-            localStorage.setItem('portalUserEmail', email);
+            localStorage.setItem('portalUserName', name.trim());
+            localStorage.setItem('portalUserEmail', email.trim());
             
             alert("অভিনন্দন! আপনার রেজিস্ট্রেশন সফল হয়েছে।");
             renderProfileSection();
@@ -500,68 +507,68 @@
                     breakingMarquee.innerHTML = `👉 ${data.BreakingNews}`;
                 }
 
-                if(data.News) {
+                if(data.News && Array.isArray(data.News)) {
                     const newsContainer = document.getElementById('news-container');
                     newsContainer.innerHTML = ''; 
-                    data.News.reverse().forEach((news, index) => {
+                    data.News.slice().reverse().forEach((news, index) => {
                         if (!news.Title) return; 
                         newsContainer.innerHTML += `
                         <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
                             <div>
-                                <span class="text-[11px] bg-brand-50 text-brand-700 border border-brand-200 px-3 py-1 rounded-full font-extrabold uppercase tracking-wider shadow-sm">${news.Category}</span>
+                                <span class="text-[11px] bg-brand-50 text-brand-700 border border-brand-200 px-3 py-1 rounded-full font-extrabold uppercase tracking-wider shadow-sm">${news.Category || 'Educational'}</span>
                                 <h3 class="font-black text-lg text-slate-900 mt-4 mb-2">${news.Title}</h3>
-                                <p id="news-desc-${index}" class="text-slate-600 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${news.Description}</p>
+                                <p id="news-desc-${index}" class="text-slate-600 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${news.Description || ''}</p>
                             </div>
                             <div class="flex flex-wrap gap-2">
                                 <button onclick="toggleReadMore('news-desc-${index}', this)" class="bg-brand-50 border border-brand-200 hover:bg-brand-100 text-brand-700 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block">
                                     <i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন
                                 </button>
-                                ${news.Link ? `<a href="${news.Link}" target="_blank" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block"><i class="fa-solid fa-link mr-1"></i> মূল লিংক</a>` : ''}
+                                ${news.Link ? `<a href="${news.Link}" target="_blank" rel="noopener noreferrer" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block"><i class="fa-solid fa-link mr-1"></i> মূল লিংক</a>` : ''}
                             </div>
                         </div>`;
                     });
                 }
 
-                if(data.Books) {
+                if(data.Books && Array.isArray(data.Books)) {
                     const booksContainer = document.getElementById('books-container');
                     booksContainer.innerHTML = ''; 
-                    data.Books.reverse().forEach(book => {
+                    data.Books.slice().reverse().forEach(book => {
                         if (!book.Title) return;
                         booksContainer.innerHTML += `
                         <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
                             <div>
-                                <div class="text-[11px] text-brand-600 font-extrabold mb-1 bg-brand-50 inline-block px-2 py-0.5 rounded border border-brand-100">${book.Board}</div>
+                                <div class="text-[11px] text-brand-600 font-extrabold mb-1 bg-brand-50 inline-block px-2 py-0.5 rounded border border-brand-100">${book.Board || 'General'}</div>
                                 <h3 class="font-black text-lg text-slate-900 mb-2 mt-2">${book.Title}</h3>
-                                <p class="text-slate-600 text-sm mb-6 leading-relaxed">${book.Description}</p>
+                                <p class="text-slate-600 text-sm mb-6 leading-relaxed">${book.Description || ''}</p>
                             </div>
-                            <a href="${book.DownloadLink}" target="_blank" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition w-fit shadow-md flex items-center gap-1.5 hover:-translate-y-0.5"><i class="fa-solid fa-download"></i> পিডিএফ ডাউনলোড</a>
+                            <a href="${book.DownloadLink || '#'}" target="_blank" rel="noopener noreferrer" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition w-fit shadow-md flex items-center gap-1.5 hover:-translate-y-0.5"><i class="fa-solid fa-download"></i> পিডিএফ ডাউনলোড</a>
                         </div>`;
                     });
                 }
 
-                if(data.Stories) {
+                if(data.Stories && Array.isArray(data.Stories)) {
                     const storiesContainer = document.getElementById('stories-container');
                     storiesContainer.innerHTML = ''; 
-                    data.Stories.reverse().forEach((story, index) => {
+                    data.Stories.slice().reverse().forEach((story, index) => {
                         if (!story.Title) return;
                         storiesContainer.innerHTML += `
                         <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
                             <div>
-                                <div class="text-[11px] text-brand-600 font-extrabold mb-1 bg-brand-50 inline-block px-2 py-0.5 rounded border border-brand-100">${story.Category}</div>
+                                <div class="text-[11px] text-brand-600 font-extrabold mb-1 bg-brand-50 inline-block px-2 py-0.5 rounded border border-brand-100">${story.Category || 'গল্প'}</div>
                                 <h3 class="font-black text-lg text-slate-900 mb-2 mt-2">${story.Title}</h3>
-                                <p id="story-desc-${index}" class="text-slate-600 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${story.Description}</p>
+                                <p id="story-desc-${index}" class="text-slate-600 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${story.Description || ''}</p>
                             </div>
                             <div class="flex flex-wrap gap-2">
                                 <button onclick="toggleReadMore('story-desc-${index}', this)" class="bg-brand-50 border border-brand-200 hover:bg-brand-100 text-brand-700 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block">
                                     <i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন
                                 </button>
-                                ${story.ReadLink ? `<a href="${story.ReadLink}" target="_blank" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block"><i class="fa-solid fa-book-reader mr-1"></i> বিস্তারিত পড়ুন</a>` : ''}
+                                ${story.ReadLink ? `<a href="${story.ReadLink}" target="_blank" rel="noopener noreferrer" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block"><i class="fa-solid fa-book-reader mr-1"></i> বিস্তারিত পড়ুন</a>` : ''}
                             </div>
                         </div>`;
                     });
                 }
 
-                if(data.Quiz) {
+                if(data.Quiz && Array.isArray(data.Quiz)) {
                     groupedQuizData = {};
                     data.Quiz.forEach(q => {
                         let sub = q.Subject ? q.Subject.trim() : "সাধারণ জ্ঞান";
@@ -575,7 +582,7 @@
                 }
 
             } catch (error) {
-                console.error("Error loading data:", error);
+                console.error("Error loading portal data:", error);
             }
         }
 
@@ -641,7 +648,7 @@
             });
 
             timeLeftSeconds = 120;
-            clearInterval(examTimer);
+            if(examTimer) clearInterval(examTimer);
             updateTimerDisplay();
             examTimer = setInterval(() => {
                 timeLeftSeconds--;
@@ -662,7 +669,7 @@
         }
 
         function submitExam() {
-            clearInterval(examTimer);
+            if(examTimer) clearInterval(examTimer);
             const questions = groupedQuizData[currentActiveSubject];
             let score = 0;
 
@@ -679,10 +686,8 @@
                 let correctAns = q.CorrectAnswer != null ? String(q.CorrectAnswer).trim().toLowerCase() : "";
                 let selectedAns = selectedVal != null ? String(selectedVal).trim().toLowerCase() : "";
 
-                if (selectedAns !== "" && correctAns !== "") {
-                    if (selectedAns === correctAns) {
-                        score++;
-                    }
+                if (selectedAns !== "" && correctAns !== "" && selectedAns === correctAns) {
+                    score++;
                 }
             });
 
@@ -696,7 +701,7 @@
         }
 
         function backToQuizSubjects() {
-            clearInterval(examTimer);
+            if(examTimer) clearInterval(examTimer);
             document.getElementById('quiz-exam-view').classList.add('hidden');
             document.getElementById('quiz-result-view').classList.add('hidden');
             document.getElementById('quiz-subject-view').classList.remove('hidden');
@@ -717,4 +722,4 @@
         });
     </script>
 </body>
-</html>
+                </html>
