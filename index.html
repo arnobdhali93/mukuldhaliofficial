@@ -297,7 +297,6 @@
         </div>
     </main>
 
-    <!-- Professional Auth Modal -->
     <div id="auth-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-6 md:p-8 shadow-2xl relative">
             <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-2 rounded-xl transition cursor-pointer">
@@ -311,7 +310,6 @@
 
             <div id="auth-msg" class="hidden p-3 rounded-xl text-xs font-bold mb-4 text-center"></div>
 
-            <!-- Login Form -->
             <form id="login-form" onsubmit="handleAuthSubmit(event, 'login')" class="space-y-4">
                 <h3 class="font-black text-xl text-slate-900 dark:text-white">স্বাগতম! লগইন করুন</h3>
                 <div>
@@ -330,7 +328,6 @@
                 </button>
             </form>
 
-            <!-- Register Form -->
             <form id="register-form" onsubmit="handleAuthSubmit(event, 'register')" class="space-y-4 hidden">
                 <h3 class="font-black text-xl text-slate-900 dark:text-white">নতুন অ্যাকাউন্ট তৈরি করুন</h3>
                 <div>
@@ -380,6 +377,36 @@
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxl0VdkZHzuRP-fLU8CasftjRDNsvqyyJTDRvB2VRO9J4uHo3Ld1rtbajVAC_5C9nIlYw/exec"; 
         const GEMINI_API_KEY = "AQ.Ab8RN6KRKitrPXHj8pgSSzDgAE5Uu49IJmp_UyD9Jeko6UhTyQ"; 
+
+        const GOOGLE_FORM_QUESTIONS = [
+            {
+                Subject: "বাংলা ব্যাকরণ ও পর্ষদ স্পেশাল",
+                Question: "বাংলা ভাষার মূল উৎস কী?",
+                Option1: "সংস্কৃত",
+                Option2: "প্রাকৃত",
+                Option3: "অপভ্রংশ",
+                Option4: "মাগধী প্রাকৃত",
+                CorrectAnswer: "মাগধী প্রাকৃত"
+            },
+            {
+                Subject: "বাংলা ব্যাকরণ ও পর্ষদ স্পেশাল",
+                Question: "নিচের কোনটি তৎসম শব্দ?",
+                Option1: "হাত",
+                Option2: "চাঁদ",
+                Option3: "চন্দ্র",
+                Option4: "সূর্য",
+                CorrectAnswer: "চন্দ্র"
+            },
+            {
+                Subject: "সাধারণ জ্ঞান (General Knowledge)",
+                Question: "ভারতের রাজধানী কোনটি?",
+                Option1: "কলকাতা",
+                Option2: "মুম্বাই",
+                Option3: "নতুন দিল্লি",
+                Option4: "চেন্নাই",
+                CorrectAnswer: "নতুন দিল্লি"
+            }
+        ];
 
         let rawNewsData = [];
         let rawBooksData = [];
@@ -642,7 +669,20 @@
         }
 
         async function loadAllData() {
-            if (!API_URL) return; 
+            groupedQuizData = {};
+            
+            GOOGLE_FORM_QUESTIONS.forEach(q => {
+                let sub = q.Subject ? q.Subject.trim() : "Google Form Quiz";
+                if (!groupedQuizData[sub]) {
+                    groupedQuizData[sub] = [];
+                }
+                groupedQuizData[sub].push(q);
+            });
+
+            if (!API_URL) {
+                renderQuizSubjects();
+                return;
+            }
 
             try {
                 const response = await fetch(API_URL);
@@ -686,7 +726,6 @@
                 }
 
                 if(data.Quiz && Array.isArray(data.Quiz)) {
-                    groupedQuizData = {};
                     data.Quiz.forEach(q => {
                         let sub = q.Subject ? q.Subject.trim() : "সাধারণ জ্ঞান";
                         if (!groupedQuizData[sub]) {
@@ -694,12 +733,12 @@
                         }
                         groupedQuizData[sub].push(q);
                     });
-
-                    renderQuizSubjects();
                 }
 
             } catch (error) {
-                console.error("Error loading portal data:", error);
+                console.error("API Fetch Dynamic Data error:", error);
+            } finally {
+                renderQuizSubjects();
             }
         }
 
