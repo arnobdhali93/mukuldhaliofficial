@@ -86,14 +86,14 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100 overflow-x-hidden w-full max-w-[100vw]">
+<body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100 overflow-x-hidden w-full">
 
     <div id="scroll-progress-bar" class="fixed top-0 left-0 h-1 bg-brand-600 z-[60] w-0 transition-all duration-150"></div>
 
     <!-- ADVANCED FEATURE: Professional Toast Notification Container -->
     <div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-2 pointer-events-none"></div>
 
-    <header class="md:hidden bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50 px-4 py-3 flex items-center justify-between shadow-sm">
+    <header class="md:hidden bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50 px-4 py-3 flex items-center justify-between shadow-sm w-full box-border">
         <div class="flex items-center gap-3">
             <button onclick="toggleSidebar()" aria-label="Toggle Menu" title="মেনু খুলুন" class="text-slate-700 dark:text-slate-200 hover:text-black text-lg focus:outline-none p-2 rounded-xl bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 transition active:scale-95 cursor-pointer">
                 <i class="fa-solid fa-bars"></i>
@@ -116,7 +116,7 @@
         <div class="flex items-center gap-3">
             <span class="current-date-display text-[11px] font-extrabold text-brand-800 bg-brand-100 border border-brand-200 px-2.5 py-1 rounded-md shadow-sm font-mono tracking-wide" title="আজকের তারিখ">--.--.--</span>
             
-            <div id="mobile-user-badge" onclick="showSection('profile', event)" title="আমার প্রোফাইল" class="w-9 h-9 rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 font-bold text-xs cursor-pointer hover:bg-brand-100 transition shadow-sm">
+            <div id="mobile-user-badge" onclick="showSection('profile', event)" title="আমার প্রোফাইল" class="w-9 h-9 rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 font-bold text-xs cursor-pointer hover:bg-brand-100 transition shadow-sm shrink-0">
                 U
             </div>
         </div>
@@ -187,7 +187,7 @@
 
     <main class="flex-1 flex flex-col min-h-screen w-full overflow-hidden relative">
         
-        <div class="bg-brand-600 text-white py-2.5 px-4 flex items-center justify-between gap-3 shadow-md">
+        <div class="bg-brand-600 text-white py-2.5 px-4 flex items-center justify-between gap-3 shadow-md w-full box-border">
             <div class="flex items-center gap-3 flex-1 overflow-hidden">
                 <span class="bg-white text-brand-700 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider flex-shrink-0 shadow-sm">
                     <i class="fa-solid fa-bullhorn mr-1"></i> ব্রেকিং নিউজ
@@ -202,7 +202,7 @@
             </div>
         </div>
 
-        <div class="p-4 md:p-12 max-w-6xl mx-auto w-full flex-1">
+        <div class="p-4 md:p-12 max-w-6xl mx-auto w-full flex-1 box-border">
 
             <section id="home" class="section-content space-y-8">
                 <div class="p-8 md:p-12 rounded-3xl bg-gradient-to-br from-white to-brand-50/50 dark:from-slate-800 dark:to-slate-800/80 border border-slate-200/80 dark:border-slate-700 shadow-md space-y-6 relative overflow-hidden transition hover:shadow-lg">
@@ -1104,7 +1104,7 @@
                                     <p id="story-desc-${index}" class="text-slate-600 dark:text-slate-300 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${story.Description || ''}</p>
                                 </div>
                                 <div class="flex flex-wrap gap-2">
-                                    <button onclick="toggleReadMore('story-desc-${index}', this)" title="বিস্তারিত পড়ুন" class="bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 hover:bg-brand-100 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block cursor-pointer">
+                                    <button onclick="toggleReadMore('story-desc-${index}', this)" title="বিস্তারিত পড়ুন" class="bg-brand-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:bg-brand-100 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block cursor-pointer">
                                         <i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন
                                     </button>
                                     ${story.ReadLink ? `<a href="${story.ReadLink}" target="_blank" rel="noopener noreferrer" title="মূল লিংকে যান" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block"><i class="fa-solid fa-book-reader mr-1"></i> বিস্তারিত পড়ুন</a>` : ''}
