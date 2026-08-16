@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MukulDhaliOfficial - Premium Education & Knowledge Portal</title>
+    <title>mukuldhaliofficial - Premium Education & Knowledge Portal</title>
     
     <!-- Social Media Sharing Meta Tags (Open Graph) -->
-    <meta property="og:title" content="MukulDhaliOfficial - Premium Education & Knowledge Portal">
+    <meta property="og:title" content="mukuldhaliofficial - Premium Education & Knowledge Portal">
     <meta property="og:description" content="ছাত্রছাত্রীদের জন্য একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম। কুইজ, পিডিএফ এবং নিউজ আপডেট পান।">
     <meta property="og:image" content="https://i.ibb.co/your-logo-link.png">
     <meta property="og:url" content="https://yourwebsite.com">
@@ -14,7 +14,7 @@
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="MukulDhaliOfficial - Premium Education Portal">
+    <meta name="twitter:title" content="mukuldhaliofficial - Premium Education Portal">
     <meta name="twitter:description" content="ছাত্রছাত্রীদের জন্য একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম।">
     <meta name="twitter:image" content="https://i.ibb.co/your-logo-link.png">
     
@@ -89,6 +89,9 @@
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100">
 
     <div id="scroll-progress-bar" class="fixed top-0 left-0 h-1 bg-brand-600 z-[60] w-0 transition-all duration-150"></div>
+
+    <!-- ADVANCED FEATURE: Professional Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-2 pointer-events-none"></div>
 
     <header class="md:hidden bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50 px-4 py-3 flex items-center justify-between shadow-sm">
         <div class="flex items-center gap-3">
@@ -176,7 +179,7 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></div>
                 <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">System Online</span>
             </div>
-            <span class="text-[10px] text-slate-400 font-mono">v5.7</span>
+            <span class="text-[10px] text-slate-400 font-mono">v6.0 Pro</span>
         </div>
     </aside>
 
@@ -190,7 +193,7 @@
                     <i class="fa-solid fa-bullhorn mr-1"></i> ব্রেকিং নিউজ
                 </span>
                 <marquee id="breaking-news-text" class="text-xs md:text-sm font-medium flex-1">
-                    📝 MukulDhaliOfficial পোর্টালে স্বাগতম! নিয়মিত মক টেস্ট এবং নতুন আপডেট পেতে আমাদের সাথে থাকুন।
+                    👉 mukuldhaliofficial পোর্টালে স্বাগতম! নিয়মিত মক টেস্ট এবং নতুন আপডেট পেতে আমাদের সাথে থাকুন।
                 </marquee>
             </div>
             <div class="hidden md:flex items-center gap-2 bg-slate-900/20 backdrop-blur-sm px-3.5 py-1.5 rounded-lg border border-white/20 flex-shrink-0 text-[11px] font-mono font-extrabold tracking-widest shadow-inner" title="আজকের তারিখ">
@@ -210,7 +213,7 @@
                         <i class="fa-solid fa-sparkles"></i> প্রিমিয়াম এডুকেশন হাব
                     </div>
                     <h2 class="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-snug">
-                        স্বাগতম <span class="text-brand-600">MukulDhaliOfficial</span> পোর্টালে
+                        স্বাগতম <span class="text-brand-600">mukuldhaliofficial</span> পোর্টালে
                     </h2>
                     <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-sm md:text-base font-normal max-w-3xl">
                          ছাত্রছাত্রীদের জন্য এটি একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম। পশ্চিমবঙ্গ মধ্যশিক্ষা পর্ষদ, উচ্চমাধ্যমিক সংসদ এবং সিবিএসই বোর্ডের যাবতীয় আপডেট, বই এবং শিক্ষামূলক কন্টেন্ট এখানে খুব সহজেই পাবেন।
@@ -352,6 +355,7 @@
                 </div>
             </section>
 
+            <!-- ADVANCED FEATURE: INTERACTIVE BOOKMARKS -->
             <section id="bookmarks" class="section-content hidden space-y-6">
                 <h2 class="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight border-b border-slate-200 dark:border-slate-700 pb-4 flex items-center gap-3">
                     <i class="fa-solid fa-bookmark text-brand-600 text-xl"></i> সেভ করা আইটেম
@@ -497,6 +501,25 @@
         let isSpeaking = false;
         let currentSpeakingId = null;
 
+        // ADVANCED FEATURE: Professional Toast Notification System
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' ? 'bg-emerald-500' : type === 'error' ? 'bg-red-500' : 'bg-brand-600';
+            const iconClass = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+            
+            toast.className = `px-4 py-3 rounded-xl shadow-lg text-sm font-bold text-white transform transition-all duration-300 translate-x-[120%] flex items-center gap-2 ${bgClass}`;
+            toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> ${message}`;
+            container.appendChild(toast);
+            
+            setTimeout(() => toast.classList.remove('translate-x-[120%]'), 10);
+            setTimeout(() => {
+                toast.classList.add('translate-x-[120%]', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
         function applySavedTheme() {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
@@ -538,16 +561,17 @@
             }
         });
 
-        function toggleBookmark(title, category, type) {
+        // ADVANCED FEATURE: Bookmark Open Link/Section Fix
+        function toggleBookmark(title, category, type, link = '') {
             let bookmarks = JSON.parse(localStorage.getItem('portalBookmarks')) || [];
             const index = bookmarks.findIndex(b => b.title === title);
             
             if (index > -1) {
                 bookmarks.splice(index, 1);
-                alert("আইটেমটি রিমুভ করা হয়েছে!");
+                showToast("বুকমার্ক থেকে রিমুভ করা হয়েছে!", 'error');
             } else {
-                bookmarks.push({ title, category, type });
-                alert("আইটেমটি বুকমার্কে সেভ করা হয়েছে!");
+                bookmarks.push({ title, category, type, link });
+                showToast("বুকমার্কে সেভ করা হয়েছে!", 'success');
             }
             localStorage.setItem('portalBookmarks', JSON.stringify(bookmarks));
             renderBookmarks();
@@ -568,15 +592,22 @@
 
             container.innerHTML = '';
             bookmarks.forEach(b => {
+                let openAction = b.link 
+                    ? `<a href="${b.link}" target="_blank" title="ওপেন করুন" class="text-brand-600 hover:text-brand-800 bg-brand-50 hover:bg-brand-100 dark:bg-slate-700 dark:hover:bg-slate-600 p-2.5 rounded-xl text-sm transition"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>` 
+                    : `<button onclick="showSection('${b.type === 'News' ? 'news' : b.type === 'Book' ? 'books' : b.type === 'Story' ? 'stories' : 'home'}', null)" title="সেকশনে যান" class="text-brand-600 hover:text-brand-800 bg-brand-50 hover:bg-brand-100 dark:bg-slate-700 dark:hover:bg-slate-600 p-2.5 rounded-xl text-sm transition"><i class="fa-solid fa-eye"></i></button>`;
+
                 container.innerHTML += `
-                <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm flex items-center justify-between">
-                    <div>
+                <div class="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm flex items-center justify-between gap-4">
+                    <div class="flex-1">
                         <span class="text-[10px] bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 px-2 py-0.5 rounded font-bold uppercase">${b.type || 'Saved'}</span>
-                        <h4 class="font-bold text-slate-900 dark:text-white text-base mt-1">${b.title}</h4>
+                        <h4 class="font-bold text-slate-900 dark:text-white text-base mt-1 line-clamp-2 leading-tight">${b.title}</h4>
                     </div>
-                    <button onclick="toggleBookmark('${b.title}', '', '')" title="মুছে ফেলুন" class="text-red-500 hover:text-red-700 p-2 text-sm cursor-pointer">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        ${openAction}
+                        <button onclick="toggleBookmark('${b.title.replace(/'/g, "\\'")}', '', '')" title="মুছে ফেলুন" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 dark:bg-red-900/30 dark:hover:bg-red-900/50 p-2.5 rounded-xl text-sm transition cursor-pointer">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
                 </div>`;
             });
         }
@@ -628,13 +659,24 @@
                 }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(window.location.href);
-                alert("লিংক কপি করা হয়েছে!");
+                showToast("লিংক কপি করা হয়েছে!", "success");
+            }
+        }
+
+        // ADVANCED FEATURE: Share Quiz Score
+        function shareScore(scoreStr) {
+            const text = `আমি mukuldhaliofficial পোর্টালে মক টেস্ট দিয়ে ${scoreStr} স্কোর করেছি! আপনিও যাচাই করুন: ${window.location.href}`;
+            if (navigator.share) {
+                navigator.share({ title: 'My Quiz Score', text: text }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(text);
+                showToast("স্কোর কপি করা হয়েছে!", 'success');
             }
         }
         
         function toggleSpeech(elementId, btnElement) {
             if (!('speechSynthesis' in window)) {
-                alert("আপনার ব্রাউজার টেক্সট-টু-স্পিচ সাপোর্ট করে না।");
+                showToast("আপনার ব্রাউজার টেক্সট-টু-স্পিচ সাপোর্ট করে না।", "error");
                 return;
             }
 
@@ -739,6 +781,7 @@
             if(confirm('আপনি কি সম্পূর্ণ চ্যাট হিস্ট্রি মুছে ফেলতে চান?')) {
                 document.getElementById('chat-history').innerHTML = `<p class="bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 shadow-sm">হ্যালো! আমি আপনার এআই অ্যাসিস্ট্যান্ট। যেকোনো প্রশ্ন করুন।</p>`;
                 localStorage.removeItem('aiChatHistory');
+                showToast('চ্যাট মুছে ফেলা হয়েছে।', 'success');
             }
         }
 
@@ -865,6 +908,7 @@
                 btn.innerHTML = originalText;
                 btn.disabled = false;
                 closeAuthModal();
+                showToast("সফলভাবে প্রবেশ করেছেন!", "success");
                 renderProfileSection();
             }, 800); 
         }
@@ -890,7 +934,10 @@
                         <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>স্ট্যাটাস:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">Active User</span></p>
                         <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>সর্বশেষ কুইজ স্কোর:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">${quizScore}</span></p>
                     </div>
-                    <button onclick="logoutUser()" title="লগআউট" class="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-xl text-xs font-bold transition w-full shadow-md hover:-translate-y-0.5 cursor-pointer">লগআউট করুন</button>
+                    <div class="flex gap-3 mt-4">
+                        <button onclick="shareScore('${quizScore}')" title="স্কোর শেয়ার করুন" class="bg-brand-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 hover:bg-brand-100 px-4 py-3 rounded-xl text-xs font-bold transition flex-1 shadow-sm hover:-translate-y-0.5 cursor-pointer text-center"><i class="fa-solid fa-share-nodes"></i> শেয়ার</button>
+                        <button onclick="logoutUser()" title="লগআউট" class="bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-xl text-xs font-bold transition flex-1 shadow-md hover:-translate-y-0.5 cursor-pointer text-center"><i class="fa-solid fa-right-from-bracket"></i> লগআউট</button>
+                    </div>
                 `;
             } else {
                 profileContainer.innerHTML = `
@@ -911,6 +958,7 @@
             if(confirm('আপনি কি সত্যিই লগআউট করতে চান?')){
                 localStorage.removeItem('portalUserName');
                 localStorage.removeItem('portalUserEmail');
+                showToast("লগআউট সম্পন্ন হয়েছে!", "success");
                 renderProfileSection();
             }
         }
@@ -1024,8 +1072,8 @@
                                         <div class="text-[11px] text-brand-600 dark:text-brand-400 font-extrabold bg-brand-50 dark:bg-slate-700 px-2 py-0.5 rounded border border-brand-100 dark:border-slate-600">${story.Category || 'গল্প'}</div>
                                         <div class="flex gap-2">
                                             <button id="audio-btn-story-desc-${index}" onclick="toggleSpeech('story-desc-${index}', this)" title="গল্প শুনুন / বন্ধ করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-volume-high"></i></button>
-                                            <button onclick="toggleBookmark('${story.Title}', '${story.Category}', 'Story')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
-                                            <button onclick="shareContent('${story.Title}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
+                                            <button onclick="toggleBookmark('${story.Title.replace(/'/g, "\\'")}', '${story.Category}', 'Story', '${story.ReadLink || ''}')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
+                                            <button onclick="shareContent('${story.Title.replace(/'/g, "\\'")}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
                                         </div>
                                     </div>
                                     <h3 class="font-black text-lg text-slate-900 dark:text-white mb-2 mt-2">${story.Title}</h3>
@@ -1073,7 +1121,7 @@
                 newsContainer.innerHTML = `
                     <div class="col-span-full text-center py-12 text-slate-500 font-bold bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <i class="fa-regular fa-folder-open text-3xl mb-2 text-slate-400"></i>
-                        <p>কোনো খবর পাওয়া যায়নি。</p>
+                        <p>কোনো খবর পাওয়া যায়নি।</p>
                     </div>`;
                 return;
             }
@@ -1091,8 +1139,8 @@
                         <div class="flex justify-between items-center">
                             <span class="text-[11px] ${badgeClass} px-3 py-1 rounded-full font-extrabold uppercase tracking-wider shadow-sm">${news.Category || 'Educational'}</span>
                             <div class="flex gap-2">
-                                <button onclick="toggleBookmark('${news.Title}', '${news.Category}', 'News')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
-                                <button onclick="shareContent('${news.Title}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
+                                <button onclick="toggleBookmark('${news.Title.replace(/'/g, "\\'")}', '${news.Category}', 'News', '${news.Link || ''}')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
+                                <button onclick="shareContent('${news.Title.replace(/'/g, "\\'")}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
                             </div>
                         </div>
                         <h3 class="font-black text-lg text-slate-900 dark:text-white mt-4 mb-2">${news.Title}</h3>
@@ -1129,8 +1177,8 @@
                         <div class="flex justify-between items-center mb-1">
                             <div class="text-[11px] text-brand-600 dark:text-brand-400 font-extrabold bg-brand-50 dark:bg-slate-700 px-2 py-0.5 rounded border border-brand-100 dark:border-slate-600">${book.Board || 'General'}</div>
                             <div class="flex gap-2">
-                                <button onclick="toggleBookmark('${book.Title}', '${book.Board}', 'Book')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
-                                <button onclick="shareContent('${book.Title}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
+                                <button onclick="toggleBookmark('${book.Title.replace(/'/g, "\\'")}', '${book.Board}', 'Book', '${book.DownloadLink || ''}')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
+                                <button onclick="shareContent('${book.Title.replace(/'/g, "\\'")}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
                             </div>
                         </div>
                         <h3 class="font-black text-lg text-slate-900 dark:text-white mb-2 mt-2">${book.Title}</h3>
@@ -1141,23 +1189,35 @@
             });
         }
 
+        // ADVANCED FEATURE: DEBOUNCE SEARCH (Search Optimization)
+        let newsSearchTimeout, booksSearchTimeout, quizSearchTimeout;
+        
         function filterNews() {
-            const query = document.getElementById('news-search').value.toLowerCase();
-            const filtered = rawNewsData.filter(n => (n.Title && n.Title.toLowerCase().includes(query)) || (n.Description && n.Description.toLowerCase().includes(query)));
-            renderNewsList(filtered);
+            clearTimeout(newsSearchTimeout);
+            newsSearchTimeout = setTimeout(() => {
+                const query = document.getElementById('news-search').value.toLowerCase();
+                const filtered = rawNewsData.filter(n => (n.Title && n.Title.toLowerCase().includes(query)) || (n.Description && n.Description.toLowerCase().includes(query)));
+                renderNewsList(filtered);
+            }, 300);
         }
 
         function filterBooks() {
-            const query = document.getElementById('books-search').value.toLowerCase();
-            const filtered = rawBooksData.filter(b => (b.Title && b.Title.toLowerCase().includes(query)) || (b.Description && b.Description.toLowerCase().includes(query)));
-            renderBooksList(filtered);
+            clearTimeout(booksSearchTimeout);
+            booksSearchTimeout = setTimeout(() => {
+                const query = document.getElementById('books-search').value.toLowerCase();
+                const filtered = rawBooksData.filter(b => (b.Title && b.Title.toLowerCase().includes(query)) || (b.Description && b.Description.toLowerCase().includes(query)));
+                renderBooksList(filtered);
+            }, 300);
         }
 
         function filterQuizSubjects() {
-            const query = document.getElementById('quiz-search').value.toLowerCase();
-            const allSubjects = Object.keys(groupedQuizData);
-            const filtered = allSubjects.filter(sub => sub.toLowerCase().includes(query));
-            renderQuizSubjects(filtered);
+            clearTimeout(quizSearchTimeout);
+            quizSearchTimeout = setTimeout(() => {
+                const query = document.getElementById('quiz-search').value.toLowerCase();
+                const allSubjects = Object.keys(groupedQuizData);
+                const filtered = allSubjects.filter(sub => sub.toLowerCase().includes(query));
+                renderQuizSubjects(filtered);
+            }, 300);
         }
 
         function renderQuizSubjects(subjects) {
