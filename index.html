@@ -8,7 +8,6 @@
     <!-- Social Media Sharing Meta Tags (Open Graph) -->
     <meta property="og:title" content="mukuldhaliofficial - Premium Education & Knowledge Portal">
     <meta property="og:description" content="ছাত্রছাত্রীদের জন্য একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম। কুইজ, পিডিএফ এবং নিউজ আপডেট পান।">
-    <!-- নিচের content="..." এর জায়গায় আপনার লোগোর আসল লিংক (Google Drive বা Imgur থেকে) দিন -->
     <meta property="og:image" content="https://i.ibb.co/your-logo-link.png">
     <meta property="og:url" content="https://yourwebsite.com">
     <meta property="og:type" content="website">
@@ -86,7 +85,6 @@
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100">
 
-    <!-- ADVANCED TOP READING PROGRESS BAR -->
     <div id="scroll-progress-bar" class="fixed top-0 left-0 h-1 bg-brand-600 z-[60] w-0 transition-all duration-150"></div>
 
     <header class="md:hidden bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50 px-4 py-3 flex items-center justify-between shadow-sm">
@@ -95,7 +93,6 @@
                 <i class="fa-solid fa-bars"></i>
             </button>
             <div class="flex items-center gap-2">
-                <!-- Professional Logo SVG (Mobile) -->
                 <svg viewBox="0 0 100 100" class="w-7 h-7 drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect width="100" height="100" rx="25" fill="url(#gradHead)" />
                     <path d="M50 25 L20 42.5 L50 60 L80 42.5 Z" fill="#ffffff"/>
@@ -122,7 +119,6 @@
     <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 transform -translate-x-full md:translate-x-0 md:static md:inset-auto transition-transform duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none">
         <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <!-- Professional Logo SVG (Desktop) -->
                 <svg viewBox="0 0 100 100" class="w-10 h-10 drop-shadow-md shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect width="100" height="100" rx="25" fill="url(#gradSide)" />
                     <path d="M50 25 L20 42.5 L50 60 L80 42.5 Z" fill="#ffffff"/>
@@ -177,7 +173,7 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></div>
                 <span class="menu-font text-xs text-slate-600 dark:text-slate-300 font-medium">System Online</span>
             </div>
-            <span class="text-[10px] text-slate-400 font-mono">v5.3 Pro</span>
+            <span class="text-[10px] text-slate-400 font-mono">v5.4 Auto</span>
         </div>
     </aside>
 
@@ -230,7 +226,7 @@
                     <div onclick="showSection('news', null)" title="শিক্ষামূলক খবর" class="cursor-pointer p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 text-center space-y-1">
                         <div class="text-brand-600 text-xl font-bold"><i class="fa-solid fa-newspaper"></i></div>
                         <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm">প্রতিদিনের নিউজ</h4>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400">বোর্ড ও শিক্ষামূলক আপডেট</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">বোর্ড ও অটোমেটিক আপডেট</p>
                     </div>
                     <div onclick="showSection('quiz', null)" title="মক টেস্ট" class="cursor-pointer p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 text-center space-y-1">
                         <div class="text-brand-600 text-xl font-bold"><i class="fa-solid fa-brain"></i></div>
@@ -253,7 +249,7 @@
             <section id="news" class="section-content hidden space-y-6">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-700 pb-4">
                     <h2 class="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
-                        <i class="fa-solid fa-newspaper text-brand-600 text-xl"></i> ভারতীয় শিক্ষা ও বোর্ড নিউজ
+                        <i class="fa-solid fa-newspaper text-brand-600 text-xl"></i> প্রতিদিনের নিউজ
                     </h2>
                     <input type="text" id="news-search" oninput="filterNews()" title="খবর খুঁজুন" placeholder="খবর খুঁজুন..." class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 text-xs w-full md:w-64 outline-none focus:border-brand-600">
                 </div>
@@ -374,7 +370,6 @@
 
         </div>
         
-        <!-- ADVANCED SCROLL TO TOP BUTTON -->
         <button id="scrollToTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="উপরে যান" class="fixed bottom-24 right-6 z-40 bg-brand-600 hover:bg-brand-700 text-white w-12 h-12 rounded-full shadow-lg opacity-0 pointer-events-none transition-all duration-300 flex items-center justify-center cursor-pointer translate-y-4">
             <i class="fa-solid fa-arrow-up"></i>
         </button>
@@ -460,7 +455,7 @@
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxl0VdkZHzuRP-fLU8CasftjRDNsvqyyJTDRvB2VRO9J4uHo3Ld1rtbajVAC_5C9nIlYw/exec"; 
-        const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE"; // আপনার অরিজিনাল API Key টি এখানে বসান
+        const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE"; 
 
         const GOOGLE_FORM_QUESTIONS = [
             { Subject: "ভূগোল MCQ Test - Set 2", Question: "১. জৈবিক প্রক্রিয়ার মাধ্যমে কী পরিবর্তিত হয়?", Option1: "গ্রহ", Option2: "চাঁদ", Option3: "ভূমিরূপ", Option4: "সূর্য", CorrectAnswer: "ভূমিরূপ" },
@@ -499,7 +494,6 @@
         let isSpeaking = false;
         let currentSpeakingId = null;
 
-        // ADVANCED FEATURE: SMART DARK MODE SYSTEM WITH LOCALSTORAGE
         function applySavedTheme() {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
@@ -523,7 +517,6 @@
             document.getElementById('dark-text').innerText = isDark ? 'Light Mode' : 'Dark Mode';
         }
 
-        // ADVANCED FEATURE: PAGE READ PROGRESS BAR & SCROLL TO TOP
         window.addEventListener('scroll', () => {
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -532,7 +525,6 @@
             const progressBar = document.getElementById("scroll-progress-bar");
             if(progressBar) progressBar.style.width = scrolled + "%";
 
-            // Scroll to top visibility
             const scrollToTopBtn = document.getElementById("scrollToTopBtn");
             if(winScroll > 300) {
                 scrollToTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
@@ -543,7 +535,6 @@
             }
         });
 
-        // ADVANCED FEATURE: LOCALSTORAGE BOOKMARKING SYSTEM
         function toggleBookmark(title, category, type) {
             let bookmarks = JSON.parse(localStorage.getItem('portalBookmarks')) || [];
             const index = bookmarks.findIndex(b => b.title === title);
@@ -638,7 +629,6 @@
             }
         }
         
-        // ADVANCED FEATURE: TEXT TO SPEECH (PLAY/PAUSE TOGGLE)
         function toggleSpeech(elementId, btnElement) {
             if (!('speechSynthesis' in window)) {
                 alert("আপনার ব্রাউজার টেক্সট-টু-স্পিচ সাপোর্ট করে না।");
@@ -732,7 +722,6 @@
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
-        // ADVANCED FEATURE: AI CHAT HISTORY SAVING
         function loadChatHistory() {
             const savedChat = localStorage.getItem('aiChatHistory');
             if (savedChat) {
@@ -929,8 +918,37 @@
             if (name && badge) {
                 badge.innerText = name.substring(0, 2).toUpperCase();
             } else if (badge) {
-                badge.innerText = "USR";
+                badge.innerText = "MD";
             }
+        }
+
+        // ==========================================
+        // ADVANCED FEATURE: AUTO FETCH WEST BENGAL NEWS
+        // ==========================================
+        async function fetchAutoNews() {
+            try {
+                // Using rss2json free API to convert Bengali News RSS to JSON
+                const rssUrl = 'https://bengali.news18.com/rss/khobor/west-bengal.xml';
+                const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
+                const data = await response.json();
+                
+                if(data.status === 'ok' && data.items) {
+                    // Get top 3 news
+                    return data.items.slice(0, 3).map(item => {
+                        // Clean HTML tags from description
+                        let cleanDesc = item.description.replace(/<[^>]*>?/gm, '').trim();
+                        return {
+                            Title: item.title,
+                            Description: cleanDesc.length > 150 ? cleanDesc.substring(0, 150) + '...' : cleanDesc,
+                            Link: item.link,
+                            Category: 'অটো আপডেট'
+                        };
+                    });
+                }
+            } catch (e) {
+                console.error('Auto news fetch failed:', e);
+            }
+            return [];
         }
 
         async function loadAllData() {
@@ -944,72 +962,78 @@
                 groupedQuizData[sub].push(q);
             });
 
-            if (!API_URL) {
-                renderQuizSubjects(Object.keys(groupedQuizData));
-                return;
-            }
-
             try {
-                const response = await fetch(API_URL);
-                const data = await response.json(); 
+                // Fetch Data from Google Sheets
+                if (API_URL) {
+                    const response = await fetch(API_URL);
+                    const data = await response.json(); 
 
-                if(data.BreakingNews) {
-                    const breakingMarquee = document.getElementById('breaking-news-text');
-                    breakingMarquee.innerHTML = `👉 ${data.BreakingNews}`;
-                }
+                    if(data.BreakingNews) {
+                        const breakingMarquee = document.getElementById('breaking-news-text');
+                        breakingMarquee.innerHTML = `👉 ${data.BreakingNews}`;
+                    }
 
-                if(data.News && Array.isArray(data.News)) {
-                    rawNewsData = data.News;
-                    renderNewsList(rawNewsData);
-                }
+                    if(data.News && Array.isArray(data.News)) {
+                        rawNewsData = data.News;
+                    }
 
-                if(data.Books && Array.isArray(data.Books)) {
-                    rawBooksData = data.Books;
-                    renderBooksList(rawBooksData);
-                }
+                    if(data.Books && Array.isArray(data.Books)) {
+                        rawBooksData = data.Books;
+                        renderBooksList(rawBooksData);
+                    }
 
-                if(data.Stories && Array.isArray(data.Stories)) {
-                    const storiesContainer = document.getElementById('stories-container');
-                    storiesContainer.innerHTML = ''; 
-                    data.Stories.slice().reverse().forEach((story, index) => {
-                        if (!story.Title) return;
-                        storiesContainer.innerHTML += `
-                        <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
-                            <div>
-                                <div class="flex justify-between items-center mb-1">
-                                    <div class="text-[11px] text-brand-600 dark:text-brand-400 font-extrabold bg-brand-50 dark:bg-slate-700 px-2 py-0.5 rounded border border-brand-100 dark:border-slate-600">${story.Category || 'গল্প'}</div>
-                                    <div class="flex gap-2">
-                                        <button id="audio-btn-story-desc-${index}" onclick="toggleSpeech('story-desc-${index}', this)" title="গল্প শুনুন / বন্ধ করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-volume-high"></i></button>
-                                        <button onclick="toggleBookmark('${story.Title}', '${story.Category}', 'Story')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
-                                        <button onclick="shareContent('${story.Title}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
+                    if(data.Stories && Array.isArray(data.Stories)) {
+                        const storiesContainer = document.getElementById('stories-container');
+                        storiesContainer.innerHTML = ''; 
+                        data.Stories.slice().reverse().forEach((story, index) => {
+                            if (!story.Title) return;
+                            storiesContainer.innerHTML += `
+                            <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <div class="text-[11px] text-brand-600 dark:text-brand-400 font-extrabold bg-brand-50 dark:bg-slate-700 px-2 py-0.5 rounded border border-brand-100 dark:border-slate-600">${story.Category || 'গল্প'}</div>
+                                        <div class="flex gap-2">
+                                            <button id="audio-btn-story-desc-${index}" onclick="toggleSpeech('story-desc-${index}', this)" title="গল্প শুনুন / বন্ধ করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-volume-high"></i></button>
+                                            <button onclick="toggleBookmark('${story.Title}', '${story.Category}', 'Story')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
+                                            <button onclick="shareContent('${story.Title}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
+                                        </div>
                                     </div>
+                                    <h3 class="font-black text-lg text-slate-900 dark:text-white mb-2 mt-2">${story.Title}</h3>
+                                    <p id="story-desc-${index}" class="text-slate-600 dark:text-slate-300 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${story.Description || ''}</p>
                                 </div>
-                                <h3 class="font-black text-lg text-slate-900 dark:text-white mb-2 mt-2">${story.Title}</h3>
-                                <p id="story-desc-${index}" class="text-slate-600 dark:text-slate-300 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${story.Description || ''}</p>
-                            </div>
-                            <div class="flex flex-wrap gap-2">
-                                <button onclick="toggleReadMore('story-desc-${index}', this)" title="বিস্তারিত পড়ুন" class="bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 hover:bg-brand-100 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block cursor-pointer">
-                                    <i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন
-                                </button>
-                                ${story.ReadLink ? `<a href="${story.ReadLink}" target="_blank" rel="noopener noreferrer" title="মূল লিংকে যান" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block"><i class="fa-solid fa-book-reader mr-1"></i> বিস্তারিত পড়ুন</a>` : ''}
-                            </div>
-                        </div>`;
-                    });
+                                <div class="flex flex-wrap gap-2">
+                                    <button onclick="toggleReadMore('story-desc-${index}', this)" title="বিস্তারিত পড়ুন" class="bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 hover:bg-brand-100 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block cursor-pointer">
+                                        <i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন
+                                    </button>
+                                    ${story.ReadLink ? `<a href="${story.ReadLink}" target="_blank" rel="noopener noreferrer" title="মূল লিংকে যান" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block"><i class="fa-solid fa-book-reader mr-1"></i> বিস্তারিত পড়ুন</a>` : ''}
+                                </div>
+                            </div>`;
+                        });
+                    }
+
+                    if(data.Quiz && Array.isArray(data.Quiz)) {
+                        data.Quiz.forEach(q => {
+                            let sub = q.Subject ? q.Subject.trim() : "সাধারণ জ্ঞান";
+                            if (!groupedQuizData[sub]) {
+                                groupedQuizData[sub] = [];
+                            }
+                            groupedQuizData[sub].push(q);
+                        });
+                    }
                 }
 
-                if(data.Quiz && Array.isArray(data.Quiz)) {
-                    data.Quiz.forEach(q => {
-                        let sub = q.Subject ? q.Subject.trim() : "সাধারণ জ্ঞান";
-                        if (!groupedQuizData[sub]) {
-                            groupedQuizData[sub] = [];
-                        }
-                        groupedQuizData[sub].push(q);
-                    });
+                // FETCH AUTO NEWS
+                const autoNews = await fetchAutoNews();
+                if(autoNews.length > 0) {
+                    // Combine Auto News with Manual Google Sheet News
+                    rawNewsData = [...autoNews, ...rawNewsData];
                 }
 
             } catch (error) {
-                console.error("API Fetch Dynamic Data error:", error);
+                console.error("API Fetch Data error:", error);
             } finally {
+                // Render everything after all fetching is done
+                renderNewsList(rawNewsData);
                 renderQuizSubjects(Object.keys(groupedQuizData));
             }
         }
@@ -1027,13 +1051,18 @@
                 return;
             }
 
-            list.slice().reverse().forEach((news, index) => {
+            list.slice().forEach((news, index) => {
                 if (!news.Title) return; 
+                // Using different badge color if it's auto updated
+                const badgeClass = news.Category === 'অটো আপডেট' 
+                    ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800' 
+                    : 'bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 border-brand-200 dark:border-slate-600';
+
                 newsContainer.innerHTML += `
                 <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
                     <div>
                         <div class="flex justify-between items-center">
-                            <span class="text-[11px] bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-slate-600 px-3 py-1 rounded-full font-extrabold uppercase tracking-wider shadow-sm">${news.Category || 'Educational'}</span>
+                            <span class="text-[11px] ${badgeClass} px-3 py-1 rounded-full font-extrabold uppercase tracking-wider shadow-sm">${news.Category || 'Educational'}</span>
                             <div class="flex gap-2">
                                 <button onclick="toggleBookmark('${news.Title}', '${news.Category}', 'News')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
                                 <button onclick="shareContent('${news.Title}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
