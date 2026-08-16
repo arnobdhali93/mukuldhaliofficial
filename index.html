@@ -126,7 +126,7 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></div>
                 <span class="menu-font text-xs text-slate-600 dark:text-slate-300 font-medium">System Online</span>
             </div>
-            <span class="text-[10px] text-slate-400 font-mono">v4.0 Pro</span>
+            <span class="text-[10px] text-slate-400 font-mono">v4.5 Pro</span>
         </div>
     </aside>
 
@@ -235,8 +235,13 @@
                             <i class="fa-solid fa-arrow-left"></i> ফিরে যান
                         </button>
                         <div id="quiz-timer-box" class="flex items-center gap-2 bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 px-3.5 py-1.5 rounded-lg text-xs font-bold border border-brand-200 dark:border-slate-600 shadow-sm">
-                            <i class="fa-solid fa-clock"></i> সময় বাকি: <span id="time-remaining">02:00</span>
+                            <i class="fa-solid fa-clock"></i> সময় বাকি: <span id="time-remaining">05:00</span>
                         </div>
+                    </div>
+
+                    <!-- NEW FEATURE: LIVE QUIZ PROGRESS BAR -->
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                        <div id="quiz-progress-bar" class="bg-brand-600 h-full w-0 transition-all duration-300"></div>
                     </div>
 
                     <div id="active-quiz-title" class="text-lg font-black text-slate-900 dark:text-white border-l-4 border-brand-600 pl-3"></div>
@@ -248,13 +253,21 @@
                     </button>
                 </div>
 
-                <div id="quiz-result-view" class="hidden space-y-6 max-w-md mx-auto bg-white dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md text-center">
+                <div id="quiz-result-view" class="hidden space-y-6 max-w-2xl mx-auto bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md text-center">
                     <div class="w-16 h-16 bg-brand-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 rounded-full flex items-center justify-center mx-auto text-2xl border border-brand-200 dark:border-slate-600 shadow-sm">
                         <i class="fa-solid fa-trophy"></i>
                     </div>
                     <h3 class="text-xl font-black text-slate-900 dark:text-white">পরীক্ষা সম্পন্ন হয়েছে!</h3>
                     <div id="score-display-box" class="text-sm font-bold text-brand-700 dark:text-brand-300 bg-slate-50 dark:bg-slate-700/50 p-4 rounded-xl border border-slate-100 dark:border-slate-600 leading-relaxed shadow-inner"></div>
-                    <button onclick="backToQuizSubjects()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-sm hover:shadow-md hover:-translate-y-1 cursor-pointer">
+                    
+                    <div class="text-left space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                        <h4 class="font-black text-base text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-square-check text-brand-600"></i> উত্তরমালা পর্যালোচনা (Answer Review)
+                        </h4>
+                        <div id="review-questions-container" class="space-y-4 max-h-96 overflow-y-auto pr-1"></div>
+                    </div>
+
+                    <button onclick="backToQuizSubjects()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-sm hover:shadow-md hover:-translate-y-1 cursor-pointer mt-4">
                         অন্য বিষয় নির্বাচন করুন
                     </button>
                 </div>
@@ -411,7 +424,7 @@
         let groupedQuizData = {};
         let currentActiveSubject = null;
         let examTimer = null;
-        let timeLeftSeconds = 120;
+        let timeLeftSeconds = 300;
 
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
@@ -456,6 +469,19 @@
             } else {
                 textElement.classList.add('line-clamp-3');
                 btnElement.innerHTML = '<i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন';
+            }
+        }
+
+        // NEW FEATURE: SHARE CONTENT
+        function shareContent(title) {
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert("লিংক কপি করা হয়েছে!");
             }
         }
 
@@ -519,10 +545,10 @@
                     const aiReply = data.candidates[0].content.parts[0].text;
                     history.innerHTML += `<p class="text-left text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 shadow-sm"><b>AI:</b> ${escapeHTML(aiReply)}</p>`;
                 } else {
-                    history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">দুঃখিত, কোনো উত্তর পাওয়া যায়নি।</p>`;
+                    history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">দুঃখিত, কোনো উত্তর পাওয়া যায়নি।</p>`;
                 }
             } catch (e) {
-                history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">নেটওয়ার্ক সমস্যার কারণে উত্তর দেওয়া সম্ভব হয়নি।</p>`;
+                history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">নেটওয়ার্ক সমস্যার কারণে উত্তর দেওয়া সম্ভব হয়নি।</p>`;
             }
             history.scrollTop = history.scrollHeight;
         }
@@ -618,6 +644,7 @@
             const profileContainer = document.getElementById('profile-content');
             const loggedInUser = localStorage.getItem('portalUserEmail');
             const loggedInName = localStorage.getItem('portalUserName');
+            const quizScore = localStorage.getItem('lastQuizScore') || 'N/A';
 
             if (loggedInUser && loggedInName) {
                 profileContainer.innerHTML = `
@@ -632,6 +659,7 @@
                     </div>
                     <div class="space-y-2 pt-3 border-t border-slate-100 dark:border-slate-700 text-sm menu-font">
                         <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>স্ট্যাটাস:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">Active User</span></p>
+                        <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>সর্বশেষ কুইজ স্কোর:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">${quizScore}</span></p>
                     </div>
                     <button onclick="logoutUser()" class="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-xl text-xs font-bold transition w-full shadow-md hover:-translate-y-0.5 cursor-pointer">লগআউট করুন</button>
                 `;
@@ -709,7 +737,10 @@
                         storiesContainer.innerHTML += `
                         <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
                             <div>
-                                <div class="text-[11px] text-brand-600 dark:text-brand-400 font-extrabold mb-1 bg-brand-50 dark:bg-slate-700 inline-block px-2 py-0.5 rounded border border-brand-100 dark:border-slate-600">${story.Category || 'গল্প'}</div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <div class="text-[11px] text-brand-600 dark:text-brand-400 font-extrabold bg-brand-50 dark:bg-slate-700 px-2 py-0.5 rounded border border-brand-100 dark:border-slate-600">${story.Category || 'গল্প'}</div>
+                                    <button onclick="shareContent('${story.Title}')" class="text-slate-400 hover:text-brand-600 text-xs"><i class="fa-solid fa-share-nodes"></i></button>
+                                </div>
                                 <h3 class="font-black text-lg text-slate-900 dark:text-white mb-2 mt-2">${story.Title}</h3>
                                 <p id="story-desc-${index}" class="text-slate-600 dark:text-slate-300 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${story.Description || ''}</p>
                             </div>
@@ -748,7 +779,10 @@
                 newsContainer.innerHTML += `
                 <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
                     <div>
-                        <span class="text-[11px] bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-slate-600 px-3 py-1 rounded-full font-extrabold uppercase tracking-wider shadow-sm">${news.Category || 'Educational'}</span>
+                        <div class="flex justify-between items-center">
+                            <span class="text-[11px] bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-slate-600 px-3 py-1 rounded-full font-extrabold uppercase tracking-wider shadow-sm">${news.Category || 'Educational'}</span>
+                            <button onclick="shareContent('${news.Title}')" class="text-slate-400 hover:text-brand-600 text-xs"><i class="fa-solid fa-share-nodes"></i></button>
+                        </div>
                         <h3 class="font-black text-lg text-slate-900 dark:text-white mt-4 mb-2">${news.Title}</h3>
                         <p id="news-desc-${index}" class="text-slate-600 dark:text-slate-300 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${news.Description || ''}</p>
                     </div>
@@ -770,7 +804,10 @@
                 booksContainer.innerHTML += `
                 <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
                     <div>
-                        <div class="text-[11px] text-brand-600 dark:text-brand-400 font-extrabold mb-1 bg-brand-50 dark:bg-slate-700 inline-block px-2 py-0.5 rounded border border-brand-100 dark:border-slate-600">${book.Board || 'General'}</div>
+                        <div class="flex justify-between items-center mb-1">
+                            <div class="text-[11px] text-brand-600 dark:text-brand-400 font-extrabold bg-brand-50 dark:bg-slate-700 px-2 py-0.5 rounded border border-brand-100 dark:border-slate-600">${book.Board || 'General'}</div>
+                            <button onclick="shareContent('${book.Title}')" class="text-slate-400 hover:text-brand-600 text-xs"><i class="fa-solid fa-share-nodes"></i></button>
+                        </div>
                         <h3 class="font-black text-lg text-slate-900 dark:text-white mb-2 mt-2">${book.Title}</h3>
                         <p class="text-slate-600 dark:text-slate-300 text-sm mb-6 leading-relaxed">${book.Description || ''}</p>
                     </div>
@@ -819,6 +856,24 @@
             });
         }
 
+        // NEW FEATURE: UPDATE PROGRESS BAR
+        function updateQuizProgressBar() {
+            if (!currentActiveSubject) return;
+            const total = groupedQuizData[currentActiveSubject].length;
+            let answered = 0;
+            for (let i = 0; i < total; i++) {
+                const radios = document.getElementsByName(`exam_question_${i}`);
+                for (const r of radios) {
+                    if (r.checked) {
+                        answered++;
+                        break;
+                    }
+                }
+            }
+            const pct = Math.round((answered / total) * 100);
+            document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
+        }
+
         function startQuizExam(subject) {
             currentActiveSubject = subject;
             const questions = groupedQuizData[subject];
@@ -828,6 +883,7 @@
             document.getElementById('quiz-exam-view').classList.remove('hidden');
 
             document.getElementById('active-quiz-title').innerText = `বিষয়: ${subject}`;
+            document.getElementById('quiz-progress-bar').style.width = `0%`;
 
             const qContainer = document.getElementById('active-questions-container');
             qContainer.innerHTML = '';
@@ -838,7 +894,7 @@
                     if (q[optKey]) {
                         optionsHtml += `
                         <label class="flex items-center gap-3.5 p-3.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl cursor-pointer hover:border-brand-400 hover:bg-brand-50/50 dark:hover:bg-slate-600 hover:shadow-sm transition text-sm font-medium">
-                            <input type="radio" name="exam_question_${index}" value="${q[optKey]}" class="accent-brand-600 w-4 h-4"> ${q[optKey]}
+                            <input type="radio" name="exam_question_${index}" value="${q[optKey]}" onchange="updateQuizProgressBar()" class="accent-brand-600 w-4 h-4"> ${q[optKey]}
                         </label>`;
                     }
                 });
@@ -852,7 +908,7 @@
                 </div>`;
             });
 
-            timeLeftSeconds = 300; // ২৫টি প্রশ্নের জন্য ৫ মিনিট বা ৩০০ সেকেন্ড সেট করা হয়েছে
+            timeLeftSeconds = 300; 
             if(examTimer) clearInterval(examTimer);
             updateTimerDisplay();
             examTimer = setInterval(() => {
@@ -877,6 +933,9 @@
             const questions = groupedQuizData[currentActiveSubject];
             let score = 0;
 
+            const reviewContainer = document.getElementById('review-questions-container');
+            reviewContainer.innerHTML = '';
+
             questions.forEach((q, index) => {
                 const radios = document.getElementsByName(`exam_question_${index}`);
                 let selectedVal = null;
@@ -887,18 +946,66 @@
                     }
                 }
 
-                let correctAns = q.CorrectAnswer != null ? String(q.CorrectAnswer).trim().toLowerCase() : "";
-                let selectedAns = selectedVal != null ? String(selectedVal).trim().toLowerCase() : "";
+                let rawCorrect = q.CorrectAnswer != null ? String(q.CorrectAnswer).trim() : "";
+                let rawSelected = selectedVal != null ? String(selectedVal).trim() : "";
 
-                if (selectedAns !== "" && correctAns !== "" && selectedAns === correctAns) {
+                let correctAns = rawCorrect.toLowerCase();
+                let selectedAns = rawSelected.toLowerCase();
+
+                let isCorrect = (selectedAns !== "" && correctAns !== "" && selectedAns === correctAns);
+
+                if (isCorrect) {
                     score++;
                 }
+
+                let optionsReviewHtml = '';
+                ['Option1', 'Option2', 'Option3', 'Option4'].forEach(optKey => {
+                    if (q[optKey]) {
+                        let optVal = String(q[optKey]).trim();
+                        let optValLower = optVal.toLowerCase();
+
+                        let optClass = "bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200";
+                        let badge = "";
+
+                        if (optValLower === correctAns) {
+                            optClass = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-bold";
+                            badge = `<span class="ml-2 text-xs bg-emerald-600 text-white px-2 py-0.5 rounded"><i class="fa-solid fa-check"></i> সঠিক উত্তর</span>`;
+                        } else if (optValLower === selectedAns && !isCorrect) {
+                            optClass = "bg-red-50 dark:bg-red-900/30 border-red-500 text-red-700 dark:text-red-300 font-bold";
+                            badge = `<span class="ml-2 text-xs bg-red-600 text-white px-2 py-0.5 rounded"><i class="fa-solid fa-xmark"></i> আপনার উত্তর</span>`;
+                        }
+
+                        optionsReviewHtml += `
+                        <div class="flex items-center justify-between p-3 rounded-xl border ${optClass} text-xs md:text-sm">
+                            <span>${optVal}</span>
+                            ${badge}
+                        </div>`;
+                    }
+                });
+
+                let statusBadge = isCorrect 
+                    ? `<span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/40 px-2.5 py-1 rounded-md border border-emerald-300"><i class="fa-solid fa-circle-check"></i> সঠিক</span>`
+                    : `<span class="text-xs font-bold text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/40 px-2.5 py-1 rounded-md border border-red-300"><i class="fa-solid fa-circle-xmark"></i> ভুল/উত্তর দেওয়া হয়নি</span>`;
+
+                reviewContainer.innerHTML += `
+                <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 space-y-3">
+                    <div class="flex justify-between items-start gap-2 border-b border-slate-200 dark:border-slate-700 pb-2">
+                        <p class="font-bold text-slate-900 dark:text-white text-xs md:text-sm">${index + 1}. ${q.Question}</p>
+                        ${statusBadge}
+                    </div>
+                    <div class="space-y-1.5 pt-1">
+                        ${optionsReviewHtml}
+                    </div>
+                </div>`;
             });
 
             const percentage = Math.round((score / questions.length) * 100);
             let grade = "ভাল চেষ্টা!";
             if(percentage >= 80) grade = "অসামান্য (Outstanding)!";
             else if(percentage >= 60) grade = "খুব ভাল (Excellent)!";
+
+            // SAVE LAST SCORE TO LOCALSTORAGE
+            localStorage.setItem('lastQuizScore', `${score}/${questions.length} (${percentage}%)`);
 
             document.getElementById('quiz-exam-view').classList.add('hidden');
             document.getElementById('quiz-result-view').classList.remove('hidden');
@@ -934,4 +1041,4 @@
         });
     </script>
 </body>
-</html>
+                </html>
