@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>mukuldhaliofficial - Premium Education & Knowledge Portal</title>
     
+    <!-- Social Media Sharing Meta Tags (Open Graph) -->
+    <meta property="og:title" content="mukuldhaliofficial - Premium Education & Knowledge Portal">
+    <meta property="og:description" content="ছাত্রছাত্রীদের জন্য একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম। কুইজ, পিডিএফ এবং নিউজ আপডেট পান।">
+    <!-- নিচের content="..." এর জায়গায় আপনার লোগোর আসল লিংক (Google Drive বা Imgur থেকে) দিন -->
+    <meta property="og:image" content="https://i.ibb.co/your-logo-link.png">
+    <meta property="og:url" content="https://yourwebsite.com">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="mukuldhaliofficial - Premium Education Portal">
+    <meta name="twitter:description" content="ছাত্রছাত্রীদের জন্য একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম।">
+    <meta name="twitter:image" content="https://i.ibb.co/your-logo-link.png">
+    
+    <!-- Browser Tab Favicon (Auto Generated SVG Logo) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' rx='25' fill='%2316a34a' /%3E%3Cpath d='M50 25 L20 42.5 L50 60 L80 42.5 Z' fill='%23ffffff'/%3E%3Cpath d='M20 52.5 L50 70 L80 52.5' stroke='%23ffffff' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -77,7 +94,21 @@
             <button onclick="toggleSidebar()" aria-label="Toggle Menu" title="মেনু খুলুন" class="text-slate-700 dark:text-slate-200 hover:text-black text-lg focus:outline-none p-2 rounded-xl bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 transition active:scale-95 cursor-pointer">
                 <i class="fa-solid fa-bars"></i>
             </button>
-            <span class="menu-font font-bold tracking-wider text-brand-600 text-base">mukuldhaliofficial</span>
+            <div class="flex items-center gap-2">
+                <!-- Professional Logo SVG (Mobile) -->
+                <svg viewBox="0 0 100 100" class="w-7 h-7 drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="100" rx="25" fill="url(#gradHead)" />
+                    <path d="M50 25 L20 42.5 L50 60 L80 42.5 Z" fill="#ffffff"/>
+                    <path d="M20 52.5 L50 70 L80 52.5" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="gradHead" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#22c55e" />
+                            <stop offset="1" stop-color="#15803d" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="menu-font font-bold tracking-wider text-brand-600 text-base">mukuldhaliofficial</span>
+            </div>
         </div>
         <div class="flex items-center gap-3">
             <span class="current-date-display text-[11px] font-extrabold text-brand-800 bg-brand-100 border border-brand-200 px-2.5 py-1 rounded-md shadow-sm font-mono tracking-wide" title="আজকের তারিখ">--.--.--</span>
@@ -90,9 +121,23 @@
 
     <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 transform -translate-x-full md:translate-x-0 md:static md:inset-auto transition-transform duration-300 ease-in-out flex flex-col shadow-2xl md:shadow-none">
         <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
-            <div>
-                <h1 class="menu-font text-lg font-black tracking-tight text-brand-600">mukuldhaliofficial</h1>
-                <p class="menu-font text-[11px] text-slate-400 tracking-wide mt-0.5">Digital Learning Platform</p>
+            <div class="flex items-center gap-3">
+                <!-- Professional Logo SVG (Desktop) -->
+                <svg viewBox="0 0 100 100" class="w-10 h-10 drop-shadow-md shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="100" rx="25" fill="url(#gradSide)" />
+                    <path d="M50 25 L20 42.5 L50 60 L80 42.5 Z" fill="#ffffff"/>
+                    <path d="M20 52.5 L50 70 L80 52.5" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="gradSide" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#22c55e" />
+                            <stop offset="1" stop-color="#15803d" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div>
+                    <h1 class="menu-font text-lg font-black tracking-tight text-brand-600 leading-tight">mukuldhaliofficial</h1>
+                    <p class="menu-font text-[11px] text-slate-400 tracking-wide mt-0.5">Digital Learning Platform</p>
+                </div>
             </div>
             <button onclick="toggleSidebar()" aria-label="Close Sidebar" title="মেনু বন্ধ করুন" class="md:hidden text-slate-500 hover:text-slate-800 text-lg p-2 rounded-lg hover:bg-slate-100 cursor-pointer">
                 <i class="fa-solid fa-xmark"></i>
@@ -132,7 +177,7 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></div>
                 <span class="menu-font text-xs text-slate-600 dark:text-slate-300 font-medium">System Online</span>
             </div>
-            <span class="text-[10px] text-slate-400 font-mono">v5.2 Pro</span>
+            <span class="text-[10px] text-slate-400 font-mono">v5.3 Pro</span>
         </div>
     </aside>
 
@@ -600,7 +645,6 @@
                 return;
             }
 
-            // If it is already playing this specific story, cancel it (Stop)
             if (isSpeaking && currentSpeakingId === elementId) {
                 window.speechSynthesis.cancel();
                 isSpeaking = false;
@@ -609,10 +653,8 @@
                 btnElement.classList.remove('text-brand-600', 'animate-pulse');
                 btnElement.classList.add('text-slate-400');
             } else {
-                // If it's playing something else, or nothing, start playing
                 window.speechSynthesis.cancel(); 
                 
-                // Reset previously active button if any
                 if(currentSpeakingId) {
                     const prevBtn = document.getElementById('audio-btn-' + currentSpeakingId);
                     if(prevBtn) {
@@ -627,7 +669,6 @@
                 utterance.lang = 'bn-BD'; 
                 utterance.rate = 0.9;
                 
-                // When speech ends naturally
                 utterance.onend = () => {
                     isSpeaking = false;
                     currentSpeakingId = null;
@@ -680,11 +721,9 @@
                 }
             }
 
-            // Stop speech synthesis if changing sections
             if('speechSynthesis' in window && isSpeaking) {
                  window.speechSynthesis.cancel();
                  isSpeaking = false;
-                 // Resets will happen dynamically if they go back to stories
             }
 
             window.history.replaceState(null, null, `#${sectionId}`);
@@ -814,7 +853,6 @@
         function handleAuthSubmit(e, type) {
             e.preventDefault();
             
-            // Add loading effect to button (UX)
             const btn = document.getElementById(type === 'login' ? 'login-btn' : 'reg-btn');
             const originalText = btn.innerHTML;
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> প্রসেস হচ্ছে...`;
@@ -836,7 +874,7 @@
                 btn.disabled = false;
                 closeAuthModal();
                 renderProfileSection();
-            }, 800); // Dummy delay for realistic feel
+            }, 800); 
         }
 
         function renderProfileSection() {
@@ -891,7 +929,7 @@
             if (name && badge) {
                 badge.innerText = name.substring(0, 2).toUpperCase();
             } else if (badge) {
-                badge.innerText = "MD";
+                badge.innerText = "USR";
             }
         }
 
@@ -1186,14 +1224,12 @@
                 `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
 
-        // UX Feature: Confirm Submit Exam
         function confirmSubmitExam() {
             if(confirm("আপনি কি নিশ্চিত যে আপনি সব উত্তর জমা দিতে চান?")) {
                 submitExam();
             }
         }
         
-        // UX Feature: Confirm Back while taking Exam
         function confirmBackToQuizSubjects() {
             if(confirm("আপনি কি পরীক্ষা বাতিল করে ফিরে যেতে চান? আপনার অগ্রগতি মুছে যাবে।")) {
                 backToQuizSubjects();
