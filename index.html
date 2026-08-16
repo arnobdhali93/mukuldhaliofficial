@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mukuldhaliofficial - Premium Education & Knowledge Portal</title>
+    <title>MukulDhaliOfficial - Premium Education & Knowledge Portal</title>
     
     <!-- Social Media Sharing Meta Tags (Open Graph) -->
-    <meta property="og:title" content="mukuldhaliofficial - Premium Education & Knowledge Portal">
+    <meta property="og:title" content="MukulDhaliOfficial - Premium Education & Knowledge Portal">
     <meta property="og:description" content="ছাত্রছাত্রীদের জন্য একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম। কুইজ, পিডিএফ এবং নিউজ আপডেট পান।">
     <meta property="og:image" content="https://i.ibb.co/your-logo-link.png">
     <meta property="og:url" content="https://yourwebsite.com">
@@ -14,12 +14,20 @@
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="mukuldhaliofficial - Premium Education Portal">
+    <meta name="twitter:title" content="MukulDhaliOfficial - Premium Education Portal">
     <meta name="twitter:description" content="ছাত্রছাত্রীদের জন্য একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম।">
     <meta name="twitter:image" content="https://i.ibb.co/your-logo-link.png">
     
     <!-- Browser Tab Favicon (Auto Generated SVG Logo) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' rx='25' fill='%2316a34a' /%3E%3Cpath d='M50 25 L20 42.5 L50 60 L80 42.5 Z' fill='%23ffffff'/%3E%3Cpath d='M20 52.5 L50 70 L80 52.5' stroke='%23ffffff' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+    <!-- Fonts Import -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Kalpurush Font Web CDN -->
+    <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -30,7 +38,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        'bangla': ['"Times New Roman"', '"SutonyMJ"', '"SutonyOMJ"', '"SolaimanLipi"', 'serif'],
+                        'bangla': ['"Times New Roman"', '"Kalpurush"', 'serif'],
                         'times': ['"Times New Roman"', 'serif'],
                     },
                     colors: {
@@ -47,9 +55,9 @@
         }
     </script>
     <style>
-        /* ইংরেজি ও সংখ্যার জন্য Times New Roman এবং বাংলার জন্য SutonyMJ */
+        /* ইংরেজি ও সংখ্যার জন্য Times New Roman এবং বাংলার জন্য Kalpurush */
         body, p, h2, h3, h4, span, div, button, input, label, a {
-            font-family: 'Times New Roman', 'SutonyMJ', 'SutonyOMJ', 'SolaimanLipi', serif !important;
+            font-family: 'Times New Roman', 'Kalpurush', serif !important;
         }
         .menu-font {
             font-family: 'Times New Roman', serif !important;
@@ -168,7 +176,7 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></div>
                 <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">System Online</span>
             </div>
-            <span class="text-[10px] text-slate-400 font-mono">v5.6</span>
+            <span class="text-[10px] text-slate-400 font-mono">v5.7</span>
         </div>
     </aside>
 
@@ -1065,7 +1073,7 @@
                 newsContainer.innerHTML = `
                     <div class="col-span-full text-center py-12 text-slate-500 font-bold bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <i class="fa-regular fa-folder-open text-3xl mb-2 text-slate-400"></i>
-                        <p>কোনো খবর পাওয়া যায়নি।</p>
+                        <p>কোনো খবর পাওয়া যায়নি。</p>
                     </div>`;
                 return;
             }
