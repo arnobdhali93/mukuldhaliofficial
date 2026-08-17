@@ -496,7 +496,7 @@
                 </div>
             </div>
             <div id="chat-history" class="flex-1 overflow-y-auto space-y-3 mb-3 text-xs text-slate-600 dark:text-slate-300 pr-1">
-                <p class="bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 shadow-sm">হ্যালো! আমি আপনার এআই অ্যাসিস্ট্যান্ট। যেকোনো প্রশ্ন করুন。</p>
+                <p class="bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 shadow-sm">হ্যালো! আমি আপনার এআই অ্যাসিস্ট্যান্ট। যেকোনো প্রশ্ন করুন।</p>
             </div>
             <div class="flex gap-2">
                 <input id="userQuery" type="text" placeholder="প্রশ্ন করুন..." title="আপনার প্রশ্ন লিখুন" class="flex-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-800 dark:text-slate-100 text-xs outline-none focus:border-brand-600 shadow-inner" onkeydown="if(event.key === 'Enter') askGemini()">
@@ -1630,7 +1630,7 @@
                 '.f-date, .f-name { font-size: 4.5mm; color: #111; font-weight: bold; margin: 0 0 1.5mm 0; line-height: 1.2; } ' +
                 '.f-label { font-size: 4mm; color: #555; margin: 0; line-height: 1.2; } ' +
                 '.sign-area { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 25mm; margin-bottom: 1mm; position: relative;} ' +
-                '.sign-img { width: 45mm; height: auto; object-fit: contain; margin-bottom: -5mm; z-index: 2; position: relative; } ' +
+                '.sign-img { max-width: 30mm; height: auto; max-height: 15mm; object-fit: contain; margin-bottom: -1mm; z-index: 2; position: relative; } ' +
                 '.hand-date { font-family: "Caveat", cursive; font-size: 5.5mm; color: #15803d; margin: 0; transform: rotate(-3deg); z-index: 1; position: relative; } ' +
             '</style>');
             printWindow.document.write('</head><body>');
