@@ -883,7 +883,7 @@
         }
         function clearChatHistory() {
             if(confirm('আপনি কি সম্পূর্ণ চ্যাট হিস্ট্রি মুছে ফেলতে চান?')) {
-                document.getElementById('chat-history').innerHTML = `<p class="bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 shadow-sm">হ্যালো! আমি আপনার এআই অ্যাসিস্ট্যান্ট। যেকোনো প্রশ্ন করুন。</p>`;
+                document.getElementById('chat-history').innerHTML = `<p class="bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 shadow-sm">হ্যালো! আমি আপনার এআই অ্যাসিস্ট্যান্ট। যেকোনো প্রশ্ন করুন।</p>`;
                 localStorage.removeItem('aiChatHistory');
                 showToast('চ্যাট মুছে ফেলা হয়েছে।', 'success');
             }
@@ -1552,90 +1552,99 @@
         }
 
         // ==========================================
-        // EDITED: PROFFESIONAL CERTIFICATE GENERATOR
+        // EDITED: PROFFESIONAL CERTIFICATE GENERATOR 
         // ==========================================
         function generateCertificate(subject, score) {
             const name = localStorage.getItem('portalUserName') || 'Student';
             
-            // Generate current date
+            // Auto date generated
             const dateObj = new Date();
-            const dateStr = dateObj.toLocaleDateString('en-GB'); // Ex: 17/08/2026
+            const dateStr = dateObj.toLocaleDateString('en-GB'); 
             
-            // Fix Google Drive Link for image preview
+            // Signature link modified for direct HTML printing
             const signImgLink = "https://drive.google.com/uc?export=view&id=1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN";
 
             const certHTML = `
-                <div style="font-family: 'Times New Roman', 'Kalpurush', serif; text-align: center; padding: 40px; border: 12px solid #16a34a; border-radius: 20px; width: 900px; height: 600px; box-sizing: border-box; margin: 0 auto; background: #f0fdf4; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-                    
-                    <!-- Background Logo Watermark -->
-                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.08; pointer-events: none;">
-                        <svg viewBox="0 0 100 100" style="width: 400px; height: 400px;" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="cert-box">
+                    <div class="watermark">
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect width="100" height="100" rx="25" fill="#16a34a" />
                             <path d="M50 25 L20 42.5 L50 60 L80 42.5 Z" fill="#ffffff"/>
                             <path d="M20 52.5 L50 70 L80 52.5" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </div>
-
-                    <div style="position: relative; z-index: 10;">
-                        <h1 style="color: #16a34a; font-size: 45px; margin-bottom: 5px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase;">Certificate of Achievement</h1>
-                        <h4 style="color: #15803d; font-size: 18px; margin-top: 0; margin-bottom: 25px; letter-spacing: 2px;">MukulDhaliOfficial Premium Portal</h4>
-                        
-                        <p style="font-size: 22px; color: #555; font-style: italic;">This is proudly presented to</p>
-                        <h2 style="font-size: 38px; color: #222; border-bottom: 2px dashed #16a34a; display: inline-block; padding-bottom: 5px; margin-top: 10px; font-weight: bold;">${escapeHTML(name)}</h2>
-                        
-                        <p style="font-size: 20px; color: #555; margin-top: 25px;">For successfully completing the Mock Test on</p>
-                        <h3 style="font-size: 28px; color: #15803d; margin-top: 10px; font-weight: bold;">${subject}</h3>
-                        
-                        <p style="font-size: 22px; font-weight: bold; color: #222; margin-top: 15px;">Score: <span style="color: #16a34a;">${score}%</span></p>
+                    
+                    <h1 class="cert-title">Certificate of Achievement</h1>
+                    <p class="cert-subtitle">This is proudly presented to</p>
+                    
+                    <div class="cert-name-container">
+                        <h2 class="cert-name">${escapeHTML(name)}</h2>
                     </div>
-
-                    <div style="position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: flex-end; padding: 0 40px; margin-top: 20px;">
-                        
-                        <!-- Left side: Date / Verification -->
-                        <div style="text-align: center; width: 220px;">
-                            <div style="width: 80px; height: 80px; background: #16a34a; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto;">
-                                <svg viewBox="0 0 100 100" style="width: 50px; height: 50px;" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M50 15 L15 35 L50 55 L85 35 Z" fill="#ffffff"/>
-                                    <path d="M15 45 L50 65 L85 45" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <p style="font-size: 16px; font-weight: bold; color: #15803d; margin: 0;">Verified Achievement</p>
+                    
+                    <p class="cert-desc">For successfully completing the Mock Test on</p>
+                    <h3 class="cert-subject">${subject}</h3>
+                    <h4 class="cert-score">Score: ${score}%</h4>
+                    
+                    <div class="cert-footer">
+                        <!-- Left Side : Auto Date -->
+                        <div class="footer-left">
+                            <div class="line"></div>
+                            <p class="f-date">${dateStr}</p>
+                            <p class="f-label">Date</p>
                         </div>
-
-                        <!-- Right side: Authority & Signature -->
-                        <div style="text-align: center; width: 250px; position: relative;">
-                            <p style="font-size: 22px; font-weight: bold; color: #16a34a; margin-bottom: 5px;">MukulDhaliOfficial</p>
-                            
-                            <!-- Signature block -->
-                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80px; margin-bottom: 5px;">
-                                <img src="${signImgLink}" alt="Signature" style="max-width: 150px; height: 50px; object-fit: contain; margin-bottom: -10px;" onerror="this.style.display='none'"/>
-                                <!-- Handwritten date positioned slightly middle under signature -->
-                                <p style="font-family: 'Caveat', cursive; font-size: 26px; color: #15803d; margin: 0; padding-left: 15px; transform: rotate(-2deg);">${dateStr}</p>
+                        
+                        <!-- Right Side : Signature & Authority -->
+                        <div class="footer-right">
+                            <div class="sign-area">
+                                <img src="${signImgLink}" class="sign-img" alt="Sign" onerror="this.style.display='none'">
+                                <p class="hand-date">${dateStr}</p>
                             </div>
-                            
-                            <div style="border-top: 2px solid #222; width: 100%; padding-top: 8px;">
-                                <p style="margin: 0; font-size: 16px; font-weight: bold; color: #555;">Signature & Date</p>
-                            </div>
+                            <div class="line"></div>
+                            <p class="f-name">MukulDhaliOfficial</p>
+                            <p class="f-label">Authority</p>
                         </div>
                     </div>
                 </div>
             `;
-            
-            const printWindow = window.open('', '', 'width=950,height=650');
-            printWindow.document.write('<html><head><title>Certificate - '+subject+'</title>');
+
+            const printWindow = window.open('', '', 'width=1000,height=750');
+            printWindow.document.write('<html><head><title>Certificate - ' + subject + '</title>');
+            // Using Kalpurush for Bangla & Caveat for Handwrite Date
             printWindow.document.write('<link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">');
             printWindow.document.write('<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">');
-            printWindow.document.write('<style>@media print { @page { size: landscape; margin: 0; } body { margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; display: flex; justify-content: center; align-items: center; min-height: 100vh; } }</style>');
-            printWindow.document.write('</head><body style="background: #f1f5f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;">');
+            
+            // Print CSS Setup
+            printWindow.document.write('<style>' + 
+                '@import url("https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap"); ' +
+                '@page { size: A4 landscape; margin: 0; } ' + 
+                'body, html { margin: 0; padding: 0; width: 297mm; height: 210mm; display: flex; justify-content: center; align-items: center; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; overflow: hidden; } ' +
+                '.cert-box { width: 270mm; height: 180mm; border: 4.5mm solid #2ea85c; border-radius: 4mm; box-sizing: border-box; padding: 15mm 20mm; position: relative; text-align: center; display: flex; flex-direction: column; font-family: "Times New Roman", "Kalpurush", serif; } ' +
+                '.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120mm; opacity: 0.04; z-index: -1; } ' +
+                '.cert-title { color: #4ade80; font-size: 13.5mm; font-weight: bold; margin: 10mm 0 8mm 0; letter-spacing: 0.5mm; text-shadow: 0.5px 0.5px 0px rgba(0,0,0,0.1); } ' +
+                '.cert-subtitle { font-size: 6mm; color: #333; margin: 0 0 10mm 0; } ' +
+                '.cert-name-container { margin: 0 0 12mm 0; } ' +
+                '.cert-name { font-size: 10mm; color: #111; font-weight: bold; margin: 0; display: inline-block; border-bottom: 0.8mm solid #2ea85c; padding-bottom: 2mm; min-width: 80mm; } ' +
+                '.cert-desc { font-size: 5.5mm; color: #444; margin: 0 0 8mm 0; } ' +
+                '.cert-subject { font-size: 8mm; color: #16a34a; font-weight: bold; margin: 0 0 8mm 0; } ' +
+                '.cert-score { font-size: 6.5mm; color: #111; font-weight: bold; margin: 0; } ' +
+                '.cert-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto; padding: 0 15mm 5mm 15mm; } ' +
+                '.footer-left, .footer-right { width: 60mm; text-align: center; position: relative; } ' +
+                '.line { border-top: 0.4mm solid #111; margin-bottom: 2mm; width: 100%; } ' +
+                '.f-date, .f-name { font-size: 4.8mm; color: #111; font-weight: bold; margin: 0 0 1.5mm 0; } ' +
+                '.f-label { font-size: 4.5mm; color: #333; margin: 0; } ' +
+                '.sign-area { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 18mm; margin-bottom: 2mm; position: relative; } ' +
+                '.sign-img { max-width: 45mm; max-height: 14mm; object-fit: contain; z-index: 2; margin-bottom: -1mm; } ' +
+                '.hand-date { font-family: "Caveat", cursive; font-size: 5.8mm; color: #15803d; margin: -3mm 0 0 0; transform: rotate(-3deg); z-index: 1; } ' +
+            '</style>');
+            printWindow.document.write('</head><body>');
             printWindow.document.write(certHTML);
             printWindow.document.write('</body></html>');
             printWindow.document.close();
             
-            // Wait 1.5 seconds before printing to let fonts and signature image load
+            // Waiting to ensure the signature image and handwriting fonts are fully loaded
             setTimeout(() => { 
                 printWindow.focus();
                 printWindow.print(); 
-                // printWindow.close(); 
             }, 1500);
         }
         // ==========================================
