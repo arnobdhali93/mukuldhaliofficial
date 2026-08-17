@@ -117,7 +117,7 @@
             <span class="current-date-display text-[11px] font-extrabold text-brand-800 bg-brand-100 border border-brand-200 px-2.5 py-1 rounded-md shadow-sm font-mono tracking-wide" title="আজকের তারিখ">--.--.--</span>
             
             <div id="mobile-user-badge" onclick="showSection('profile', event)" title="আমার প্রোফাইল" class="w-9 h-9 rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 font-bold text-xs cursor-pointer hover:bg-brand-100 transition shadow-sm shrink-0">
-                U
+                Usr
             </div>
         </div>
     </header>
@@ -179,7 +179,7 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></div>
                 <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">System Online</span>
             </div>
-            <span class="text-[10px] text-slate-400 font-mono">v4.1 Pro</span>
+            <span class="text-[10px] text-slate-400 font-mono">v4.5 Pro</span>
         </div>
     </aside>
 
@@ -290,7 +290,8 @@
                         <button onclick="confirmBackToQuizSubjects()" title="পরীক্ষা বাতিল করে ফিরে যান" class="text-xs bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer">
                             <i class="fa-solid fa-arrow-left"></i> ফিরে যান
                         </button>
-                        <div id="quiz-timer-box" title="বাকি সময়" class="flex items-center gap-2 bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 px-3.5 py-1.5 rounded-lg text-xs font-bold border border-brand-200 dark:border-slate-600 shadow-sm">
+                        <!-- Updated Timer Box -->
+                        <div id="quiz-timer-box" title="বাকি সময়" class="flex items-center gap-2 bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 px-3.5 py-1.5 rounded-lg text-xs font-bold border border-brand-200 dark:border-slate-600 shadow-sm transition-colors duration-300">
                             <i class="fa-solid fa-clock"></i> সময় বাকি: <span id="time-remaining">05:00</span>
                         </div>
                     </div>
@@ -315,6 +316,9 @@
                     <h3 class="text-xl font-black text-slate-900 dark:text-white">পরীক্ষা সম্পন্ন হয়েছে!</h3>
                     <div id="score-display-box" class="text-sm font-bold text-brand-700 dark:text-brand-300 bg-slate-50 dark:bg-slate-700/50 p-4 rounded-xl border border-slate-100 dark:border-slate-600 leading-relaxed shadow-inner"></div>
                     
+                    <!-- Certificate Action Container -->
+                    <div id="certificate-action-container"></div>
+
                     <div class="text-left space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700">
                         <h4 class="font-black text-base text-slate-900 dark:text-white flex items-center gap-2">
                             <i class="fa-solid fa-square-check text-brand-600"></i> উত্তরমালা পর্যালোচনা (Answer Review)
@@ -355,11 +359,19 @@
                 </div>
             </section>
 
-            <!-- ADVANCED FEATURE: INTERACTIVE BOOKMARKS -->
+            <!-- ADVANCED FEATURE: INTERACTIVE BOOKMARKS with Filters -->
             <section id="bookmarks" class="section-content hidden space-y-6">
                 <h2 class="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight border-b border-slate-200 dark:border-slate-700 pb-4 flex items-center gap-3">
                     <i class="fa-solid fa-bookmark text-brand-600 text-xl"></i> সেভ করা আইটেম
                 </h2>
+                <!-- New Feature: Bookmark Filters -->
+                <div id="bookmark-filters" class="flex gap-2 mb-2 overflow-x-auto pb-2">
+                    <button onclick="filterBookmarksView('All', this)" class="bookmark-filter-btn px-4 py-1.5 bg-brand-600 text-white rounded-lg text-xs font-bold whitespace-nowrap shadow-sm">All</button>
+                    <button onclick="filterBookmarksView('News', this)" class="bookmark-filter-btn px-4 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-bold whitespace-nowrap shadow-sm">News</button>
+                    <button onclick="filterBookmarksView('Book', this)" class="bookmark-filter-btn px-4 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-bold whitespace-nowrap shadow-sm">Books</button>
+                    <button onclick="filterBookmarksView('Story', this)" class="bookmark-filter-btn px-4 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-bold whitespace-nowrap shadow-sm">Stories</button>
+                </div>
+
                 <div id="bookmarks-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="col-span-full text-center py-12 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <i class="fa-regular fa-bookmark text-slate-400 text-3xl mb-2"></i>
@@ -569,6 +581,17 @@
             }
         });
 
+        // NEW FEATURE: Filter Bookmarks view
+        function filterBookmarksView(type, btnObj) {
+            document.querySelectorAll('.bookmark-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-600', 'text-white');
+                btn.classList.add('bg-slate-100', 'dark:bg-slate-700', 'text-slate-600', 'dark:text-slate-300');
+            });
+            btnObj.classList.remove('bg-slate-100', 'dark:bg-slate-700', 'text-slate-600', 'dark:text-slate-300');
+            btnObj.classList.add('bg-brand-600', 'text-white');
+            renderBookmarks(type);
+        }
+
         // ADVANCED FEATURE: Interactive Bookmarks
         function toggleBookmark(title, category, type, link = '') {
             let bookmarks = JSON.parse(localStorage.getItem('portalBookmarks')) || [];
@@ -585,10 +608,14 @@
             renderBookmarks();
         }
 
-        function renderBookmarks() {
+        function renderBookmarks(filterType = 'All') {
             const container = document.getElementById('bookmarks-container');
-            const bookmarks = JSON.parse(localStorage.getItem('portalBookmarks')) || [];
+            let bookmarks = JSON.parse(localStorage.getItem('portalBookmarks')) || [];
             
+            if (filterType !== 'All') {
+                bookmarks = bookmarks.filter(b => b.type === filterType);
+            }
+
             if (bookmarks.length === 0) {
                 container.innerHTML = `
                     <div class="col-span-full text-center py-12 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
@@ -921,7 +948,15 @@
             }, 800); 
         }
 
-        // ADVANCED FEATURE: Stats calculation included here
+        // NEW FEATURE: Reset app data
+        function resetAllData() {
+            if(confirm("আপনি কি নিশ্চিত? এর ফলে আপনার সমস্ত প্রোফাইল, কুইজ হিস্ট্রি এবং বুকমার্ক মুছে যাবে!")) {
+                localStorage.clear();
+                showToast("সমস্ত ডেটা মুছে ফেলা হয়েছে।", "success");
+                location.reload();
+            }
+        }
+
         function renderProfileSection() {
             const profileContainer = document.getElementById('profile-content');
             const loggedInUser = localStorage.getItem('portalUserEmail');
@@ -958,6 +993,7 @@
                         <button onclick="shareScore('${lastQuizScore}')" title="স্কোর শেয়ার করুন" class="bg-brand-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 hover:bg-brand-100 px-4 py-3 rounded-xl text-xs font-bold transition flex-1 shadow-sm hover:-translate-y-0.5 cursor-pointer text-center"><i class="fa-solid fa-share-nodes"></i> শেয়ার</button>
                         <button onclick="logoutUser()" title="লগআউট" class="bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-xl text-xs font-bold transition flex-1 shadow-md hover:-translate-y-0.5 cursor-pointer text-center"><i class="fa-solid fa-right-from-bracket"></i> লগআউট</button>
                     </div>
+                    <button onclick="resetAllData()" title="সব ডেটা মুছুন" class="mt-4 w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 py-3 rounded-xl text-xs font-bold transition shadow-sm hover:-translate-y-0.5 cursor-pointer text-center border border-slate-200 dark:border-slate-600"><i class="fa-solid fa-trash-can text-red-500"></i> অ্যাপ ডেটা রিসেট করুন</button>
                 `;
             } else {
                 profileContainer.innerHTML = `
@@ -1366,6 +1402,17 @@
         function updateTimerDisplay() {
             const minutes = Math.floor(timeLeftSeconds / 60);
             const seconds = timeLeftSeconds % 60;
+            const timerBox = document.getElementById('quiz-timer-box');
+            
+            // NEW FEATURE: Low time alert logic
+            if (timeLeftSeconds <= 60) {
+                timerBox.classList.remove('bg-brand-50', 'text-brand-700', 'border-brand-200');
+                timerBox.classList.add('bg-red-50', 'text-red-600', 'border-red-200', 'animate-pulse');
+            } else {
+                timerBox.classList.remove('bg-red-50', 'text-red-600', 'border-red-200', 'animate-pulse');
+                timerBox.classList.add('bg-brand-50', 'text-brand-700', 'border-brand-200');
+            }
+
             document.getElementById('time-remaining').innerText = 
                 `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
@@ -1380,6 +1427,33 @@
             if(confirm("আপনি কি পরীক্ষা বাতিল করে ফিরে যেতে চান? আপনার অগ্রগতি মুছে যাবে।")) {
                 backToQuizSubjects();
             }
+        }
+
+        // NEW FEATURE: Generate Certificate
+        function generateCertificate(subject, score) {
+            const name = localStorage.getItem('portalUserName') || 'Student';
+            const date = new Date().toLocaleDateString();
+            const certHTML = `
+                <div style="font-family: 'Times New Roman', serif; text-align: center; padding: 40px; border: 10px solid #16a34a; border-radius: 20px; max-width: 800px; margin: 40px auto; background: #f0fdf4;">
+                    <h1 style="color: #16a34a; font-size: 40px; margin-bottom: 10px;">Certificate of Achievement</h1>
+                    <p style="font-size: 20px; color: #555;">This is proudly presented to</p>
+                    <h2 style="font-size: 30px; color: #222; border-bottom: 2px solid #16a34a; display: inline-block; padding-bottom: 5px; margin-top: 10px;">${escapeHTML(name)}</h2>
+                    <p style="font-size: 18px; color: #555; margin-top: 20px;">For successfully completing the Mock Test on</p>
+                    <h3 style="font-size: 24px; color: #15803d; margin-top: 10px;">${subject}</h3>
+                    <p style="font-size: 20px; font-weight: bold; color: #222; margin-top: 15px;">Score: ${score}%</p>
+                    <div style="margin-top: 40px; display: flex; justify-content: space-between; padding: 0 40px;">
+                        <div><p style="border-top: 1px solid #222; padding-top: 5px; margin-top: 30px;">${date}</p><p>Date</p></div>
+                        <div><p style="border-top: 1px solid #222; padding-top: 5px; margin-top: 30px;">MukulDhaliOfficial</p><p>Authority</p></div>
+                    </div>
+                </div>
+            `;
+            const printWindow = window.open('', '', 'width=900,height=600');
+            printWindow.document.write('<html><head><title>Certificate - '+subject+'</title></head><body>');
+            printWindow.document.write(certHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
         }
 
         function submitExam() {
@@ -1474,6 +1548,19 @@
                 স্কোর: <span class="text-brand-600 dark:text-brand-400 font-bold">${percentage}%</span><br>
                 <div class="mt-2 text-xs text-brand-700 dark:text-brand-300 font-extrabold bg-brand-100 dark:bg-slate-600 p-2 rounded-lg">${grade}</div>
             `;
+            
+            // Render Certificate action if score is >= 60%
+            const certContainer = document.getElementById('certificate-action-container');
+            if (percentage >= 60) {
+                certContainer.innerHTML = `
+                    <button onclick="generateCertificate('${currentActiveSubject}', ${percentage})" class="mt-4 w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-2 cursor-pointer hover:-translate-y-0.5">
+                        <i class="fa-solid fa-certificate text-lg"></i> সার্টিফিকেট ডাউনলোড করুন
+                    </button>
+                `;
+            } else {
+                certContainer.innerHTML = '';
+            }
+
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
