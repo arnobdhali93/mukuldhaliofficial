@@ -1066,7 +1066,7 @@
                             <i class="fa-solid fa-user"></i>
                         </div>
                         <h3 class="font-black text-slate-900 dark:text-white text-lg">আপনার অ্যাকাউন্টে প্রবেশ করুন</h3>
-                        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">কুইজ ও অন্যান্য সুবিধা পেতে রেজিস্টার বা লগইন করুন।</p>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">কুইজ ও অন্যান্য সুবিধা পেতে রেজিস্টার বা লগইন করুন。</p>
                         <button onclick="triggerRegisterPopup()" title="অ্যাকাউন্ট খুলুন" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3.5 rounded-xl text-xs font-bold transition shadow-md hover:shadow-lg hover:-translate-y-1 cursor-pointer">রেজিস্ট্রেশন / লগইন করুন</button>
                     </div>
                 `;
@@ -1601,12 +1601,16 @@
                         let optClass = "bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200";
                         let badge = "";
 
-                        if (optValLower === correctAns) {
+                        // Review Logic Update
+                        if (optValLower === correctAns && optValLower === selectedAns) {
                             optClass = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-bold";
-                            badge = `<span class="ml-2 text-xs bg-emerald-600 text-white px-2 py-0.5 rounded"><i class="fa-solid fa-check"></i> সঠিক উত্তর</span>`;
-                        } else if (optValLower === selectedAns && !isCorrect) {
+                            badge = `<span class="ml-2 text-xs bg-emerald-600 text-white px-2 py-0.5 rounded shadow-sm"><i class="fa-solid fa-check-double"></i> আপনার সঠিক উত্তর</span>`;
+                        } else if (optValLower === correctAns) {
+                            optClass = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-bold";
+                            badge = `<span class="ml-2 text-xs bg-emerald-600 text-white px-2 py-0.5 rounded shadow-sm"><i class="fa-solid fa-check"></i> সঠিক উত্তর</span>`;
+                        } else if (optValLower === selectedAns) {
                             optClass = "bg-red-50 dark:bg-red-900/30 border-red-500 text-red-700 dark:text-red-300 font-bold";
-                            badge = `<span class="ml-2 text-xs bg-red-600 text-white px-2 py-0.5 rounded"><i class="fa-solid fa-xmark"></i> আপনার উত্তর</span>`;
+                            badge = `<span class="ml-2 text-xs bg-red-600 text-white px-2 py-0.5 rounded shadow-sm"><i class="fa-solid fa-xmark"></i> আপনার ভুল উত্তর</span>`;
                         }
 
                         optionsReviewHtml += `
@@ -1616,10 +1620,16 @@
                         </div>`;
                     }
                 });
+                
+                // If the user skipped answering the question
+                let skippedBadge = !selectedVal ? `<span class="text-[10px] text-orange-600 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300 px-2 py-0.5 rounded font-bold border border-orange-200 dark:border-orange-800 whitespace-nowrap">উত্তর দেওয়া হয়নি</span>` : '';
 
                 reviewContainer.innerHTML += `
-                <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">${index + 1}. ${q.Question}</p>
+                <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 space-y-2 mb-4">
+                    <div class="flex justify-between items-start gap-2">
+                        <p class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">${index + 1}. ${q.Question}</p>
+                        ${skippedBadge}
+                    </div>
                     <div class="space-y-1.5 pt-1">
                         ${optionsReviewHtml}
                     </div>
