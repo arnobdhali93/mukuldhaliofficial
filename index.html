@@ -116,7 +116,8 @@
         <div class="flex items-center gap-3">
             <span class="current-date-display text-[11px] font-extrabold text-brand-800 bg-brand-100 border border-brand-200 px-2.5 py-1 rounded-md shadow-sm font-mono tracking-wide" title="আজকের তারিখ">--.--.--</span>
             
-            <div id="mobile-user-badge" onclick="showSection('profile', event)" title="আমার প্রোফাইল" class="w-9 h-9 rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 font-bold text-xs cursor-pointer hover:bg-brand-100 transition shadow-sm shrink-0">
+            <!-- User Profile Icon Header -->
+            <div id="mobile-user-badge" onclick="showSection('profile', event)" title="আমার প্রোফাইল" class="w-9 h-9 rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 font-bold text-xs cursor-pointer hover:bg-brand-100 transition shadow-sm shrink-0 overflow-hidden">
                 Usr
             </div>
         </div>
@@ -179,7 +180,7 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></div>
                 <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">System Online</span>
             </div>
-            <span class="text-[10px] text-slate-400 font-mono">v4.5 Pro</span>
+            <span class="text-[10px] text-slate-400 font-mono">v4.6 Pro</span>
         </div>
     </aside>
 
@@ -316,7 +317,6 @@
                     <h3 class="text-xl font-black text-slate-900 dark:text-white">পরীক্ষা সম্পন্ন হয়েছে!</h3>
                     <div id="score-display-box" class="text-sm font-bold text-brand-700 dark:text-brand-300 bg-slate-50 dark:bg-slate-700/50 p-4 rounded-xl border border-slate-100 dark:border-slate-600 leading-relaxed shadow-inner"></div>
                     
-                    <!-- Certificate Action Container -->
                     <div id="certificate-action-container"></div>
 
                     <div class="text-left space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700">
@@ -359,12 +359,10 @@
                 </div>
             </section>
 
-            <!-- ADVANCED FEATURE: INTERACTIVE BOOKMARKS with Filters -->
             <section id="bookmarks" class="section-content hidden space-y-6">
                 <h2 class="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight border-b border-slate-200 dark:border-slate-700 pb-4 flex items-center gap-3">
                     <i class="fa-solid fa-bookmark text-brand-600 text-xl"></i> সেভ করা আইটেম
                 </h2>
-                <!-- New Feature: Bookmark Filters -->
                 <div id="bookmark-filters" class="flex gap-2 mb-2 overflow-x-auto pb-2">
                     <button onclick="filterBookmarksView('All', this)" class="bookmark-filter-btn px-4 py-1.5 bg-brand-600 text-white rounded-lg text-xs font-bold whitespace-nowrap shadow-sm">All</button>
                     <button onclick="filterBookmarksView('News', this)" class="bookmark-filter-btn px-4 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-bold whitespace-nowrap shadow-sm">News</button>
@@ -394,6 +392,30 @@
         </button>
     </main>
 
+    <!-- NEW FEATURE: Edit Profile Modal -->
+    <div id="edit-profile-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-6 md:p-8 shadow-2xl relative">
+            <button onclick="closeEditProfile()" title="বন্ধ করুন" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-2 rounded-xl transition cursor-pointer">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="font-black text-xl text-slate-900 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-3">প্রোফাইল এডিট করুন</h3>
+            <form id="edit-profile-form" onsubmit="handleProfileEdit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">সম্পূর্ণ নাম</label>
+                    <input type="text" id="edit-name" required placeholder="আপনার নাম লিখুন" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">প্রোফাইল ছবি (ঐচ্ছিক)</label>
+                    <input type="file" id="edit-pic" accept="image/*" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 dark:file:bg-slate-700 dark:file:text-brand-300">
+                </div>
+                <button type="submit" class="mt-2 w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5 flex justify-center items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-floppy-disk"></i> সেভ করুন
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
     <div id="auth-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-6 md:p-8 shadow-2xl relative">
             <button onclick="closeAuthModal()" title="বন্ধ করুন" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-2 rounded-xl transition cursor-pointer">
@@ -513,7 +535,6 @@
         let isSpeaking = false;
         let currentSpeakingId = null;
 
-        // ADVANCED FEATURE: Professional Toast Notification System
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -532,7 +553,6 @@
             }, 3000);
         }
 
-        // ADVANCED FEATURE: Calculate Reading Time
         function calculateReadingTime(text) {
             const wordsPerMinute = 200;
             const words = (text || '').split(/\s+/).length;
@@ -581,7 +601,6 @@
             }
         });
 
-        // NEW FEATURE: Filter Bookmarks view
         function filterBookmarksView(type, btnObj) {
             document.querySelectorAll('.bookmark-filter-btn').forEach(btn => {
                 btn.classList.remove('bg-brand-600', 'text-white');
@@ -592,7 +611,6 @@
             renderBookmarks(type);
         }
 
-        // ADVANCED FEATURE: Interactive Bookmarks
         function toggleBookmark(title, category, type, link = '') {
             let bookmarks = JSON.parse(localStorage.getItem('portalBookmarks')) || [];
             const index = bookmarks.findIndex(b => b.title === title);
@@ -708,7 +726,6 @@
             }
         }
         
-        // ADVANCED FEATURE: TTS Functionality
         function toggleSpeech(elementId, btnElement) {
             if (!('speechSynthesis' in window)) {
                 showToast("আপনার ব্রাউজার টেক্সট-টু-স্পিচ সাপোর্ট করে না।", "error");
@@ -874,6 +891,45 @@
             document.getElementById('auth-modal').classList.add('hidden');
         }
 
+        // Edit Profile Modal functions
+        function openEditProfile() {
+            const currentName = localStorage.getItem('portalUserName') || '';
+            document.getElementById('edit-name').value = currentName;
+            document.getElementById('edit-pic').value = ""; // reset file input
+            document.getElementById('edit-profile-modal').classList.remove('hidden');
+        }
+
+        function closeEditProfile() {
+            document.getElementById('edit-profile-modal').classList.add('hidden');
+        }
+
+        function handleProfileEdit(e) {
+            e.preventDefault();
+            const newName = document.getElementById('edit-name').value.trim();
+            const fileInput = document.getElementById('edit-pic');
+            
+            if (newName) {
+                localStorage.setItem('portalUserName', newName);
+            }
+            
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    localStorage.setItem('portalUserPic', e.target.result);
+                    finalizeProfileUpdate();
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                finalizeProfileUpdate();
+            }
+        }
+
+        function finalizeProfileUpdate() {
+            closeEditProfile();
+            showToast("প্রোফাইল সফলভাবে আপডেট হয়েছে!", "success");
+            renderProfileSection();
+        }
+
         function switchAuthTab(type) {
             showAuthMsg('', '');
             const loginForm = document.getElementById('login-form');
@@ -948,11 +1004,14 @@
             }, 800); 
         }
 
-        // NEW FEATURE: Reset app data
+        // UPDATED FEATURE: Reset app data (Keeps Login Data intact)
         function resetAllData() {
-            if(confirm("আপনি কি নিশ্চিত? এর ফলে আপনার সমস্ত প্রোফাইল, কুইজ হিস্ট্রি এবং বুকমার্ক মুছে যাবে!")) {
-                localStorage.clear();
-                showToast("সমস্ত ডেটা মুছে ফেলা হয়েছে।", "success");
+            if(confirm("আপনি কি নিশ্চিত? এর ফলে আপনার কুইজ হিস্ট্রি এবং বুকমার্ক মুছে যাবে, কিন্তু অ্যাকাউন্ট লগইন থাকবে!")) {
+                localStorage.removeItem('fullQuizHistory');
+                localStorage.removeItem('lastQuizScore');
+                localStorage.removeItem('portalBookmarks');
+                localStorage.removeItem('aiChatHistory');
+                showToast("অ্যাপ ডেটা রিসেট হয়েছে।", "success");
                 location.reload();
             }
         }
@@ -961,8 +1020,8 @@
             const profileContainer = document.getElementById('profile-content');
             const loggedInUser = localStorage.getItem('portalUserEmail');
             const loggedInName = localStorage.getItem('portalUserName');
+            const profilePic = localStorage.getItem('portalUserPic');
             
-            // Advanced stat logic
             let fullQuizHistory = JSON.parse(localStorage.getItem('fullQuizHistory')) || [];
             let totalQuizzes = fullQuizHistory.length;
             let avgScore = 0;
@@ -973,17 +1032,26 @@
             const lastQuizScore = localStorage.getItem('lastQuizScore') || 'N/A';
 
             if (loggedInUser && loggedInName) {
+                const avatarHtml = profilePic 
+                    ? `<img src="${profilePic}" class="w-full h-full object-cover">`
+                    : loggedInName.substring(0, 2).toUpperCase();
+
                 profileContainer.innerHTML = `
                     <div class="flex items-center gap-4">
-                        <div class="w-16 h-16 rounded-2xl bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 flex items-center justify-center text-brand-700 dark:text-brand-300 font-bold text-2xl shadow-sm">
-                            ${loggedInName.substring(0, 2).toUpperCase()}
+                        <div class="w-16 h-16 rounded-2xl bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 flex items-center justify-center text-brand-700 dark:text-brand-300 font-bold text-2xl shadow-sm overflow-hidden">
+                            ${avatarHtml}
                         </div>
                         <div>
                             <h3 class="font-black text-xl text-slate-900 dark:text-white">${escapeHTML(loggedInName)}</h3>
                             <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mt-0.5">${escapeHTML(loggedInUser)}</p>
                         </div>
                     </div>
-                    <div class="space-y-2 pt-3 border-t border-slate-100 dark:border-slate-700 text-sm menu-font">
+                    
+                    <button onclick="openEditProfile()" class="mt-3 w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 py-2 rounded-xl text-xs font-bold transition shadow-sm hover:-translate-y-0.5 cursor-pointer text-center border border-slate-200 dark:border-slate-600">
+                        <i class="fa-solid fa-pen-to-square text-brand-600"></i> প্রোফাইল এডিট করুন
+                    </button>
+
+                    <div class="space-y-2 pt-3 border-t border-slate-100 dark:border-slate-700 text-sm menu-font mt-3">
                         <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>স্ট্যাটাস:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">Active User</span></p>
                         <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>সর্বশেষ কুইজ স্কোর:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">${lastQuizScore}</span></p>
                         <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>মোট কুইজ দিয়েছেন:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">${totalQuizzes} টি</span></p>
@@ -1014,18 +1082,26 @@
             if(confirm('আপনি কি সত্যিই লগআউট করতে চান?')){
                 localStorage.removeItem('portalUserName');
                 localStorage.removeItem('portalUserEmail');
+                localStorage.removeItem('portalUserPic'); // Logout er sathe picture tao clear hobe
                 showToast("লগআউট সম্পন্ন হয়েছে!", "success");
                 renderProfileSection();
             }
         }
 
+        // UPDATED FEATURE: Update Header Badge to show Image if available
         function updateHeaderBadge() {
             const name = localStorage.getItem('portalUserName');
+            const pic = localStorage.getItem('portalUserPic');
             const badge = document.getElementById('mobile-user-badge');
-            if (name && badge) {
-                badge.innerText = name.substring(0, 2).toUpperCase();
-            } else if (badge) {
-                badge.innerText = "MD";
+            
+            if (badge) {
+                if (pic) {
+                    badge.innerHTML = `<img src="${pic}" class="w-full h-full object-cover rounded-xl" alt="Profile">`;
+                } else if (name) {
+                    badge.innerText = name.substring(0, 2).toUpperCase();
+                } else {
+                    badge.innerText = "MD";
+                }
             }
         }
 
@@ -1173,7 +1249,6 @@
             }
         }
 
-        // ADVANCED FEATURE: TTS & Reading Time included in News
         function renderNewsList(list) {
             const newsContainer = document.getElementById('news-container');
             newsContainer.innerHTML = ''; 
@@ -1182,7 +1257,7 @@
                 newsContainer.innerHTML = `
                     <div class="col-span-full text-center py-12 text-slate-500 font-bold bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <i class="fa-regular fa-folder-open text-3xl mb-2 text-slate-400"></i>
-                        <p>কোনো খবর পাওয়া যায়নি।</p>
+                        <p>কোনো খবর পাওয়া যায়নি。</p>
                     </div>`;
                 return;
             }
@@ -1255,7 +1330,6 @@
             });
         }
 
-        // ADVANCED FEATURE: DEBOUNCE SEARCH (Search Optimization)
         let newsSearchTimeout, booksSearchTimeout, quizSearchTimeout;
         
         function filterNews() {
@@ -1404,7 +1478,6 @@
             const seconds = timeLeftSeconds % 60;
             const timerBox = document.getElementById('quiz-timer-box');
             
-            // NEW FEATURE: Low time alert logic
             if (timeLeftSeconds <= 60) {
                 timerBox.classList.remove('bg-brand-50', 'text-brand-700', 'border-brand-200');
                 timerBox.classList.add('bg-red-50', 'text-red-600', 'border-red-200', 'animate-pulse');
@@ -1429,7 +1502,6 @@
             }
         }
 
-        // NEW FEATURE: Generate Certificate
         function generateCertificate(subject, score) {
             const name = localStorage.getItem('portalUserName') || 'Student';
             const date = new Date().toLocaleDateString();
@@ -1532,7 +1604,6 @@
             if(percentage >= 80) grade = "অসামান্য (Outstanding)!";
             else if(percentage >= 60) grade = "খুব ভাল (Excellent)!";
 
-            // ADVANCED FEATURE: Store in Quiz History Array
             let fullQuizHistory = JSON.parse(localStorage.getItem('fullQuizHistory')) || [];
             fullQuizHistory.push({score: score, total: questions.length, percentage: percentage, date: new Date().toLocaleDateString()});
             localStorage.setItem('fullQuizHistory', JSON.stringify(fullQuizHistory));
@@ -1549,7 +1620,6 @@
                 <div class="mt-2 text-xs text-brand-700 dark:text-brand-300 font-extrabold bg-brand-100 dark:bg-slate-600 p-2 rounded-lg">${grade}</div>
             `;
             
-            // Render Certificate action if score is >= 60%
             const certContainer = document.getElementById('certificate-action-container');
             if (percentage >= 60) {
                 certContainer.innerHTML = `
