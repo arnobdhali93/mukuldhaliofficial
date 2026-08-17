@@ -29,9 +29,6 @@
     <!-- Kalpurush Font Web CDN -->
     <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
 
-    <!-- Cropper.js for 1:1 Image Cropping -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -58,6 +55,7 @@
         }
     </script>
     <style>
+        /* ইংরেজি ও সংখ্যার জন্য Times New Roman এবং বাংলার জন্য Kalpurush */
         body, p, h2, h3, h4, span, div, button, input, label, a {
             font-family: 'Times New Roman', 'Kalpurush', serif !important;
         }
@@ -86,19 +84,13 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
-        /* Adjusted Signature Size to Match Website Font/UI Standards */
-        .web-signature {
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-            opacity: 0.75;
-        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100 overflow-x-hidden w-full">
 
     <div id="scroll-progress-bar" class="fixed top-0 left-0 h-1 bg-brand-600 z-[60] w-0 transition-all duration-150"></div>
 
-    <!-- Toast Notification Container -->
+    <!-- ADVANCED FEATURE: Professional Toast Notification Container -->
     <div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-2 pointer-events-none"></div>
 
     <!-- FIXED MOBILE HEADER -->
@@ -125,6 +117,7 @@
         <div class="flex items-center gap-1.5 sm:gap-3 shrink-0 ml-1">
             <span class="current-date-display text-[9px] sm:text-[11px] font-extrabold text-brand-800 bg-brand-100 border border-brand-200 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md shadow-sm font-mono tracking-wide shrink-0" title="আজকের তারিখ">--.--.--</span>
             
+            <!-- User Profile Icon Header -->
             <div id="mobile-user-badge" onclick="showSection('profile', event)" title="আমার প্রোফাইল" class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 font-bold text-[10px] sm:text-xs cursor-pointer hover:bg-brand-100 transition shadow-sm shrink-0 overflow-hidden">
                 Usr
             </div>
@@ -183,13 +176,12 @@
             </button>
         </nav>
 
-        <!-- Adjusted Web Signature - Made smaller and harmonized with UI text -->
-        <div class="p-3 mx-4 mb-2 rounded-xl bg-slate-50/80 dark:bg-slate-700/50 border border-slate-200/60 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-brand-600 animate-pulse"></div>
-                <span class="web-signature font-medium text-slate-600 dark:text-slate-300">Signature: Mukul Dhali</span>
+        <div class="p-4 border-t border-slate-100 dark:border-slate-700 m-4 rounded-2xl bg-slate-50/80 dark:bg-slate-700/50 border border-slate-200/60 flex items-center justify-between">
+            <div class="flex items-center gap-3" title="সার্ভার অনলাইনে আছে">
+                <div class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></div>
+                <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">System Online</span>
             </div>
-            <span class="web-signature font-mono text-slate-400">v4.8</span>
+            <span class="text-[10px] text-slate-400 font-mono">v4.7 Pro</span>
         </div>
     </aside>
 
@@ -415,20 +407,6 @@
         </button>
     </main>
 
-    <!-- NEW FEATURE: 1:1 Image Cropping Modal -->
-    <div id="crop-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[110] hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-lg rounded-3xl p-6 shadow-2xl relative flex flex-col items-center">
-            <h3 class="font-black text-lg text-slate-900 dark:text-white mb-3">ছবিটি ১:১ অনুপাতে ক্রপ করুন</h3>
-            <div class="w-full max-h-[60vh] overflow-hidden flex justify-center bg-slate-100 dark:bg-slate-900 rounded-xl mb-4">
-                <img id="image-to-crop" src="" alt="Source" style="max-width: 100%;">
-            </div>
-            <div class="flex gap-3 w-full">
-                <button type="button" onclick="cancelCrop()" class="flex-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer">বাতিল</button>
-                <button type="button" onclick="confirmCrop()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-md cursor-pointer">ক্রপ ও সেভ করুন</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Edit Profile Modal -->
     <div id="edit-profile-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-6 md:p-8 shadow-2xl relative">
@@ -442,11 +420,8 @@
                     <input type="text" id="edit-name" required placeholder="আপনার নাম লিখুন" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">প্রোফাইল ছবি (১:১ স্কয়ার ক্রপ)</label>
-                    <input type="file" id="edit-pic-input" accept="image/*" onchange="prepareImageCrop(event)" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 dark:file:bg-slate-700 dark:file:text-brand-300">
-                </div>
-                <div id="crop-preview-container" class="hidden flex items-center gap-3">
-                    <span class="text-xs text-brand-600 font-bold"><i class="fa-solid fa-check-circle"></i> ছবি ক্রপ করা হয়েছে</span>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">প্রোফাইল ছবি (ঐচ্ছিক)</label>
+                    <input type="file" id="edit-pic" accept="image/*" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 dark:file:bg-slate-700 dark:file:text-brand-300">
                 </div>
                 <button type="submit" class="mt-2 w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5 flex justify-center items-center gap-2 cursor-pointer">
                     <i class="fa-solid fa-floppy-disk"></i> সেভ করুন
@@ -534,9 +509,6 @@
         </button>
     </div>
 
-    <!-- Cropper.js Library Script -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxwbVlJxSQKdXufRZkXaiPiTKXLPuUyJsTrjiCoabdotJFSX3tkpSH9dx_5KwHFd7J5/exec"; 
         const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE"; 
@@ -552,56 +524,7 @@
         let isSpeaking = false;
         let currentSpeakingId = null;
 
-        let cropper = null;
-        let croppedBase64Result = null;
-
-        // NEW FEATURE: 1:1 Image Cropping Handler
-        function prepareImageCrop(e) {
-            const files = e.target.files;
-            if (files && files.length > 0) {
-                const file = files.item(0);
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const imageEl = document.getElementById('image-to-crop');
-                    imageEl.src = event.target.result;
-                    document.getElementById('crop-modal').classList.remove('hidden');
-                    
-                    if (cropper) {
-                        cropper.destroy();
-                    }
-                    cropper = new Cropper(imageEl, {
-                        aspectRatio: 1 / 1,
-                        viewMode: 1,
-                        autoCropArea: 1,
-                    });
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function cancelCrop() {
-            document.getElementById('crop-modal').classList.add('hidden');
-            document.getElementById('edit-pic-input').value = '';
-            if (cropper) {
-                cropper.destroy();
-                cropper = null;
-            }
-        }
-
-        function confirmCrop() {
-            if (cropper) {
-                const canvas = cropper.getCroppedCanvas({
-                    width: 300,
-                    height: 300,
-                });
-                croppedBase64Result = canvas.toDataURL('image/jpeg');
-                document.getElementById('crop-modal').classList.add('hidden');
-                document.getElementById('crop-preview-container').classList.remove('hidden');
-                cropper.destroy();
-                cropper = null;
-            }
-        }
-
+        // NEW FEATURE: Offline/Online Auto Detector
         window.addEventListener('offline', () => {
             showToast("আপনি অফলাইনে আছেন! ইন্টারনেট সংযোগ পরীক্ষা করুন।", "error");
         });
@@ -609,6 +532,7 @@
             showToast("ইন্টারনেট সংযোগ ফিরে এসেছে!", "success");
         });
 
+        // NEW FEATURE: Audio Feedback on Quiz
         function playQuizSound(type) {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -995,9 +919,7 @@
         function openEditProfile() {
             const currentName = localStorage.getItem('portalUserName') || '';
             document.getElementById('edit-name').value = currentName;
-            document.getElementById('edit-pic-input').value = ""; 
-            croppedBase64Result = null;
-            document.getElementById('crop-preview-container').classList.add('hidden');
+            document.getElementById('edit-pic').value = ""; 
             document.getElementById('edit-profile-modal').classList.remove('hidden');
         }
 
@@ -1008,16 +930,22 @@
         function handleProfileEdit(e) {
             e.preventDefault();
             const newName = document.getElementById('edit-name').value.trim();
+            const fileInput = document.getElementById('edit-pic');
             
             if (newName) {
                 localStorage.setItem('portalUserName', newName);
             }
             
-            if (croppedBase64Result) {
-                localStorage.setItem('portalUserPic', croppedBase64Result);
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    localStorage.setItem('portalUserPic', e.target.result);
+                    finalizeProfileUpdate();
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                finalizeProfileUpdate();
             }
-            
-            finalizeProfileUpdate();
         }
 
         function finalizeProfileUpdate() {
@@ -1382,7 +1310,7 @@
                         <p id="news-desc-${index}" class="text-slate-600 dark:text-slate-300 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${news.Description || ''}</p>
                     </div>
                     <div class="flex flex-wrap gap-2">
-                        <button onclick="toggleReadMore('news-desc-${index}', this)" title="বিস্তারিত পড়ুন" class="bg-brand-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:bg-brand-100 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block cursor-pointer">
+                        <button onclick="toggleReadMore('news-desc-${index}', this)" title="বিস্তারিত পড়ুন" class="bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 hover:bg-brand-100 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block cursor-pointer">
                             <i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন
                         </button>
                         ${news.Link ? `<a href="${news.Link}" target="_blank" rel="noopener noreferrer" title="মূল লিংকে যান" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block"><i class="fa-solid fa-link mr-1"></i> মূল লিংক</a>` : ''}
@@ -1596,10 +1524,17 @@
             }
         }
 
+        // ==========================================
+        // EDITED: PROFFESIONAL CERTIFICATE GENERATOR 
+        // ==========================================
         function generateCertificate(subject, score) {
             const name = localStorage.getItem('portalUserName') || 'Student';
+            
+            // Auto date generated
             const dateObj = new Date();
             const dateStr = dateObj.toLocaleDateString('en-GB'); 
+            
+            // Signature link modified for direct HTML printing
             const signImgLink = "https://lh3.googleusercontent.com/d/1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN";
 
             const certHTML = `
@@ -1622,12 +1557,14 @@
                     </div>
                     
                     <div class="cert-footer">
+                        <!-- Left Side : Auto Date -->
                         <div class="footer-left">
                             <div class="line"></div>
                             <p class="f-date">${dateStr}</p>
                             <p class="f-label">Date</p>
                         </div>
                         
+                        <!-- Right Side : Signature & Authority -->
                         <div class="footer-right">
                             <div class="sign-area">
                                 <img src="${signImgLink}" class="sign-img" alt="Sign">
@@ -1643,8 +1580,11 @@
 
             const printWindow = window.open('', '', 'width=1000,height=750');
             printWindow.document.write('<html><head><title>Certificate - ' + subject + '</title>');
+            // Using Kalpurush for Bangla & Caveat for Handwrite Date
             printWindow.document.write('<link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">');
             printWindow.document.write('<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">');
+            
+            // Print CSS Setup (Perfect Centering, 1-Page Fix)
             printWindow.document.write('<style>' + 
                 '@import url("https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap"); ' +
                 '@page { size: A4 landscape; margin: 0; } ' + 
@@ -1672,70 +1612,120 @@
             printWindow.document.write('</body></html>');
             printWindow.document.close();
             
+            // Waiting to ensure the signature image and handwriting fonts are fully loaded
             setTimeout(() => { 
                 printWindow.focus();
                 printWindow.print(); 
             }, 2000);
         }
+        // ==========================================
 
         function submitExam() {
             if(examTimer) clearInterval(examTimer);
-            
             const questions = groupedQuizData[currentActiveSubject];
-            let correctCount = 0;
-            let reviewHtml = '';
+            let score = 0;
+
+            const reviewContainer = document.getElementById('review-questions-container');
+            reviewContainer.innerHTML = '';
 
             questions.forEach((q, index) => {
                 const radios = document.getElementsByName(`exam_question_${index}`);
                 let selectedVal = null;
-                for (const r of radios) {
-                    if (r.checked) {
-                        selectedVal = r.value;
+                for (const radio of radios) {
+                    if (radio.checked) {
+                        selectedVal = radio.value;
                         break;
                     }
                 }
 
-                const isCorrect = selectedVal === q.CorrectAnswer;
-                if(isCorrect) correctCount++;
+                let rawCorrect = q.CorrectAnswer != null ? String(q.CorrectAnswer).trim() : "";
+                let rawSelected = selectedVal != null ? String(selectedVal).trim() : "";
 
-                reviewHtml += `
-                <div class="p-4 rounded-xl border ${isCorrect ? 'border-emerald-200 bg-emerald-50/40 dark:bg-emerald-900/10' : 'border-red-200 bg-red-50/40 dark:bg-red-900/10'} text-left space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-white text-xs">${index + 1}. ${q.Question}</p>
-                    <p class="text-xs font-semibold ${isCorrect ? 'text-emerald-600' : 'text-red-600'}">আপনার উত্তর: ${selectedVal || 'উত্তর দেননি'}</p>
-                    ${!isCorrect ? `<p class="text-xs font-semibold text-emerald-700">সঠিক উত্তর: ${q.CorrectAnswer}</p>` : ''}
+                let correctAns = rawCorrect.toLowerCase();
+                let selectedAns = rawSelected.toLowerCase();
+
+                let isCorrect = (selectedAns !== "" && correctAns !== "" && selectedAns === correctAns);
+
+                if (isCorrect) {
+                    score++;
+                }
+
+                let optionsReviewHtml = '';
+                ['Option1', 'Option2', 'Option3', 'Option4'].forEach(optKey => {
+                    if (q[optKey]) {
+                        let optVal = String(q[optKey]).trim();
+                        let optValLower = optVal.toLowerCase();
+
+                        let optClass = "bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200";
+                        let badge = "";
+
+                        if (optValLower === correctAns) {
+                            optClass = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-bold";
+                            badge = `<span class="ml-2 text-xs bg-emerald-600 text-white px-2 py-0.5 rounded"><i class="fa-solid fa-check"></i> সঠিক উত্তর</span>`;
+                        } else if (optValLower === selectedAns && !isCorrect) {
+                            optClass = "bg-red-50 dark:bg-red-900/30 border-red-500 text-red-700 dark:text-red-300 font-bold";
+                            badge = `<span class="ml-2 text-xs bg-red-600 text-white px-2 py-0.5 rounded"><i class="fa-solid fa-xmark"></i> আপনার উত্তর</span>`;
+                        }
+
+                        optionsReviewHtml += `
+                        <div class="flex items-center justify-between p-3 rounded-xl border ${optClass} text-xs md:text-sm">
+                            <span>${optVal}</span>
+                            ${badge}
+                        </div>`;
+                    }
+                });
+
+                let statusBadge = isCorrect 
+                    ? `<span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/40 px-2.5 py-1 rounded-md border border-emerald-300"><i class="fa-solid fa-circle-check"></i> সঠিক</span>`
+                    : `<span class="text-xs font-bold text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/40 px-2.5 py-1 rounded-md border border-red-300"><i class="fa-solid fa-circle-xmark"></i> ভুল/উত্তর দেওয়া হয়নি</span>`;
+
+                reviewContainer.innerHTML += `
+                <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 space-y-3">
+                    <div class="flex justify-between items-start gap-2 border-b border-slate-200 dark:border-slate-700 pb-2">
+                        <p class="font-bold text-slate-900 dark:text-white text-xs md:text-sm">${index + 1}. ${q.Question}</p>
+                        ${statusBadge}
+                    </div>
+                    <div class="space-y-1.5 pt-1">
+                        ${optionsReviewHtml}
+                    </div>
                 </div>`;
             });
 
-            const totalQ = questions.length;
-            const percentage = Math.round((correctCount / totalQ) * 100);
-            const scoreStr = `${correctCount}/${totalQ} (${percentage}%)`;
+            const percentage = Math.round((score / questions.length) * 100);
+            let grade = "ভাল চেষ্টা!";
+            if(percentage >= 80) grade = "অসামান্য (Outstanding)!";
+            else if(percentage >= 60) grade = "খুব ভাল (Excellent)!";
 
-            if(percentage >= 50) playQuizSound('success');
-            else playQuizSound('error');
-
-            localStorage.setItem('lastQuizScore', scoreStr);
-            
             let fullQuizHistory = JSON.parse(localStorage.getItem('fullQuizHistory')) || [];
-            fullQuizHistory.push({ subject: currentActiveSubject, score: scoreStr, percentage: percentage, date: new Date().toLocaleDateString() });
+            fullQuizHistory.push({score: score, total: questions.length, percentage: percentage, date: new Date().toLocaleDateString()});
             localStorage.setItem('fullQuizHistory', JSON.stringify(fullQuizHistory));
+
+            localStorage.setItem('lastQuizScore', `${score}/${questions.length} (${percentage}%)`);
 
             document.getElementById('quiz-exam-view').classList.add('hidden');
             document.getElementById('quiz-result-view').classList.remove('hidden');
 
-            document.getElementById('score-display-box').innerHTML = `বিষয়: <b>${currentActiveSubject}</b><br>আপনার স্কোর: <b>${scoreStr}</b>`;
-            document.getElementById('review-questions-container').innerHTML = reviewHtml;
-
+            document.getElementById('score-display-box').innerHTML = `
+                মোট প্রশ্ন: <span class="text-slate-900 dark:text-white">${questions.length}</span><br>
+                সঠিক উত্তর: <span class="text-emerald-600 dark:text-emerald-400 text-xl font-black">${score}</span> টি<br>
+                স্কোর: <span class="text-brand-600 dark:text-brand-400 font-bold">${percentage}%</span><br>
+                <div class="mt-2 text-xs text-brand-700 dark:text-brand-300 font-extrabold bg-brand-100 dark:bg-slate-600 p-2 rounded-lg">${grade}</div>
+            `;
+            
             const certContainer = document.getElementById('certificate-action-container');
-            if (percentage >= 40) {
+            if (percentage >= 60) {
+                playQuizSound('success');
                 certContainer.innerHTML = `
-                    <button onclick="generateCertificate('${currentActiveSubject}', ${percentage})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-2 cursor-pointer mt-3">
-                        <i class="fa-solid fa-award"></i> সার্টিফিকেট ডাউনলোড / প্রিন্ট করুন
-                    </button>`;
+                    <button onclick="generateCertificate('${currentActiveSubject}', ${percentage})" class="mt-4 w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-2 cursor-pointer hover:-translate-y-0.5">
+                        <i class="fa-solid fa-certificate text-lg"></i> সার্টিফিকেট ডাউনলোড করুন
+                    </button>
+                `;
             } else {
-                certContainer.innerHTML = `<p class="text-xs text-red-500 font-bold mt-2">সার্টিফিকেট পেতে কমপক্ষে ৪০% নম্বর পেতে হবে।</p>`;
+                playQuizSound('fail');
+                certContainer.innerHTML = '';
             }
 
-            showToast("পরীক্ষা সফলভাবে সম্পন্ন হয়েছে!", "success");
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         function backToQuizSubjects() {
@@ -1743,20 +1733,23 @@
             document.getElementById('quiz-exam-view').classList.add('hidden');
             document.getElementById('quiz-result-view').classList.add('hidden');
             document.getElementById('quiz-subject-view').classList.remove('hidden');
-            currentActiveSubject = null;
+            renderQuizSubjects(Object.keys(groupedQuizData));
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             applySavedTheme();
             setDailyDate();
-            loadAllData();
             loadChatHistory();
-            renderProfileSection();
             
             const hash = window.location.hash.replace('#', '');
-            if(hash && document.getElementById(hash)) {
+            if (hash && document.getElementById(hash)) {
                 showSection(hash, null);
+            } else {
+                showSection('home', null);
             }
+
+            updateHeaderBadge();
+            loadAllData();
         });
     </script>
 </body>
