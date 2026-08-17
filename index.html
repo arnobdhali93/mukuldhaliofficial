@@ -86,7 +86,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100 overflow-x-hidden w-full">
+<body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100 overflow-x-hidden w-full" onload="applySavedTheme(); setDailyDate(); loadChatHistory(); loadAllData();">
 
     <div id="scroll-progress-bar" class="fixed top-0 left-0 h-1 bg-brand-600 z-[60] w-0 transition-all duration-150"></div>
 
@@ -407,21 +407,27 @@
         </button>
     </main>
 
-    <!-- Edit Profile Modal -->
+    <!-- Edit Profile Modal with 1:1 Crop Option -->
     <div id="edit-profile-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-6 md:p-8 shadow-2xl relative">
             <button onclick="closeEditProfile()" title="বন্ধ করুন" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-2 rounded-xl transition cursor-pointer">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
-            <h3 class="font-black text-xl text-slate-900 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-3">প্রোফাইল এডিট করুন</h3>
+            <h3 class="font-black text-xl text-slate-900 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-3">প্রোফাইল এডিট করুন (1:1 Square Crop)</h3>
             <form id="edit-profile-form" onsubmit="handleProfileEdit(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">সম্পূর্ণ নাম</label>
                     <input type="text" id="edit-name" required placeholder="আপনার নাম লিখুন" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">প্রোফাইল ছবি (ঐচ্ছিক)</label>
-                    <input type="file" id="edit-pic" accept="image/*" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 dark:file:bg-slate-700 dark:file:text-brand-300">
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">প্রোফাইল ছবি (স্বয়ংক্রিয় 1:1 ক্রপ)</label>
+                    <input type="file" id="edit-pic" accept="image/*" onchange="previewAndCropImage(event)" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 dark:file:bg-slate-700 dark:file:text-brand-300">
+                </div>
+                <!-- Hidden Canvas for 1:1 Cropping -->
+                <canvas id="crop-canvas" class="hidden"></canvas>
+                <div id="crop-preview-container" class="hidden text-center">
+                    <p class="text-[11px] text-emerald-600 font-bold mb-1">✓ ছবি সফলভাবে ১:১ অনুপাতে ক্রপ করা হয়েছে</p>
+                    <img id="cropped-preview-img" class="w-20 h-20 object-cover rounded-xl mx-auto border border-brand-300 shadow-sm">
                 </div>
                 <button type="submit" class="mt-2 w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5 flex justify-center items-center gap-2 cursor-pointer">
                     <i class="fa-solid fa-floppy-disk"></i> সেভ করুন
@@ -523,6 +529,7 @@
         let timeLeftSeconds = 300;
         let isSpeaking = false;
         let currentSpeakingId = null;
+        let croppedBase64Image = null;
 
         // NEW FEATURE: Offline/Online Auto Detector
         window.addEventListener('offline', () => {
@@ -531,6 +538,36 @@
         window.addEventListener('online', () => {
             showToast("ইন্টারনেট সংযোগ ফিরে এসেছে!", "success");
         });
+
+        // 1:1 Image Crop Handler Function
+        function previewAndCropImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.getElementById('crop-canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Set 1:1 Square Dimensions
+                    const size = Math.min(img.width, img.height);
+                    canvas.width = 400;
+                    canvas.height = 400;
+                    
+                    const startX = (img.width - size) / 2;
+                    const startY = (img.height - size) / 2;
+                    
+                    ctx.drawImage(img, startX, startY, size, size, 0, 0, 400, 400);
+                    croppedBase64Image = canvas.toDataURL('image/jpeg', 0.9);
+                    
+                    document.getElementById('cropped-preview-img').src = croppedBase64Image;
+                    document.getElementById('crop-preview-container').classList.remove('hidden');
+                }
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
 
         // NEW FEATURE: Audio Feedback on Quiz
         function playQuizSound(type) {
@@ -920,6 +957,8 @@
             const currentName = localStorage.getItem('portalUserName') || '';
             document.getElementById('edit-name').value = currentName;
             document.getElementById('edit-pic').value = ""; 
+            document.getElementById('crop-preview-container').classList.add('hidden');
+            croppedBase64Image = null;
             document.getElementById('edit-profile-modal').classList.remove('hidden');
         }
 
@@ -930,21 +969,26 @@
         function handleProfileEdit(e) {
             e.preventDefault();
             const newName = document.getElementById('edit-name').value.trim();
-            const fileInput = document.getElementById('edit-pic');
             
             if (newName) {
                 localStorage.setItem('portalUserName', newName);
             }
             
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    localStorage.setItem('portalUserPic', e.target.result);
-                    finalizeProfileUpdate();
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
+            if (croppedBase64Image) {
+                localStorage.setItem('portalUserPic', croppedBase64Image);
                 finalizeProfileUpdate();
+            } else {
+                const fileInput = document.getElementById('edit-pic');
+                if (fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        localStorage.setItem('portalUserPic', e.target.result);
+                        finalizeProfileUpdate();
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                } else {
+                    finalizeProfileUpdate();
+                }
             }
         }
 
@@ -1310,7 +1354,7 @@
                         <p id="news-desc-${index}" class="text-slate-600 dark:text-slate-300 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${news.Description || ''}</p>
                     </div>
                     <div class="flex flex-wrap gap-2">
-                        <button onclick="toggleReadMore('news-desc-${index}', this)" title="বিস্তারিত পড়ুন" class="bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 hover:bg-brand-100 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block cursor-pointer">
+                        <button onclick="toggleReadMore('news-desc-${index}', this)" title="বিস্তারিত পড়ুন" class="bg-brand-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:bg-brand-100 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block cursor-pointer">
                             <i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন
                         </button>
                         ${news.Link ? `<a href="${news.Link}" target="_blank" rel="noopener noreferrer" title="মূল লিংকে যান" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block"><i class="fa-solid fa-link mr-1"></i> মূল লিংক</a>` : ''}
@@ -1524,17 +1568,11 @@
             }
         }
 
-        // ==========================================
-        // EDITED: PROFFESIONAL CERTIFICATE GENERATOR 
-        // ==========================================
+        // EDITED: PROFFESIONAL CERTIFICATE GENERATOR WITH BALANCED SIGNATURE
         function generateCertificate(subject, score) {
             const name = localStorage.getItem('portalUserName') || 'Student';
-            
-            // Auto date generated
             const dateObj = new Date();
             const dateStr = dateObj.toLocaleDateString('en-GB'); 
-            
-            // Signature link modified for direct HTML printing
             const signImgLink = "https://lh3.googleusercontent.com/d/1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN";
 
             const certHTML = `
@@ -1557,14 +1595,12 @@
                     </div>
                     
                     <div class="cert-footer">
-                        <!-- Left Side : Auto Date -->
                         <div class="footer-left">
                             <div class="line"></div>
                             <p class="f-date">${dateStr}</p>
                             <p class="f-label">Date</p>
                         </div>
                         
-                        <!-- Right Side : Signature & Authority -->
                         <div class="footer-right">
                             <div class="sign-area">
                                 <img src="${signImgLink}" class="sign-img" alt="Sign">
@@ -1580,45 +1616,41 @@
 
             const printWindow = window.open('', '', 'width=1000,height=750');
             printWindow.document.write('<html><head><title>Certificate - ' + subject + '</title>');
-            // Using Kalpurush for Bangla & Caveat for Handwrite Date
             printWindow.document.write('<link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">');
             printWindow.document.write('<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">');
             
-            // Print CSS Setup (Perfect Centering, 1-Page Fix)
             printWindow.document.write('<style>' + 
                 '@import url("https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap"); ' +
                 '@page { size: A4 landscape; margin: 0; } ' + 
                 'body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; overflow: hidden; } ' +
                 '.cert-box { width: 270mm; height: 180mm; border: 4mm solid #2ea85c; border-radius: 4mm; box-sizing: border-box; padding: 15mm; position: relative; text-align: center; display: flex; flex-direction: column; font-family: "Times New Roman", "Kalpurush", serif; background: white; margin: auto; } ' +
                 '.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120mm; opacity: 0.05; z-index: 1; pointer-events: none; } ' +
-                '.cert-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; margin-top: -10mm; } ' +
-                '.cert-title { color: #4ade80; font-size: 14mm; font-weight: bold; margin: 0 0 8mm 0; letter-spacing: 0.5mm; } ' +
-                '.cert-subtitle { font-size: 5.5mm; color: #444; margin: 0 0 6mm 0; } ' +
-                '.cert-name { font-size: 10mm; color: #111; font-weight: bold; margin: 0 0 8mm 0; border-bottom: 0.8mm solid #2ea85c; padding-bottom: 2mm; min-width: 80mm; } ' +
-                '.cert-desc { font-size: 5mm; color: #444; margin: 0 0 6mm 0; } ' +
-                '.cert-subject { font-size: 7.5mm; color: #16a34a; font-weight: bold; margin: 0 0 6mm 0; } ' +
-                '.cert-score { font-size: 5.5mm; color: #111; font-weight: bold; margin: 0; } ' +
-                '.cert-footer { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 10mm 5mm 10mm; box-sizing: border-box; } ' +
-                '.footer-left, .footer-right { width: 65mm; text-align: center; position: relative; } ' +
-                '.line { border-top: 0.4mm solid #111; margin-bottom: 2mm; width: 100%; } ' +
-                '.f-date, .f-name { font-size: 4.5mm; color: #111; font-weight: bold; margin: 0 0 1.5mm 0; line-height: 1.2; } ' +
-                '.f-label { font-size: 4mm; color: #555; margin: 0; line-height: 1.2; } ' +
-                '.sign-area { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 25mm; margin-bottom: 1mm; position: relative;} ' +
-                '.sign-img { width: 45mm; height: auto; max-height: 15mm; object-fit: contain; margin-bottom: -5mm; z-index: 2; position: relative; } ' +
-                '.hand-date { font-family: "Caveat", cursive; font-size: 5.5mm; color: #15803d; margin: 0; transform: rotate(-3deg); z-index: 1; position: relative; } ' +
+                '.cert-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; margin-top: -8mm; } ' +
+                '.cert-title { color: #16a34a; font-size: 13mm; font-weight: bold; margin: 0 0 6mm 0; letter-spacing: 0.5mm; } ' +
+                '.cert-subtitle { font-size: 5mm; color: #444; margin: 0 0 4mm 0; } ' +
+                '.cert-name { font-size: 9mm; color: #111; font-weight: bold; margin: 0 0 6mm 0; border-bottom: 0.8mm solid #2ea85c; padding-bottom: 2mm; min-width: 70mm; } ' +
+                '.cert-desc { font-size: 4.5mm; color: #444; margin: 0 0 4mm 0; } ' +
+                '.cert-subject { font-size: 7mm; color: #16a34a; font-weight: bold; margin: 0 0 4mm 0; } ' +
+                '.cert-score { font-size: 5mm; color: #111; font-weight: bold; margin: 0; } ' +
+                '.cert-footer { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 10mm 4mm 10mm; box-sizing: border-box; } ' +
+                '.footer-left, .footer-right { width: 55mm; text-align: center; position: relative; } ' +
+                '.line { border-top: 0.4mm solid #111; margin-bottom: 1.5mm; width: 100%; } ' +
+                '.f-date, .f-name { font-size: 4mm; color: #111; font-weight: bold; margin: 0 0 1mm 0; line-height: 1.2; } ' +
+                '.f-label { font-size: 3.5mm; color: #555; margin: 0; line-height: 1.2; } ' +
+                '.sign-area { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 20mm; margin-bottom: 0.5mm; position: relative;} ' +
+                '.sign-img { width: 36mm; height: auto; max-height: 12mm; object-fit: contain; margin-bottom: -4mm; z-index: 2; position: relative; } ' +
+                '.hand-date { font-family: "Caveat", cursive; font-size: 5mm; color: #15803d; margin: 0; transform: rotate(-3deg); z-index: 1; position: relative; } ' +
             '</style>');
             printWindow.document.write('</head><body>');
             printWindow.document.write(certHTML);
             printWindow.document.write('</body></html>');
             printWindow.document.close();
             
-            // Waiting to ensure the signature image and handwriting fonts are fully loaded
             setTimeout(() => { 
                 printWindow.focus();
                 printWindow.print(); 
             }, 2000);
         }
-        // ==========================================
 
         function submitExam() {
             if(examTimer) clearInterval(examTimer);
@@ -1630,102 +1662,66 @@
 
             questions.forEach((q, index) => {
                 const radios = document.getElementsByName(`exam_question_${index}`);
-                let selectedVal = null;
-                for (const radio of radios) {
-                    if (radio.checked) {
-                        selectedVal = radio.value;
+                let selectedAns = '';
+                for (const r of radios) {
+                    if (r.checked) {
+                        selectedAns = r.value;
                         break;
                     }
                 }
 
-                let rawCorrect = q.CorrectAnswer != null ? String(q.CorrectAnswer).trim() : "";
-                let rawSelected = selectedVal != null ? String(selectedVal).trim() : "";
+                const correctAns = q.Answer ? q.Answer.trim() : '';
+                const isCorrect = selectedAns && (selectedAns === correctAns);
+                if (isCorrect) score++;
 
-                let correctAns = rawCorrect.toLowerCase();
-                let selectedAns = rawSelected.toLowerCase();
-
-                let isCorrect = (selectedAns !== "" && correctAns !== "" && selectedAns === correctAns);
-
-                if (isCorrect) {
-                    score++;
-                }
-
-                let optionsReviewHtml = '';
-                ['Option1', 'Option2', 'Option3', 'Option4'].forEach(optKey => {
-                    if (q[optKey]) {
-                        let optVal = String(q[optKey]).trim();
-                        let optValLower = optVal.toLowerCase();
-
-                        let optClass = "bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200";
-                        let badge = "";
-
-                        if (optValLower === correctAns) {
-                            optClass = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-bold";
-                            badge = `<span class="ml-2 text-xs bg-emerald-600 text-white px-2 py-0.5 rounded"><i class="fa-solid fa-check"></i> সঠিক উত্তর</span>`;
-                        } else if (optValLower === selectedAns && !isCorrect) {
-                            optClass = "bg-red-50 dark:bg-red-900/30 border-red-500 text-red-700 dark:text-red-300 font-bold";
-                            badge = `<span class="ml-2 text-xs bg-red-600 text-white px-2 py-0.5 rounded"><i class="fa-solid fa-xmark"></i> আপনার উত্তর</span>`;
-                        }
-
-                        optionsReviewHtml += `
-                        <div class="flex items-center justify-between p-3 rounded-xl border ${optClass} text-xs md:text-sm">
-                            <span>${optVal}</span>
-                            ${badge}
-                        </div>`;
-                    }
-                });
-
-                let statusBadge = isCorrect 
-                    ? `<span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/40 px-2.5 py-1 rounded-md border border-emerald-300"><i class="fa-solid fa-circle-check"></i> সঠিক</span>`
-                    : `<span class="text-xs font-bold text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/40 px-2.5 py-1 rounded-md border border-red-300"><i class="fa-solid fa-circle-xmark"></i> ভুল/উত্তর দেওয়া হয়নি</span>`;
+                const borderClass = isCorrect ? 'border-emerald-200 bg-emerald-50/40 dark:bg-emerald-900/10' : 'border-red-200 bg-red-50/40 dark:bg-red-900/10';
+                const iconClass = isCorrect ? '<i class="fa-solid fa-circle-check text-emerald-600"></i>' : '<i class="fa-solid fa-circle-xmark text-red-500"></i>';
 
                 reviewContainer.innerHTML += `
-                <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 space-y-3">
-                    <div class="flex justify-between items-start gap-2 border-b border-slate-200 dark:border-slate-700 pb-2">
-                        <p class="font-bold text-slate-900 dark:text-white text-xs md:text-sm">${index + 1}. ${q.Question}</p>
-                        ${statusBadge}
-                    </div>
-                    <div class="space-y-1.5 pt-1">
-                        ${optionsReviewHtml}
-                    </div>
+                <div class="p-4 rounded-xl border ${borderClass} space-y-1.5 text-xs text-left shadow-sm">
+                    <p class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        ${iconClass} ${index + 1}. ${q.Question}
+                    </p>
+                    <p class="text-slate-600 dark:text-slate-300 pl-5">আপনার উত্তর: <span class="font-bold ${isCorrect ? 'text-emerald-600' : 'text-red-500'}">${selectedAns || 'উত্তর দেননি'}</span></p>
+                    ${!isCorrect ? `<p class="text-slate-600 dark:text-slate-300 pl-5">সঠিক উত্তর: <span class="font-bold text-emerald-600">${correctAns}</span></p>` : ''}
                 </div>`;
             });
 
-            const percentage = Math.round((score / questions.length) * 100);
-            let grade = "ভাল চেষ্টা!";
-            if(percentage >= 80) grade = "অসামান্য (Outstanding)!";
-            else if(percentage >= 60) grade = "খুব ভাল (Excellent)!";
+            const totalQ = questions.length;
+            const percentage = Math.round((score / totalQ) * 100);
+            
+            if (percentage >= 50) {
+                playQuizSound('success');
+            } else {
+                playQuizSound('error');
+            }
+
+            const scoreStr = `${score}/${totalQ} (${percentage}%)`;
+            localStorage.setItem('lastQuizScore', scoreStr);
 
             let fullQuizHistory = JSON.parse(localStorage.getItem('fullQuizHistory')) || [];
-            fullQuizHistory.push({score: score, total: questions.length, percentage: percentage, date: new Date().toLocaleDateString()});
+            fullQuizHistory.push({ subject: currentActiveSubject, score, total: totalQ, percentage, date: new Date().toLocaleDateString() });
             localStorage.setItem('fullQuizHistory', JSON.stringify(fullQuizHistory));
-
-            localStorage.setItem('lastQuizScore', `${score}/${questions.length} (${percentage}%)`);
 
             document.getElementById('quiz-exam-view').classList.add('hidden');
             document.getElementById('quiz-result-view').classList.remove('hidden');
 
             document.getElementById('score-display-box').innerHTML = `
-                মোট প্রশ্ন: <span class="text-slate-900 dark:text-white">${questions.length}</span><br>
-                সঠিক উত্তর: <span class="text-emerald-600 dark:text-emerald-400 text-xl font-black">${score}</span> টি<br>
-                স্কোর: <span class="text-brand-600 dark:text-brand-400 font-bold">${percentage}%</span><br>
-                <div class="mt-2 text-xs text-brand-700 dark:text-brand-300 font-extrabold bg-brand-100 dark:bg-slate-600 p-2 rounded-lg">${grade}</div>
+                বিষয়: <span class="text-slate-900 dark:text-white">${currentActiveSubject}</span><br>
+                প্রাপ্ত স্কোর: <span class="text-brand-600 dark:text-brand-400 font-bold text-base">${score} / ${totalQ}</span><br>
+                শতকরা হার: <span class="text-brand-600 dark:text-brand-400 font-bold text-base">${percentage}%</span>
             `;
-            
+
             const certContainer = document.getElementById('certificate-action-container');
-            if (percentage >= 60) {
-                playQuizSound('success');
+            if (percentage >= 40) {
                 certContainer.innerHTML = `
-                    <button onclick="generateCertificate('${currentActiveSubject}', ${percentage})" class="mt-4 w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-2 cursor-pointer hover:-translate-y-0.5">
-                        <i class="fa-solid fa-certificate text-lg"></i> সার্টিফিকেট ডাউনলোড করুন
+                    <button onclick="generateCertificate('${currentActiveSubject}', ${percentage})" class="w-full bg-gradient-to-r from-emerald-600 to-brand-700 hover:from-emerald-700 hover:to-brand-800 text-white py-3.5 rounded-xl text-xs font-bold transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-award"></i> সার্টিফিকেট ডাউনলোড করুন (Certificate)
                     </button>
                 `;
             } else {
-                playQuizSound('fail');
-                certContainer.innerHTML = '';
+                certContainer.innerHTML = `<p class="text-xs text-red-500 font-bold">৫০% এর কম নম্বর পাওয়ায় সার্টিফিকেট প্রদান করা সম্ভব হয়নি। আবার চেষ্টা করুন!</p>`;
             }
-
-            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         function backToQuizSubjects() {
@@ -1733,24 +1729,8 @@
             document.getElementById('quiz-exam-view').classList.add('hidden');
             document.getElementById('quiz-result-view').classList.add('hidden');
             document.getElementById('quiz-subject-view').classList.remove('hidden');
-            renderQuizSubjects(Object.keys(groupedQuizData));
+            currentActiveSubject = null;
         }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            applySavedTheme();
-            setDailyDate();
-            loadChatHistory();
-            
-            const hash = window.location.hash.replace('#', '');
-            if (hash && document.getElementById(hash)) {
-                showSection(hash, null);
-            } else {
-                showSection('home', null);
-            }
-
-            updateHeaderBadge();
-            loadAllData();
-        });
     </script>
 </body>
 </html>
