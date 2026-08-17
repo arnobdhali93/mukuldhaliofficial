@@ -496,7 +496,7 @@
                 </div>
             </div>
             <div id="chat-history" class="flex-1 overflow-y-auto space-y-3 mb-3 text-xs text-slate-600 dark:text-slate-300 pr-1">
-                <p class="bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 shadow-sm">হ্যালো! আমি আপনার এআই অ্যাসিস্ট্যান্ট। যেকোনো প্রশ্ন করুন।</p>
+                <p class="bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 shadow-sm">হ্যালো! আমি আপনার এআই অ্যাসিস্ট্যান্ট। যেকোনো প্রশ্ন করুন。</p>
             </div>
             <div class="flex gap-2">
                 <input id="userQuery" type="text" placeholder="প্রশ্ন করুন..." title="আপনার প্রশ্ন লিখুন" class="flex-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-800 dark:text-slate-100 text-xs outline-none focus:border-brand-600 shadow-inner" onkeydown="if(event.key === 'Enter') askGemini()">
@@ -1561,7 +1561,7 @@
             const dateStr = dateObj.toLocaleDateString('en-GB'); 
             
             // Signature link modified for direct HTML printing
-            const signImgLink = "https://drive.google.com/uc?export=view&id=1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN";
+            const signImgLink = "https://lh3.googleusercontent.com/d/1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN";
 
             const certHTML = `
                 <div class="cert-box">
@@ -1593,7 +1593,7 @@
                         <!-- Right Side : Signature & Authority -->
                         <div class="footer-right">
                             <div class="sign-area">
-                                <img src="${signImgLink}" class="sign-img" alt="Sign" onerror="this.style.display='none'">
+                                <img src="${signImgLink}" class="sign-img" alt="Sign">
                                 <p class="hand-date">${dateStr}</p>
                             </div>
                             <div class="line"></div>
@@ -1617,20 +1617,20 @@
                 'body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; overflow: hidden; } ' +
                 '.cert-box { width: 270mm; height: 180mm; border: 4mm solid #2ea85c; border-radius: 4mm; box-sizing: border-box; padding: 15mm; position: relative; text-align: center; display: flex; flex-direction: column; font-family: "Times New Roman", "Kalpurush", serif; background: white; margin: auto; } ' +
                 '.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120mm; opacity: 0.05; z-index: 1; pointer-events: none; } ' +
-                '.cert-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; padding-top: 5mm; } ' +
-                '.cert-title { color: #4ade80; font-size: 14mm; font-weight: bold; margin: 0 0 10mm 0; letter-spacing: 0.5mm; } ' +
-                '.cert-subtitle { font-size: 5.5mm; color: #444; margin: 0 0 8mm 0; } ' +
-                '.cert-name { font-size: 10mm; color: #111; font-weight: bold; margin: 0 0 10mm 0; border-bottom: 0.8mm solid #2ea85c; padding-bottom: 2mm; min-width: 80mm; } ' +
+                '.cert-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; margin-top: -10mm; } ' +
+                '.cert-title { color: #4ade80; font-size: 14mm; font-weight: bold; margin: 0 0 8mm 0; letter-spacing: 0.5mm; } ' +
+                '.cert-subtitle { font-size: 5.5mm; color: #444; margin: 0 0 6mm 0; } ' +
+                '.cert-name { font-size: 10mm; color: #111; font-weight: bold; margin: 0 0 8mm 0; border-bottom: 0.8mm solid #2ea85c; padding-bottom: 2mm; min-width: 80mm; } ' +
                 '.cert-desc { font-size: 5mm; color: #444; margin: 0 0 6mm 0; } ' +
-                '.cert-subject { font-size: 7.5mm; color: #16a34a; font-weight: bold; margin: 0 0 8mm 0; } ' +
+                '.cert-subject { font-size: 7.5mm; color: #16a34a; font-weight: bold; margin: 0 0 6mm 0; } ' +
                 '.cert-score { font-size: 5.5mm; color: #111; font-weight: bold; margin: 0; } ' +
                 '.cert-footer { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 10mm 5mm 10mm; box-sizing: border-box; } ' +
                 '.footer-left, .footer-right { width: 65mm; text-align: center; position: relative; } ' +
                 '.line { border-top: 0.4mm solid #111; margin-bottom: 2mm; width: 100%; } ' +
                 '.f-date, .f-name { font-size: 4.5mm; color: #111; font-weight: bold; margin: 0 0 1.5mm 0; line-height: 1.2; } ' +
                 '.f-label { font-size: 4mm; color: #555; margin: 0; line-height: 1.2; } ' +
-                '.sign-area { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 25mm; margin-bottom: 1mm; } ' +
-                '.sign-img { max-width: 55mm; max-height: 16mm; object-fit: contain; margin-bottom: -3mm; z-index: 2; position: relative; } ' +
+                '.sign-area { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 25mm; margin-bottom: 1mm; position: relative;} ' +
+                '.sign-img { width: 45mm; height: auto; object-fit: contain; margin-bottom: -5mm; z-index: 2; position: relative; } ' +
                 '.hand-date { font-family: "Caveat", cursive; font-size: 5.5mm; color: #15803d; margin: 0; transform: rotate(-3deg); z-index: 1; position: relative; } ' +
             '</style>');
             printWindow.document.write('</head><body>');
@@ -1642,7 +1642,7 @@
             setTimeout(() => { 
                 printWindow.focus();
                 printWindow.print(); 
-            }, 1500);
+            }, 2000);
         }
         // ==========================================
 
