@@ -522,6 +522,14 @@
             showToast("ইন্টারনেট সংযোগ ফিরে এসেছে!", "success");
         });
 
+        document.addEventListener("DOMContentLoaded", () => {
+            setDailyDate();
+            applySavedTheme();
+            loadAllData();
+            loadChatHistory();
+            updateHeaderBadge();
+        });
+
         function playQuizSound(type) {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1482,6 +1490,14 @@
             }
         }
 
+        function backToQuizSubjects() {
+            if(examTimer) clearInterval(examTimer);
+            document.getElementById('quiz-exam-view').classList.add('hidden');
+            document.getElementById('quiz-result-view').classList.add('hidden');
+            document.getElementById('quiz-subject-view').classList.remove('hidden');
+            currentActiveSubject = null;
+        }
+
         function generateCertificate(subject, score) {
             const name = localStorage.getItem('portalUserName') || 'Student';
             const dateObj = new Date();
@@ -1628,69 +1644,47 @@
 
             const totalQ = questions.length;
             const percentage = Math.round((score / totalQ) * 100);
-            const scoreFormatted = `${score}/${totalQ} (${percentage}%)`;
             
-            if (percentage >= 60) {
+            if (percentage >= 50) {
                 playQuizSound('success');
             } else {
-                playQuizSound('fail');
+                playQuizSound('error');
             }
 
-            localStorage.setItem('lastQuizScore', scoreFormatted);
-            let fullQuizHistory = JSON.parse(localStorage.getItem('fullQuizHistory')) || [];
-            fullQuizHistory.push({
+            const scoreStr = `${score} / ${totalQ} (${percentage}%)`;
+            localStorage.setItem('lastQuizScore', scoreStr);
+
+            let history = JSON.parse(localStorage.getItem('fullQuizHistory')) || [];
+            history.push({
                 subject: currentActiveSubject,
                 score: score,
                 total: totalQ,
                 percentage: percentage,
                 date: new Date().toLocaleDateString()
             });
-            localStorage.setItem('fullQuizHistory', JSON.stringify(fullQuizHistory));
+            localStorage.setItem('fullQuizHistory', JSON.stringify(history));
 
             document.getElementById('score-display-box').innerHTML = `
-                <div class="text-2xl font-black text-brand-600 dark:text-brand-400 mb-1">${scoreFormatted}</div>
-                <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold">${percentage >= 80 ? 'অসাধারণ পারফরম্যান্স! 🎉' : percentage >= 50 ? 'ভালো চেষ্টা, আরও উন্নতি করতে থাকুন! 👍' : 'আরও মনোযোগ দিয়ে পুনরাবৃত্তি চেষ্টা করুন! 📚'}</p>
+                <p class="text-base font-black mb-1">আপনার মোট স্কোর: <span class="text-brand-600 dark:text-brand-400">${scoreStr}</span></p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 font-normal">${percentage >= 80 ? 'অসাধারণ পারফরম্যান্স! চালিয়ে যান।' : percentage >= 50 ? 'ভালো চেষ্টা! আরও অনুশীলনের সুযোগ রয়েছে।' : 'আরও বেশি অনুশীলন প্রয়োজন।'}</p>
             `;
 
-            const certContainer = document.getElementById('certificate-action-container');
-            if (percentage >= 40) {
-                certContainer.innerHTML = `
-                    <button onclick="generateCertificate('${currentActiveSubject.replace(/'/g, "\\'")}', ${percentage})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer mb-2">
-                        <i class="fa-solid fa-file-certificate text-lg"></i> সার্টিফিকেট ডাউনলোড করুন (Download Certificate)
-                    </button>
-                `;
+            const certAction = document.getElementById('certificate-action-container');
+            if (percentage >= 60) {
+                certAction.innerHTML = `
+                    <button onclick="generateCertificate('${currentActiveSubject}', ${percentage})" title="সার্টিফিকেট পান" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer mb-2">
+                        <i class="fa-solid fa-award text-base"></i> সার্টিফিকেট ডাউনলোড করুন (PDF)
+                    </button>;
             } else {
-                certContainer.innerHTML = `
-                    <p class="text-xs text-slate-400 font-semibold italic bg-slate-100 dark:bg-slate-700 p-2.5 rounded-xl border border-slate-200 dark:border-slate-600 mb-2">
-                        💡 সার্টিফিকেট আনলক করতে কমপক্ষে ৪০% স্কোর প্রয়োজন।
-                    </p>
-                `;
+                certAction.innerHTML = `
+                    <p class="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 p-2.5 rounded-xl border border-amber-200 dark:border-amber-800 font-semibold mb-2">
+                        <i class="fa-solid fa-circle-info mr-1"></i> সার্টিফিকেট পাওয়ার জন্য আপনাকে কমপক্ষে ৬০% নম্বর পেতে হবে।
+                    </p>;
             }
 
             document.getElementById('quiz-exam-view').classList.add('hidden');
             document.getElementById('quiz-result-view').classList.remove('hidden');
         }
-
-        function backToQuizSubjects() {
-            if(examTimer) clearInterval(examTimer);
-            document.getElementById('quiz-exam-view').classList.add('hidden');
-            document.getElementById('quiz-result-view').classList.add('hidden');
-            document.getElementById('quiz-subject-view').classList.remove('hidden');
-            currentActiveSubject = null;
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            setDailyDate();
-            applySavedTheme();
-            loadChatHistory();
-            updateHeaderBadge();
-            loadAllData();
-
-            const hash = window.location.hash.replace('#', '');
-            if (hash && document.getElementById(hash)) {
-                showSection(hash, null);
-            }
-        });
     </script>
 </body>
 </html>
