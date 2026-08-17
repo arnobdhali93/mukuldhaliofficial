@@ -1310,7 +1310,7 @@
                         <p id="news-desc-${index}" class="text-slate-600 dark:text-slate-300 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${news.Description || ''}</p>
                     </div>
                     <div class="flex flex-wrap gap-2">
-                        <button onclick="toggleReadMore('news-desc-${index}', this)" title="বিস্তারিত পড়ুন" class="bg-brand-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:bg-brand-100 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block cursor-pointer">
+                        <button onclick="toggleReadMore('news-desc-${index}', this)" title="বিস্তারিত পড়ুন" class="bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 hover:bg-brand-100 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block cursor-pointer">
                             <i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন
                         </button>
                         ${news.Link ? `<a href="${news.Link}" target="_blank" rel="noopener noreferrer" title="মূল লিংকে যান" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block"><i class="fa-solid fa-link mr-1"></i> মূল লিংক</a>` : ''}
@@ -1638,67 +1638,94 @@
                     }
                 }
 
-                const correctVal = q.CorrectAnswer ? q.CorrectAnswer.trim() : '';
-                const isCorrect = (selectedVal === correctVal);
-                if (isCorrect) score++;
+                let rawCorrect = q.CorrectAnswer != null ? String(q.CorrectAnswer).trim() : "";
+                let rawSelected = selectedVal != null ? String(selectedVal).trim() : "";
+
+                let correctAns = rawCorrect.toLowerCase();
+                let selectedAns = rawSelected.toLowerCase();
+
+                let isCorrect = (selectedAns !== "" && correctAns !== "" && selectedAns === correctAns);
+
+                if (isCorrect) {
+                    score++;
+                }
 
                 let optionsReviewHtml = '';
-                let optionsList = [];
                 ['Option1', 'Option2', 'Option3', 'Option4'].forEach(optKey => {
-                    if (q[optKey]) optionsList.push(q[optKey]);
+                    if (q[optKey]) {
+                        let optVal = String(q[optKey]).trim();
+                        let optValLower = optVal.toLowerCase();
+
+                        let optClass = "bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200";
+                        let badge = "";
+
+                        if (optValLower === correctAns) {
+                            optClass = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-bold";
+                            badge = `<span class="ml-2 text-xs bg-emerald-600 text-white px-2 py-0.5 rounded"><i class="fa-solid fa-check"></i> সঠিক উত্তর</span>`;
+                        } else if (optValLower === selectedAns && !isCorrect) {
+                            optClass = "bg-red-50 dark:bg-red-900/30 border-red-500 text-red-700 dark:text-red-300 font-bold";
+                            badge = `<span class="ml-2 text-xs bg-red-600 text-white px-2 py-0.5 rounded"><i class="fa-solid fa-xmark"></i> আপনার উত্তর</span>`;
+                        }
+
+                        optionsReviewHtml += `
+                        <div class="flex items-center justify-between p-3 rounded-xl border ${optClass} text-xs md:text-sm">
+                            <span>${optVal}</span>
+                            ${badge}
+                        </div>`;
+                    }
                 });
 
-                optionsList.forEach(opt => {
-                    let styleClass = "p-2 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200";
-                    if (opt === correctVal) {
-                        styleClass = "p-2 rounded-lg text-xs font-bold border border-emerald-300 bg-emerald-50 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300";
-                    } else if (opt === selectedVal && !isCorrect) {
-                        styleClass = "p-2 rounded-lg text-xs font-bold border border-red-300 bg-red-50 dark:bg-red-900/40 text-red-800 dark:text-red-300";
-                    }
-                    optionsReviewHtml += `<div class="${styleClass}">${opt} ${opt === correctVal ? '<i class="fa-solid fa-check text-emerald-600 float-right mt-0.5"></i>' : (opt === selectedVal ? '<i class="fa-solid fa-xmark text-red-600 float-right mt-0.5"></i>' : '')}</div>`;
-                });
+                let statusBadge = isCorrect 
+                    ? `<span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/40 px-2.5 py-1 rounded-md border border-emerald-300"><i class="fa-solid fa-circle-check"></i> সঠিক</span>`
+                    : `<span class="text-xs font-bold text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/40 px-2.5 py-1 rounded-md border border-red-300"><i class="fa-solid fa-circle-xmark"></i> ভুল/উত্তর দেওয়া হয়নি</span>`;
 
                 reviewContainer.innerHTML += `
-                <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 space-y-2 text-left">
-                    <p class="font-bold text-slate-900 dark:text-white text-sm">${index + 1}. ${q.Question}</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1">
+                <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 space-y-3">
+                    <div class="flex justify-between items-start gap-2 border-b border-slate-200 dark:border-slate-700 pb-2">
+                        <p class="font-bold text-slate-900 dark:text-white text-xs md:text-sm">${index + 1}. ${q.Question}</p>
+                        ${statusBadge}
+                    </div>
+                    <div class="space-y-1.5 pt-1">
                         ${optionsReviewHtml}
                     </div>
                 </div>`;
             });
 
-            const totalQ = questions.length;
-            const percentage = Math.round((score / totalQ) * 100);
-            const scoreStr = `${score} / ${totalQ} (${percentage}%)`;
-
-            localStorage.setItem('lastQuizScore', scoreStr);
+            const percentage = Math.round((score / questions.length) * 100);
+            let grade = "ভাল চেষ্টা!";
+            if(percentage >= 80) grade = "অসামান্য (Outstanding)!";
+            else if(percentage >= 60) grade = "খুব ভাল (Excellent)!";
 
             let fullQuizHistory = JSON.parse(localStorage.getItem('fullQuizHistory')) || [];
-            fullQuizHistory.push({ subject: currentActiveSubject, score, total: totalQ, percentage, date: new Date().toLocaleDateString() });
+            fullQuizHistory.push({score: score, total: questions.length, percentage: percentage, date: new Date().toLocaleDateString()});
             localStorage.setItem('fullQuizHistory', JSON.stringify(fullQuizHistory));
 
-            if (percentage >= 50) {
-                playQuizSound('success');
-                showToast("অভিনন্দন! আপনি পরীক্ষায় সফল হয়েছেন।", "success");
-            } else {
-                playQuizSound('error');
-                showToast("পরীক্ষা শেষ হয়েছে। আরও ভালো করার চেষ্টা করুন!", "error");
-            }
-
-            document.getElementById('score-display-box').innerHTML = `বিষয়: ${currentActiveSubject}<br>মোট প্রশ্ন: ${totalQ} | সঠিক উত্তর: ${score}<br>শতাংশ: <span class="text-brand-600 dark:text-brand-400 font-black text-lg">${percentage}%</span>`;
-
-            const certContainer = document.getElementById('certificate-action-container');
-            if (percentage >= 50) {
-                certContainer.innerHTML = `
-                    <button onclick="generateCertificate('${currentActiveSubject.replace(/'/g, "\\'")}', ${percentage})" title="সার্টিফিকেট ডাউনলোড করুন" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl text-xs font-bold transition shadow-md hover:shadow-lg hover:-translate-y-1 flex items-center justify-center gap-2 cursor-pointer mb-4">
-                        <i class="fa-solid fa-award text-base"></i> সার্টিফিকেট ডাউনলোড করুন (Certificate)
-                    </button>`;
-            } else {
-                certContainer.innerHTML = `<p class="text-xs text-red-500 font-semibold mb-4">সার্টিফিকেট অর্জনের জন্য কমপক্ষে ৫০% নম্বর প্রয়োজন।</p>`;
-            }
+            localStorage.setItem('lastQuizScore', `${score}/${questions.length} (${percentage}%)`);
 
             document.getElementById('quiz-exam-view').classList.add('hidden');
             document.getElementById('quiz-result-view').classList.remove('hidden');
+
+            document.getElementById('score-display-box').innerHTML = `
+                মোট প্রশ্ন: <span class="text-slate-900 dark:text-white">${questions.length}</span><br>
+                সঠিক উত্তর: <span class="text-emerald-600 dark:text-emerald-400 text-xl font-black">${score}</span> টি<br>
+                স্কোর: <span class="text-brand-600 dark:text-brand-400 font-bold">${percentage}%</span><br>
+                <div class="mt-2 text-xs text-brand-700 dark:text-brand-300 font-extrabold bg-brand-100 dark:bg-slate-600 p-2 rounded-lg">${grade}</div>
+            `;
+            
+            const certContainer = document.getElementById('certificate-action-container');
+            if (percentage >= 60) {
+                playQuizSound('success');
+                certContainer.innerHTML = `
+                    <button onclick="generateCertificate('${currentActiveSubject}', ${percentage})" class="mt-4 w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-2 cursor-pointer hover:-translate-y-0.5">
+                        <i class="fa-solid fa-certificate text-lg"></i> সার্টিফিকেট ডাউনলোড করুন
+                    </button>
+                `;
+            } else {
+                playQuizSound('fail');
+                certContainer.innerHTML = '';
+            }
+
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         function backToQuizSubjects() {
@@ -1706,20 +1733,24 @@
             document.getElementById('quiz-exam-view').classList.add('hidden');
             document.getElementById('quiz-result-view').classList.add('hidden');
             document.getElementById('quiz-subject-view').classList.remove('hidden');
-            currentActiveSubject = null;
+            renderQuizSubjects(Object.keys(groupedQuizData));
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             applySavedTheme();
             setDailyDate();
             loadChatHistory();
-            loadAllData();
             
             const hash = window.location.hash.replace('#', '');
             if (hash && document.getElementById(hash)) {
                 showSection(hash, null);
+            } else {
+                showSection('home', null);
             }
+
+            updateHeaderBadge();
+            loadAllData();
         });
     </script>
 </body>
-</html>
+    </html>
