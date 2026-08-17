@@ -93,7 +93,7 @@
     <!-- ADVANCED FEATURE: Professional Toast Notification Container -->
     <div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- FIXED MOBILE HEADER: Responsive gaps and sizes to prevent overflow on small screens -->
+    <!-- FIXED MOBILE HEADER -->
     <header class="md:hidden bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50 px-2.5 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between shadow-sm w-full box-border overflow-hidden">
         <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
             <button onclick="toggleSidebar()" aria-label="Toggle Menu" title="মেনু খুলুন" class="text-slate-700 dark:text-slate-200 hover:text-black text-sm sm:text-lg focus:outline-none p-1.5 sm:p-2 rounded-lg bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 transition active:scale-95 cursor-pointer shrink-0">
@@ -207,7 +207,6 @@
         <div class="p-4 md:p-12 max-w-6xl mx-auto w-full flex-1 box-border">
 
             <section id="home" class="section-content space-y-8">
-                <!-- NEW FEATURE: Daily Educational Quote -->
                 <div class="bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-4 flex items-start gap-4 shadow-sm relative overflow-hidden">
                     <div class="text-indigo-500 text-2xl absolute -left-2 -top-2 opacity-20">
                         <i class="fa-solid fa-quote-left"></i>
@@ -1574,16 +1573,14 @@
                         </svg>
                     </div>
                     
-                    <h1 class="cert-title">Certificate of Achievement</h1>
-                    <p class="cert-subtitle">This is proudly presented to</p>
-                    
-                    <div class="cert-name-container">
+                    <div class="cert-content">
+                        <h1 class="cert-title">Certificate of Achievement</h1>
+                        <p class="cert-subtitle">This is proudly presented to</p>
                         <h2 class="cert-name">${escapeHTML(name)}</h2>
+                        <p class="cert-desc">For successfully completing the Mock Test on</p>
+                        <h3 class="cert-subject">${subject}</h3>
+                        <p class="cert-score">Score: ${score}%</p>
                     </div>
-                    
-                    <p class="cert-desc">For successfully completing the Mock Test on</p>
-                    <h3 class="cert-subject">${subject}</h3>
-                    <h4 class="cert-score">Score: ${score}%</h4>
                     
                     <div class="cert-footer">
                         <!-- Left Side : Auto Date -->
@@ -1613,28 +1610,28 @@
             printWindow.document.write('<link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">');
             printWindow.document.write('<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">');
             
-            // Print CSS Setup
+            // Print CSS Setup (Perfect Centering, 1-Page Fix)
             printWindow.document.write('<style>' + 
-                '@import url("https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap"); ' +
+                '@import url("https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap"); ' +
                 '@page { size: A4 landscape; margin: 0; } ' + 
-                'body, html { margin: 0; padding: 0; width: 297mm; height: 210mm; display: flex; justify-content: center; align-items: center; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; overflow: hidden; } ' +
-                '.cert-box { width: 270mm; height: 180mm; border: 4.5mm solid #2ea85c; border-radius: 4mm; box-sizing: border-box; padding: 15mm 20mm; position: relative; text-align: center; display: flex; flex-direction: column; font-family: "Times New Roman", "Kalpurush", serif; } ' +
-                '.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120mm; opacity: 0.04; z-index: -1; } ' +
-                '.cert-title { color: #4ade80; font-size: 13.5mm; font-weight: bold; margin: 10mm 0 8mm 0; letter-spacing: 0.5mm; text-shadow: 0.5px 0.5px 0px rgba(0,0,0,0.1); } ' +
-                '.cert-subtitle { font-size: 6mm; color: #333; margin: 0 0 10mm 0; } ' +
-                '.cert-name-container { margin: 0 0 12mm 0; } ' +
-                '.cert-name { font-size: 10mm; color: #111; font-weight: bold; margin: 0; display: inline-block; border-bottom: 0.8mm solid #2ea85c; padding-bottom: 2mm; min-width: 80mm; } ' +
-                '.cert-desc { font-size: 5.5mm; color: #444; margin: 0 0 8mm 0; } ' +
-                '.cert-subject { font-size: 8mm; color: #16a34a; font-weight: bold; margin: 0 0 8mm 0; } ' +
-                '.cert-score { font-size: 6.5mm; color: #111; font-weight: bold; margin: 0; } ' +
-                '.cert-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto; padding: 0 15mm 5mm 15mm; } ' +
-                '.footer-left, .footer-right { width: 60mm; text-align: center; position: relative; } ' +
+                'body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; overflow: hidden; } ' +
+                '.cert-box { width: 270mm; height: 180mm; border: 4mm solid #2ea85c; border-radius: 4mm; box-sizing: border-box; padding: 15mm; position: relative; text-align: center; display: flex; flex-direction: column; font-family: "Times New Roman", "Kalpurush", serif; background: white; margin: auto; } ' +
+                '.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120mm; opacity: 0.05; z-index: 1; pointer-events: none; } ' +
+                '.cert-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; padding-top: 5mm; } ' +
+                '.cert-title { color: #4ade80; font-size: 14mm; font-weight: bold; margin: 0 0 10mm 0; letter-spacing: 0.5mm; } ' +
+                '.cert-subtitle { font-size: 5.5mm; color: #444; margin: 0 0 8mm 0; } ' +
+                '.cert-name { font-size: 10mm; color: #111; font-weight: bold; margin: 0 0 10mm 0; border-bottom: 0.8mm solid #2ea85c; padding-bottom: 2mm; min-width: 80mm; } ' +
+                '.cert-desc { font-size: 5mm; color: #444; margin: 0 0 6mm 0; } ' +
+                '.cert-subject { font-size: 7.5mm; color: #16a34a; font-weight: bold; margin: 0 0 8mm 0; } ' +
+                '.cert-score { font-size: 5.5mm; color: #111; font-weight: bold; margin: 0; } ' +
+                '.cert-footer { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 10mm 5mm 10mm; box-sizing: border-box; } ' +
+                '.footer-left, .footer-right { width: 65mm; text-align: center; position: relative; } ' +
                 '.line { border-top: 0.4mm solid #111; margin-bottom: 2mm; width: 100%; } ' +
-                '.f-date, .f-name { font-size: 4.8mm; color: #111; font-weight: bold; margin: 0 0 1.5mm 0; } ' +
-                '.f-label { font-size: 4.5mm; color: #333; margin: 0; } ' +
-                '.sign-area { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 18mm; margin-bottom: 2mm; position: relative; } ' +
-                '.sign-img { max-width: 45mm; max-height: 14mm; object-fit: contain; z-index: 2; margin-bottom: -1mm; } ' +
-                '.hand-date { font-family: "Caveat", cursive; font-size: 5.8mm; color: #15803d; margin: -3mm 0 0 0; transform: rotate(-3deg); z-index: 1; } ' +
+                '.f-date, .f-name { font-size: 4.5mm; color: #111; font-weight: bold; margin: 0 0 1.5mm 0; line-height: 1.2; } ' +
+                '.f-label { font-size: 4mm; color: #555; margin: 0; line-height: 1.2; } ' +
+                '.sign-area { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 25mm; margin-bottom: 1mm; } ' +
+                '.sign-img { max-width: 55mm; max-height: 16mm; object-fit: contain; margin-bottom: -3mm; z-index: 2; position: relative; } ' +
+                '.hand-date { font-family: "Caveat", cursive; font-size: 5.5mm; color: #15803d; margin: 0; transform: rotate(-3deg); z-index: 1; position: relative; } ' +
             '</style>');
             printWindow.document.write('</head><body>');
             printWindow.document.write(certHTML);
