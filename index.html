@@ -90,11 +90,9 @@
 
     <div id="scroll-progress-bar" class="fixed top-0 left-0 h-1 bg-brand-600 z-[60] w-0 transition-all duration-150"></div>
 
-    <!-- ADVANCED FEATURE: Professional Toast Notification Container -->
     <div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- FIXED MOBILE HEADER: Responsive gaps and sizes to prevent overflow on small screens -->
-    <header class="U:hidden bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50 px-2.5 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between shadow-sm w-full box-border overflow-hidden">
+    <header class="md:hidden bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50 px-2.5 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between shadow-sm w-full box-border overflow-hidden">
         <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
             <button onclick="toggleSidebar()" aria-label="Toggle Menu" title="মেনু খুলুন" class="text-slate-700 dark:text-slate-200 hover:text-black text-sm sm:text-lg focus:outline-none p-1.5 sm:p-2 rounded-lg bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 transition active:scale-95 cursor-pointer shrink-0">
                 <i class="fa-solid fa-bars"></i>
@@ -117,7 +115,6 @@
         <div class="flex items-center gap-1.5 sm:gap-3 shrink-0 ml-1">
             <span class="current-date-display text-[9px] sm:text-[11px] font-extrabold text-brand-800 bg-brand-100 border border-brand-200 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md shadow-sm font-mono tracking-wide shrink-0" title="আজকের তারিখ">--.--.--</span>
             
-            <!-- User Profile Icon Header -->
             <div id="mobile-user-badge" onclick="showSection('profile', event)" title="আমার প্রোফাইল" class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 font-bold text-[10px] sm:text-xs cursor-pointer hover:bg-brand-100 transition shadow-sm shrink-0 overflow-hidden">
                 Usr
             </div>
@@ -181,7 +178,7 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></div>
                 <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">System Online</span>
             </div>
-            <span class="text-[10px] text-slate-400 font-mono">v4.7 Pro</span>
+            <span class="text-[10px] text-slate-400 font-mono">v4.8 Pro</span>
         </div>
     </aside>
 
@@ -207,7 +204,6 @@
         <div class="p-4 md:p-12 max-w-6xl mx-auto w-full flex-1 box-border">
 
             <section id="home" class="section-content space-y-8">
-                <!-- NEW FEATURE: Daily Educational Quote -->
                 <div class="bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-4 flex items-start gap-4 shadow-sm relative overflow-hidden">
                     <div class="text-indigo-500 text-2xl absolute -left-2 -top-2 opacity-20">
                         <i class="fa-solid fa-quote-left"></i>
@@ -551,7 +547,6 @@
         let isSpeaking = false;
         let currentSpeakingId = null;
 
-        // NEW FEATURE: Offline/Online Auto Detector
         window.addEventListener('offline', () => {
             showToast("আপনি অফলাইনে আছেন! ইন্টারনেট সংযোগ পরীক্ষা করুন।", "error");
         });
@@ -559,7 +554,6 @@
             showToast("ইন্টারনেট সংযোগ ফিরে এসেছে!", "success");
         });
 
-        // NEW FEATURE: Audio Feedback on Quiz
         function playQuizSound(type) {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1551,30 +1545,138 @@
             }
         }
 
+        // UPDATED FEATURE: Professional Certificate Generator
         function generateCertificate(subject, score) {
             const name = localStorage.getItem('portalUserName') || 'Student';
-            const date = new Date().toLocaleDateString();
+            const date = new Date().toLocaleDateString('en-GB'); // DD/MM/YYYY
+            
+            // Signature from Google Drive direct link format
+            const signatureUrl = 'https://drive.google.com/uc?export=view&id=1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN';
+            
+            // Background SVG logo watermark
+            const watermarkSvg = `data:image/svg+xml,%3Csvg viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' rx='25' fill='%2316a34a' /%3E%3Cpath d='M50 25 L20 42.5 L50 60 L80 42.5 Z' fill='%23ffffff'/%3E%3Cpath d='M20 52.5 L50 70 L80 52.5' stroke='%23ffffff' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E`;
+
             const certHTML = `
-                <div style="font-family: 'Times New Roman', serif; text-align: center; padding: 40px; border: 10px solid #16a34a; border-radius: 20px; max-width: 800px; margin: 40px auto; background: #f0fdf4;">
-                    <h1 style="color: #16a34a; font-size: 40px; margin-bottom: 10px;">Certificate of Achievement</h1>
-                    <p style="font-size: 20px; color: #555;">This is proudly presented to</p>
-                    <h2 style="font-size: 30px; color: #222; border-bottom: 2px solid #16a34a; display: inline-block; padding-bottom: 5px; margin-top: 10px;">${escapeHTML(name)}</h2>
-                    <p style="font-size: 18px; color: #555; margin-top: 20px;">For successfully completing the Mock Test on</p>
-                    <h3 style="font-size: 24px; color: #15803d; margin-top: 10px;">${subject}</h3>
-                    <p style="font-size: 20px; font-weight: bold; color: #222; margin-top: 15px;">Score: ${score}%</p>
-                    <div style="margin-top: 40px; display: flex; justify-content: space-between; padding: 0 40px;">
-                        <div><p style="border-top: 1px solid #222; padding-top: 5px; margin-top: 30px;">${date}</p><p>Date</p></div>
-                        <div><p style="border-top: 1px solid #222; padding-top: 5px; margin-top: 30px;">MukulDhaliOfficial</p><p>Authority</p></div>
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Certificate - ${subject}</title>
+                    <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
+                    <style>
+                        @media print {
+                            @page { size: landscape; margin: 0; }
+                            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                        }
+                        body {
+                            margin: 0;
+                            padding: 0;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            min-height: 100vh;
+                            background: #f1f5f9;
+                            font-family: 'Times New Roman', 'Kalpurush', serif;
+                        }
+                        .cert-wrapper {
+                            position: relative;
+                            width: 800px;
+                            height: 550px;
+                            background: white;
+                            border: 12px solid #16a34a;
+                            border-radius: 15px;
+                            padding: 40px;
+                            box-sizing: border-box;
+                            text-align: center;
+                            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                            overflow: hidden;
+                        }
+                        .cert-wrapper::before {
+                            content: '';
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            width: 350px;
+                            height: 350px;
+                            background-image: url("${watermarkSvg}");
+                            background-repeat: no-repeat;
+                            background-position: center;
+                            opacity: 0.05;
+                            z-index: 0;
+                        }
+                        .cert-content {
+                            position: relative;
+                            z-index: 1;
+                        }
+                        h1 { color: #16a34a; font-size: 42px; margin: 10px 0 20px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase;}
+                        .subtitle { font-size: 18px; color: #555; margin-bottom: 25px; }
+                        .name { font-size: 36px; color: #111; border-bottom: 2px solid #16a34a; display: inline-block; padding: 0 40px 5px; margin-bottom: 25px; font-weight: bold;}
+                        .reason { font-size: 18px; color: #555; margin-bottom: 15px; }
+                        .subject { font-size: 26px; color: #15803d; font-weight: bold; margin-bottom: 15px; }
+                        .score { font-size: 22px; font-weight: bold; color: #222; margin-bottom: 40px; }
+                        
+                        .footer {
+                            display: flex;
+                            justify-content: space-between;
+                            padding: 0 50px;
+                            margin-top: 30px;
+                            align-items: flex-end;
+                        }
+                        .signature-box {
+                            text-align: center;
+                            width: 200px;
+                        }
+                        .signature-line {
+                            border-top: 1px solid #222;
+                            padding-top: 5px;
+                            margin-top: 10px;
+                            font-size: 16px;
+                            color: #333;
+                        }
+                        .signature-img {
+                            height: 50px;
+                            object-fit: contain;
+                            margin-bottom: -10px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="cert-wrapper">
+                        <div class="cert-content">
+                            <h1>Certificate of Achievement</h1>
+                            <div class="subtitle">This is proudly presented to</div>
+                            <div class="name">${escapeHTML(name)}</div>
+                            <div class="reason">For successfully completing the Mock Test on</div>
+                            <div class="subject">${subject}</div>
+                            <div class="score">Score: ${score}%</div>
+                            
+                            <div class="footer">
+                                <div class="signature-box">
+                                    <div style="height: 50px;"></div>
+                                    <div class="signature-line">${date}</div>
+                                    <div style="font-size: 14px; color: #666;">Date</div>
+                                </div>
+                                <div class="signature-box">
+                                    <img src="${signatureUrl}" alt="Signature" class="signature-img" onerror="this.style.display='none'">
+                                    <div class="signature-line" style="font-weight:bold;">MukulDhaliOfficial</div>
+                                    <div style="font-size: 14px; color: #666;">Authority</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    <script>
+                        window.onload = function() {
+                            setTimeout(() => {
+                                window.print();
+                            }, 800);
+                        }
+                    </script>
+                </body>
+                </html>
             `;
-            const printWindow = window.open('', '', 'width=900,height=600');
-            printWindow.document.write('<html><head><title>Certificate - '+subject+'</title></head><body>');
+            const printWindow = window.open('', '', 'width=900,height=650');
             printWindow.document.write(certHTML);
-            printWindow.document.write('</body></html>');
             printWindow.document.close();
-            printWindow.focus();
-            setTimeout(() => { printWindow.print(); printWindow.close(); }, 500);
         }
 
         function submitExam() {
