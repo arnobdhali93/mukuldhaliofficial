@@ -18,15 +18,13 @@
     <meta name="twitter:description" content="ছাত্রছাত্রীদের জন্য একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম।">
     <meta name="twitter:image" content="https://i.ibb.co/your-logo-link.png">
     
-    <!-- Browser Tab Favicon (Auto Generated SVG Logo) -->
+    <!-- Browser Tab Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' rx='25' fill='%2316a34a' /%3E%3Cpath d='M50 25 L20 42.5 L50 60 L80 42.5 Z' fill='%23ffffff'/%3E%3Cpath d='M20 52.5 L50 70 L80 52.5' stroke='%23ffffff' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 
     <!-- Fonts Import -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    
-    <!-- Kalpurush Font Web CDN -->
     <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -55,7 +53,6 @@
         }
     </script>
     <style>
-        /* ইংরেজি ও সংখ্যার জন্য Times New Roman এবং বাংলার জন্য Kalpurush */
         body, p, h2, h3, h4, span, div, button, input, label, a {
             font-family: 'Times New Roman', 'Kalpurush', serif !important;
         }
@@ -89,8 +86,6 @@
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100 overflow-x-hidden w-full">
 
     <div id="scroll-progress-bar" class="fixed top-0 left-0 h-1 bg-brand-600 z-[60] w-0 transition-all duration-150"></div>
-
-    <!-- ADVANCED FEATURE: Professional Toast Notification Container -->
     <div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-2 pointer-events-none"></div>
 
     <!-- FIXED MOBILE HEADER -->
@@ -116,8 +111,6 @@
         </div>
         <div class="flex items-center gap-1.5 sm:gap-3 shrink-0 ml-1">
             <span class="current-date-display text-[9px] sm:text-[11px] font-extrabold text-brand-800 bg-brand-100 border border-brand-200 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md shadow-sm font-mono tracking-wide shrink-0" title="আজকের তারিখ">--.--.--</span>
-            
-            <!-- User Profile Icon Header -->
             <div id="mobile-user-badge" onclick="showSection('profile', event)" title="আমার প্রোফাইল" class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center text-brand-700 font-bold text-[10px] sm:text-xs cursor-pointer hover:bg-brand-100 transition shadow-sm shrink-0 overflow-hidden">
                 Usr
             </div>
@@ -188,7 +181,6 @@
     <div id="backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 hidden md:hidden transition-opacity"></div>
 
     <main class="flex-1 flex flex-col min-h-screen w-full overflow-hidden relative">
-        
         <div class="bg-brand-600 text-white py-2.5 px-4 flex items-center justify-between gap-3 shadow-md w-full box-border">
             <div class="flex items-center gap-3 flex-1 overflow-hidden">
                 <span class="bg-white text-brand-700 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider flex-shrink-0 shadow-sm">
@@ -205,7 +197,6 @@
         </div>
 
         <div class="p-4 md:p-12 max-w-6xl mx-auto w-full flex-1 box-border">
-
             <section id="home" class="section-content space-y-8">
                 <div class="bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-4 flex items-start gap-4 shadow-sm relative overflow-hidden">
                     <div class="text-indigo-500 text-2xl absolute -left-2 -top-2 opacity-20">
@@ -399,7 +390,6 @@
                 </h2>
                 <div id="profile-content" class="p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-md max-w-md space-y-4 mx-auto"></div>
             </section>
-
         </div>
         
         <button id="scrollToTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="উপরে যান" class="fixed bottom-24 right-6 z-40 bg-brand-600 hover:bg-brand-700 text-white w-12 h-12 rounded-full shadow-lg opacity-0 pointer-events-none transition-all duration-300 flex items-center justify-center cursor-pointer translate-y-4">
@@ -486,6 +476,7 @@
         </div>
     </div>
 
+    <!-- AI Chatbot Floating Box -->
     <div class="fixed bottom-6 right-6 z-50">
         <div id="chat-window" class="hidden w-80 h-96 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl flex flex-col p-4 shadow-2xl mb-4 transition-all">
             <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-100 dark:border-slate-700">
@@ -524,7 +515,6 @@
         let isSpeaking = false;
         let currentSpeakingId = null;
 
-        // NEW FEATURE: Offline/Online Auto Detector
         window.addEventListener('offline', () => {
             showToast("আপনি অফলাইনে আছেন! ইন্টারনেট সংযোগ পরীক্ষা করুন।", "error");
         });
@@ -532,7 +522,6 @@
             showToast("ইন্টারনেট সংযোগ ফিরে এসেছে!", "success");
         });
 
-        // NEW FEATURE: Audio Feedback on Quiz
         function playQuizSound(type) {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -706,12 +695,8 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('backdrop');
-            if(sidebar) {
-                sidebar.classList.toggle('-translate-x-full');
-            }
-            if(backdrop) {
-                backdrop.classList.toggle('hidden');
-            }
+            if(sidebar) sidebar.classList.toggle('-translate-x-full');
+            if(backdrop) backdrop.classList.toggle('hidden');
         }
 
         function toggleChat() {
@@ -731,10 +716,7 @@
 
         function shareContent(title) {
             if (navigator.share) {
-                navigator.share({
-                    title: title,
-                    url: window.location.href
-                }).catch(() => {});
+                navigator.share({ title: title, url: window.location.href }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(window.location.href);
                 showToast("লিংক কপি করা হয়েছে!", "success");
@@ -811,9 +793,7 @@
             });
 
             const targetSection = document.getElementById(sectionId);
-            if(targetSection) {
-                targetSection.classList.remove('hidden');
-            }
+            if(targetSection) targetSection.classList.remove('hidden');
 
             if (event && event.currentTarget) {
                 event.currentTarget.classList.remove('text-slate-600', 'dark:text-slate-300', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-brand-600');
@@ -828,9 +808,7 @@
 
             if (window.innerWidth < 768) {
                 const sidebar = document.getElementById('sidebar');
-                if(sidebar && !sidebar.classList.contains('-translate-x-full')) {
-                    toggleSidebar();
-                }
+                if(sidebar && !sidebar.classList.contains('-translate-x-full')) toggleSidebar();
             }
 
             if('speechSynthesis' in window && isSpeaking) {
@@ -846,9 +824,7 @@
 
         function loadChatHistory() {
             const savedChat = localStorage.getItem('aiChatHistory');
-            if (savedChat) {
-                document.getElementById('chat-history').innerHTML = savedChat;
-            }
+            if (savedChat) document.getElementById('chat-history').innerHTML = savedChat;
         }
         function saveChatHistory() {
             const chatHtml = document.getElementById('chat-history').innerHTML;
@@ -932,9 +908,7 @@
             const newName = document.getElementById('edit-name').value.trim();
             const fileInput = document.getElementById('edit-pic');
             
-            if (newName) {
-                localStorage.setItem('portalUserName', newName);
-            }
+            if (newName) localStorage.setItem('portalUserName', newName);
             
             if (fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
@@ -1012,7 +986,6 @@
                 if (type === 'register') {
                     const name = document.getElementById('reg-name').value.trim();
                     const email = document.getElementById('reg-email').value.trim();
-                    
                     localStorage.setItem('portalUserName', name);
                     localStorage.setItem('portalUserEmail', email);
                 } else {
@@ -1139,9 +1112,7 @@
             if (cachedTime && cachedNews && (now - parseInt(cachedTime) < CACHE_DURATION_MS)) {
                 try {
                     return JSON.parse(cachedNews);
-                } catch (e) {
-                    console.error("Cache parsing error", e);
-                }
+                } catch (e) {}
             }
 
             const rssFeeds = [
@@ -1173,14 +1144,10 @@
 
                         return formattedNews;
                     }
-                } catch (e) {
-                    console.error('Auto news fetch attempt failed:', e);
-                }
+                } catch (e) {}
             }
             
-            if (cachedNews) {
-                return JSON.parse(cachedNews);
-            }
+            if (cachedNews) return JSON.parse(cachedNews);
             return [];
         }
 
@@ -1189,9 +1156,7 @@
             
             GOOGLE_FORM_QUESTIONS.forEach(q => {
                 let sub = q.Subject ? q.Subject.trim() : "Google Form Quiz";
-                if (!groupedQuizData[sub]) {
-                    groupedQuizData[sub] = [];
-                }
+                if (!groupedQuizData[sub]) groupedQuizData[sub] = [];
                 groupedQuizData[sub].push(q);
             });
 
@@ -1201,13 +1166,10 @@
                     const data = await response.json(); 
 
                     if(data.BreakingNews) {
-                        const breakingMarquee = document.getElementById('breaking-news-text');
-                        breakingMarquee.innerHTML = `👉 ${data.BreakingNews}`;
+                        document.getElementById('breaking-news-text').innerHTML = `👉 ${data.BreakingNews}`;
                     }
 
-                    if(data.News && Array.isArray(data.News)) {
-                        rawNewsData = data.News;
-                    }
+                    if(data.News && Array.isArray(data.News)) rawNewsData = data.News;
 
                     if(data.Books && Array.isArray(data.Books)) {
                         rawBooksData = data.Books;
@@ -1250,18 +1212,14 @@
                     if(data.Quiz && Array.isArray(data.Quiz)) {
                         data.Quiz.forEach(q => {
                             let sub = q.Subject ? q.Subject.trim() : "সাধারণ জ্ঞান";
-                            if (!groupedQuizData[sub]) {
-                                groupedQuizData[sub] = [];
-                            }
+                            if (!groupedQuizData[sub]) groupedQuizData[sub] = [];
                             groupedQuizData[sub].push(q);
                         });
                     }
                 }
 
                 const autoNews = await fetchAutoNews();
-                if(autoNews.length > 0) {
-                    rawNewsData = [...autoNews, ...rawNewsData];
-                }
+                if(autoNews.length > 0) rawNewsData = [...autoNews, ...rawNewsData];
 
             } catch (error) {
                 console.error("API Fetch Data error:", error);
@@ -1431,7 +1389,7 @@
         }
         
         function shuffleArray(array) {
-            let currentIndex = array.length,  randomIndex;
+            let currentIndex = array.length, randomIndex;
             while (currentIndex != 0) {
                 randomIndex = Math.floor(Math.random() * currentIndex);
                 currentIndex--;
@@ -1524,17 +1482,10 @@
             }
         }
 
-        // ==========================================
-        // EDITED: PROFESSIONAL CERTIFICATE GENERATOR 
-        // ==========================================
         function generateCertificate(subject, score) {
             const name = localStorage.getItem('portalUserName') || 'Student';
-            
-            // Auto date generated
             const dateObj = new Date();
             const dateStr = dateObj.toLocaleDateString('en-GB'); 
-            
-            // Signature link modified for direct HTML printing
             const signImgLink = "https://lh3.googleusercontent.com/d/1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN";
 
             const certHTML = `
@@ -1557,8 +1508,12 @@
                     </div>
                     
                     <div class="cert-footer">
-                        <!-- Left Side : Authority Signature -->
                         <div class="footer-left">
+                            <div class="line"></div>
+                            <p class="f-date">${dateStr}</p>
+                            <p class="f-label">Date</p>
+                        </div>
+                        <div class="footer-right">
                             <div class="sign-area">
                                 <img src="${signImgLink}" class="sign-img" alt="Sign">
                                 <p class="hand-date">${dateStr}</p>
@@ -1567,24 +1522,15 @@
                             <p class="f-name">MukulDhaliOfficial</p>
                             <p class="f-label">Authority</p>
                         </div>
-                        
-                        <!-- Right Side : Auto Date -->
-                        <div class="footer-right">
-                            <p class="f-date">${dateStr}</p>
-                            <div class="line"></div>
-                            <p class="f-label">Date</p>
-                        </div>
                     </div>
                 </div>
             `;
 
             const printWindow = window.open('', '', 'width=1000,height=750');
             printWindow.document.write('<html><head><title>Certificate - ' + subject + '</title>');
-            // Using Kalpurush for Bangla & Caveat for Handwrite Date
             printWindow.document.write('<link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">');
             printWindow.document.write('<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">');
             
-            // Print CSS Setup (Perfect Centering, 1-Page Fix)
             printWindow.document.write('<style>' + 
                 '@import url("https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap"); ' +
                 '@page { size: A4 landscape; margin: 0; } ' + 
@@ -1612,13 +1558,11 @@
             printWindow.document.write('</body></html>');
             printWindow.document.close();
             
-            // Waiting to ensure the signature image and handwriting fonts are fully loaded
             setTimeout(() => { 
                 printWindow.focus();
                 printWindow.print(); 
             }, 2000);
         }
-        // ==========================================
 
         function submitExam() {
             if(examTimer) clearInterval(examTimer);
@@ -1631,92 +1575,121 @@
             questions.forEach((q, index) => {
                 const radios = document.getElementsByName(`exam_question_${index}`);
                 let selectedVal = null;
-                for (const r of radios) {
-                    if (r.checked) {
-                        selectedVal = r.value;
+                for (const radio of radios) {
+                    if (radio.checked) {
+                        selectedVal = radio.value;
                         break;
                     }
                 }
 
-                const isCorrect = selectedVal === q.Answer;
+                let rawCorrect = q.CorrectAnswer != null ? String(q.CorrectAnswer).trim() : "";
+                let rawSelected = selectedVal != null ? String(selectedVal).trim() : "";
+
+                let correctAns = rawCorrect.toLowerCase();
+                let selectedAns = rawSelected.toLowerCase();
+
+                let isCorrect = (selectedAns !== "" && correctAns !== "" && selectedAns === correctAns);
+
                 if (isCorrect) score++;
 
+                let optionsReviewHtml = '';
+                ['Option1', 'Option2', 'Option3', 'Option4'].forEach(optKey => {
+                    if (q[optKey]) {
+                        let optVal = String(q[optKey]).trim();
+                        let optValLower = optVal.toLowerCase();
+
+                        let optClass = "bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200";
+                        let badge = "";
+
+                        if (optValLower === correctAns) {
+                            optClass = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-bold";
+                            badge = `<span class="ml-2 text-xs bg-emerald-600 text-white px-2 py-0.5 rounded"><i class="fa-solid fa-check"></i> সঠিক উত্তর</span>`;
+                        } else if (optValLower === selectedAns && !isCorrect) {
+                            optClass = "bg-red-50 dark:bg-red-900/30 border-red-500 text-red-700 dark:text-red-300 font-bold";
+                            badge = `<span class="ml-2 text-xs bg-red-600 text-white px-2 py-0.5 rounded"><i class="fa-solid fa-xmark"></i> আপনার উত্তর</span>`;
+                        }
+
+                        optionsReviewHtml += `
+                        <div class="p-3 border rounded-xl flex items-center justify-between text-xs sm:text-sm ${optClass}">
+                            <span>${optVal}</span>
+                            ${badge}
+                        </div>`;
+                    }
+                });
+
                 reviewContainer.innerHTML += `
-                <div class="p-4 rounded-xl border ${isCorrect ? 'border-emerald-200 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-red-200 bg-red-50/50 dark:bg-red-900/20'} space-y-2">
-                    <p class="font-bold text-slate-900 dark:text-white text-sm">${index + 1}. ${q.Question}</p>
-                    <div class="text-xs space-y-1">
-                        <p class="${isCorrect ? 'text-emerald-700 dark:text-emerald-300' : 'text-red-600 dark:text-red-400'}"><b>আপনার উত্তর:</b> ${selectedVal || 'উত্তর দেওয়া হয়নি'}</p>
-                        ${!isCorrect ? `<p class="text-emerald-700 dark:text-emerald-300"><b>সঠিক উত্তর:</b> ${q.Answer}</p>` : ''}
+                <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 space-y-2">
+                    <p class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">${index + 1}. ${q.Question}</p>
+                    <div class="space-y-1.5 pt-1">
+                        ${optionsReviewHtml}
                     </div>
                 </div>`;
             });
 
-            const total = questions.length;
-            const pct = Math.round((score / total) * 100);
-
-            if (pct >= 50) {
+            const totalQ = questions.length;
+            const percentage = Math.round((score / totalQ) * 100);
+            const scoreFormatted = `${score}/${totalQ} (${percentage}%)`;
+            
+            if (percentage >= 60) {
                 playQuizSound('success');
             } else {
-                playQuizSound('error');
+                playQuizSound('fail');
             }
 
-            document.getElementById('quiz-exam-view').classList.add('hidden');
-            document.getElementById('quiz-result-view').classList.remove('hidden');
-
-            const scoreText = `আপনার মোট নম্বর: ${score} / ${total} (${pct}%)`;
-            document.getElementById('score-display-box').innerText = scoreText;
-
-            // Save Quiz History for Profile Page
+            localStorage.setItem('lastQuizScore', scoreFormatted);
             let fullQuizHistory = JSON.parse(localStorage.getItem('fullQuizHistory')) || [];
             fullQuizHistory.push({
                 subject: currentActiveSubject,
                 score: score,
-                total: total,
-                percentage: pct,
-                date: new Date().toLocaleDateString('bn-BD')
+                total: totalQ,
+                percentage: percentage,
+                date: new Date().toLocaleDateString()
             });
             localStorage.setItem('fullQuizHistory', JSON.stringify(fullQuizHistory));
-            localStorage.setItem('lastQuizScore', `${pct}% (${score}/${total})`);
+
+            document.getElementById('score-display-box').innerHTML = `
+                <div class="text-2xl font-black text-brand-600 dark:text-brand-400 mb-1">${scoreFormatted}</div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold">${percentage >= 80 ? 'অসাধারণ পারফরম্যান্স! 🎉' : percentage >= 50 ? 'ভালো চেষ্টা, আরও উন্নতি করতে থাকুন! 👍' : 'আরও মনোযোগ দিয়ে পুনরাবৃত্তি চেষ্টা করুন! 📚'}</p>
+            `;
 
             const certContainer = document.getElementById('certificate-action-container');
-            if (pct >= 50) {
+            if (percentage >= 40) {
                 certContainer.innerHTML = `
-                    <div class="p-4 rounded-xl bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 my-4 space-y-2">
-                        <p class="text-xs text-brand-700 dark:text-brand-300 font-bold">অভিনন্দন! আপনি পরীক্ষায় উত্তীর্ণ হয়েছেন। আপনার শংসাপত্রটি প্রিন্ট করতে বা ডাউনলোড করতে পারেন:</p>
-                        <button onclick="generateCertificate('${currentActiveSubject}', ${pct})" title="সার্টিফিকেট পান" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5 inline-flex items-center gap-2 cursor-pointer">
-                            <i class="fa-solid fa-award"></i> সার্টিফিকেট ডাউনলোড করুন
-                        </button>
-                    </div>`;
+                    <button onclick="generateCertificate('${currentActiveSubject.replace(/'/g, "\\'")}', ${percentage})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer mb-2">
+                        <i class="fa-solid fa-file-certificate text-lg"></i> সার্টিফিকেট ডাউনলোড করুন (Download Certificate)
+                    </button>
+                `;
             } else {
                 certContainer.innerHTML = `
-                    <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold my-4">৫০% এর কম স্কোর করায় সার্টিফিকেট জেনারেট করা সম্ভব হয়নি। পুনরায় চেষ্টা করুন!</p>`;
+                    <p class="text-xs text-slate-400 font-semibold italic bg-slate-100 dark:bg-slate-700 p-2.5 rounded-xl border border-slate-200 dark:border-slate-600 mb-2">
+                        💡 সার্টিফিকেট আনলক করতে কমপক্ষে ৪০% স্কোর প্রয়োজন।
+                    </p>
+                `;
             }
+
+            document.getElementById('quiz-exam-view').classList.add('hidden');
+            document.getElementById('quiz-result-view').classList.remove('hidden');
         }
 
         function backToQuizSubjects() {
             if(examTimer) clearInterval(examTimer);
-            currentActiveSubject = null;
             document.getElementById('quiz-exam-view').classList.add('hidden');
             document.getElementById('quiz-result-view').classList.add('hidden');
             document.getElementById('quiz-subject-view').classList.remove('hidden');
+            currentActiveSubject = null;
         }
 
-        // Window Init Execution
         window.addEventListener('DOMContentLoaded', () => {
-            applySavedTheme();
             setDailyDate();
+            applySavedTheme();
             loadChatHistory();
-            loadAllData();
-            
-            // Check current Hash on load
-            const hash = window.location.hash.replace('#', '');
-            if(hash && document.getElementById(hash)) {
-                showSection(hash, null);
-            } else {
-                showSection('home', null);
-            }
-            
             updateHeaderBadge();
+            loadAllData();
+
+            const hash = window.location.hash.replace('#', '');
+            if (hash && document.getElementById(hash)) {
+                showSection(hash, null);
+            }
         });
     </script>
 </body>
