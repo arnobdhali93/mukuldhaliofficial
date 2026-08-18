@@ -34,7 +34,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <!-- PDF Generation Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
@@ -88,6 +90,7 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+        /* Fix for cropper background */
         .cropper-view-box, .cropper-face {
             border-radius: 10%;
         }
@@ -184,7 +187,7 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></div>
                 <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">System Online</span>
             </div>
-            <span class="text-[10px] text-slate-400 font-mono">v4.8 Pro</span>
+            <span class="text-[10px] text-slate-400 font-mono">v4.9 Pro</span>
         </div>
     </aside>
 
@@ -657,20 +660,22 @@
         // Initialize Supabase Inside DOMContentLoaded To Prevent Variable Scoping Errors
         window.addEventListener('DOMContentLoaded', () => {
             try {
-                const { createClient } = window.supabase;
-                window.supabaseClient = createClient(supabaseUrl, supabaseKey);
+                if (window.supabase) {
+                    const { createClient } = window.supabase;
+                    window.supabaseClient = createClient(supabaseUrl, supabaseKey);
 
-                window.supabaseClient.auth.onAuthStateChange((event, session) => {
-                    if (session) {
-                        localStorage.setItem('portalUserEmail', session.user.email);
-                        localStorage.setItem('portalUserName', session.user.user_metadata.full_name || session.user.email.split('@')[0]);
-                    } else {
-                        localStorage.removeItem('portalUserEmail');
-                        localStorage.removeItem('portalUserName');
-                    }
-                    if (typeof renderProfileSection === 'function') renderProfileSection();
-                    if (typeof updateHeaderBadge === 'function') updateHeaderBadge();
-                });
+                    window.supabaseClient.auth.onAuthStateChange((event, session) => {
+                        if (session) {
+                            localStorage.setItem('portalUserEmail', session.user.email);
+                            localStorage.setItem('portalUserName', session.user.user_metadata?.full_name || session.user.email.split('@')[0]);
+                        } else {
+                            localStorage.removeItem('portalUserEmail');
+                            localStorage.removeItem('portalUserName');
+                        }
+                        if (typeof renderProfileSection === 'function') renderProfileSection();
+                        if (typeof updateHeaderBadge === 'function') updateHeaderBadge();
+                    });
+                }
             } catch (err) {
                 console.error("Supabase Init Error:", err);
             }
@@ -857,23 +862,6 @@
             document.getElementById('dark-text').innerText = isDark ? 'Light Mode' : 'Dark Mode';
         }
 
-        window.addEventListener('scroll', () => {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = (winScroll / height) * 100;
-            const progressBar = document.getElementById("scroll-progress-bar");
-            if(progressBar) progressBar.style.width = scrolled + "%";
-
-            const scrollToTopBtn = document.getElementById("scrollToTopBtn");
-            if(winScroll > 300) {
-                scrollToTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
-                scrollToTopBtn.classList.add('opacity-100', 'translate-y-0');
-            } else {
-                scrollToTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
-                scrollToTopBtn.classList.remove('opacity-100', 'translate-y-0');
-            }
-        });
-
         function confirmClearBookmarks() {
             openConfirmModal("আপনি কি সমস্ত বুকমার্ক মুছে ফেলতে চান?", () => {
                 localStorage.removeItem('portalBookmarks');
@@ -1057,6 +1045,12 @@
         }
 
         function showSection(sectionId, event) {
+            if (sectionId === 'quiz' && !localStorage.getItem('portalUserEmail')) {
+                showToast("কুইজ দিতে হলে আপনাকে লগইন করতে হবে।", "error");
+                triggerRegisterPopup();
+                return; 
+            }
+
             const sections = document.querySelectorAll('.section-content');
             sections.forEach(sec => sec.classList.add('hidden'));
 
@@ -1300,7 +1294,7 @@
             const currentPic = localStorage.getItem('portalUserPic_' + currentEmail);
             const previewContainer = document.getElementById('edit-pic-preview-container');
             
-            if(currentPic) {
+            if(currentPic && currentPic !== 'null' && currentPic !== 'undefined') {
                 previewContainer.innerHTML = `<img src="${currentPic}" class="w-full h-full object-cover">`;
             } else {
                 previewContainer.innerHTML = `<i class="fa-solid fa-user text-slate-400 text-xl"></i>`;
@@ -1414,7 +1408,7 @@
             showAuthMsg('', '');
 
             try {
-                if (!window.supabaseClient) throw new Error("Supabase is not initialized. Please check your internet connection.");
+                if (!window.supabaseClient) throw new Error("নেটওয়ার্ক সমস্যা, আবার চেষ্টা করুন।");
 
                 if (type === 'register') {
                     const name = document.getElementById('reg-name').value.trim();
@@ -1546,7 +1540,7 @@
 
                     <div class="space-y-2 pt-3 border-t border-slate-100 dark:border-slate-700 text-sm menu-font mt-3">
                         <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>স্ট্যাটাস:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">Active User</span></p>
-                        <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>সর্বশেষ কুইজ স্কোর:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">${lastQuizScore}</span></p>
+                        <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>সর্বশেষ কুইজ স্কোর:</span> <span id="stat-last-score" class="text-brand-600 dark:text-brand-400 font-bold">${lastQuizScore}</span></p>
                         <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>মোট কুইজ দিয়েছেন:</span> <span class="text-brand-600 dark:text-brand-400 font-bold"><span id="stat-total">0</span> টি</span></p>
                         <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>গড় অ্যাকুরেসি (Average):</span> <span class="text-brand-600 dark:text-brand-400 font-bold"><span id="stat-avg">0</span>%</span></p>
                     </div>
@@ -1817,8 +1811,6 @@
             });
         }
 
-        let newsSearchTimeout, booksSearchTimeout, quizSearchTimeout;
-        
         function filterNews() {
             clearTimeout(newsSearchTimeout);
             newsSearchTimeout = setTimeout(() => {
@@ -1895,16 +1887,6 @@
             const pct = Math.round((answered / total) * 100);
             document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
         }
-        
-        function shuffleArray(array) {
-            let currentIndex = array.length, randomIndex;
-            while (currentIndex != 0) {
-                randomIndex = Math.floor(Math.random() * currentIndex);
-                currentIndex--;
-                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-            }
-            return array;
-        }
 
         function startQuizExam(subject) {
             if (!localStorage.getItem('portalUserEmail')) {
@@ -1931,7 +1913,6 @@
 
             questions.forEach((q, index) => {
                 let optionsHtml = '';
-                
                 let optionsList = [];
                 ['Option1', 'Option2', 'Option3', 'Option4'].forEach(optKey => {
                     if (q[optKey]) optionsList.push(q[optKey]);
@@ -2168,8 +2149,11 @@
             const percentage = Math.round((score / totalQ) * 100);
             const scoreFormatted = `${score}/${totalQ} (${percentage}%)`;
             
-            if (percentage >= 60) playQuizSound('success');
-            else playQuizSound('fail');
+            if (percentage >= 60) {
+                playQuizSound('success');
+            } else {
+                playQuizSound('fail');
+            }
 
             if (percentage >= 80 && window.confetti) {
                 confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
@@ -2229,7 +2213,6 @@
             document.getElementById('quiz-subject-view').classList.remove('hidden');
             currentActiveSubject = null;
         }
-
     </script>
 </body>
 </html>
