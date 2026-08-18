@@ -27,13 +27,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
 
-    <!-- FontAwesome, Tailwind, Confetti & Cropper.js -->
+    <!-- FontAwesome, Tailwind, Confetti, Cropper.js & Supabase -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
         tailwind.config = {
@@ -86,7 +88,6 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
-        /* Fix for cropper background */
         .cropper-view-box, .cropper-face {
             border-radius: 10%;
         }
@@ -550,11 +551,14 @@
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxwbVlJxSQKdXufRZkXaiPiTKXLPuUyJsTrjiCoabdotJFSX3tkpSH9dx_5KwHFd7J5/exec"; 
-        const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE"; 
+        
+        // Supabase Initialization
+        const supabaseUrl = 'https://gbvkxtmyqmlkmcxvbfsx.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdidmt4dG15cW1sa21jeHZiZnN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMzgzNTEsImV4cCI6MjEwMjYxNDM1MX0.jGXOP0Y_Q78m7DCI6A0tiLQ5KDNW1-K0ypr0AVW9H8w';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         const GOOGLE_FORM_QUESTIONS = [];
 
-        // --- Feature: Daily Quotes Array ---
         const dailyQuotes = [
             { text: "শিক্ষাই হলো সবচেয়ে শক্তিশালী অস্ত্র, যার মাধ্যমে আপনি পুরো বিশ্বকে বদলে দিতে পারেন।", author: "নেলসন ম্যান্ডেলা" },
             { text: "জ্ঞানের বিনিয়োগে সর্বোচ্চ মুনাফা পাওয়া যায়।", author: "বেঞ্জামিন ফ্রাঙ্কলিন" },
@@ -564,7 +568,7 @@
             { text: "স্বপ্ন সেটা নয় যেটা তুমি ঘুমিয়ে দেখো, স্বপ্ন সেটা যেটা তোমায় ঘুমোতে দেয় না।", author: "এ. পি. জে. আব্দুল কালাম" },
             { text: "নিজেকে পরিবর্তন করো, পৃথিবী এমনিতেই বদলে যাবে।", author: "স্বামী বিবেকানন্দ" },
             { text: "যে ভুল করেনি, সে কখনো নতুন কিছু করার চেষ্টা করেনি।", author: "অ্যালবার্ট আইনস্টাইন" },
-            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেন না।", author: "স্টিভ জবস" },
+            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেন্বা।", author: "স্টিভ জবস" },
             { text: "সত্যিকারের জ্ঞানী সে, যে জানে সে কিছুই জানে না।", author: "সক্রেটিস" }
         ];
 
@@ -579,8 +583,21 @@
 
         let cropper = null;
         let selectedFileBase64 = null;
-
         let pendingConfirmAction = null;
+
+        // Supabase Auth State Listener
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                localStorage.setItem('portalUserEmail', session.user.email);
+                localStorage.setItem('portalUserName', session.user.user_metadata.full_name || session.user.email.split('@')[0]);
+            } else {
+                localStorage.removeItem('portalUserEmail');
+                localStorage.removeItem('portalUserName');
+            }
+            renderProfileSection();
+            updateHeaderBadge();
+        });
+
         function openConfirmModal(msg, action) {
             document.getElementById('confirm-modal-msg').innerText = msg;
             pendingConfirmAction = action;
@@ -592,6 +609,7 @@
                 box.classList.remove('scale-95');
             }, 10);
         }
+
         function closeConfirmModal() {
             const modal = document.getElementById('custom-confirm-modal');
             const box = document.getElementById('custom-confirm-box');
@@ -602,6 +620,7 @@
                 pendingConfirmAction = null;
             }, 300);
         }
+
         function executeConfirm() {
             if(pendingConfirmAction) pendingConfirmAction();
             closeConfirmModal();
@@ -610,10 +629,8 @@
         window.addEventListener('offline', () => { showToast("আপনি অফলাইনে আছেন! ইন্টারনেট সংযোগ পরীক্ষা করুন।", "error"); });
         window.addEventListener('online', () => { showToast("ইন্টারনেট সংযোগ ফিরে এসেছে!", "success"); });
 
-        // --- Feature: Setup Daily Quote and Time Based Greeting ---
         function setupDailyQuote() {
             const today = new Date();
-            // Calculate day of the year to pick a quote
             const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
             const quoteIndex = dayOfYear % dailyQuotes.length;
             const quote = dailyQuotes[quoteIndex];
@@ -851,7 +868,6 @@
             }
         }
 
-        // --- Feature: Share specific quiz link ---
         window.shareQuizLink = function(subject) {
             const url = window.location.href.split('#')[0] + '#quiz';
             const text = `আমি MukulDhaliOfficial এ '${subject}' কুইজটি দিচ্ছি। আপনিও চেষ্টা করুন: ${url}`;
@@ -1231,31 +1247,58 @@
             }
         }
 
-        function handleAuthSubmit(e, type) {
+        async function handleAuthSubmit(e, type) {
             e.preventDefault();
             
             const btn = document.getElementById(type === 'login' ? 'login-btn' : 'reg-btn');
             const originalText = btn.innerHTML;
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> প্রসেস হচ্ছে...`;
             btn.disabled = true;
+            showAuthMsg('', '');
 
-            setTimeout(() => {
+            try {
                 if (type === 'register') {
                     const name = document.getElementById('reg-name').value.trim();
                     const email = document.getElementById('reg-email').value.trim();
-                    localStorage.setItem('portalUserName', name);
-                    localStorage.setItem('portalUserEmail', email);
+                    const password = document.getElementById('reg-pass').value;
+
+                    const { data, error } = await supabase.auth.signUp({
+                        email: email,
+                        password: password,
+                        options: { data: { full_name: name } }
+                    });
+
+                    if (error) throw error;
+                    
+                    showToast("রেজিস্ট্রেশন সফল হয়েছে! দয়া করে ইমেইল ভেরিফাই করুন অথবা লগইন করুন।", "success");
+                    closeAuthModal();
+                    switchAuthTab('login');
+                    
                 } else {
                     const email = document.getElementById('login-id').value.trim();
-                    localStorage.setItem('portalUserName', email.split('@')[0]);
-                    localStorage.setItem('portalUserEmail', email);
+                    const password = document.getElementById('login-pass').value;
+
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email: email,
+                        password: password
+                    });
+
+                    if (error) throw error;
+
+                    showToast("সফলভাবে প্রবেশ করেছেন!", "success");
+                    closeAuthModal();
                 }
+            } catch (error) {
+                let errorMsg = "একটি সমস্যা হয়েছে, আবার চেষ্টা করুন!";
+                if(error.message.includes("Invalid login credentials")) errorMsg = "ইমেইল বা পাসওয়ার্ড ভুল!";
+                if(error.message.includes("already registered")) errorMsg = "এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট খোলা আছে!";
+                if(error.message.includes("Password should be at least")) errorMsg = "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে!";
+                
+                showAuthMsg(errorMsg, 'error');
+            } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
-                closeAuthModal();
-                showToast("সফলভাবে প্রবেশ করেছেন!", "success");
-                renderProfileSection();
-            }, 800); 
+            }
         }
 
         function resetAllData() {
@@ -1295,7 +1338,6 @@
                     ? `<img src="${profilePic}" class="w-full h-full object-cover">`
                     : loggedInName.substring(0, 2).toUpperCase();
 
-                // New Feature: Recent Quiz History Display in Profile
                 let historyHtml = '';
                 if (fullQuizHistory.length > 0) {
                     const lastThree = fullQuizHistory.slice(-3).reverse();
@@ -1359,12 +1401,10 @@
         }
 
         function logoutUser() {
-            openConfirmModal('আপনি কি সত্যিই লগআউট করতে চান?', () => {
-                localStorage.removeItem('portalUserName');
-                localStorage.removeItem('portalUserEmail');
-                localStorage.removeItem('portalUserPic');
+            openConfirmModal('আপনি কি সত্যিই লগআউট করতে চান?', async () => {
+                await supabase.auth.signOut();
+                localStorage.removeItem('portalUserPic'); 
                 showToast("লগআউট সম্পন্ন হয়েছে!", "success");
-                renderProfileSection();
             });
         }
 
@@ -1641,9 +1681,7 @@
                 const count = groupedQuizData[subject].length;
                 container.innerHTML += `
                 <div onclick="startQuizExam('${subject}')" title="${subject} কুইজ শুরু করুন" class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:border-brand-400 hover:shadow-md hover:-translate-y-1 transition duration-300 cursor-pointer flex flex-col justify-between group relative">
-                    <!-- New Feature: Share Quiz Specific -->
                     <button onclick="event.stopPropagation(); shareQuizLink('${subject}')" title="কুইজ শেয়ার করুন" class="absolute top-4 right-4 text-slate-300 hover:text-brand-600 transition p-2 bg-slate-50 dark:bg-slate-700 rounded-lg hover:bg-brand-50"><i class="fa-solid fa-share-nodes"></i></button>
-
                     <div>
                         <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xl font-bold mb-4 border border-brand-200 dark:border-slate-600 group-hover:bg-brand-600 group-hover:text-white group-hover:shadow-md transition duration-300">
                             <i class="fa-solid fa-book-open"></i>
@@ -1984,7 +2022,6 @@
             loadChatHistory();
             updateHeaderBadge();
             
-            // Initiate new features
             setupDailyQuote();
             setGreeting();
             
