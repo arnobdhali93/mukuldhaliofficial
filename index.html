@@ -650,6 +650,338 @@
         let selectedFileBase64 = null;
         let pendingConfirmAction = null;
 
+        // --- Fetch Sheet Data ---
+        async function fetchAllData() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                
+                if(data.news) { rawNewsData = data.news; renderNews(rawNewsData); }
+                if(data.books) { rawBooksData = data.books; renderBooks(rawBooksData); }
+                if(data.stories) { rawStoriesData = data.stories; renderStories(rawStoriesData); }
+                if(data.quiz) { 
+                    processQuizData(data.quiz); 
+                }
+                
+                if(data.news && data.news.length > 0) {
+                    const marquee = document.getElementById('breaking-news-text');
+                    if(marquee) {
+                        marquee.innerText = data.news.map(n => "📢 " + (n.title || n.heading || '')).join(" | ");
+                    }
+                }
+            } catch (err) {
+                console.error("Data Fetch Error:", err);
+                showToast("গুগল শিট থেকে তথ্য লোড করতে সমস্যা হয়েছে!", "error");
+            }
+        }
+
+        function processQuizData(quizArray) {
+            groupedQuizData = {};
+            quizArray.forEach(item => {
+                const sub = item.subject || item.Subject || 'সাধারণ জ্ঞান';
+                if (!groupedQuizData[sub]) {
+                    groupedQuizData[sub] = [];
+                }
+                groupedQuizData[sub].push(item);
+            });
+            renderQuizSubjects();
+        }
+
+        function renderQuizSubjects(filterText = '') {
+            const container = document.getElementById('quiz-subjects-container');
+            if(!container) return;
+            
+            const subjects = Object.keys(groupedQuizData).filter(s => s.toLowerCase().includes(filterText.toLowerCase()));
+
+            if (subjects.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 font-semibold bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">কুইজের কোনো তথ্য পাওয়া যায়নি।</div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            subjects.forEach(sub => {
+                const qCount = groupedQuizData[sub].length;
+                container.innerHTML += `
+                    <div onclick="startQuizExam('${sub.replace(/'/g, "\\'")}')" class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 cursor-pointer flex flex-col justify-between">
+                        <div>
+                            <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-lg mb-3">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <h3 class="font-bold text-slate-900 dark:text-white text-base mb-1">${sub}</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">${qCount} টি প্রশ্ন বরাদ্দ আছে</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs font-bold text-brand-600">
+                            <span>পরীক্ষা শুরু করুন</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterQuizSubjects() {
+            const query = document.getElementById('quiz-search').value;
+            renderQuizSubjects(query);
+        }
+
+        function startQuizExam(subject) {
+            currentActiveSubject = subject;
+            const questions = groupedQuizData[subject];
+            
+            document.getElementById('quiz-subject-view').classList.add('hidden');
+            document.getElementById('quiz-exam-view').classList.remove('hidden');
+            document.getElementById('quiz-result-view').classList.add('hidden');
+            
+            document.getElementById('active-quiz-title').innerText = subject;
+            const qContainer = document.getElementById('active-questions-container');
+            qContainer.innerHTML = '';
+
+            questions.forEach((q, idx) => {
+                const optA = q.optionA || q.a || q.A || '';
+                const optB = q.optionB || q.b || q.B || '';
+                const optC = q.optionC || q.c || q.C || '';
+                const optD = q.optionD || q.d || q.D || '';
+
+                qContainer.innerHTML += `
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-600 space-y-3">
+                        <p class="font-bold text-slate-800 dark:text-slate-100 text-sm">${idx + 1}. ${q.question || q.Question || ''}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                            <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 cursor-pointer hover:border-brand-600">
+                                <input type="radio" name="q_${idx}" value="A" class="accent-brand-600"> <span>${optA}</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 cursor-pointer hover:border-brand-600">
+                                <input type="radio" name="q_${idx}" value="B" class="accent-brand-600"> <span>${optB}</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 cursor-pointer hover:border-brand-600">
+                                <input type="radio" name="q_${idx}" value="C" class="accent-brand-600"> <span>${optC}</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 cursor-pointer hover:border-brand-600">
+                                <input type="radio" name="q_${idx}" value="D" class="accent-brand-600"> <span>${optD}</span>
+                            </label>
+                        </div>
+                    </div>
+                `;
+            });
+
+            startExamTimer(300);
+        }
+
+        function startExamTimer(seconds) {
+            clearInterval(examTimer);
+            timeLeftSeconds = seconds;
+            const timerDisplay = document.getElementById('time-remaining');
+            const progressBar = document.getElementById('quiz-progress-bar');
+            const totalSec = seconds;
+
+            examTimer = setInterval(() => {
+                timeLeftSeconds--;
+                const mins = Math.floor(timeLeftSeconds / 60);
+                const secs = timeLeftSeconds % 60;
+                timerDisplay.innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                
+                const pct = ((totalSec - timeLeftSeconds) / totalSec) * 100;
+                if(progressBar) progressBar.style.width = pct + "%";
+
+                if (timeLeftSeconds <= 0) {
+                    clearInterval(examTimer);
+                    showToast("সময় শেষ! কুইজ জমা দেওয়া হচ্ছে...", "error");
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        function confirmBackToQuizSubjects() {
+            openConfirmModal("পরীক্ষা চলাকালীন ফিরে গেলে সমস্ত উত্তর হারিয়ে যাবে। আপনি কি নিশ্চিত?", () => {
+                clearInterval(examTimer);
+                backToQuizSubjects();
+            });
+        }
+
+        function backToQuizSubjects() {
+            clearInterval(examTimer);
+            document.getElementById('quiz-exam-view').classList.add('hidden');
+            document.getElementById('quiz-result-view').classList.add('hidden');
+            document.getElementById('quiz-subject-view').classList.remove('hidden');
+        }
+
+        function confirmSubmitExam() {
+            openConfirmModal("আপনি কি নিশ্চিত আপনার উত্তর জমা দিতে চান?", () => {
+                submitExam();
+            });
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            const questions = groupedQuizData[currentActiveSubject];
+            let correctCount = 0;
+            const reviewContainer = document.getElementById('review-questions-container');
+            reviewContainer.innerHTML = '';
+
+            questions.forEach((q, idx) => {
+                const selected = document.querySelector(`input[name="q_${idx}"]:checked`);
+                const userAns = selected ? selected.value.trim().toUpperCase() : 'N/A';
+                const correctAns = (q.answer || q.Answer || q.ans || '').toString().trim().toUpperCase();
+
+                if (userAns === correctAns) {
+                    correctCount++;
+                }
+
+                reviewContainer.innerHTML += `
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs space-y-1">
+                        <p class="font-bold text-slate-800 dark:text-slate-100">${idx + 1}. ${q.question || q.Question || ''}</p>
+                        <p class="text-slate-600 dark:text-slate-300">আপনার উত্তর: <span class="${userAns === correctAns ? 'text-emerald-600 font-bold' : 'text-red-500 font-bold'}">${userAns}</span></p>
+                        <p class="text-emerald-600 font-bold">সঠিক উত্তর: ${correctAns}</p>
+                    </div>
+                `;
+            });
+
+            const total = questions.length;
+            const percentage = Math.round((correctCount / total) * 100);
+            
+            if(percentage >= 50) { playQuizSound('success'); confetti(); } 
+            else { playQuizSound('fail'); }
+
+            document.getElementById('quiz-exam-view').classList.add('hidden');
+            document.getElementById('quiz-result-view').classList.remove('hidden');
+
+            document.getElementById('score-display-box').innerHTML = `
+                <p class="text-base">আপনি মোট ${total} টি প্রশ্নের মধ্যে <span class="text-emerald-600 font-black">${correctCount}</span> টি সঠিক উত্তর দিয়েছেন!</p>
+                <p class="text-xl font-black mt-1">স্কোর: ${percentage}%</p>
+            `;
+
+            const certAction = document.getElementById('certificate-action-container');
+            if (percentage >= 60) {
+                certAction.innerHTML = `
+                    <button onclick="generateAndDownloadCertificate('${currentActiveSubject.replace(/'/g, "\\'")}', ${percentage})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-award text-base"></i> সার্টিফিকেট ডাউনলোড করুন (PDF)
+                    </button>
+                `;
+            } else {
+                certAction.innerHTML = `<p class="text-xs text-slate-400">সার্টিফিকেট পাওয়ার জন্য ন্যূনতম ৬০% নম্বর পেতে হবে।</p>`;
+            }
+
+            // Save history
+            let fullQuizHistory = JSON.parse(localStorage.getItem('fullQuizHistory')) || [];
+            fullQuizHistory.push({ subject: currentActiveSubject, percentage: percentage, date: new Date().toLocaleDateString() });
+            localStorage.setItem('fullQuizHistory', JSON.stringify(fullQuizHistory));
+            localStorage.setItem('lastQuizScore', `${percentage}% (${currentActiveSubject})`);
+        }
+
+        // --- Render News, Books, Stories ---
+        function renderNews(news) {
+            const container = document.getElementById('news-container');
+            if(!container) return;
+            if(!news || news.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 font-semibold bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">কোনো খবর পাওয়া যায়নি।</div>`;
+                return;
+            }
+            container.innerHTML = '';
+            news.forEach((n, idx) => {
+                const title = n.title || n.heading || 'সংবাদ তথ্য';
+                const desc = n.description || n.details || '';
+                const date = n.date || '--.--.--';
+                const link = n.link || '#';
+                
+                container.innerHTML += `
+                    <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between space-y-3">
+                        <div>
+                            <div class="flex justify-between items-center text-[10px] text-slate-400 font-mono mb-2">
+                                <span><i class="fa-regular fa-calendar mr-1"></i>${date}</span>
+                                <button onclick="toggleBookmark('${title.replace(/'/g, "\\'")}', 'News', 'News', '${link}')" class="text-slate-400 hover:text-brand-600"><i class="fa-regular fa-bookmark"></i></button>
+                            </div>
+                            <h3 class="font-bold text-slate-900 dark:text-white text-base leading-snug mb-2">${title}</h3>
+                            <p id="news_text_${idx}" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">${desc}</p>
+                        </div>
+                        <div class="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-700 text-xs">
+                            <button onclick="toggleReadMore('news_text_${idx}', this)" class="text-brand-600 font-bold"><i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন</button>
+                            <button onclick="toggleSpeech('news_text_${idx}', this)" id="audio-btn-news_text_${idx}" class="text-slate-400 hover:text-brand-600 text-sm"><i class="fa-solid fa-volume-high"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterNews() {
+            const query = document.getElementById('news-search').value.toLowerCase();
+            const filtered = rawNewsData.filter(n => (n.title || n.heading || '').toLowerCase().includes(query) || (n.description || n.details || '').toLowerCase().includes(query));
+            renderNews(filtered);
+        }
+
+        function renderBooks(books) {
+            const container = document.getElementById('books-container');
+            if(!container) return;
+            if(!books || books.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 font-semibold bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">কোনো বইয়ের তথ্য পাওয়া যায়নি।</div>`;
+                return;
+            }
+            container.innerHTML = '';
+            books.forEach((b) => {
+                const title = b.title || b.bookName || 'বই এর নাম';
+                const category = b.category || b.class || 'শিক্ষা';
+                const link = b.link || b.pdfUrl || '#';
+
+                container.innerHTML += `
+                    <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <span class="text-[10px] bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 px-2 py-0.5 rounded font-bold">${category}</span>
+                            <h3 class="font-bold text-slate-900 dark:text-white text-base">${title}</h3>
+                        </div>
+                        <a href="${link}" target="_blank" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-sm shrink-0 flex items-center gap-1.5">
+                            <i class="fa-solid fa-download"></i> PDF
+                        </a>
+                    </div>
+                `;
+            });
+        }
+
+        function filterBooks() {
+            const query = document.getElementById('books-search').value.toLowerCase();
+            const filtered = rawBooksData.filter(b => (b.title || b.bookName || '').toLowerCase().includes(query) || (b.category || b.class || '').toLowerCase().includes(query));
+            renderBooks(filtered);
+        }
+
+        function renderStories(stories) {
+            const container = document.getElementById('stories-container');
+            if(!container) return;
+            if(!stories || stories.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 font-semibold bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">কোনো গল্প পাওয়া যায়নি।</div>`;
+                return;
+            }
+            container.innerHTML = '';
+            stories.forEach((s, idx) => {
+                const title = s.title || 'গল্প';
+                const author = s.author || 'অজ্ঞাত';
+                const content = s.story || s.content || '';
+
+                container.innerHTML += `
+                    <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+                        <div>
+                            <h3 class="font-bold text-slate-900 dark:text-white text-base">${title}</h3>
+                            <p class="text-[11px] text-brand-600 font-semibold">লেখক: ${author}</p>
+                        </div>
+                        <p id="story_text_${idx}" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">${content}</p>
+                        <div class="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-700 text-xs">
+                            <button onclick="toggleReadMore('story_text_${idx}', this)" class="text-brand-600 font-bold"><i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন</button>
+                            <button onclick="toggleSpeech('story_text_${idx}', this)" id="audio-btn-story_text_${idx}" class="text-slate-400 hover:text-brand-600 text-sm"><i class="fa-solid fa-volume-high"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Smart initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            applySavedTheme();
+            setGreeting();
+            setupDailyQuote();
+            setDailyDate();
+            loadChatHistory();
+            fetchAllData();
+
+            const hash = window.location.hash.replace('#', '');
+            if (hash) showSection(hash, null);
+        });
+
         // --- Smart Tab Alert ---
         let originalTitle = document.title;
         document.addEventListener("visibilitychange", function() {
@@ -769,13 +1101,6 @@
                 toast.classList.add('translate-x-[120%]', 'opacity-0');
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
-        }
-
-        function calculateReadingTime(text) {
-            const wordsPerMinute = 200;
-            const words = (text || '').split(/\s+/).length;
-            const minutes = Math.ceil(words / wordsPerMinute);
-            return minutes > 0 ? minutes : 1;
         }
 
         function applySavedTheme() {
@@ -926,15 +1251,6 @@
             }
         }
 
-        function shareContent(title) {
-            if (navigator.share) {
-                navigator.share({ title: title, url: window.location.href }).catch(() => {});
-            } else {
-                navigator.clipboard.writeText(window.location.href);
-                showToast("লিংক কপি করা হয়েছে!", "success");
-            }
-        }
-
         function shareScore(scoreStr) {
             const text = `আমি mukuldhaliofficial পোর্টালে মক টেস্ট দিয়ে ${scoreStr} স্কোর করেছি! আপনিও যাচাই করুন: ${window.location.href}`;
             if (navigator.share) {
@@ -942,17 +1258,6 @@
             } else {
                 navigator.clipboard.writeText(text);
                 showToast("স্কোর কপি করা হয়েছে!", 'success');
-            }
-        }
-
-        window.shareQuizLink = function(subject) {
-            const url = window.location.href.split('#')[0] + '#quiz';
-            const text = `আমি MukulDhaliOfficial এ '${subject}' কুইজটি দিচ্ছি। আপনিও চেষ্টা করুন: ${url}`;
-            if (navigator.share) {
-                navigator.share({ title: 'MukulDhaliOfficial Quiz', text: text }).catch(() => {});
-            } else {
-                navigator.clipboard.writeText(text);
-                showToast("কুইজ লিংক কপি করা হয়েছে!", "success");
             }
         }
         
@@ -1645,478 +1950,7 @@
                 </body>
                 </html>
             `);
-            newWin.document.close();
         }
-
-        // ==========================================
-        // DATA FETCHING & DYNAMIC RENDERING LOGIC
-        // ==========================================
-
-        async function fetchAllData() {
-            try {
-                const response = await fetch(API_URL);
-                const data = await response.json();
-
-                // 1. Process Breaking News
-                if (data.news && data.news.length > 0) {
-                    rawNewsData = data.news;
-                    const latestNews = rawNewsData.map(n => n.Title || n.News || n.title || n.news).filter(Boolean).join("  |  📢 ");
-                    if (latestNews) {
-                        document.getElementById('breaking-news-text').innerHTML = "📢 " + latestNews;
-                    }
-                    renderNews(rawNewsData);
-                } else {
-                    document.getElementById('news-container').innerHTML = `
-                        <div class="col-span-full text-center py-12 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
-                            <p class="text-slate-500 dark:text-slate-400 text-sm font-semibold">কোনো নিউজ আপডেট পাওয়া যায়নি।</p>
-                        </div>`;
-                }
-
-                // 2. Process Books
-                if (data.books && data.books.length > 0) {
-                    rawBooksData = data.books;
-                    renderBooks(rawBooksData);
-                } else {
-                    document.getElementById('books-container').innerHTML = `
-                        <div class="col-span-full text-center py-12 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
-                            <p class="text-slate-500 dark:text-slate-400 text-sm font-semibold">কোনো বই পাওয়া যায়নি।</p>
-                        </div>`;
-                }
-
-                // 3. Process Stories
-                if (data.stories && data.stories.length > 0) {
-                    rawStoriesData = data.stories;
-                    renderStories(rawStoriesData);
-                } else {
-                    document.getElementById('stories-container').innerHTML = `
-                        <div class="col-span-full text-center py-12 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
-                            <p class="text-slate-500 dark:text-slate-400 text-sm font-semibold">কোনো গল্প পাওয়া যায়নি।</p>
-                        </div>`;
-                }
-
-                // 4. Process Quiz Questions
-                if (data.quiz && data.quiz.length > 0) {
-                    groupQuizBySubject(data.quiz);
-                    renderQuizSubjects();
-                } else {
-                    document.getElementById('quiz-subjects-container').innerHTML = `
-                        <div class="col-span-full text-center py-12 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
-                            <p class="text-slate-500 dark:text-slate-400 text-sm font-semibold">কোনো কুইজ পরীক্ষা পাওয়া যায়নি।</p>
-                        </div>`;
-                }
-
-            } catch (err) {
-                console.error("API Data Fetch Error:", err);
-                showToast("ডেটা লোড করতে সমস্যা হয়েছে! রিফ্রেশ করুন।", "error");
-            }
-        }
-
-        // --- News Functions ---
-        function renderNews(newsList) {
-            const container = document.getElementById('news-container');
-            container.innerHTML = '';
-
-            if(newsList.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500">কোনো খবর পাওয়া যায়নি।</div>`;
-                return;
-            }
-
-            newsList.forEach((item, index) => {
-                const title = item.Title || item.title || item.News || item.news || 'শিক্ষামূলক আপডেট';
-                const details = item.Details || item.details || item.Description || item.description || title;
-                const date = item.Date || item.date || '--.--.--';
-                const link = item.Link || item.link || item.PDF || item.pdf || '';
-                const newsId = `news-text-${index}`;
-                const readTime = calculateReadingTime(details);
-
-                container.innerHTML += `
-                <div class="p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition">
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between text-[11px] text-slate-400 font-semibold">
-                            <span><i class="fa-regular fa-clock mr-1"></i> ${date}</span>
-                            <span><i class="fa-solid fa-book-open mr-1"></i> ${readTime} min read</span>
-                        </div>
-                        <h3 class="font-black text-lg text-slate-900 dark:text-white leading-snug">${escapeHTML(title)}</h3>
-                        <p id="${newsId}" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">${escapeHTML(details)}</p>
-                    </div>
-                    <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700/60">
-                        <button onclick="toggleReadMore('${newsId}', this)" class="text-brand-600 dark:text-brand-400 text-xs font-bold hover:underline cursor-pointer">
-                            <i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন
-                        </button>
-                        <div class="flex items-center gap-2">
-                            <button id="audio-btn-${newsId}" onclick="toggleSpeech('${newsId}', this)" title="শব্দ শুনুন" class="text-slate-400 hover:text-brand-600 p-2 rounded-lg bg-slate-50 dark:bg-slate-700 transition cursor-pointer">
-                                <i class="fa-solid fa-volume-high"></i>
-                            </button>
-                            <button onclick="toggleBookmark('${escapeHTML(title.replace(/'/g, "\\'"))}', 'News', 'News', '${link}')" title="সেভ করুন" class="text-slate-400 hover:text-brand-600 p-2 rounded-lg bg-slate-50 dark:bg-slate-700 transition cursor-pointer">
-                                <i class="fa-solid fa-bookmark"></i>
-                            </button>
-                            <button onclick="shareContent('${escapeHTML(title.replace(/'/g, "\\'"))}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 p-2 rounded-lg bg-slate-50 dark:bg-slate-700 transition cursor-pointer">
-                                <i class="fa-solid fa-share-nodes"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>`;
-            });
-        }
-
-        function filterNews() {
-            const query = document.getElementById('news-search').value.toLowerCase();
-            const filtered = rawNewsData.filter(item => {
-                const title = (item.Title || item.title || item.News || '').toLowerCase();
-                const details = (item.Details || item.details || '').toLowerCase();
-                return title.includes(query) || details.includes(query);
-            });
-            renderNews(filtered);
-        }
-
-        // --- Books Functions ---
-        function renderBooks(booksList) {
-            const container = document.getElementById('books-container');
-            container.innerHTML = '';
-
-            if(booksList.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500">কোনো বই পাওয়া যায়নি।</div>`;
-                return;
-            }
-
-            booksList.forEach(book => {
-                const title = book['Book Name'] || book.BookName || book.title || book.Title || 'পাঠ্যবই';
-                const classGrade = book.Class || book.class || book.Category || 'All Class';
-                const pdfLink = book['PDF Link'] || book.PDF || book.Link || book.link || '#';
-
-                container.innerHTML += `
-                <div class="p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-sm flex items-center justify-between gap-4 hover:shadow-md transition">
-                    <div class="space-y-1.5 flex-1">
-                        <span class="text-[10px] bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 px-2 py-0.5 rounded font-bold uppercase">${classGrade}</span>
-                        <h3 class="font-black text-base text-slate-900 dark:text-white leading-snug line-clamp-2">${escapeHTML(title)}</h3>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="toggleBookmark('${escapeHTML(title.replace(/'/g, "\\'"))}', '${classGrade}', 'Book', '${pdfLink}')" title="সেভ করুন" class="text-slate-400 hover:text-brand-600 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-700 transition cursor-pointer">
-                            <i class="fa-solid fa-bookmark"></i>
-                        </button>
-                        <a href="${pdfLink}" target="_blank" title="ডাউনলোড পিডিএফ" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-sm hover:shadow flex items-center gap-1.5">
-                            <i class="fa-solid fa-file-pdf"></i> ডাউনলোড
-                        </a>
-                    </div>
-                </div>`;
-            });
-        }
-
-        function filterBooks() {
-            const query = document.getElementById('books-search').value.toLowerCase();
-            const filtered = rawBooksData.filter(book => {
-                const title = (book['Book Name'] || book.BookName || book.title || '').toLowerCase();
-                const classGrade = (book.Class || book.class || '').toLowerCase();
-                return title.includes(query) || classGrade.includes(query);
-            });
-            renderBooks(filtered);
-        }
-
-        // --- Stories Functions ---
-        function renderStories(storiesList) {
-            const container = document.getElementById('stories-container');
-            container.innerHTML = '';
-
-            if(storiesList.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500">কোনো গল্প পাওয়া যায়নি।</div>`;
-                return;
-            }
-
-            storiesList.forEach((story, index) => {
-                const title = story['Story Title'] || story.Title || story.title || 'বাংলা গল্প';
-                const content = story.Story || story.Content || story.details || story.description || '';
-                const author = story.Author || story.author || 'MukulDhaliOfficial';
-                const storyId = `story-text-${index}`;
-
-                container.innerHTML += `
-                <div class="p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition">
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between text-[11px] text-brand-600 dark:text-brand-400 font-bold">
-                            <span><i class="fa-solid fa-pen-nib mr-1"></i> ${escapeHTML(author)}</span>
-                        </div>
-                        <h3 class="font-black text-lg text-slate-900 dark:text-white leading-snug">${escapeHTML(title)}</h3>
-                        <p id="${storyId}" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">${escapeHTML(content)}</p>
-                    </div>
-                    <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700/60">
-                        <button onclick="toggleReadMore('${storyId}', this)" class="text-brand-600 dark:text-brand-400 text-xs font-bold hover:underline cursor-pointer">
-                            <i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন
-                        </button>
-                        <div class="flex items-center gap-2">
-                            <button id="audio-btn-${storyId}" onclick="toggleSpeech('${storyId}', this)" title="শব্দ শুনুন" class="text-slate-400 hover:text-brand-600 p-2 rounded-lg bg-slate-50 dark:bg-slate-700 transition cursor-pointer">
-                                <i class="fa-solid fa-volume-high"></i>
-                            </button>
-                            <button onclick="toggleBookmark('${escapeHTML(title.replace(/'/g, "\\'"))}', 'Story', 'Story', '')" title="সেভ করুন" class="text-slate-400 hover:text-brand-600 p-2 rounded-lg bg-slate-50 dark:bg-slate-700 transition cursor-pointer">
-                                <i class="fa-solid fa-bookmark"></i>
-                            </button>
-                            <button onclick="shareContent('${escapeHTML(title.replace(/'/g, "\\'"))}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 p-2 rounded-lg bg-slate-50 dark:bg-slate-700 transition cursor-pointer">
-                                <i class="fa-solid fa-share-nodes"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>`;
-            });
-        }
-
-        // --- Quiz Functions ---
-        function groupQuizBySubject(quizArray) {
-            groupedQuizData = {};
-            quizArray.forEach(q => {
-                const subject = q.Subject || q.subject || q.Category || 'সাধারণ জ্ঞান';
-                if (!groupedQuizData[subject]) {
-                    groupedQuizData[subject] = [];
-                }
-                
-                groupedQuizData[subject].push({
-                    question: q.Question || q.question || '',
-                    options: [
-                        q['Option A'] || q.OptionA || q.optionA || '',
-                        q['Option B'] || q.OptionB || q.optionB || '',
-                        q['Option C'] || q.OptionC || q.optionC || '',
-                        q['Option D'] || q.OptionD || q.optionD || ''
-                    ].filter(Boolean),
-                    answer: q.Answer || q.answer || q['Correct Answer'] || ''
-                });
-            });
-        }
-
-        function renderQuizSubjects() {
-            const container = document.getElementById('quiz-subjects-container');
-            container.innerHTML = '';
-
-            const subjects = Object.keys(groupedQuizData);
-            if (subjects.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500">কোনো বিষয় পাওয়া যায়নি।</div>`;
-                return;
-            }
-
-            subjects.forEach(sub => {
-                const qCount = groupedQuizData[sub].length;
-                container.innerHTML += `
-                <div onclick="startQuizExam('${escapeHTML(sub.replace(/'/g, "\\'"))}')" class="p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 cursor-pointer space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-lg"><i class="fa-solid fa-brain"></i></span>
-                        <span class="text-[10px] font-bold bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 px-2.5 py-1 rounded-full">${qCount} Questions</span>
-                    </div>
-                    <div>
-                        <h4 class="font-black text-slate-900 dark:text-white text-lg leading-tight">${escapeHTML(sub)}</h4>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">ক্লিক করে মক টেস্ট পরীক্ষা শুরু করুন</p>
-                    </div>
-                    <div class="pt-2 flex items-center justify-between text-xs font-bold text-brand-600">
-                        <span>পরীক্ষা দিন</span>
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </div>
-                </div>`;
-            });
-        }
-
-        function filterQuizSubjects() {
-            const query = document.getElementById('quiz-search').value.toLowerCase();
-            const subjects = Object.keys(groupedQuizData);
-            const container = document.getElementById('quiz-subjects-container');
-            container.innerHTML = '';
-
-            const filtered = subjects.filter(sub => sub.toLowerCase().includes(query));
-            if (filtered.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500">কোনো বিষয় পাওয়া যায়নি।</div>`;
-                return;
-            }
-
-            filtered.forEach(sub => {
-                const qCount = groupedQuizData[sub].length;
-                container.innerHTML += `
-                <div onclick="startQuizExam('${escapeHTML(sub.replace(/'/g, "\\'"))}')" class="p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 cursor-pointer space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-lg"><i class="fa-solid fa-brain"></i></span>
-                        <span class="text-[10px] font-bold bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 px-2.5 py-1 rounded-full">${qCount} Questions</span>
-                    </div>
-                    <div>
-                        <h4 class="font-black text-slate-900 dark:text-white text-lg leading-tight">${escapeHTML(sub)}</h4>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">ক্লিক করে মক টেস্ট পরীক্ষা শুরু করুন</p>
-                    </div>
-                    <div class="pt-2 flex items-center justify-between text-xs font-bold text-brand-600">
-                        <span>পরীক্ষা দিন</span>
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </div>
-                </div>`;
-            });
-        }
-
-        function startQuizExam(subject) {
-            currentActiveSubject = subject;
-            const questions = groupedQuizData[subject];
-
-            if (!questions || questions.length === 0) {
-                showToast("এই বিষয়ে কোনো প্রশ্ন নেই!", "error");
-                return;
-            }
-
-            document.getElementById('quiz-subject-view').classList.add('hidden');
-            document.getElementById('quiz-result-view').classList.add('hidden');
-            document.getElementById('quiz-exam-view').classList.remove('hidden');
-
-            document.getElementById('active-quiz-title').innerText = subject + " - মক টেস্ট";
-
-            const container = document.getElementById('active-questions-container');
-            container.innerHTML = '';
-
-            questions.forEach((q, idx) => {
-                let optionsHtml = '';
-                q.options.forEach((opt, oIdx) => {
-                    optionsHtml += `
-                    <label class="flex items-center gap-3 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-brand-50 dark:hover:bg-slate-700/60 cursor-pointer transition text-xs font-bold text-slate-700 dark:text-slate-200">
-                        <input type="radio" name="q_${idx}" value="${escapeHTML(opt)}" onchange="updateQuizProgressBar()" class="w-4 h-4 text-brand-600 focus:ring-brand-500">
-                        <span>${escapeHTML(opt)}</span>
-                    </label>`;
-                });
-
-                container.innerHTML += `
-                <div class="p-5 rounded-2xl bg-slate-50/50 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-700 space-y-3">
-                    <h5 class="font-bold text-sm text-slate-900 dark:text-white leading-snug"><span class="text-brand-600 font-black mr-1">${idx + 1}.</span> ${escapeHTML(q.question)}</h5>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-                        ${optionsHtml}
-                    </div>
-                </div>`;
-            });
-
-            // Start Timer (5 mins per exam default)
-            timeLeftSeconds = 300;
-            updateTimerDisplay();
-            clearInterval(examTimer);
-            examTimer = setInterval(() => {
-                timeLeftSeconds--;
-                updateTimerDisplay();
-                if (timeLeftSeconds <= 0) {
-                    clearInterval(examTimer);
-                    showToast("সময় শেষ হয়ে গেছে! উত্তর জমা হচ্ছে...", "error");
-                    submitExam();
-                }
-            }, 1000);
-
-            updateQuizProgressBar();
-        }
-
-        function updateTimerDisplay() {
-            const m = Math.floor(timeLeftSeconds / 60);
-            const s = timeLeftSeconds % 60;
-            document.getElementById('time-remaining').innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-        }
-
-        function updateQuizProgressBar() {
-            const questions = groupedQuizData[currentActiveSubject] || [];
-            if(questions.length === 0) return;
-
-            let answered = 0;
-            questions.forEach((_, idx) => {
-                const selected = document.querySelector(`input[name="q_${idx}"]:checked`);
-                if (selected) answered++;
-            });
-
-            const percent = (answered / questions.length) * 100;
-            document.getElementById('quiz-progress-bar').style.width = percent + '%';
-        }
-
-        function confirmBackToQuizSubjects() {
-            openConfirmModal("আপনি কি মক টেস্ট পরীক্ষা বাতিল করতে চান?", () => {
-                clearInterval(examTimer);
-                backToQuizSubjects();
-            });
-        }
-
-        function backToQuizSubjects() {
-            clearInterval(examTimer);
-            document.getElementById('quiz-exam-view').classList.add('hidden');
-            document.getElementById('quiz-result-view').classList.add('hidden');
-            document.getElementById('quiz-subject-view').classList.remove('hidden');
-        }
-
-        function confirmSubmitExam() {
-            openConfirmModal("আপনি কি সমস্ত উত্তর নিশ্চিত করে জমা দিতে চান?", () => {
-                submitExam();
-            });
-        }
-
-        function submitExam() {
-            clearInterval(examTimer);
-            const questions = groupedQuizData[currentActiveSubject] || [];
-            let correct = 0;
-
-            const reviewContainer = document.getElementById('review-questions-container');
-            reviewContainer.innerHTML = '';
-
-            questions.forEach((q, idx) => {
-                const selectedEl = document.querySelector(`input[name="q_${idx}"]:checked`);
-                const userAns = selectedEl ? selectedEl.value : 'কোনো উত্তর দেওয়া হয়নি';
-                const isCorrect = userAns.trim().toLowerCase() === q.answer.trim().toLowerCase();
-
-                if (isCorrect) correct++;
-
-                reviewContainer.innerHTML += `
-                <div class="p-4 rounded-xl border ${isCorrect ? 'border-emerald-200 bg-emerald-50/30 dark:bg-emerald-950/20' : 'border-red-200 bg-red-50/30 dark:bg-red-950/20'} text-xs space-y-1.5">
-                    <p class="font-bold text-slate-800 dark:text-slate-200">${idx + 1}. ${escapeHTML(q.question)}</p>
-                    <p class="${isCorrect ? 'text-emerald-600' : 'text-red-500'} font-semibold">আপনার উত্তর: ${escapeHTML(userAns)}</p>
-                    ${!isCorrect ? `<p class="text-emerald-700 dark:text-emerald-400 font-bold">সঠিক উত্তর: ${escapeHTML(q.answer)}</p>` : ''}
-                </div>`;
-            });
-
-            const total = questions.length;
-            const percentage = Math.round((correct / total) * 100);
-            const scoreStr = `${correct} / ${total} (${percentage}%)`;
-
-            localStorage.setItem('lastQuizScore', scoreStr);
-            let fullQuizHistory = JSON.parse(localStorage.getItem('fullQuizHistory')) || [];
-            fullQuizHistory.push({
-                subject: currentActiveSubject,
-                correct,
-                total,
-                percentage,
-                date: new Date().toLocaleDateString()
-            });
-            localStorage.setItem('fullQuizHistory', JSON.stringify(fullQuizHistory));
-
-            document.getElementById('score-display-box').innerHTML = `
-                আপনার প্রাপ্ত নম্বর: <span class="text-lg font-black text-brand-600">${correct} / ${total}</span><br>
-                অ্যাকুরেসি হার: <span class="text-base font-black">${percentage}%</span>
-            `;
-
-            const certContainer = document.getElementById('certificate-action-container');
-            if (percentage >= 50) {
-                playQuizSound('success');
-                if (window.confetti) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-                
-                certContainer.innerHTML = `
-                <button onclick="generateAndDownloadCertificate('${escapeHTML(currentActiveSubject.replace(/'/g, "\\'"))}', ${percentage})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-2 cursor-pointer">
-                    <i class="fa-solid fa-file-certificate text-base"></i> সার্টিফিকেট ডাউনলোড করুন (PDF)
-                </button>`;
-            } else {
-                playQuizSound('error');
-                certContainer.innerHTML = `
-                <div class="p-3 bg-orange-50 dark:bg-slate-700 text-orange-600 dark:text-orange-300 rounded-xl text-xs font-bold border border-orange-200 dark:border-slate-600">
-                    সার্টিফিকেট পেতে কমপক্ষে ৫০% নম্বর পাওয়া আবশ্যক। পুনরায় চেষ্টা করুন!
-                </div>`;
-            }
-
-            document.getElementById('quiz-exam-view').classList.add('hidden');
-            document.getElementById('quiz-result-view').classList.remove('hidden');
-        }
-
-        // --- Window Onload Initialization ---
-        window.onload = function() {
-            setDailyDate();
-            setupDailyQuote();
-            setGreeting();
-            applySavedTheme();
-            loadChatHistory();
-            renderProfileSection();
-
-            const hash = window.location.hash.replace('#', '');
-            if (['news', 'quiz', 'books', 'stories', 'bookmarks', 'profile'].includes(hash)) {
-                showSection(hash, null);
-            } else {
-                showSection('home', null);
-            }
-
-            fetchAllData();
-        };
     </script>
 </body>
 </html>
