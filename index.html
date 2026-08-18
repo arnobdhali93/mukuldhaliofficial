@@ -27,8 +27,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
 
+    <!-- FontAwesome & Tailwind & Confetti -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -366,14 +368,18 @@
             </section>
 
             <section id="bookmarks" class="section-content hidden space-y-6">
-                <h2 class="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight border-b border-slate-200 dark:border-slate-700 pb-4 flex items-center gap-3">
-                    <i class="fa-solid fa-bookmark text-brand-600 text-xl"></i> সেভ করা আইটেম
-                </h2>
-                <div id="bookmark-filters" class="flex gap-2 mb-2 overflow-x-auto pb-2">
+                <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4 gap-3">
+                    <h2 class="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+                        <i class="fa-solid fa-bookmark text-brand-600 text-xl"></i> সেভ করা আইটেম
+                    </h2>
+                </div>
+                <div id="bookmark-filters" class="flex flex-wrap gap-2 mb-2 overflow-x-auto pb-2 items-center">
                     <button onclick="filterBookmarksView('All', this)" class="bookmark-filter-btn px-4 py-1.5 bg-brand-600 text-white rounded-lg text-xs font-bold whitespace-nowrap shadow-sm">All</button>
                     <button onclick="filterBookmarksView('News', this)" class="bookmark-filter-btn px-4 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-bold whitespace-nowrap shadow-sm">News</button>
                     <button onclick="filterBookmarksView('Book', this)" class="bookmark-filter-btn px-4 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-bold whitespace-nowrap shadow-sm">Books</button>
                     <button onclick="filterBookmarksView('Story', this)" class="bookmark-filter-btn px-4 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-bold whitespace-nowrap shadow-sm">Stories</button>
+                    <!-- New Clear Bookmarks Button -->
+                    <button onclick="clearAllBookmarks()" class="ml-auto px-4 py-1.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-500 hover:text-white rounded-lg text-xs font-bold whitespace-nowrap shadow-sm transition"><i class="fa-solid fa-trash-can mr-1"></i> Clear All</button>
                 </div>
 
                 <div id="bookmarks-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -615,6 +621,15 @@
             }
         });
 
+        // New feature: Clear All Bookmarks
+        function clearAllBookmarks() {
+            if(confirm("আপনি কি সমস্ত বুকমার্ক মুছে ফেলতে চান?")) {
+                localStorage.removeItem('portalBookmarks');
+                showToast("সমস্ত বুকমার্ক মুছে ফেলা হয়েছে!", "success");
+                renderBookmarks();
+            }
+        }
+
         function filterBookmarksView(type, btnObj) {
             document.querySelectorAll('.bookmark-filter-btn').forEach(btn => {
                 btn.classList.remove('bg-brand-600', 'text-white');
@@ -838,6 +853,15 @@
             }
         }
 
+        // New Feature: Copy AI Answer
+        window.copyChatText = function(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("উত্তরটি কপি করা হয়েছে!", "success");
+            }).catch(err => {
+                showToast("কপি করা সম্ভব হয়নি!", "error");
+            });
+        }
+
         async function askGemini() {
             const queryInput = document.getElementById('userQuery');
             const query = queryInput.value.trim();
@@ -845,7 +869,7 @@
 
             const history = document.getElementById('chat-history');
             
-            history.innerHTML += `<p class="text-right text-brand-700 dark:text-brand-300 bg-brand-50/60 dark:bg-slate-700/60 p-2 rounded-xl shadow-sm"><b>You:</b> ${escapeHTML(query)}</p>`;
+            history.innerHTML += `<p class="text-right text-brand-700 dark:text-brand-300 bg-brand-50/60 dark:bg-slate-700/60 p-2 rounded-xl shadow-sm ml-6"><b>You:</b> ${escapeHTML(query)}</p>`;
             queryInput.value = '';
             history.scrollTop = history.scrollHeight;
             saveChatHistory();
@@ -860,7 +884,13 @@
                 
                 if(data.candidates && data.candidates[0] && data.candidates[0].content) {
                     const aiReply = data.candidates[0].content.parts[0].text;
-                    history.innerHTML += `<p class="text-left text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 shadow-sm"><b>AI:</b> ${escapeHTML(aiReply)}</p>`;
+                    const encodedReply = encodeURIComponent(aiReply);
+                    
+                    history.innerHTML += `
+                    <div class="relative group text-left text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 shadow-sm pr-8 mr-4">
+                        <b>AI:</b> ${escapeHTML(aiReply)}
+                        <button onclick="copyChatText(decodeURIComponent('${encodedReply}'))" title="উত্তর কপি করুন" class="absolute top-2 right-2 text-slate-400 hover:text-brand-600 opacity-0 group-hover:opacity-100 transition-opacity bg-white dark:bg-slate-800 p-1.5 rounded-md shadow-sm border border-slate-200 dark:border-slate-600"><i class="fa-regular fa-copy"></i></button>
+                    </div>`;
                 } else {
                     history.innerHTML += `<p class="text-red-500 bg-red-50 p-2 rounded-xl border border-red-200 shadow-sm">দুঃখিত, কোনো উত্তর পাওয়া যায়নি।</p>`;
                 }
@@ -1027,6 +1057,13 @@
             }
             const lastQuizScore = localStorage.getItem('lastQuizScore') || 'N/A';
 
+            // New feature: Profile Ranking logic
+            let userRank = "Beginner 🥉";
+            let rankClass = "bg-brand-100 dark:bg-slate-700 text-brand-700 dark:text-brand-300";
+            if (totalQuizzes >= 5 && avgScore >= 50) { userRank = "Learner 🥈"; rankClass = "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300"; }
+            if (totalQuizzes >= 10 && avgScore >= 70) { userRank = "Scholar 🥇"; rankClass = "bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300"; }
+            if (totalQuizzes >= 20 && avgScore >= 85) { userRank = "Expert 🏆"; rankClass = "bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300"; }
+
             if (loggedInUser && loggedInName) {
                 const avatarHtml = profilePic 
                     ? `<img src="${profilePic}" class="w-full h-full object-cover">`
@@ -1034,11 +1071,14 @@
 
                 profileContainer.innerHTML = `
                     <div class="flex items-center gap-4">
-                        <div class="w-16 h-16 rounded-2xl bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 flex items-center justify-center text-brand-700 dark:text-brand-300 font-bold text-2xl shadow-sm overflow-hidden">
+                        <div class="w-16 h-16 rounded-2xl bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 flex items-center justify-center text-brand-700 dark:text-brand-300 font-bold text-2xl shadow-sm overflow-hidden shrink-0">
                             ${avatarHtml}
                         </div>
                         <div>
-                            <h3 class="font-black text-xl text-slate-900 dark:text-white">${escapeHTML(loggedInName)}</h3>
+                            <h3 class="font-black text-xl text-slate-900 dark:text-white flex items-center flex-wrap gap-2">
+                                ${escapeHTML(loggedInName)}
+                                <span class="${rankClass} px-2 py-0.5 rounded text-[10px] font-black uppercase shadow-sm border border-slate-200 dark:border-slate-600">${userRank}</span>
+                            </h3>
                             <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mt-0.5">${escapeHTML(loggedInUser)}</p>
                         </div>
                     </div>
@@ -1601,7 +1641,6 @@
                         let optClass = "bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200";
                         let badge = "";
 
-                        // Review Logic Update
                         if (optValLower === correctAns && optValLower === selectedAns) {
                             optClass = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-bold";
                             badge = `<span class="ml-2 text-xs bg-emerald-600 text-white px-2 py-0.5 rounded shadow-sm"><i class="fa-solid fa-check-double"></i> আপনার সঠিক উত্তর</span>`;
@@ -1621,7 +1660,6 @@
                     }
                 });
                 
-                // If the user skipped answering the question
                 let skippedBadge = !selectedVal ? `<span class="text-[10px] text-orange-600 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300 px-2 py-0.5 rounded font-bold border border-orange-200 dark:border-orange-800 whitespace-nowrap">উত্তর দেওয়া হয়নি</span>` : '';
 
                 reviewContainer.innerHTML += `
@@ -1644,6 +1682,11 @@
                 playQuizSound('success');
             } else {
                 playQuizSound('fail');
+            }
+
+            // New Feature: Confetti Animation if score is >= 80%
+            if (percentage >= 80 && window.confetti) {
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
             }
 
             localStorage.setItem('lastQuizScore', scoreFormatted);
