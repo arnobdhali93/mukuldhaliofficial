@@ -34,7 +34,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <!-- PDF Generation Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -186,7 +185,7 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></div>
                 <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">System Online</span>
             </div>
-            <span class="text-[10px] text-slate-400 font-mono">v4.7 Pro</span>
+            <span class="text-[10px] text-slate-400 font-mono">v4.8 Pro</span>
         </div>
     </aside>
 
@@ -560,16 +559,20 @@
     <!-- Certificate Live Preview Modal -->
     <div id="certificate-modal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-[250] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-5xl rounded-3xl p-4 md:p-6 shadow-2xl relative flex flex-col max-h-[90vh]">
-            <div class="flex justify-between items-center mb-4">
+            <div class="flex justify-between items-center mb-4 shrink-0">
                 <h3 class="font-black text-xl text-slate-900 dark:text-white">আপনার সার্টিফিকেট</h3>
                 <button type="button" onclick="closeCertificateModal()" class="text-slate-400 hover:text-red-500 p-2 rounded-xl transition cursor-pointer bg-slate-100 dark:bg-slate-700"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             
-            <div id="certificate-preview-container" class="w-full overflow-hidden bg-slate-100 dark:bg-slate-900 rounded-xl flex justify-center items-start relative">
-                <div id="certificate-wrapper" class="flex justify-center origin-top-left transition-transform duration-200">
+            <!-- Scaled Certificate Container -->
+            <div id="certificate-preview-container" class="w-full overflow-hidden bg-slate-100 dark:bg-slate-900 rounded-xl flex justify-center items-start relative shrink-0">
+                <!-- Wrapper applies CSS scale so everything fits perfectly -->
+                <div id="certificate-wrapper" class="origin-top transition-transform duration-200 flex justify-center">
+                    <!-- The exact 1122x793px A4 Landscape element for html2pdf -->
                     <div id="certificate-content" class="bg-white relative shrink-0" style="width: 1122px; height: 793px; box-sizing: border-box; padding: 56px; font-family: 'Times New Roman', 'Kalpurush', serif; color: black;">
                         <div style="border: 15px solid #16a34a; border-radius: 15px; height: 100%; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 38px; box-sizing: border-box;">
                             
+                            <!-- Watermark Background -->
                             <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 453px; opacity: 0.05; z-index: 1; pointer-events: none;">
                                 <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect width="100" height="100" rx="25" fill="#16a34a" />
@@ -578,6 +581,7 @@
                                 </svg>
                             </div>
                             
+                            <!-- Content -->
                             <div style="z-index: 2; text-align: center; margin-top: -38px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
                                 <h1 style="color: #4ade80; font-size: 52px; font-weight: bold; margin: 0 0 30px 0; letter-spacing: 2px;">Certificate of Achievement</h1>
                                 <p style="font-size: 20px; color: #444; margin: 0 0 22px 0;">This is proudly presented to</p>
@@ -587,6 +591,7 @@
                                 <p id="cert-gen-score" style="font-size: 20px; color: #111; font-weight: bold; margin: 0;">Score: 0%</p>
                             </div>
                             
+                            <!-- Signatures Footer -->
                             <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 38px; box-sizing: border-box;">
                                 <div style="width: 245px; text-align: center;">
                                     <div style="border-top: 2px solid #111; margin-bottom: 8px; width: 100%;"></div>
@@ -697,13 +702,27 @@
             }
         }
 
+        // --- Animated Counter System ---
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
         // --- Certificate Scaling System ---
         function scaleCertificate() {
             const wrapper = document.getElementById('certificate-wrapper');
             const container = document.getElementById('certificate-preview-container');
-            const containerWidth = container.clientWidth;
+            const containerWidth = container.clientWidth || window.innerWidth * 0.9;
             
-            // 1122 is the explicit width of the certificate content
+            // 1122px is the explicit width of the certificate content
             let scale = containerWidth / 1122;
             
             if (scale < 1) {
@@ -867,8 +886,8 @@
         function confirmClearBookmarks() {
             openConfirmModal("আপনি কি সমস্ত বুকমার্ক মুছে ফেলতে চান?", () => {
                 localStorage.removeItem('portalBookmarks');
-                showToast("সমস্ত বুকমার্ক মুছে ফেলা হয়েছে!", "success");
                 renderBookmarks();
+                showToast("সমস্ত বুকমার্ক মুছে ফেলা হয়েছে!", "success");
             });
         }
 
@@ -1001,13 +1020,13 @@
             }
         }
         
-        function toggleSpeech(elementId, btnElement) {
+        function toggleSpeech(textStr, btnElement) {
             if (!('speechSynthesis' in window)) {
                 showToast("আপনার ব্রাউজার টেক্সট-টু-স্পিচ সাপোর্ট করে না।", "error");
                 return;
             }
 
-            if (isSpeaking && currentSpeakingId === elementId) {
+            if (isSpeaking && currentSpeakingId === textStr) {
                 window.speechSynthesis.cancel();
                 isSpeaking = false;
                 currentSpeakingId = null;
@@ -1017,17 +1036,20 @@
             } else {
                 window.speechSynthesis.cancel(); 
                 
-                if(currentSpeakingId) {
-                    const prevBtn = document.getElementById('audio-btn-' + currentSpeakingId);
-                    if(prevBtn) {
-                        prevBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
-                        prevBtn.classList.remove('text-brand-600', 'animate-pulse');
-                        prevBtn.classList.add('text-slate-400');
-                    }
+                // Clear any previous active buttons
+                document.querySelectorAll('.speech-btn').forEach(btn => {
+                    btn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+                    btn.classList.remove('text-brand-600', 'animate-pulse');
+                    btn.classList.add('text-slate-400');
+                });
+
+                let utteranceStr = textStr;
+                // If the parameter passed is an ID, get its inner text
+                if(document.getElementById(textStr)) {
+                    utteranceStr = document.getElementById(textStr).innerText;
                 }
 
-                const text = document.getElementById(elementId).innerText;
-                const utterance = new SpeechSynthesisUtterance(text);
+                const utterance = new SpeechSynthesisUtterance(utteranceStr);
                 utterance.lang = 'bn-BD'; 
                 utterance.rate = 0.9;
                 
@@ -1043,7 +1065,7 @@
 
                 window.speechSynthesis.speak(utterance);
                 isSpeaking = true;
-                currentSpeakingId = elementId;
+                currentSpeakingId = textStr;
                 btnElement.innerHTML = '<i class="fa-solid fa-circle-pause"></i>';
                 btnElement.classList.remove('text-slate-400');
                 btnElement.classList.add('text-brand-600', 'animate-pulse');
@@ -1241,7 +1263,7 @@
             if(cropper) { cropper.destroy(); }
             cropper = new Cropper(img, {
                 aspectRatio: 1, 
-                viewMode: 1,
+                viewMode: 2,
                 dragMode: 'move',
                 autoCropArea: 0.8,
                 restore: false,
@@ -1365,6 +1387,34 @@
             }
         }
 
+        function checkPasswordStrength() {
+            const pass = document.getElementById('reg-pass').value;
+            const strengthText = document.getElementById('pass-strength');
+            
+            if (pass.length === 0) {
+                strengthText.innerText = '';
+                return;
+            }
+            
+            let strength = 0;
+            if (pass.length >= 6) strength++;
+            if (pass.length >= 8) strength++;
+            if (/[A-Z]/.test(pass)) strength++;
+            if (/[0-9]/.test(pass)) strength++;
+            if (/[^A-Za-z0-9]/.test(pass)) strength++;
+
+            if (strength <= 2) {
+                strengthText.innerText = 'দুর্বল পাসওয়ার্ড';
+                strengthText.className = 'text-[10px] mt-1 font-bold text-red-500';
+            } else if (strength === 3 || strength === 4) {
+                strengthText.innerText = 'মাঝারি পাসওয়ার্ড';
+                strengthText.className = 'text-[10px] mt-1 font-bold text-orange-500';
+            } else {
+                strengthText.innerText = 'শক্তিশালী পাসওয়ার্ড';
+                strengthText.className = 'text-[10px] mt-1 font-bold text-emerald-500';
+            }
+        }
+
         async function handleAuthSubmit(e, type) {
             e.preventDefault();
             
@@ -1426,7 +1476,7 @@
                 } else if (msgLower.includes("failed to fetch") || msgLower.includes("network error")) {
                     errorMsg = "ইন্টারনেট কানেকশন চেক করুন!";
                 } else {
-                    errorMsg = msg; // Show exact error to help debug
+                    errorMsg = msg;
                 }
                 
                 showAuthMsg(errorMsg, 'error');
@@ -1507,9 +1557,9 @@
 
                     <div class="space-y-2 pt-3 border-t border-slate-100 dark:border-slate-700 text-sm menu-font mt-3">
                         <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>স্ট্যাটাস:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">Active User</span></p>
-                        <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>সর্বশেষ কুইজ স্কোর:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">${lastQuizScore}</span></p>
-                        <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>মোট কুইজ দিয়েছেন:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">${totalQuizzes} টি</span></p>
-                        <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>গড় অ্যাকুরেসি (Average):</span> <span class="text-brand-600 dark:text-brand-400 font-bold">${avgScore}%</span></p>
+                        <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>সর্বশেষ কুইজ স্কোর:</span> <span id="stat-last-score" class="text-brand-600 dark:text-brand-400 font-bold">${lastQuizScore}</span></p>
+                        <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>মোট কুইজ দিয়েছেন:</span> <span class="text-brand-600 dark:text-brand-400 font-bold"><span id="stat-total">0</span> টি</span></p>
+                        <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>গড় অ্যাকুরেসি (Average):</span> <span class="text-brand-600 dark:text-brand-400 font-bold"><span id="stat-avg">0</span>%</span></p>
                     </div>
 
                     ${historyHtml}
@@ -1520,6 +1570,10 @@
                     </div>
                     <button onclick="resetAllData()" title="সব ডেটা মুছুন" class="mt-4 w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 py-3 rounded-xl text-xs font-bold transition shadow-sm hover:-translate-y-0.5 cursor-pointer text-center border border-slate-200 dark:border-slate-600"><i class="fa-solid fa-trash-can text-red-500"></i> অ্যাপ ডেটা রিসেট করুন</button>
                 `;
+
+                // Animate Stats
+                animateValue(document.getElementById("stat-total"), 0, totalQuizzes, 1000);
+                animateValue(document.getElementById("stat-avg"), 0, avgScore, 1000);
             } else {
                 profileContainer.innerHTML = `
                     <div class="text-center space-y-4 py-2">
@@ -1533,32 +1587,6 @@
                 `;
             }
             updateHeaderBadge();
-        }
-
-        function logoutUser() {
-            openConfirmModal('আপনি কি সত্যিই লগআউট করতে চান?', async () => {
-                if(supabaseClient) await supabaseClient.auth.signOut();
-                showToast("লগআউট সম্পন্ন হয়েছে!", "success");
-                renderProfileSection();
-                updateHeaderBadge();
-            });
-        }
-
-        function updateHeaderBadge() {
-            const name = localStorage.getItem('portalUserName');
-            const email = localStorage.getItem('portalUserEmail');
-            const pic = localStorage.getItem('portalUserPic_' + email);
-            const badge = document.getElementById('mobile-user-badge');
-            
-            if (badge) {
-                if (pic) {
-                    badge.innerHTML = `<img src="${pic}" class="w-full h-full object-cover rounded-lg sm:rounded-xl" alt="Profile">`;
-                } else if (name) {
-                    badge.innerText = name.substring(0, 2).toUpperCase();
-                } else {
-                    badge.innerText = "MK";
-                }
-            }
         }
 
         async function fetchAutoNews() {
@@ -1652,7 +1680,7 @@
                                             <div class="text-[10px] text-slate-500 font-bold"><i class="fa-regular fa-clock"></i> ${readTime} min read</div>
                                         </div>
                                         <div class="flex gap-2">
-                                            <button id="audio-btn-story-desc-${index}" onclick="toggleSpeech('story-desc-${index}', this)" title="গল্প শুনুন / বন্ধ করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-volume-high"></i></button>
+                                            <button id="audio-btn-story-desc-${index}" onclick="toggleSpeech('story-desc-${index}', this)" title="গল্প শুনুন / বন্ধ করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all speech-btn"><i class="fa-solid fa-volume-high"></i></button>
                                             <button onclick="toggleBookmark('${story.Title.replace(/'/g, "\\'")}', '${story.Category}', 'Story', '${story.ReadLink || ''}')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
                                             <button onclick="shareContent('${story.Title.replace(/'/g, "\\'")}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
                                         </div>
@@ -1720,7 +1748,7 @@
                                 <span class="text-[10px] text-slate-500 font-bold"><i class="fa-regular fa-clock"></i> ${readTime} min read</span>
                             </div>
                             <div class="flex gap-2">
-                                <button id="audio-btn-news-desc-${index}" onclick="toggleSpeech('news-desc-${index}', this)" title="খবরটি শুনুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-volume-high"></i></button>
+                                <button id="audio-btn-news-desc-${index}" onclick="toggleSpeech('news-desc-${index}', this)" title="খবরটি শুনুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all speech-btn"><i class="fa-solid fa-volume-high"></i></button>
                                 <button onclick="toggleBookmark('${news.Title.replace(/'/g, "\\'")}', '${news.Category}', 'News', '${news.Link || ''}')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
                                 <button onclick="shareContent('${news.Title.replace(/'/g, "\\'")}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
                             </div>
@@ -1901,7 +1929,10 @@
 
                 qContainer.innerHTML += `
                 <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 space-y-3 shadow-sm hover:shadow-md transition">
-                    <p class="font-bold text-slate-900 dark:text-white text-base border-b border-slate-200 dark:border-slate-700 pb-3">${index + 1}. ${q.Question}</p>
+                    <div class="flex items-start justify-between gap-2 border-b border-slate-200 dark:border-slate-700 pb-3">
+                        <p id="quiz-q-${index}" class="font-bold text-slate-900 dark:text-white text-base">${index + 1}. ${q.Question}</p>
+                        <button onclick="toggleSpeech('quiz-q-${index}', this)" title="প্রশ্নটি শুনুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all speech-btn shrink-0"><i class="fa-solid fa-volume-high"></i></button>
+                    </div>
                     <div class="space-y-2 pt-1">
                         ${optionsHtml}
                     </div>
@@ -1950,62 +1981,29 @@
             });
         }
 
-        function generateCertificate(subject, score) {
-            const name = localStorage.getItem('portalUserName') || 'Student';
-            const dateObj = new Date();
-            const dateStr = dateObj.toLocaleDateString('en-GB'); 
-            
-            document.getElementById('cert-gen-name').innerText = name;
-            document.getElementById('cert-gen-subject').innerText = subject;
-            document.getElementById('cert-gen-score').innerText = `Score: ${score}%`;
-            document.getElementById('cert-gen-date').innerText = dateStr;
-            
-            const modal = document.getElementById('certificate-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                scaleCertificate();
-                modal.classList.remove('opacity-0');
-            }, 50);
-        }
-
-        function closeCertificateModal() {
-            const modal = document.getElementById('certificate-modal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        function downloadCertificatePDF() {
-            const element = document.getElementById('certificate-content');
-            const container = document.getElementById('certificate-preview-container');
-            const btn = document.getElementById('download-cert-btn');
+        function downloadReviewAsPDF() {
+            const element = document.getElementById('review-questions-container');
+            const btn = document.getElementById('download-review-btn');
             const originalHTML = btn.innerHTML;
             
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ডাউনলোড হচ্ছে...`;
             btn.disabled = true;
 
-            element.style.transform = 'none';
-            container.style.height = '793px';
-            container.style.overflow = 'visible';
-
             const opt = {
-              margin:       0,
-              filename:     `Certificate_${document.getElementById('cert-gen-subject').innerText}.pdf`,
-              image:        { type: 'jpeg', quality: 1 },
-              html2canvas:  { scale: 2, useCORS: true, windowWidth: 1122, windowHeight: 793, scrollY: 0, scrollX: 0 },
-              jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+              margin:       10,
+              filename:     `Quiz_Review_${currentActiveSubject}.pdf`,
+              image:        { type: 'jpeg', quality: 0.98 },
+              html2canvas:  { scale: 2 },
+              jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
-                container.style.overflow = 'hidden';
-                scaleCertificate();
-                showToast("সার্টিফিকেট সফলভাবে ডাউনলোড হয়েছে!", "success");
+                showToast("উত্তরমালা সফলভাবে ডাউনলোড হয়েছে!", "success");
             }).catch(err => {
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
-                container.style.overflow = 'hidden';
-                scaleCertificate();
                 showToast("ডাউনলোড করতে সমস্যা হয়েছে!", "error");
             });
         }
@@ -2130,6 +2128,15 @@
                     </p>
                 `;
             }
+            
+            // Append download review button at the top of the review container
+            reviewContainer.innerHTML = `
+            <div class="flex justify-end mb-3">
+                <button id="download-review-btn" onclick="downloadReviewAsPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-download"></i> উত্তরমালা PDF ডাউনলোড করুন
+                </button>
+            </div>
+            ` + reviewContainer.innerHTML;
 
             document.getElementById('quiz-exam-view').classList.add('hidden');
             document.getElementById('quiz-result-view').classList.remove('hidden');
