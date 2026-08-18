@@ -90,7 +90,6 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
-        /* Fix for cropper background */
         .cropper-view-box, .cropper-face {
             border-radius: 10%;
         }
@@ -657,7 +656,18 @@
             else document.title = originalTitle;
         });
 
-        // Initialize Supabase Inside DOMContentLoaded To Prevent Variable Scoping Errors
+        function escapeHTML(str) {
+            return str ? String(str).replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            ) : '';
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             try {
                 if (window.supabase) {
@@ -862,6 +872,23 @@
             document.getElementById('dark-text').innerText = isDark ? 'Light Mode' : 'Dark Mode';
         }
 
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            const progressBar = document.getElementById("scroll-progress-bar");
+            if(progressBar) progressBar.style.width = scrolled + "%";
+
+            const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+            if(winScroll > 300) {
+                scrollToTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                scrollToTopBtn.classList.add('opacity-100', 'translate-y-0');
+            } else {
+                scrollToTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                scrollToTopBtn.classList.remove('opacity-100', 'translate-y-0');
+            }
+        });
+
         function confirmClearBookmarks() {
             openConfirmModal("আপনি কি সমস্ত বুকমার্ক মুছে ফেলতে চান?", () => {
                 localStorage.removeItem('portalBookmarks');
@@ -1045,12 +1072,6 @@
         }
 
         function showSection(sectionId, event) {
-            if (sectionId === 'quiz' && !localStorage.getItem('portalUserEmail')) {
-                showToast("কুইজ দিতে হলে আপনাকে লগইন করতে হবে।", "error");
-                triggerRegisterPopup();
-                return; 
-            }
-
             const sections = document.querySelectorAll('.section-content');
             sections.forEach(sec => sec.classList.add('hidden'));
 
@@ -1201,18 +1222,6 @@
             }
             history.scrollTop = history.scrollHeight;
             saveChatHistory();
-        }
-
-        function escapeHTML(str) {
-            return str ? str.replace(/[&<>'"]/g, 
-                tag => ({
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    "'": '&#39;',
-                    '"': '&quot;'
-                }[tag] || tag)
-            ) : '';
         }
 
         function triggerRegisterPopup() {
@@ -1511,7 +1520,7 @@
                     lastThree.forEach(q => {
                         historyHtml += `
                         <div class="bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 flex justify-between items-center text-xs">
-                            <span class="font-bold text-slate-700 dark:text-slate-300 truncate pr-2">${q.subject}</span>
+                            <span class="font-bold text-slate-700 dark:text-slate-300 truncate pr-2">${escapeHTML(q.subject)}</span>
                             <span class="font-black text-brand-600 dark:text-brand-400 shrink-0">${q.percentage}%</span>
                         </div>`;
                     });
@@ -1688,17 +1697,17 @@
                                 <div>
                                     <div class="flex justify-between items-center mb-1">
                                         <div class="flex items-center gap-2">
-                                            <div class="text-[11px] text-brand-600 dark:text-brand-400 font-extrabold bg-brand-50 dark:bg-slate-700 px-2 py-0.5 rounded border border-brand-100 dark:border-slate-600">${story.Category || 'গল্প'}</div>
+                                            <div class="text-[11px] text-brand-600 dark:text-brand-400 font-extrabold bg-brand-50 dark:bg-slate-700 px-2 py-0.5 rounded border border-brand-100 dark:border-slate-600">${escapeHTML(story.Category || 'গল্প')}</div>
                                             <div class="text-[10px] text-slate-500 font-bold"><i class="fa-regular fa-clock"></i> ${readTime} min read</div>
                                         </div>
                                         <div class="flex gap-2">
                                             <button id="audio-btn-story-desc-${index}" onclick="toggleSpeech('story-desc-${index}', this)" title="গল্প শুনুন / বন্ধ করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all speech-btn"><i class="fa-solid fa-volume-high"></i></button>
-                                            <button onclick="toggleBookmark('${story.Title.replace(/'/g, "\\'")}', '${story.Category}', 'Story', '${story.ReadLink || ''}')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
-                                            <button onclick="shareContent('${story.Title.replace(/'/g, "\\'")}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
+                                            <button onclick="toggleBookmark('${escapeHTML(story.Title).replace(/'/g, "\\'")}', '${escapeHTML(story.Category)}', 'Story', '${story.ReadLink || ''}')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
+                                            <button onclick="shareContent('${escapeHTML(story.Title).replace(/'/g, "\\'")}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
                                         </div>
                                     </div>
-                                    <h3 class="font-black text-lg text-slate-900 dark:text-white mb-2 mt-2">${story.Title}</h3>
-                                    <p id="story-desc-${index}" class="text-slate-600 dark:text-slate-300 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${story.Description || ''}</p>
+                                    <h3 class="font-black text-lg text-slate-900 dark:text-white mb-2 mt-2">${escapeHTML(story.Title)}</h3>
+                                    <p id="story-desc-${index}" class="text-slate-600 dark:text-slate-300 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${escapeHTML(story.Description || '')}</p>
                                 </div>
                                 <div class="flex flex-wrap gap-2">
                                     <button onclick="toggleReadMore('story-desc-${index}', this)" title="বিস্তারিত পড়ুন" class="bg-brand-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:bg-brand-100 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block cursor-pointer">
@@ -1712,7 +1721,7 @@
 
                     if(data.Quiz && Array.isArray(data.Quiz)) {
                         data.Quiz.forEach(q => {
-                            let sub = q.Subject ? q.Subject.trim() : "সাধারণ জ্ঞান";
+                            let sub = q.Subject ? String(q.Subject).trim() : "সাধারণ জ্ঞান";
                             if (!groupedQuizData[sub]) groupedQuizData[sub] = [];
                             groupedQuizData[sub].push(q);
                         });
@@ -1756,17 +1765,17 @@
                     <div>
                         <div class="flex justify-between items-center">
                             <div class="flex items-center gap-2">
-                                <span class="text-[11px] ${badgeClass} px-3 py-1 rounded-full font-extrabold uppercase tracking-wider shadow-sm">${news.Category || 'Educational'}</span>
+                                <span class="text-[11px] ${badgeClass} px-3 py-1 rounded-full font-extrabold uppercase tracking-wider shadow-sm">${escapeHTML(news.Category || 'Educational')}</span>
                                 <span class="text-[10px] text-slate-500 font-bold"><i class="fa-regular fa-clock"></i> ${readTime} min read</span>
                             </div>
                             <div class="flex gap-2">
                                 <button id="audio-btn-news-desc-${index}" onclick="toggleSpeech('news-desc-${index}', this)" title="খবরটি শুনুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all speech-btn"><i class="fa-solid fa-volume-high"></i></button>
-                                <button onclick="toggleBookmark('${news.Title.replace(/'/g, "\\'")}', '${news.Category}', 'News', '${news.Link || ''}')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
-                                <button onclick="shareContent('${news.Title.replace(/'/g, "\\'")}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
+                                <button onclick="toggleBookmark('${escapeHTML(news.Title).replace(/'/g, "\\'")}', '${escapeHTML(news.Category)}', 'News', '${news.Link || ''}')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
+                                <button onclick="shareContent('${escapeHTML(news.Title).replace(/'/g, "\\'")}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
                             </div>
                         </div>
-                        <h3 class="font-black text-lg text-slate-900 dark:text-white mt-4 mb-2">${news.Title}</h3>
-                        <p id="news-desc-${index}" class="text-slate-600 dark:text-slate-300 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${news.Description || ''}</p>
+                        <h3 class="font-black text-lg text-slate-900 dark:text-white mt-4 mb-2">${escapeHTML(news.Title)}</h3>
+                        <p id="news-desc-${index}" class="text-slate-600 dark:text-slate-300 text-sm mb-5 leading-relaxed line-clamp-3 transition-all duration-300">${escapeHTML(news.Description || '')}</p>
                     </div>
                     <div class="flex flex-wrap gap-2">
                         <button onclick="toggleReadMore('news-desc-${index}', this)" title="বিস্তারিত পড়ুন" class="bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 hover:bg-brand-100 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm inline-block cursor-pointer">
@@ -1797,20 +1806,22 @@
                 <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
                     <div>
                         <div class="flex justify-between items-center mb-1">
-                            <div class="text-[11px] text-brand-600 dark:text-brand-400 font-extrabold bg-brand-50 dark:bg-slate-700 px-2 py-0.5 rounded border border-brand-100 dark:border-slate-600">${book.Board || 'General'}</div>
+                            <div class="text-[11px] text-brand-600 dark:text-brand-400 font-extrabold bg-brand-50 dark:bg-slate-700 px-2 py-0.5 rounded border border-brand-100 dark:border-slate-600">${escapeHTML(book.Board || 'General')}</div>
                             <div class="flex gap-2">
-                                <button onclick="toggleBookmark('${book.Title.replace(/'/g, "\\'")}', '${book.Board}', 'Book', '${book.DownloadLink || ''}')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
-                                <button onclick="shareContent('${book.Title.replace(/'/g, "\\'")}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
+                                <button onclick="toggleBookmark('${escapeHTML(book.Title).replace(/'/g, "\\'")}', '${escapeHTML(book.Board)}', 'Book', '${book.DownloadLink || ''}')" title="বুকমার্ক করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-regular fa-bookmark"></i></button>
+                                <button onclick="shareContent('${escapeHTML(book.Title).replace(/'/g, "\\'")}')" title="শেয়ার করুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all"><i class="fa-solid fa-share-nodes"></i></button>
                             </div>
                         </div>
-                        <h3 class="font-black text-lg text-slate-900 dark:text-white mb-2 mt-2">${book.Title}</h3>
-                        <p class="text-slate-600 dark:text-slate-300 text-sm mb-6 leading-relaxed">${book.Description || ''}</p>
+                        <h3 class="font-black text-lg text-slate-900 dark:text-white mb-2 mt-2">${escapeHTML(book.Title)}</h3>
+                        <p class="text-slate-600 dark:text-slate-300 text-sm mb-6 leading-relaxed">${escapeHTML(book.Description || '')}</p>
                     </div>
                     <a href="${book.DownloadLink || '#'}" target="_blank" rel="noopener noreferrer" title="পিডিএফ ডাউনলোড করুন" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition w-fit shadow-md flex items-center gap-1.5 hover:-translate-y-0.5"><i class="fa-solid fa-download"></i> পিডিএফ ডাউনলোড</a>
                 </div>`;
             });
         }
 
+        let newsSearchTimeout, booksSearchTimeout, quizSearchTimeout;
+        
         function filterNews() {
             clearTimeout(newsSearchTimeout);
             newsSearchTimeout = setTimeout(() => {
@@ -1853,15 +1864,16 @@
             }
 
             subjects.forEach(subject => {
+                const safeSub = encodeURIComponent(subject);
                 const count = groupedQuizData[subject].length;
                 container.innerHTML += `
-                <div onclick="startQuizExam('${subject}')" title="${subject} কুইজ শুরু করুন" class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:border-brand-400 hover:shadow-md hover:-translate-y-1 transition duration-300 cursor-pointer flex flex-col justify-between group relative">
-                    <button onclick="event.stopPropagation(); shareQuizLink('${subject}')" title="কুইজ শেয়ার করুন" class="absolute top-4 right-4 text-slate-300 hover:text-brand-600 transition p-2 bg-slate-50 dark:bg-slate-700 rounded-lg hover:bg-brand-50"><i class="fa-solid fa-share-nodes"></i></button>
+                <div onclick="startQuizExam(decodeURIComponent('${safeSub}'))" title="${escapeHTML(subject)} কুইজ শুরু করুন" class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:border-brand-400 hover:shadow-md hover:-translate-y-1 transition duration-300 cursor-pointer flex flex-col justify-between group relative">
+                    <button onclick="event.stopPropagation(); shareQuizLink(decodeURIComponent('${safeSub}'))" title="কুইজ শেয়ার করুন" class="absolute top-4 right-4 text-slate-300 hover:text-brand-600 transition p-2 bg-slate-50 dark:bg-slate-700 rounded-lg hover:bg-brand-50"><i class="fa-solid fa-share-nodes"></i></button>
                     <div>
                         <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xl font-bold mb-4 border border-brand-200 dark:border-slate-600 group-hover:bg-brand-600 group-hover:text-white group-hover:shadow-md transition duration-300">
                             <i class="fa-solid fa-book-open"></i>
                         </div>
-                        <h3 class="font-black text-lg text-slate-900 dark:text-white mb-1 pr-6">${subject}</h3>
+                        <h3 class="font-black text-lg text-slate-900 dark:text-white mb-1 pr-6">${escapeHTML(subject)}</h3>
                         <p class="text-slate-500 dark:text-slate-400 text-xs font-bold">${count} টি প্রশ্ন রয়েছে</p>
                     </div>
                     <div class="mt-6 flex items-center gap-1 text-brand-600 dark:text-brand-400 text-xs font-bold bg-brand-50 dark:bg-slate-700 w-fit px-3 py-1.5 rounded-lg border border-brand-100 dark:border-slate-600 group-hover:bg-brand-600 group-hover:text-white group-hover:border-brand-600 transition duration-300">
@@ -1887,11 +1899,26 @@
             const pct = Math.round((answered / total) * 100);
             document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
         }
+        
+        function shuffleArray(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
 
         function startQuizExam(subject) {
             if (!localStorage.getItem('portalUserEmail')) {
                 showToast("এই কুইজটি দিতে হলে প্রথমে লগইন বা রেজিস্ট্রেশন করুন।", "error");
                 triggerRegisterPopup();
+                return;
+            }
+
+            if (!groupedQuizData[subject]) {
+                showToast("কুইজ লোড হতে সমস্যা হয়েছে।", "error");
                 return;
             }
 
@@ -1915,21 +1942,25 @@
                 let optionsHtml = '';
                 let optionsList = [];
                 ['Option1', 'Option2', 'Option3', 'Option4'].forEach(optKey => {
-                    if (q[optKey]) optionsList.push(q[optKey]);
+                    if (q[optKey]) optionsList.push(String(q[optKey]).trim());
                 });
                 optionsList = shuffleArray(optionsList);
                 
                 optionsList.forEach(opt => {
+                    const safeOpt = escapeHTML(opt);
                     optionsHtml += `
                     <label class="flex items-center gap-3.5 p-3.5 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl cursor-pointer hover:border-brand-400 hover:bg-brand-50/50 dark:hover:bg-slate-600 hover:shadow-sm transition text-sm font-medium">
-                        <input type="radio" name="exam_question_${index}" value="${opt}" onchange="updateQuizProgressBar()" class="accent-brand-600 w-4 h-4"> ${opt}
+                        <input type="radio" name="exam_question_${index}" value="${safeOpt}" onchange="updateQuizProgressBar()" class="accent-brand-600 w-4 h-4 shrink-0"> 
+                        <span class="flex-1">${safeOpt}</span>
                     </label>`;
                 });
 
+                const safeQuestion = escapeHTML(String(q.Question));
+                
                 qContainer.innerHTML += `
                 <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 space-y-3 shadow-sm hover:shadow-md transition">
                     <div class="flex items-start justify-between gap-2 border-b border-slate-200 dark:border-slate-700 pb-3">
-                        <p id="quiz-q-${index}" class="font-bold text-slate-900 dark:text-white text-base">${index + 1}. ${q.Question}</p>
+                        <p id="quiz-q-${index}" class="font-bold text-slate-900 dark:text-white text-base">${index + 1}. ${safeQuestion}</p>
                         <button onclick="toggleSpeech('quiz-q-${index}', this)" title="প্রশ্নটি শুনুন" class="text-slate-400 hover:text-brand-600 text-xs transition-all speech-btn shrink-0"><i class="fa-solid fa-volume-high"></i></button>
                     </div>
                     <div class="space-y-2 pt-1">
@@ -2041,7 +2072,6 @@
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ডাউনলোড হচ্ছে...`;
             btn.disabled = true;
 
-            // Reset scale for high quality PDF capture
             wrapper.style.transform = 'none';
             container.style.height = '793px';
             container.style.overflow = 'visible';
@@ -2058,13 +2088,13 @@
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
                 container.style.overflow = 'hidden';
-                scaleCertificate(); // Reapply scale for mobile view
+                scaleCertificate(); 
                 showToast("সার্টিফিকেট সফলভাবে ডাউনলোড হয়েছে!", "success");
             }).catch(err => {
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
                 container.style.overflow = 'hidden';
-                scaleCertificate(); // Reapply scale for mobile view
+                scaleCertificate(); 
                 showToast("ডাউনলোড করতে সমস্যা হয়েছে!", "error");
             });
         }
@@ -2114,29 +2144,29 @@
 
                         if (optValLower === correctAns && optValLower === selectedAns) {
                             optClass = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-bold";
-                            badge = `<span class="ml-2 text-xs bg-emerald-600 text-white px-2 py-0.5 rounded shadow-sm"><i class="fa-solid fa-check-double"></i> আপনার সঠিক উত্তর</span>`;
+                            badge = `<span class="ml-2 text-xs bg-emerald-600 text-white px-2 py-0.5 rounded shadow-sm shrink-0"><i class="fa-solid fa-check-double"></i> আপনার সঠিক উত্তর</span>`;
                         } else if (optValLower === correctAns) {
                             optClass = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-bold";
-                            badge = `<span class="ml-2 text-xs bg-emerald-600 text-white px-2 py-0.5 rounded shadow-sm"><i class="fa-solid fa-check"></i> সঠিক উত্তর</span>`;
+                            badge = `<span class="ml-2 text-xs bg-emerald-600 text-white px-2 py-0.5 rounded shadow-sm shrink-0"><i class="fa-solid fa-check"></i> সঠিক উত্তর</span>`;
                         } else if (optValLower === selectedAns) {
                             optClass = "bg-red-50 dark:bg-red-900/30 border-red-500 text-red-700 dark:text-red-300 font-bold";
-                            badge = `<span class="ml-2 text-xs bg-red-600 text-white px-2 py-0.5 rounded shadow-sm"><i class="fa-solid fa-xmark"></i> আপনার ভুল উত্তর</span>`;
+                            badge = `<span class="ml-2 text-xs bg-red-600 text-white px-2 py-0.5 rounded shadow-sm shrink-0"><i class="fa-solid fa-xmark"></i> আপনার ভুল উত্তর</span>`;
                         }
 
                         optionsReviewHtml += `
-                        <div class="p-3 border rounded-xl flex items-center justify-between text-xs sm:text-sm ${optClass}">
-                            <span>${optVal}</span>
+                        <div class="p-3 border rounded-xl flex items-center justify-between gap-2 text-xs sm:text-sm ${optClass}">
+                            <span class="flex-1">${escapeHTML(optVal)}</span>
                             ${badge}
                         </div>`;
                     }
                 });
                 
-                let skippedBadge = !selectedVal ? `<span class="text-[10px] text-orange-600 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300 px-2 py-0.5 rounded font-bold border border-orange-200 dark:border-orange-800 whitespace-nowrap">উত্তর দেওয়া হয়নি</span>` : '';
+                let skippedBadge = !selectedVal ? `<span class="text-[10px] text-orange-600 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300 px-2 py-0.5 rounded font-bold border border-orange-200 dark:border-orange-800 whitespace-nowrap shrink-0">উত্তর দেওয়া হয়নি</span>` : '';
 
                 reviewContainer.innerHTML += `
                 <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 space-y-2 mb-4">
                     <div class="flex justify-between items-start gap-2">
-                        <p class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">${index + 1}. ${q.Question}</p>
+                        <p class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">${index + 1}. ${escapeHTML(String(q.Question))}</p>
                         ${skippedBadge}
                     </div>
                     <div class="space-y-1.5 pt-1">
@@ -2149,11 +2179,8 @@
             const percentage = Math.round((score / totalQ) * 100);
             const scoreFormatted = `${score}/${totalQ} (${percentage}%)`;
             
-            if (percentage >= 60) {
-                playQuizSound('success');
-            } else {
-                playQuizSound('fail');
-            }
+            if (percentage >= 60) playQuizSound('success');
+            else playQuizSound('fail');
 
             if (percentage >= 80 && window.confetti) {
                 confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
@@ -2178,7 +2205,7 @@
             const certContainer = document.getElementById('certificate-action-container');
             if (percentage >= 40) {
                 certContainer.innerHTML = `
-                    <button onclick="generateCertificate('${currentActiveSubject.replace(/'/g, "\\'")}', ${percentage})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer mb-2">
+                    <button onclick="generateCertificate(decodeURIComponent('${encodeURIComponent(currentActiveSubject)}'), ${percentage})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer mb-2">
                         <i class="fa-solid fa-file-certificate text-lg"></i> সার্টিফিকেট ডাউনলোড করুন (Download Certificate)
                     </button>
                 `;
@@ -2213,6 +2240,7 @@
             document.getElementById('quiz-subject-view').classList.remove('hidden');
             currentActiveSubject = null;
         }
+
     </script>
 </body>
 </html>
