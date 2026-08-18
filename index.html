@@ -864,6 +864,14 @@
             }
         });
 
+        function confirmClearBookmarks() {
+            openConfirmModal("আপনি কি সমস্ত বুকমার্ক মুছে ফেলতে চান?", () => {
+                localStorage.removeItem('portalBookmarks');
+                showToast("সমস্ত বুকমার্ক মুছে ফেলা হয়েছে!", "success");
+                renderBookmarks();
+            });
+        }
+
         function filterBookmarksView(type, btnObj) {
             document.querySelectorAll('.bookmark-filter-btn').forEach(btn => {
                 btn.classList.remove('bg-brand-600', 'text-white');
@@ -1401,11 +1409,25 @@
                     closeAuthModal();
                 }
             } catch (error) {
-                console.error(error);
+                console.error("Auth Error:", error);
+                let msg = error.message || error.error_description || error.toString();
                 let errorMsg = "একটি সমস্যা হয়েছে, আবার চেষ্টা করুন!";
-                if(error.message.includes("Invalid login credentials")) errorMsg = "ইমেইল বা পাসওয়ার্ড ভুল!";
-                if(error.message.includes("already registered") || error.message.includes("User already exists")) errorMsg = "এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট খোলা আছে!";
-                if(error.message.includes("Password should be at least")) errorMsg = "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে!";
+                
+                const msgLower = msg.toLowerCase();
+                
+                if (msgLower.includes("invalid login credentials")) {
+                    errorMsg = "ইমেইল বা পাসওয়ার্ড ভুল!";
+                } else if (msgLower.includes("already registered") || msgLower.includes("user already exists")) {
+                    errorMsg = "এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট খোলা আছে!";
+                } else if (msgLower.includes("password should be at least")) {
+                    errorMsg = "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে!";
+                } else if (msgLower.includes("email not confirmed")) {
+                    errorMsg = "লগইন করার আগে দয়া করে ইমেইল ভেরিফাই করুন!";
+                } else if (msgLower.includes("failed to fetch") || msgLower.includes("network error")) {
+                    errorMsg = "ইন্টারনেট কানেকশন চেক করুন!";
+                } else {
+                    errorMsg = msg; // Show exact error to help debug
+                }
                 
                 showAuthMsg(errorMsg, 'error');
             } finally {
@@ -1511,6 +1533,32 @@
                 `;
             }
             updateHeaderBadge();
+        }
+
+        function logoutUser() {
+            openConfirmModal('আপনি কি সত্যিই লগআউট করতে চান?', async () => {
+                if(supabaseClient) await supabaseClient.auth.signOut();
+                showToast("লগআউট সম্পন্ন হয়েছে!", "success");
+                renderProfileSection();
+                updateHeaderBadge();
+            });
+        }
+
+        function updateHeaderBadge() {
+            const name = localStorage.getItem('portalUserName');
+            const email = localStorage.getItem('portalUserEmail');
+            const pic = localStorage.getItem('portalUserPic_' + email);
+            const badge = document.getElementById('mobile-user-badge');
+            
+            if (badge) {
+                if (pic) {
+                    badge.innerHTML = `<img src="${pic}" class="w-full h-full object-cover rounded-lg sm:rounded-xl" alt="Profile">`;
+                } else if (name) {
+                    badge.innerText = name.substring(0, 2).toUpperCase();
+                } else {
+                    badge.innerText = "MK";
+                }
+            }
         }
 
         async function fetchAutoNews() {
