@@ -34,7 +34,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <!-- Supabase Library -->
+    <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
@@ -88,6 +88,7 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+        /* Fix for cropper background */
         .cropper-view-box, .cropper-face {
             border-radius: 10%;
         }
@@ -552,10 +553,30 @@
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxwbVlJxSQKdXufRZkXaiPiTKXLPuUyJsTrjiCoabdotJFSX3tkpSH9dx_5KwHFd7J5/exec"; 
         
-        // Supabase Initialization
+        // Supabase Proper Initialization to avoid global variable conflict
         const supabaseUrl = 'https://gbvkxtmyqmlkmcxvbfsx.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdidmt4dG15cW1sa21jeHZiZnN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMzgzNTEsImV4cCI6MjEwMjYxNDM1MX0.jGXOP0Y_Q78m7DCI6A0tiLQ5KDNW1-K0ypr0AVW9H8w';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        let supabaseClient;
+        try {
+            const { createClient } = window.supabase;
+            supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+            // Set up Auth Listener safely
+            supabaseClient.auth.onAuthStateChange((event, session) => {
+                if (session) {
+                    localStorage.setItem('portalUserEmail', session.user.email);
+                    localStorage.setItem('portalUserName', session.user.user_metadata.full_name || session.user.email.split('@')[0]);
+                } else {
+                    localStorage.removeItem('portalUserEmail');
+                    localStorage.removeItem('portalUserName');
+                }
+                renderProfileSection();
+                updateHeaderBadge();
+            });
+        } catch (err) {
+            console.error("Supabase Init Error:", err);
+        }
 
         const GOOGLE_FORM_QUESTIONS = [];
 
@@ -568,7 +589,7 @@
             { text: "স্বপ্ন সেটা নয় যেটা তুমি ঘুমিয়ে দেখো, স্বপ্ন সেটা যেটা তোমায় ঘুমোতে দেয় না।", author: "এ. পি. জে. আব্দুল কালাম" },
             { text: "নিজেকে পরিবর্তন করো, পৃথিবী এমনিতেই বদলে যাবে।", author: "স্বামী বিবেকানন্দ" },
             { text: "যে ভুল করেনি, সে কখনো নতুন কিছু করার চেষ্টা করেনি।", author: "অ্যালবার্ট আইনস্টাইন" },
-            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেন্বা।", author: "স্টিভ জবস" },
+            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেন না।", author: "স্টিভ জবস" },
             { text: "সত্যিকারের জ্ঞানী সে, যে জানে সে কিছুই জানে না।", author: "সক্রেটিস" }
         ];
 
@@ -584,19 +605,6 @@
         let cropper = null;
         let selectedFileBase64 = null;
         let pendingConfirmAction = null;
-
-        // Supabase Auth State Listener
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (session) {
-                localStorage.setItem('portalUserEmail', session.user.email);
-                localStorage.setItem('portalUserName', session.user.user_metadata.full_name || session.user.email.split('@')[0]);
-            } else {
-                localStorage.removeItem('portalUserEmail');
-                localStorage.removeItem('portalUserName');
-            }
-            renderProfileSection();
-            updateHeaderBadge();
-        });
 
         function openConfirmModal(msg, action) {
             document.getElementById('confirm-modal-msg').innerText = msg;
@@ -1257,12 +1265,14 @@
             showAuthMsg('', '');
 
             try {
+                if (!supabaseClient) throw new Error("Supabase is not initialized.");
+
                 if (type === 'register') {
                     const name = document.getElementById('reg-name').value.trim();
                     const email = document.getElementById('reg-email').value.trim();
                     const password = document.getElementById('reg-pass').value;
 
-                    const { data, error } = await supabase.auth.signUp({
+                    const { data, error } = await supabaseClient.auth.signUp({
                         email: email,
                         password: password,
                         options: { data: { full_name: name } }
@@ -1278,7 +1288,7 @@
                     const email = document.getElementById('login-id').value.trim();
                     const password = document.getElementById('login-pass').value;
 
-                    const { data, error } = await supabase.auth.signInWithPassword({
+                    const { data, error } = await supabaseClient.auth.signInWithPassword({
                         email: email,
                         password: password
                     });
@@ -1289,9 +1299,10 @@
                     closeAuthModal();
                 }
             } catch (error) {
+                console.error(error);
                 let errorMsg = "একটি সমস্যা হয়েছে, আবার চেষ্টা করুন!";
                 if(error.message.includes("Invalid login credentials")) errorMsg = "ইমেইল বা পাসওয়ার্ড ভুল!";
-                if(error.message.includes("already registered")) errorMsg = "এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট খোলা আছে!";
+                if(error.message.includes("already registered") || error.message.includes("User already exists")) errorMsg = "এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট খোলা আছে!";
                 if(error.message.includes("Password should be at least")) errorMsg = "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে!";
                 
                 showAuthMsg(errorMsg, 'error');
@@ -1402,9 +1413,11 @@
 
         function logoutUser() {
             openConfirmModal('আপনি কি সত্যিই লগআউট করতে চান?', async () => {
-                await supabase.auth.signOut();
+                if(supabaseClient) await supabaseClient.auth.signOut();
                 localStorage.removeItem('portalUserPic'); 
                 showToast("লগআউট সম্পন্ন হয়েছে!", "success");
+                renderProfileSection();
+                updateHeaderBadge();
             });
         }
 
