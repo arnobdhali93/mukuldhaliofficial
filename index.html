@@ -35,7 +35,6 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
@@ -564,15 +563,11 @@
                 <button type="button" onclick="closeCertificateModal()" class="text-slate-400 hover:text-red-500 p-2 rounded-xl transition cursor-pointer bg-slate-100 dark:bg-slate-700"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             
-            <!-- Scaled Certificate Container -->
             <div id="certificate-preview-container" class="w-full overflow-hidden bg-slate-100 dark:bg-slate-900 rounded-xl flex justify-center items-start relative shrink-0">
-                <!-- Wrapper applies CSS scale so everything fits perfectly -->
                 <div id="certificate-wrapper" class="origin-top transition-transform duration-200 flex justify-center">
-                    <!-- The exact 1122x793px A4 Landscape element for html2pdf -->
                     <div id="certificate-content" class="bg-white relative shrink-0" style="width: 1122px; height: 793px; box-sizing: border-box; padding: 56px; font-family: 'Times New Roman', 'Kalpurush', serif; color: black;">
                         <div style="border: 15px solid #16a34a; border-radius: 15px; height: 100%; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 38px; box-sizing: border-box;">
                             
-                            <!-- Watermark Background -->
                             <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 453px; opacity: 0.05; z-index: 1; pointer-events: none;">
                                 <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect width="100" height="100" rx="25" fill="#16a34a" />
@@ -581,7 +576,6 @@
                                 </svg>
                             </div>
                             
-                            <!-- Content -->
                             <div style="z-index: 2; text-align: center; margin-top: -38px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
                                 <h1 style="color: #4ade80; font-size: 52px; font-weight: bold; margin: 0 0 30px 0; letter-spacing: 2px;">Certificate of Achievement</h1>
                                 <p style="font-size: 20px; color: #444; margin: 0 0 22px 0;">This is proudly presented to</p>
@@ -591,7 +585,6 @@
                                 <p id="cert-gen-score" style="font-size: 20px; color: #111; font-weight: bold; margin: 0;">Score: 0%</p>
                             </div>
                             
-                            <!-- Signatures Footer -->
                             <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 38px; box-sizing: border-box;">
                                 <div style="width: 245px; text-align: center;">
                                     <div style="border-top: 2px solid #111; margin-bottom: 8px; width: 100%;"></div>
@@ -621,36 +614,14 @@
         </div>
     </div>
 
+    <!-- Script Block -> Everything initialization goes here safely to prevent variable hoisting issues -->
     <script>
+        // Data and state definitions
         const API_URL = "https://script.google.com/macros/s/AKfycbxwbVlJxSQKdXufRZkXaiPiTKXLPuUyJsTrjiCoabdotJFSX3tkpSH9dx_5KwHFd7J5/exec"; 
-        
-        // Supabase Proper Initialization to avoid global variable conflict
         const supabaseUrl = 'https://gbvkxtmyqmlkmcxvbfsx.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdidmt4dG15cW1sa21jeHZiZnN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMzgzNTEsImV4cCI6MjEwMjYxNDM1MX0.jGXOP0Y_Q78m7DCI6A0tiLQ5KDNW1-K0ypr0AVW9H8w';
         
-        let supabaseClient;
-        try {
-            const { createClient } = window.supabase;
-            supabaseClient = createClient(supabaseUrl, supabaseKey);
-
-            // Set up Auth Listener safely
-            supabaseClient.auth.onAuthStateChange((event, session) => {
-                if (session) {
-                    localStorage.setItem('portalUserEmail', session.user.email);
-                    localStorage.setItem('portalUserName', session.user.user_metadata.full_name || session.user.email.split('@')[0]);
-                } else {
-                    localStorage.removeItem('portalUserEmail');
-                    localStorage.removeItem('portalUserName');
-                }
-                renderProfileSection();
-                updateHeaderBadge();
-            });
-        } catch (err) {
-            console.error("Supabase Init Error:", err);
-        }
-
         const GOOGLE_FORM_QUESTIONS = [];
-
         const dailyQuotes = [
             { text: "শিক্ষাই হলো সবচেয়ে শক্তিশালী অস্ত্র, যার মাধ্যমে আপনি পুরো বিশ্বকে বদলে দিতে পারেন।", author: "নেলসন ম্যান্ডেলা" },
             { text: "জ্ঞানের বিনিয়োগে সর্বোচ্চ মুনাফা পাওয়া যায়।", author: "বেঞ্জামিন ফ্রাঙ্কলিন" },
@@ -672,22 +643,55 @@
         let timeLeftSeconds = 300;
         let isSpeaking = false;
         let currentSpeakingId = null;
-
         let cropper = null;
         let selectedFileBase64 = null;
         let pendingConfirmAction = null;
+        let newsSearchTimeout, booksSearchTimeout, quizSearchTimeout;
 
-        // --- Smart Tab Alert ---
         let originalTitle = document.title;
         document.addEventListener("visibilitychange", function() {
-            if (document.hidden) {
-                document.title = "ফিরে আসুন! 📚 | MukulDhaliOfficial";
-            } else {
-                document.title = originalTitle;
+            if (document.hidden) document.title = "ফিরে আসুন! 📚 | MukulDhaliOfficial";
+            else document.title = originalTitle;
+        });
+
+        // Initialize Supabase Inside DOMContentLoaded To Prevent Variable Scoping Errors
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                const { createClient } = window.supabase;
+                window.supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+                window.supabaseClient.auth.onAuthStateChange((event, session) => {
+                    if (session) {
+                        localStorage.setItem('portalUserEmail', session.user.email);
+                        localStorage.setItem('portalUserName', session.user.user_metadata.full_name || session.user.email.split('@')[0]);
+                    } else {
+                        localStorage.removeItem('portalUserEmail');
+                        localStorage.removeItem('portalUserName');
+                    }
+                    if (typeof renderProfileSection === 'function') renderProfileSection();
+                    if (typeof updateHeaderBadge === 'function') updateHeaderBadge();
+                });
+            } catch (err) {
+                console.error("Supabase Init Error:", err);
+            }
+
+            setDailyDate();
+            applySavedTheme();
+            loadChatHistory();
+            updateHeaderBadge();
+            setupDailyQuote();
+            setGreeting();
+            loadAllData();
+
+            const hash = window.location.hash.replace('#', '');
+            if (hash && document.getElementById(hash)) {
+                showSection(hash, null);
             }
         });
 
-        // --- Full Screen Mode for Quiz ---
+        window.addEventListener('offline', () => { showToast("আপনি অফলাইনে আছেন! ইন্টারনেট সংযোগ পরীক্ষা করুন।", "error"); });
+        window.addEventListener('online', () => { showToast("ইন্টারনেট সংযোগ ফিরে এসেছে!", "success"); });
+
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {
@@ -702,29 +706,22 @@
             }
         }
 
-        // --- Animated Counter System ---
         function animateValue(obj, start, end, duration) {
             let startTimestamp = null;
             const step = (timestamp) => {
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
                 obj.innerHTML = Math.floor(progress * (end - start) + start);
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
+                if (progress < 1) window.requestAnimationFrame(step);
             };
             window.requestAnimationFrame(step);
         }
 
-        // --- Certificate Scaling System ---
         function scaleCertificate() {
             const wrapper = document.getElementById('certificate-wrapper');
             const container = document.getElementById('certificate-preview-container');
             const containerWidth = container.clientWidth || window.innerWidth * 0.9;
-            
-            // 1122px is the explicit width of the certificate content
             let scale = containerWidth / 1122;
-            
             if (scale < 1) {
                 wrapper.style.transform = `scale(${scale})`;
                 container.style.height = `${793 * scale}px`;
@@ -733,6 +730,7 @@
                 container.style.height = '793px';
             }
         }
+        
         window.addEventListener('resize', () => {
             if (!document.getElementById('certificate-modal').classList.contains('hidden')) {
                 scaleCertificate();
@@ -766,9 +764,6 @@
             if(pendingConfirmAction) pendingConfirmAction();
             closeConfirmModal();
         }
-
-        window.addEventListener('offline', () => { showToast("আপনি অফলাইনে আছেন! ইন্টারনেট সংযোগ পরীক্ষা করুন।", "error"); });
-        window.addEventListener('online', () => { showToast("ইন্টারনেট সংযোগ ফিরে এসেছে!", "success"); });
 
         function setupDailyQuote() {
             const today = new Date();
@@ -844,11 +839,8 @@
 
         function applySavedTheme() {
             const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.documentElement.classList.add('dark');
-            } else if (savedTheme === 'light') {
-                document.documentElement.classList.remove('dark');
-            }
+            if (savedTheme === 'dark') document.documentElement.classList.add('dark');
+            else if (savedTheme === 'light') document.documentElement.classList.remove('dark');
             updateDarkBtnUI();
         }
 
@@ -869,7 +861,6 @@
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             const scrolled = (winScroll / height) * 100;
-            
             const progressBar = document.getElementById("scroll-progress-bar");
             if(progressBar) progressBar.style.width = scrolled + "%";
 
@@ -904,7 +895,6 @@
         function toggleBookmark(title, category, type, link = '') {
             let bookmarks = JSON.parse(localStorage.getItem('portalBookmarks')) || [];
             const index = bookmarks.findIndex(b => b.title === title);
-            
             if (index > -1) {
                 bookmarks.splice(index, 1);
                 showToast("বুকমার্ক থেকে রিমুভ করা হয়েছে!", 'error');
@@ -919,10 +909,7 @@
         function renderBookmarks(filterType = 'All') {
             const container = document.getElementById('bookmarks-container');
             let bookmarks = JSON.parse(localStorage.getItem('portalBookmarks')) || [];
-            
-            if (filterType !== 'All') {
-                bookmarks = bookmarks.filter(b => b.type === filterType);
-            }
+            if (filterType !== 'All') bookmarks = bookmarks.filter(b => b.type === filterType);
 
             if (bookmarks.length === 0) {
                 container.innerHTML = `
@@ -1035,8 +1022,6 @@
                 btnElement.classList.add('text-slate-400');
             } else {
                 window.speechSynthesis.cancel(); 
-                
-                // Clear any previous active buttons
                 document.querySelectorAll('.speech-btn').forEach(btn => {
                     btn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
                     btn.classList.remove('text-brand-600', 'animate-pulse');
@@ -1044,7 +1029,6 @@
                 });
 
                 let utteranceStr = textStr;
-                // If the parameter passed is an ID, get its inner text
                 if(document.getElementById(textStr)) {
                     utteranceStr = document.getElementById(textStr).innerText;
                 }
@@ -1128,6 +1112,14 @@
         function saveChatHistory() {
             const chatHtml = document.getElementById('chat-history').innerHTML;
             localStorage.setItem('aiChatHistory', chatHtml);
+        }
+
+        function confirmClearChatHistory() {
+            openConfirmModal('আপনি কি সম্পূর্ণ চ্যাট হিস্ট্রি মুছে ফেলতে চান?', () => {
+                document.getElementById('chat-history').innerHTML = `<p class="bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 shadow-sm">হ্যালো! আমি আপনার এআই অ্যাসিস্ট্যান্ট। যেকোনো প্রশ্ন করুন।</p>`;
+                localStorage.removeItem('aiChatHistory');
+                showToast('চ্যাট মুছে ফেলা হয়েছে।', 'success');
+            });
         }
 
         async function askGemini() {
@@ -1332,13 +1324,10 @@
                 localStorage.setItem('portalUserPic_' + currentEmail, selectedFileBase64);
             }
             
-            finalizeProfileUpdate();
-        }
-
-        function finalizeProfileUpdate() {
             closeEditProfile();
             showToast("প্রোফাইল সফলভাবে আপডেট হয়েছে!", "success");
             renderProfileSection();
+            updateHeaderBadge();
         }
 
         function switchAuthTab(type) {
@@ -1425,14 +1414,14 @@
             showAuthMsg('', '');
 
             try {
-                if (!supabaseClient) throw new Error("Supabase is not initialized.");
+                if (!window.supabaseClient) throw new Error("Supabase is not initialized. Please check your internet connection.");
 
                 if (type === 'register') {
                     const name = document.getElementById('reg-name').value.trim();
                     const email = document.getElementById('reg-email').value.trim();
                     const password = document.getElementById('reg-pass').value;
 
-                    const { data, error } = await supabaseClient.auth.signUp({
+                    const { data, error } = await window.supabaseClient.auth.signUp({
                         email: email,
                         password: password,
                         options: { data: { full_name: name } }
@@ -1448,7 +1437,7 @@
                     const email = document.getElementById('login-id').value.trim();
                     const password = document.getElementById('login-pass').value;
 
-                    const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    const { data, error } = await window.supabaseClient.auth.signInWithPassword({
                         email: email,
                         password: password
                     });
@@ -1517,7 +1506,7 @@
             if (totalQuizzes >= 20 && avgScore >= 85) { userRank = "Expert 🏆"; rankClass = "bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300"; }
 
             if (loggedInUser && loggedInName) {
-                const avatarHtml = profilePic 
+                const avatarHtml = profilePic && profilePic !== 'null' && profilePic !== 'undefined'
                     ? `<img src="${profilePic}" class="w-full h-full object-cover">`
                     : loggedInName.substring(0, 2).toUpperCase();
 
@@ -1557,7 +1546,7 @@
 
                     <div class="space-y-2 pt-3 border-t border-slate-100 dark:border-slate-700 text-sm menu-font mt-3">
                         <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>স্ট্যাটাস:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">Active User</span></p>
-                        <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>সর্বশেষ কুইজ স্কোর:</span> <span id="stat-last-score" class="text-brand-600 dark:text-brand-400 font-bold">${lastQuizScore}</span></p>
+                        <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>সর্বশেষ কুইজ স্কোর:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">${lastQuizScore}</span></p>
                         <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>মোট কুইজ দিয়েছেন:</span> <span class="text-brand-600 dark:text-brand-400 font-bold"><span id="stat-total">0</span> টি</span></p>
                         <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>গড় অ্যাকুরেসি (Average):</span> <span class="text-brand-600 dark:text-brand-400 font-bold"><span id="stat-avg">0</span>%</span></p>
                     </div>
@@ -1571,9 +1560,10 @@
                     <button onclick="resetAllData()" title="সব ডেটা মুছুন" class="mt-4 w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 py-3 rounded-xl text-xs font-bold transition shadow-sm hover:-translate-y-0.5 cursor-pointer text-center border border-slate-200 dark:border-slate-600"><i class="fa-solid fa-trash-can text-red-500"></i> অ্যাপ ডেটা রিসেট করুন</button>
                 `;
 
-                // Animate Stats
-                animateValue(document.getElementById("stat-total"), 0, totalQuizzes, 1000);
-                animateValue(document.getElementById("stat-avg"), 0, avgScore, 1000);
+                setTimeout(() => {
+                    if(document.getElementById("stat-total")) animateValue(document.getElementById("stat-total"), 0, totalQuizzes, 1000);
+                    if(document.getElementById("stat-avg")) animateValue(document.getElementById("stat-avg"), 0, avgScore, 1000);
+                }, 100);
             } else {
                 profileContainer.innerHTML = `
                     <div class="text-center space-y-4 py-2">
@@ -1587,6 +1577,34 @@
                 `;
             }
             updateHeaderBadge();
+        }
+
+        function logoutUser() {
+            openConfirmModal('আপনি কি সত্যিই লগআউট করতে চান?', async () => {
+                if(window.supabaseClient) {
+                    await window.supabaseClient.auth.signOut();
+                }
+                showToast("লগআউট সম্পন্ন হয়েছে!", "success");
+                renderProfileSection();
+                updateHeaderBadge();
+            });
+        }
+
+        function updateHeaderBadge() {
+            const name = localStorage.getItem('portalUserName');
+            const email = localStorage.getItem('portalUserEmail');
+            const pic = localStorage.getItem('portalUserPic_' + email);
+            const badge = document.getElementById('mobile-user-badge');
+            
+            if (badge) {
+                if (pic && pic !== 'null' && pic !== 'undefined') {
+                    badge.innerHTML = `<img src="${pic}" class="w-full h-full object-cover rounded-lg sm:rounded-xl" alt="Profile">`;
+                } else if (name) {
+                    badge.innerText = name.substring(0, 2).toUpperCase();
+                } else {
+                    badge.innerText = "MK";
+                }
+            }
         }
 
         async function fetchAutoNews() {
@@ -2008,6 +2026,68 @@
             });
         }
 
+        function generateCertificate(subject, score) {
+            const name = localStorage.getItem('portalUserName') || 'Student';
+            const dateObj = new Date();
+            const dateStr = dateObj.toLocaleDateString('en-GB'); 
+            
+            document.getElementById('cert-gen-name').innerText = name;
+            document.getElementById('cert-gen-subject').innerText = subject;
+            document.getElementById('cert-gen-score').innerText = `Score: ${score}%`;
+            document.getElementById('cert-gen-date').innerText = dateStr;
+            
+            const modal = document.getElementById('certificate-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                scaleCertificate();
+                modal.classList.remove('opacity-0');
+            }, 50);
+        }
+
+        function closeCertificateModal() {
+            const modal = document.getElementById('certificate-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function downloadCertificatePDF() {
+            const element = document.getElementById('certificate-content');
+            const container = document.getElementById('certificate-preview-container');
+            const wrapper = document.getElementById('certificate-wrapper');
+            const btn = document.getElementById('download-cert-btn');
+            const originalHTML = btn.innerHTML;
+            
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ডাউনলোড হচ্ছে...`;
+            btn.disabled = true;
+
+            // Reset scale for high quality PDF capture
+            wrapper.style.transform = 'none';
+            container.style.height = '793px';
+            container.style.overflow = 'visible';
+
+            const opt = {
+              margin:       0,
+              filename:     `Certificate_${document.getElementById('cert-gen-subject').innerText}.pdf`,
+              image:        { type: 'jpeg', quality: 1 },
+              html2canvas:  { scale: 2, useCORS: true, windowWidth: 1122, windowHeight: 793, scrollY: 0, scrollX: 0 },
+              jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                container.style.overflow = 'hidden';
+                scaleCertificate(); // Reapply scale for mobile view
+                showToast("সার্টিফিকেট সফলভাবে ডাউনলোড হয়েছে!", "success");
+            }).catch(err => {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                container.style.overflow = 'hidden';
+                scaleCertificate(); // Reapply scale for mobile view
+                showToast("ডাউনলোড করতে সমস্যা হয়েছে!", "error");
+            });
+        }
+
         function submitExam() {
             if(examTimer) clearInterval(examTimer);
             
@@ -2088,11 +2168,8 @@
             const percentage = Math.round((score / totalQ) * 100);
             const scoreFormatted = `${score}/${totalQ} (${percentage}%)`;
             
-            if (percentage >= 60) {
-                playQuizSound('success');
-            } else {
-                playQuizSound('fail');
-            }
+            if (percentage >= 60) playQuizSound('success');
+            else playQuizSound('fail');
 
             if (percentage >= 80 && window.confetti) {
                 confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
@@ -2129,7 +2206,6 @@
                 `;
             }
             
-            // Append download review button at the top of the review container
             reviewContainer.innerHTML = `
             <div class="flex justify-end mb-3">
                 <button id="download-review-btn" onclick="downloadReviewAsPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm flex items-center gap-2">
@@ -2154,22 +2230,6 @@
             currentActiveSubject = null;
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            setDailyDate();
-            applySavedTheme();
-            loadChatHistory();
-            updateHeaderBadge();
-            
-            setupDailyQuote();
-            setGreeting();
-            
-            loadAllData();
-
-            const hash = window.location.hash.replace('#', '');
-            if (hash && document.getElementById(hash)) {
-                showSection(hash, null);
-            }
-        });
     </script>
 </body>
 </html>
