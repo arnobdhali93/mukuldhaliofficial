@@ -34,7 +34,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <!-- PDF Generation Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
@@ -563,40 +565,42 @@
                 <button type="button" onclick="closeCertificateModal()" class="text-slate-400 hover:text-red-500 p-2 rounded-xl transition cursor-pointer bg-slate-100 dark:bg-slate-700"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             
-            <div class="flex-1 overflow-auto bg-slate-100 dark:bg-slate-900 rounded-xl p-4 flex justify-center items-start">
-                <div id="certificate-content" class="bg-white relative shrink-0" style="width: 297mm; height: 210mm; box-sizing: border-box; padding: 15mm; font-family: 'Times New Roman', 'Kalpurush', serif; color: black;">
-                    <div style="border: 4mm solid #16a34a; border-radius: 4mm; height: 100%; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10mm; box-sizing: border-box;">
-                        
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120mm; opacity: 0.05; z-index: 1; pointer-events: none;">
-                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="100" height="100" rx="25" fill="#16a34a" />
-                                <path d="M50 25 L20 42.5 L50 60 L80 42.5 Z" fill="#ffffff"/>
-                                <path d="M20 52.5 L50 70 L80 52.5" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        
-                        <div style="z-index: 2; text-align: center; margin-top: -10mm; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                            <h1 style="color: #4ade80; font-size: 14mm; font-weight: bold; margin: 0 0 8mm 0; letter-spacing: 0.5mm;">Certificate of Achievement</h1>
-                            <p style="font-size: 5.5mm; color: #444; margin: 0 0 6mm 0;">This is proudly presented to</p>
-                            <h2 id="cert-gen-name" style="font-size: 10mm; color: #111; font-weight: bold; margin: 0 0 8mm 0; border-bottom: 0.8mm solid #2ea85c; padding-bottom: 2mm; min-width: 80mm; display: inline-block;">Student Name</h2>
-                            <p style="font-size: 5mm; color: #444; margin: 0 0 6mm 0;">For successfully completing the Mock Test on</p>
-                            <h3 id="cert-gen-subject" style="font-size: 7.5mm; color: #16a34a; font-weight: bold; margin: 0 0 6mm 0;">Subject</h3>
-                            <p id="cert-gen-score" style="font-size: 5.5mm; color: #111; font-weight: bold; margin: 0;">Score: 0%</p>
-                        </div>
-                        
-                        <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 10mm;">
-                            <div style="width: 65mm; text-align: center;">
-                                <div style="border-top: 0.4mm solid #111; margin-bottom: 2mm; width: 100%;"></div>
-                                <p id="cert-gen-date" style="font-size: 4.5mm; color: #111; font-weight: bold; margin: 0 0 1.5mm 0; line-height: 1.2;">Date</p>
-                                <p style="font-size: 4mm; color: #555; margin: 0; line-height: 1.2;">Date</p>
+            <div id="certificate-preview-container" class="w-full overflow-hidden bg-slate-100 dark:bg-slate-900 rounded-xl flex justify-center items-start relative">
+                <div id="certificate-wrapper" class="flex justify-center origin-top-left transition-transform duration-200">
+                    <div id="certificate-content" class="bg-white relative shrink-0" style="width: 1122px; height: 793px; box-sizing: border-box; padding: 56px; font-family: 'Times New Roman', 'Kalpurush', serif; color: black;">
+                        <div style="border: 15px solid #16a34a; border-radius: 15px; height: 100%; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 38px; box-sizing: border-box;">
+                            
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 453px; opacity: 0.05; z-index: 1; pointer-events: none;">
+                                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="100" height="100" rx="25" fill="#16a34a" />
+                                    <path d="M50 25 L20 42.5 L50 60 L80 42.5 Z" fill="#ffffff"/>
+                                    <path d="M20 52.5 L50 70 L80 52.5" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
                             </div>
-                            <div style="width: 65mm; text-align: center;">
-                                <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 25mm; margin-bottom: 1mm; position: relative;">
-                                    <img src="https://lh3.googleusercontent.com/d/1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN" style="width: 33mm; height: auto; max-height: 11mm; object-fit: contain; margin-bottom: -1mm; z-index: 2; position: relative;">
+                            
+                            <div style="z-index: 2; text-align: center; margin-top: -38px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                <h1 style="color: #4ade80; font-size: 52px; font-weight: bold; margin: 0 0 30px 0; letter-spacing: 2px;">Certificate of Achievement</h1>
+                                <p style="font-size: 20px; color: #444; margin: 0 0 22px 0;">This is proudly presented to</p>
+                                <h2 id="cert-gen-name" style="font-size: 38px; color: #111; font-weight: bold; margin: 0 0 30px 0; border-bottom: 3px solid #2ea85c; padding-bottom: 8px; min-width: 302px; display: inline-block;">Student Name</h2>
+                                <p style="font-size: 18px; color: #444; margin: 0 0 22px 0;">For successfully completing the Mock Test on</p>
+                                <h3 id="cert-gen-subject" style="font-size: 28px; color: #16a34a; font-weight: bold; margin: 0 0 22px 0;">Subject</h3>
+                                <p id="cert-gen-score" style="font-size: 20px; color: #111; font-weight: bold; margin: 0;">Score: 0%</p>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 38px; box-sizing: border-box;">
+                                <div style="width: 245px; text-align: center;">
+                                    <div style="border-top: 2px solid #111; margin-bottom: 8px; width: 100%;"></div>
+                                    <p id="cert-gen-date" style="font-size: 17px; color: #111; font-weight: bold; margin: 0 0 6px 0; line-height: 1.2;">Date</p>
+                                    <p style="font-size: 15px; color: #555; margin: 0; line-height: 1.2;">Date</p>
                                 </div>
-                                <div style="border-top: 0.4mm solid #111; margin-bottom: 2mm; width: 100%;"></div>
-                                <p style="font-size: 4.5mm; color: #111; font-weight: bold; margin: 0 0 1.5mm 0; line-height: 1.2;">MukulDhaliOfficial</p>
-                                <p style="font-size: 4mm; color: #555; margin: 0; line-height: 1.2;">Authority</p>
+                                <div style="width: 245px; text-align: center;">
+                                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 94px; margin-bottom: 4px; position: relative;">
+                                        <img src="https://lh3.googleusercontent.com/d/1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN" style="width: 125px; height: auto; max-height: 41px; object-fit: contain; margin-bottom: -4px; z-index: 2; position: relative;">
+                                    </div>
+                                    <div style="border-top: 2px solid #111; margin-bottom: 8px; width: 100%;"></div>
+                                    <p style="font-size: 17px; color: #111; font-weight: bold; margin: 0 0 6px 0; line-height: 1.2;">MukulDhaliOfficial</p>
+                                    <p style="font-size: 15px; color: #555; margin: 0; line-height: 1.2;">Authority</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -615,7 +619,7 @@
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxwbVlJxSQKdXufRZkXaiPiTKXLPuUyJsTrjiCoabdotJFSX3tkpSH9dx_5KwHFd7J5/exec"; 
         
-        // Supabase Initialization
+        // Supabase Proper Initialization to avoid global variable conflict
         const supabaseUrl = 'https://gbvkxtmyqmlkmcxvbfsx.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdidmt4dG15cW1sa21jeHZiZnN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMzgzNTEsImV4cCI6MjEwMjYxNDM1MX0.jGXOP0Y_Q78m7DCI6A0tiLQ5KDNW1-K0ypr0AVW9H8w';
         
@@ -624,6 +628,7 @@
             const { createClient } = window.supabase;
             supabaseClient = createClient(supabaseUrl, supabaseKey);
 
+            // Set up Auth Listener safely
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (session) {
                     localStorage.setItem('portalUserEmail', session.user.email);
@@ -667,7 +672,7 @@
         let selectedFileBase64 = null;
         let pendingConfirmAction = null;
 
-        // --- NEW FEATURE: Smart Tab Alert ---
+        // --- Smart Tab Alert ---
         let originalTitle = document.title;
         document.addEventListener("visibilitychange", function() {
             if (document.hidden) {
@@ -677,7 +682,7 @@
             }
         });
 
-        // --- NEW FEATURE: Full Screen Mode for Quiz ---
+        // --- Full Screen Mode for Quiz ---
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {
@@ -691,6 +696,29 @@
                 }
             }
         }
+
+        // --- Certificate Scaling System ---
+        function scaleCertificate() {
+            const wrapper = document.getElementById('certificate-wrapper');
+            const container = document.getElementById('certificate-preview-container');
+            const containerWidth = container.clientWidth;
+            
+            // 1122 is the explicit width of the certificate content
+            let scale = containerWidth / 1122;
+            
+            if (scale < 1) {
+                wrapper.style.transform = `scale(${scale})`;
+                container.style.height = `${793 * scale}px`;
+            } else {
+                wrapper.style.transform = 'none';
+                container.style.height = '793px';
+            }
+        }
+        window.addEventListener('resize', () => {
+            if (!document.getElementById('certificate-modal').classList.contains('hidden')) {
+                scaleCertificate();
+            }
+        });
 
         function openConfirmModal(msg, action) {
             document.getElementById('confirm-modal-msg').innerText = msg;
@@ -835,14 +863,6 @@
                 scrollToTopBtn.classList.remove('opacity-100', 'translate-y-0');
             }
         });
-
-        function confirmClearBookmarks() {
-            openConfirmModal("আপনি কি সমস্ত বুকমার্ক মুছে ফেলতে চান?", () => {
-                localStorage.removeItem('portalBookmarks');
-                showToast("সমস্ত বুকমার্ক মুছে ফেলা হয়েছে!", "success");
-                renderBookmarks();
-            });
-        }
 
         function filterBookmarksView(type, btnObj) {
             document.querySelectorAll('.bookmark-filter-btn').forEach(btn => {
@@ -1066,25 +1086,18 @@
             const savedChat = localStorage.getItem('aiChatHistory');
             if (savedChat) document.getElementById('chat-history').innerHTML = savedChat;
         }
-        function saveChatHistory() {
-            const chatHtml = document.getElementById('chat-history').innerHTML;
-            localStorage.setItem('aiChatHistory', chatHtml);
-        }
         
-        function confirmClearChatHistory() {
-            openConfirmModal('আপনি কি সম্পূর্ণ চ্যাট হিস্ট্রি মুছে ফেলতে চান?', () => {
-                document.getElementById('chat-history').innerHTML = `<p class="bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 shadow-sm">হ্যালো! আমি আপনার এআই অ্যাসিস্ট্যান্ট। যেকোনো প্রশ্ন করুন।</p>`;
-                localStorage.removeItem('aiChatHistory');
-                showToast('চ্যাট মুছে ফেলা হয়েছে।', 'success');
-            });
-        }
-
         window.copyChatText = function(text) {
             navigator.clipboard.writeText(text).then(() => {
                 showToast("উত্তরটি কপি করা হয়েছে!", "success");
             }).catch(err => {
                 showToast("কপি করা সম্ভব হয়নি!", "error");
             });
+        }
+
+        function saveChatHistory() {
+            const chatHtml = document.getElementById('chat-history').innerHTML;
+            localStorage.setItem('aiChatHistory', chatHtml);
         }
 
         async function askGemini() {
@@ -1220,7 +1233,7 @@
             if(cropper) { cropper.destroy(); }
             cropper = new Cropper(img, {
                 aspectRatio: 1, 
-                viewMode: 2,
+                viewMode: 1,
                 dragMode: 'move',
                 autoCropArea: 0.8,
                 restore: false,
@@ -1296,34 +1309,6 @@
             closeEditProfile();
             showToast("প্রোফাইল সফলভাবে আপডেট হয়েছে!", "success");
             renderProfileSection();
-        }
-
-        function checkPasswordStrength() {
-            const pass = document.getElementById('reg-pass').value;
-            const strengthText = document.getElementById('pass-strength');
-            
-            if (pass.length === 0) {
-                strengthText.innerText = '';
-                return;
-            }
-            
-            let strength = 0;
-            if (pass.length >= 6) strength++;
-            if (pass.length >= 8) strength++;
-            if (/[A-Z]/.test(pass)) strength++;
-            if (/[0-9]/.test(pass)) strength++;
-            if (/[^A-Za-z0-9]/.test(pass)) strength++;
-
-            if (strength <= 2) {
-                strengthText.innerText = 'দুর্বল পাসওয়ার্ড';
-                strengthText.className = 'text-[10px] mt-1 font-bold text-red-500';
-            } else if (strength === 3 || strength === 4) {
-                strengthText.innerText = 'মাঝারি পাসওয়ার্ড';
-                strengthText.className = 'text-[10px] mt-1 font-bold text-orange-500';
-            } else {
-                strengthText.innerText = 'শক্তিশালী পাসওয়ার্ড';
-                strengthText.className = 'text-[10px] mt-1 font-bold text-emerald-500';
-            }
         }
 
         function switchAuthTab(type) {
@@ -1429,18 +1414,7 @@
             }
         }
 
-        function resetAllData() {
-            openConfirmModal("আপনি কি নিশ্চিত? এর ফলে আপনার কুইজ হিস্ট্রি এবং বুকমার্ক মুছে যাবে, কিন্তু অ্যাকাউন্ট লগইন থাকবে!", () => {
-                localStorage.removeItem('fullQuizHistory');
-                localStorage.removeItem('lastQuizScore');
-                localStorage.removeItem('portalBookmarks');
-                localStorage.removeItem('aiChatHistory');
-                showToast("অ্যাপ ডেটা রিসেট হয়েছে।", "success");
-                location.reload();
-            });
-        }
-
-        function copyUserEmail() {
+        window.copyUserEmail = function() {
             const email = localStorage.getItem('portalUserEmail');
             if (email) {
                 navigator.clipboard.writeText(email).then(() => {
@@ -1537,32 +1511,6 @@
                 `;
             }
             updateHeaderBadge();
-        }
-
-        function logoutUser() {
-            openConfirmModal('আপনি কি সত্যিই লগআউট করতে চান?', async () => {
-                if(supabaseClient) await supabaseClient.auth.signOut();
-                showToast("লগআউট সম্পন্ন হয়েছে!", "success");
-                renderProfileSection();
-                updateHeaderBadge();
-            });
-        }
-
-        function updateHeaderBadge() {
-            const name = localStorage.getItem('portalUserName');
-            const email = localStorage.getItem('portalUserEmail');
-            const pic = localStorage.getItem('portalUserPic_' + email);
-            const badge = document.getElementById('mobile-user-badge');
-            
-            if (badge) {
-                if (pic) {
-                    badge.innerHTML = `<img src="${pic}" class="w-full h-full object-cover rounded-lg sm:rounded-xl" alt="Profile">`;
-                } else if (name) {
-                    badge.innerText = name.substring(0, 2).toUpperCase();
-                } else {
-                    badge.innerText = "MK";
-                }
-            }
         }
 
         async function fetchAutoNews() {
@@ -1865,7 +1813,6 @@
         }
 
         function startQuizExam(subject) {
-            // New Feature: Request Login specific to starting the test
             if (!localStorage.getItem('portalUserEmail')) {
                 showToast("এই কুইজটি দিতে হলে প্রথমে লগইন বা রেজিস্ট্রেশন করুন।", "error");
                 triggerRegisterPopup();
@@ -1967,7 +1914,10 @@
             
             const modal = document.getElementById('certificate-modal');
             modal.classList.remove('hidden');
-            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+            setTimeout(() => {
+                scaleCertificate();
+                modal.classList.remove('opacity-0');
+            }, 50);
         }
 
         function closeCertificateModal() {
@@ -1978,27 +1928,36 @@
 
         function downloadCertificatePDF() {
             const element = document.getElementById('certificate-content');
+            const container = document.getElementById('certificate-preview-container');
             const btn = document.getElementById('download-cert-btn');
             const originalHTML = btn.innerHTML;
             
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ডাউনলোড হচ্ছে...`;
             btn.disabled = true;
 
+            element.style.transform = 'none';
+            container.style.height = '793px';
+            container.style.overflow = 'visible';
+
             const opt = {
               margin:       0,
               filename:     `Certificate_${document.getElementById('cert-gen-subject').innerText}.pdf`,
-              image:        { type: 'jpeg', quality: 0.98 },
-              html2canvas:  { scale: 2, useCORS: true },
+              image:        { type: 'jpeg', quality: 1 },
+              html2canvas:  { scale: 2, useCORS: true, windowWidth: 1122, windowHeight: 793, scrollY: 0, scrollX: 0 },
               jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
+                container.style.overflow = 'hidden';
+                scaleCertificate();
                 showToast("সার্টিফিকেট সফলভাবে ডাউনলোড হয়েছে!", "success");
             }).catch(err => {
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
+                container.style.overflow = 'hidden';
+                scaleCertificate();
                 showToast("ডাউনলোড করতে সমস্যা হয়েছে!", "error");
             });
         }
