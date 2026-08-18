@@ -555,59 +555,43 @@
         </div>
     </div>
 
-    <!-- Certificate Live Preview Modal -->
-    <div id="certificate-modal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-[250] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-5xl rounded-3xl p-4 md:p-6 shadow-2xl relative flex flex-col max-h-[90vh]">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-black text-xl text-slate-900 dark:text-white">আপনার সার্টিফিকেট</h3>
-                <button type="button" onclick="closeCertificateModal()" class="text-slate-400 hover:text-red-500 p-2 rounded-xl transition cursor-pointer bg-slate-100 dark:bg-slate-700"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            
-            <div class="flex-1 overflow-auto bg-slate-100 dark:bg-slate-900 rounded-xl p-4 flex justify-center items-start">
-                <div id="certificate-content" class="bg-white relative shrink-0" style="width: 297mm; height: 210mm; box-sizing: border-box; padding: 15mm; font-family: 'Times New Roman', 'Kalpurush', serif; color: black;">
-                    <div style="border: 4mm solid #16a34a; border-radius: 4mm; height: 100%; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10mm; box-sizing: border-box;">
-                        
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120mm; opacity: 0.05; z-index: 1; pointer-events: none;">
-                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="100" height="100" rx="25" fill="#16a34a" />
-                                <path d="M50 25 L20 42.5 L50 60 L80 42.5 Z" fill="#ffffff"/>
-                                <path d="M20 52.5 L50 70 L80 52.5" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
+    <!-- Certificate Template Hidden Container -->
+    <div id="certificate-content-hidden" class="hidden">
+        <div id="certificate-template" style="width: 297mm; height: 198mm; box-sizing: border-box; padding: 10mm; font-family: 'Times New Roman', 'Kalpurush', serif; color: black; background-color: #ffffff;">
+            <div style="border: 4mm solid #16a34a; border-radius: 4mm; height: 100%; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10mm; box-sizing: border-box;">
+                
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120mm; opacity: 0.05; z-index: 1; pointer-events: none;">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100" height="100" rx="25" fill="#16a34a" />
+                        <path d="M50 25 L20 42.5 L50 60 L80 42.5 Z" fill="#ffffff"/>
+                        <path d="M20 52.5 L50 70 L80 52.5" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                
+                <div style="z-index: 2; text-align: center; margin-top: -5mm; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <h1 style="color: #16a34a; font-size: 14mm; font-weight: bold; margin: 0 0 8mm 0; letter-spacing: 0.5mm;">Certificate of Achievement</h1>
+                    <p style="font-size: 5.5mm; color: #444; margin: 0 0 6mm 0;">This is proudly presented to</p>
+                    <h2 id="cert-gen-name" style="font-size: 10mm; color: #111; font-weight: bold; margin: 0 0 8mm 0; border-bottom: 0.8mm solid #2ea85c; padding-bottom: 2mm; min-width: 80mm; display: inline-block;">Student Name</h2>
+                    <p style="font-size: 5mm; color: #444; margin: 0 0 6mm 0;">For successfully completing the Mock Test on</p>
+                    <h3 id="cert-gen-subject" style="font-size: 7.5mm; color: #16a34a; font-weight: bold; margin: 0 0 6mm 0;">Subject</h3>
+                    <p id="cert-gen-score" style="font-size: 5.5mm; color: #111; font-weight: bold; margin: 0;">Score: 0%</p>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 10mm;">
+                    <div style="width: 65mm; text-align: center;">
+                        <div style="border-top: 0.4mm solid #111; margin-bottom: 2mm; width: 100%;"></div>
+                        <p id="cert-gen-date" style="font-size: 4.5mm; color: #111; font-weight: bold; margin: 0 0 1.5mm 0; line-height: 1.2;">Date</p>
+                        <p style="font-size: 4mm; color: #555; margin: 0; line-height: 1.2;">Date</p>
+                    </div>
+                    <div style="width: 65mm; text-align: center;">
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 25mm; margin-bottom: 1mm; position: relative;">
+                            <img src="https://lh3.googleusercontent.com/d/1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN" style="width: 33mm; height: auto; max-height: 11mm; object-fit: contain; margin-bottom: -1mm; z-index: 2; position: relative;">
                         </div>
-                        
-                        <div style="z-index: 2; text-align: center; margin-top: -10mm; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                            <h1 style="color: #4ade80; font-size: 14mm; font-weight: bold; margin: 0 0 8mm 0; letter-spacing: 0.5mm;">Certificate of Achievement</h1>
-                            <p style="font-size: 5.5mm; color: #444; margin: 0 0 6mm 0;">This is proudly presented to</p>
-                            <h2 id="cert-gen-name" style="font-size: 10mm; color: #111; font-weight: bold; margin: 0 0 8mm 0; border-bottom: 0.8mm solid #2ea85c; padding-bottom: 2mm; min-width: 80mm; display: inline-block;">Student Name</h2>
-                            <p style="font-size: 5mm; color: #444; margin: 0 0 6mm 0;">For successfully completing the Mock Test on</p>
-                            <h3 id="cert-gen-subject" style="font-size: 7.5mm; color: #16a34a; font-weight: bold; margin: 0 0 6mm 0;">Subject</h3>
-                            <p id="cert-gen-score" style="font-size: 5.5mm; color: #111; font-weight: bold; margin: 0;">Score: 0%</p>
-                        </div>
-                        
-                        <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 10mm;">
-                            <div style="width: 65mm; text-align: center;">
-                                <div style="border-top: 0.4mm solid #111; margin-bottom: 2mm; width: 100%;"></div>
-                                <p id="cert-gen-date" style="font-size: 4.5mm; color: #111; font-weight: bold; margin: 0 0 1.5mm 0; line-height: 1.2;">Date</p>
-                                <p style="font-size: 4mm; color: #555; margin: 0; line-height: 1.2;">Date</p>
-                            </div>
-                            <div style="width: 65mm; text-align: center;">
-                                <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 25mm; margin-bottom: 1mm; position: relative;">
-                                    <img src="https://lh3.googleusercontent.com/d/1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN" style="width: 33mm; height: auto; max-height: 11mm; object-fit: contain; margin-bottom: -1mm; z-index: 2; position: relative;">
-                                </div>
-                                <div style="border-top: 0.4mm solid #111; margin-bottom: 2mm; width: 100%;"></div>
-                                <p style="font-size: 4.5mm; color: #111; font-weight: bold; margin: 0 0 1.5mm 0; line-height: 1.2;">MukulDhaliOfficial</p>
-                                <p style="font-size: 4mm; color: #555; margin: 0; line-height: 1.2;">Authority</p>
-                            </div>
-                        </div>
+                        <div style="border-top: 0.4mm solid #111; margin-bottom: 2mm; width: 100%;"></div>
+                        <p style="font-size: 4.5mm; color: #111; font-weight: bold; margin: 0 0 1.5mm 0; line-height: 1.2;">MukulDhaliOfficial</p>
+                        <p style="font-size: 4mm; color: #555; margin: 0; line-height: 1.2;">Authority</p>
                     </div>
                 </div>
-            </div>
-            
-            <div class="mt-4 flex justify-end gap-3 shrink-0">
-                <button type="button" onclick="closeCertificateModal()" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-6 py-3 rounded-xl text-sm font-bold transition shadow-sm border border-slate-200 dark:border-slate-600">বন্ধ করুন</button>
-                <button type="button" id="download-cert-btn" onclick="openAndDownloadCertificate()" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-xl text-sm font-bold transition shadow-md hover:-translate-y-0.5 flex items-center gap-2">
-                    <i class="fa-solid fa-download"></i> PDF ডাউনলোড করুন
-                </button>
             </div>
         </div>
     </div>
@@ -1565,6 +1549,137 @@
             }
         }
 
+        // --- NEW & UPDATED CERTIFICATE GENERATION LOGIC ---
+        function generateAndDownloadCertificate(subjectName, percentage) {
+            const userName = localStorage.getItem('portalUserName') || 'Student';
+            const today = new Date();
+            const formattedDate = `${String(today.getDate()).padStart(2, '0')}.${String(today.getMonth() + 1).padStart(2, '0')}.${today.getFullYear()}`;
+
+            // Prepare template content
+            const certElement = document.getElementById('certificate-template').cloneNode(true);
+            certElement.querySelector('#cert-gen-name').innerText = userName;
+            certElement.querySelector('#cert-gen-subject').innerText = subjectName;
+            certElement.querySelector('#cert-gen-score').innerText = `Score: ${percentage}%`;
+            certElement.querySelector('#cert-gen-date').innerText = formattedDate;
+
+            // Create HTML content string for the new window
+            const certHtmlContent = certElement.outerHTML;
+
+            // Open new tab
+            const newWin = window.open('', '_blank');
+            if (!newWin) {
+                showToast("পপ-আপ ব্লক করা রয়েছে! ব্রাউজারের পপ-আপ অ্যালাউ (Allow) করুন।", "error");
+                return;
+            }
+
+            // Write HTML content into the new tab
+            newWin.document.write(`
+                <!DOCTYPE html>
+                <html lang="bn">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Certificate - ${userName}</title>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>
+                    <style>
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        body {
+                            background-color: #0f172a;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            min-height: 100vh;
+                            padding: 10px;
+                            font-family: 'Times New Roman', serif;
+                        }
+                        .cert-wrapper {
+                            width: 100%;
+                            max-width: 900px;
+                            aspect-ratio: 3 / 2;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            background: transparent;
+                        }
+                        /* Mobile Responsive 3:2 Scale Container */
+                        .cert-container {
+                            width: 297mm;
+                            height: 198mm;
+                            transform-origin: center center;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="cert-wrapper" id="wrapper">
+                        <div class="cert-container" id="cert-to-print">
+                            ${certHtmlContent}
+                        </div>
+                    </div>
+
+                    <script>
+                        // Responsive scaling for 3:2 display on any device/mobile screen
+                        function fitCertificate() {
+                            const wrapper = document.getElementById('wrapper');
+                            const cert = document.getElementById('cert-to-print');
+                            const scaleX = wrapper.clientWidth / cert.offsetWidth;
+                            const scaleY = wrapper.clientHeight / cert.offsetHeight;
+                            const scale = Math.min(scaleX, scaleY);
+                            cert.style.transform = 'scale(' + scale + ')';
+                        }
+
+                        window.addEventListener('resize', fitCertificate);
+                        fitCertificate();
+
+                        // Auto Download Trigger
+                        window.onload = function() {
+                            setTimeout(() => {
+                                const element = document.getElementById('cert-to-print');
+                                // Reset transform temporarily for full A4 quality PDF generation
+                                element.style.transform = 'none';
+
+                                const opt = {
+                                    margin: 0,
+                                    filename: 'Certificate_${userName.replace(/\s+/g, '_')}.pdf',
+                                    image: { type: 'jpeg', quality: 0.98 },
+                                    html2canvas: { scale: 2, useCORS: true, logging: false },
+                                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+                                };
+
+                                html2pdf().set(opt).from(element).save().then(() => {
+                                    fitCertificate(); // Re-apply scale
+                                });
+                            }, 500);
+                        };
+                    <\/script>
+                </body>
+                </html>
+            `);
+            newWin.document.close();
+        }
+
+        // Render Certificate Download Button on Result Screen
+        function renderCertificateButton(subjectName, percentage) {
+            const container = document.getElementById('certificate-action-container');
+            if (!container) return;
+
+            if (percentage >= 50) {
+                container.innerHTML = `
+                    <div class="p-4 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-xl my-4 text-center">
+                        <p class="text-xs text-emerald-800 dark:text-emerald-300 font-bold mb-2">🎉 অভিনন্দন! আপনি সফলভাবে পরীক্ষায় উত্তীর্ণ হয়েছেন।</p>
+                        <button onclick="generateAndDownloadCertificate('${subjectName.replace(/'/g, "\\'")}', ${percentage})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5 flex items-center justify-center gap-2 mx-auto cursor-pointer">
+                            <i class="fa-solid fa-download"></i> Download Certificate
+                        </button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl my-4 text-center">
+                        <p class="text-xs text-amber-800 dark:text-amber-300 font-bold">সার্টিফিকেট পেতে কমপক্ষে ৫০% নম্বর প্রয়োজন। আবার চেষ্টা করুন!</p>
+                    </div>
+                `;
+            }
+        }
+
         async function fetchAutoNews() {
             const CACHE_KEY = 'cachedAutoNews_v1';
             const CACHE_TIME_KEY = 'cachedAutoNewsTime_v1';
@@ -1594,144 +1709,22 @@
                     const data = await response.json();
                     
                     if (data.status === 'ok' && data.items && data.items.length > 0) {
-                        const parsedItems = data.items.slice(0, 8).map(item => ({
+                        const newsItems = data.items.map(item => ({
                             title: item.title,
-                            desc: item.description ? item.description.replace(/<[^>]*>?/gm, '').substring(0, 150) + '...' : 'খবরের বিস্তারিত জানতে নিচের বাটনে ক্লিক করুন।',
+                            description: item.description ? item.description.replace(/<[^>]*>?/gm, '') : '',
                             link: item.link,
-                            pubDate: item.pubDate ? new Date(item.pubDate).toLocaleDateString('bn-BD') : 'সাম্প্রতিক'
+                            pubDate: item.pubDate
                         }));
-                        localStorage.setItem(CACHE_KEY, JSON.stringify(parsedItems));
+                        localStorage.setItem(CACHE_KEY, JSON.stringify(newsItems));
                         localStorage.setItem(CACHE_TIME_KEY, now.toString());
-                        return parsedItems;
+                        return newsItems;
                     }
-                } catch(e) {}
+                } catch (err) {}
             }
             return [];
         }
 
-        // --- NEW CERTIFICATE OPEN & DOWNLOAD SYSTEM ---
-        function openCertificateModal() {
-            const modal = document.getElementById('certificate-modal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                setTimeout(() => modal.classList.remove('opacity-0'), 10);
-            }
-        }
-
-        function closeCertificateModal() {
-            const modal = document.getElementById('certificate-modal');
-            if (modal) {
-                modal.classList.add('opacity-0');
-                setTimeout(() => modal.classList.add('hidden'), 300);
-            }
-        }
-
-        function openAndDownloadCertificate() {
-            const element = document.getElementById('certificate-content');
-            if (!element) return;
-            
-            const name = document.getElementById('cert-gen-name').innerText || "Certificate";
-            const subject = document.getElementById('cert-gen-subject').innerText || "Quiz";
-            const certificateHTML = element.outerHTML;
-
-            const newWindow = window.open('', '_blank');
-            if (!newWindow) {
-                showToast("পপ-আপ ব্লক করা আছে! অনুগ্রহ করে ব্রাউজারের পপ-আপ এলাউ করুন।", "error");
-                return;
-            }
-
-            const htmlContent = `
-                <!DOCTYPE html>
-                <html lang="bn">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Certificate - ${name}</title>
-                    <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-                    <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>
-                    <style>
-                        * { box-sizing: border-box; }
-                        body {
-                            margin: 0;
-                            padding: 0;
-                            background-color: #0f172a;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            min-height: 100vh;
-                            font-family: 'Times New Roman', 'Kalpurush', serif;
-                        }
-                        .cert-wrapper {
-                            width: 100vw;
-                            height: 66.66vw;
-                            max-width: 150vh;
-                            max-height: 100vh;
-                            aspect-ratio: 3 / 2;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            background: #ffffff;
-                            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-                            overflow: hidden;
-                        }
-                        #certificate-render-target {
-                            width: 297mm;
-                            height: 210mm;
-                            transform-origin: center center;
-                        }
-                        @media print {
-                            @page { size: A4 landscape; margin: 0; }
-                            body { background: white; }
-                            .cert-wrapper { width: 100%; height: 100%; max-width: none; max-height: none; box-shadow: none; }
-                            #certificate-render-target { transform: scale(1) !important; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="cert-wrapper">
-                        <div id="certificate-render-target">
-                            ${certificateHTML}
-                        </div>
-                    </div>
-                    <script>
-                        function fitCertificate() {
-                            const target = document.getElementById('certificate-render-target');
-                            const wrapper = document.querySelector('.cert-wrapper');
-                            const scaleX = wrapper.clientWidth / 1122.52;
-                            const scaleY = wrapper.clientHeight / 793.70;
-                            const scale = Math.min(scaleX, scaleY);
-                            target.style.transform = 'scale(' + scale + ')';
-                        }
-                        window.addEventListener('resize', fitCertificate);
-                        fitCertificate();
-
-                        window.onload = function() {
-                            setTimeout(() => {
-                                const element = document.getElementById('certificate-render-target');
-                                const opt = {
-                                    margin: 0,
-                                    filename: 'Certificate_${name.replace(/\s+/g, '_')}_${subject.replace(/\s+/g, '_')}.pdf',
-                                    image: { type: 'jpeg', quality: 0.98 },
-                                    html2canvas: { scale: 2, useCORS: true, logging: false },
-                                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-                                };
-                                html2pdf().set(opt).from(element).save();
-                            }, 500);
-                        };
-                    <\/script>
-                </body>
-                </html>
-            `;
-
-            newWindow.document.open();
-            newWindow.document.write(htmlContent);
-            newWindow.document.close();
-            showToast("সার্টিফিকেট নতুন ট্যাবে ওপেন হচ্ছে এবং ডাউনলোড শুরু হচ্ছে...", "success");
-        }
-
-        // --- APP INITIALIZATION ---
-        window.addEventListener('DOMContentLoaded', () => {
+        function initApp() {
             setDailyDate();
             setupDailyQuote();
             setGreeting();
@@ -1739,11 +1732,47 @@
             loadChatHistory();
             renderProfileSection();
 
-            const hash = window.location.hash.replace('#', '');
-            if (hash) {
-                showSection(hash, null);
+            // Load News
+            fetchAutoNews().then(news => {
+                rawNewsData = news;
+                renderNews(rawNewsData);
+            });
+        }
+
+        function renderNews(newsList) {
+            const container = document.getElementById('news-container');
+            if (!container) return;
+
+            if (!newsList || newsList.length === 0) {
+                container.innerHTML = `<p class="col-span-full text-center text-slate-500 py-10 font-bold">কোনো খবর পাওয়া যায়নি।</p>`;
+                return;
             }
-        });
+
+            container.innerHTML = newsList.map((item, idx) => `
+                <div class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between space-y-3">
+                    <div>
+                        <span class="text-[10px] bg-brand-50 text-brand-700 dark:bg-slate-700 dark:text-brand-300 px-2 py-0.5 rounded font-bold uppercase">News</span>
+                        <h3 class="font-bold text-slate-900 dark:text-white text-base mt-2 leading-snug">${item.title}</h3>
+                        <p id="news-desc-${idx}" class="text-xs text-slate-600 dark:text-slate-300 mt-2 line-clamp-3 leading-relaxed">${item.description || 'বিস্তারিত পড়তে নিচের লিংকে ক্লিক করুন।'}</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700/60">
+                        <button onclick="toggleReadMore('news-desc-${idx}', this)" class="text-xs font-bold text-brand-600 hover:text-brand-700 transition flex items-center gap-1"><i class="fa-solid fa-book-open mr-1"></i> সম্পূর্ণ পড়ুন</button>
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleBookmark('${item.title.replace(/'/g, "\\'")}', 'News', 'News', '${item.link}')" class="text-slate-400 hover:text-brand-600 p-1.5"><i class="fa-regular fa-bookmark"></i></button>
+                            <button onclick="shareContent('${item.title.replace(/'/g, "\\'")}')" class="text-slate-400 hover:text-brand-600 p-1.5"><i class="fa-solid fa-share-nodes"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterNews() {
+            const query = document.getElementById('news-search').value.toLowerCase();
+            const filtered = rawNewsData.filter(item => item.title.toLowerCase().includes(query) || (item.description && item.description.toLowerCase().includes(query)));
+            renderNews(filtered);
+        }
+
+        window.onload = initApp;
     </script>
 </body>
 </html>
