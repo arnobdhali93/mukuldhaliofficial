@@ -217,7 +217,7 @@
                     <div>
                         <h4 class="text-xs font-extrabold text-indigo-800 dark:text-indigo-300 uppercase tracking-wider mb-1">আজকের অনুপ্রেরণা</h4>
                         <p id="daily-quote" class="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed">
-                            "শিক্ষাই হলো সবচেয়ে শক্তিশালী অস্ত্র, যার মাধ্যমে আপনি পুরো বিশ্বকে বদলে দিতে পারেন।" - নেলসন ম্যান্ডেলা
+                            "শিক্ষাই হলো সবচেয়ে শক্তিশালী অস্ত্র, যার মাধ্যমে আপনি পুরো বিশ্বকে বদলে দিতে পারেন।" <br><span class="text-[11px] font-bold text-indigo-500 mt-1 block">- নেলসন ম্যান্ডেলা</span>
                         </p>
                     </div>
                 </div>
@@ -229,7 +229,7 @@
                     <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-100/70 dark:bg-brand-900/40 border border-brand-200 dark:border-brand-700 text-brand-700 dark:text-brand-300 text-xs font-bold tracking-wide">
                         <i class="fa-solid fa-sparkles"></i> প্রিমিয়াম এডুকেশন হাব
                     </div>
-                    <h2 class="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-snug">
+                    <h2 id="greeting-text" class="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-snug">
                         স্বাগতম <span class="text-brand-600">MukulDhaliOfficial</span> পোর্টালে
                     </h2>
                     <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-sm md:text-base font-normal max-w-3xl">
@@ -391,7 +391,7 @@
                 <div id="bookmarks-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="col-span-full text-center py-12 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <i class="fa-regular fa-bookmark text-slate-400 text-3xl mb-2"></i>
-                        <p class="text-slate-500 dark:text-slate-400 text-sm font-semibold">আপনার বুকমার্ক করা কোনো কন্টেন্ট নেই。</p>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm font-semibold">আপনার বুকমার্ক করা কোনো কন্টেন্ট নেই।</p>
                     </div>
                 </div>
             </section>
@@ -437,7 +437,7 @@
         </div>
     </div>
 
-    <!-- Image Crop Modal (New Feature) -->
+    <!-- Image Crop Modal -->
     <div id="crop-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[250] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-sm rounded-3xl p-6 shadow-2xl">
             <h3 class="font-black text-xl text-slate-900 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-3">ছবি কাটুন (Crop)</h3>
@@ -554,6 +554,20 @@
 
         const GOOGLE_FORM_QUESTIONS = [];
 
+        // --- Feature: Daily Quotes Array ---
+        const dailyQuotes = [
+            { text: "শিক্ষাই হলো সবচেয়ে শক্তিশালী অস্ত্র, যার মাধ্যমে আপনি পুরো বিশ্বকে বদলে দিতে পারেন।", author: "নেলসন ম্যান্ডেলা" },
+            { text: "জ্ঞানের বিনিয়োগে সর্বোচ্চ মুনাফা পাওয়া যায়।", author: "বেঞ্জামিন ফ্রাঙ্কলিন" },
+            { text: "সাফল্য মানে ৯৯ শতাংশ ব্যর্থতা।", author: "সৈয়দ মুজতবা আলী" },
+            { text: "যেখানে পরিশ্রম নেই সেখানে সাফল্যও নেই।", author: "উইলিয়াম ল্যাংল্যান্ড" },
+            { text: "শিক্ষা মানুষের মনকে মুক্ত করে।", author: "রবীন্দ্রনাথ ঠাকুর" },
+            { text: "স্বপ্ন সেটা নয় যেটা তুমি ঘুমিয়ে দেখো, স্বপ্ন সেটা যেটা তোমায় ঘুমোতে দেয় না।", author: "এ. পি. জে. আব্দুল কালাম" },
+            { text: "নিজেকে পরিবর্তন করো, পৃথিবী এমনিতেই বদলে যাবে।", author: "স্বামী বিবেকানন্দ" },
+            { text: "যে ভুল করেনি, সে কখনো নতুন কিছু করার চেষ্টা করেনি।", author: "অ্যালবার্ট আইনস্টাইন" },
+            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেন না।", author: "স্টিভ জবস" },
+            { text: "সত্যিকারের জ্ঞানী সে, যে জানে সে কিছুই জানে না।", author: "সক্রেটিস" }
+        ];
+
         let rawNewsData = [];
         let rawBooksData = [];
         let groupedQuizData = {};
@@ -563,11 +577,9 @@
         let isSpeaking = false;
         let currentSpeakingId = null;
 
-        // Image Crop Global Variables
         let cropper = null;
         let selectedFileBase64 = null;
 
-        // --- Custom Confirm Modal Logic ---
         let pendingConfirmAction = null;
         function openConfirmModal(msg, action) {
             document.getElementById('confirm-modal-msg').innerText = msg;
@@ -594,14 +606,31 @@
             if(pendingConfirmAction) pendingConfirmAction();
             closeConfirmModal();
         }
-        // -----------------------------------
 
-        window.addEventListener('offline', () => {
-            showToast("আপনি অফলাইনে আছেন! ইন্টারনেট সংযোগ পরীক্ষা করুন।", "error");
-        });
-        window.addEventListener('online', () => {
-            showToast("ইন্টারনেট সংযোগ ফিরে এসেছে!", "success");
-        });
+        window.addEventListener('offline', () => { showToast("আপনি অফলাইনে আছেন! ইন্টারনেট সংযোগ পরীক্ষা করুন।", "error"); });
+        window.addEventListener('online', () => { showToast("ইন্টারনেট সংযোগ ফিরে এসেছে!", "success"); });
+
+        // --- Feature: Setup Daily Quote and Time Based Greeting ---
+        function setupDailyQuote() {
+            const today = new Date();
+            // Calculate day of the year to pick a quote
+            const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+            const quoteIndex = dayOfYear % dailyQuotes.length;
+            const quote = dailyQuotes[quoteIndex];
+            document.getElementById('daily-quote').innerHTML = `"${quote.text}" <br><span class="text-[11px] font-bold text-indigo-500 mt-1 block">- ${quote.author}</span>`;
+        }
+
+        function setGreeting() {
+            const hour = new Date().getHours();
+            let greeting = "স্বাগতম";
+            if (hour >= 5 && hour < 12) greeting = "শুভ সকাল, স্বাগতম";
+            else if (hour >= 12 && hour < 17) greeting = "শুভ অপরাহ্ন, স্বাগতম";
+            else if (hour >= 17 && hour < 20) greeting = "শুভ সন্ধ্যা, স্বাগতম";
+            else greeting = "শুভ রাত্রি, স্বাগতম";
+            
+            const gEl = document.getElementById('greeting-text');
+            if(gEl) gEl.innerHTML = `${greeting} <span class="text-brand-600">MukulDhaliOfficial</span> পোর্টালে`;
+        }
 
         function playQuizSound(type) {
             try {
@@ -821,6 +850,18 @@
                 showToast("স্কোর কপি করা হয়েছে!", 'success');
             }
         }
+
+        // --- Feature: Share specific quiz link ---
+        window.shareQuizLink = function(subject) {
+            const url = window.location.href.split('#')[0] + '#quiz';
+            const text = `আমি MukulDhaliOfficial এ '${subject}' কুইজটি দিচ্ছি। আপনিও চেষ্টা করুন: ${url}`;
+            if (navigator.share) {
+                navigator.share({ title: 'MukulDhaliOfficial Quiz', text: text }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(text);
+                showToast("কুইজ লিংক কপি করা হয়েছে!", "success");
+            }
+        }
         
         function toggleSpeech(elementId, btnElement) {
             if (!('speechSynthesis' in window)) {
@@ -948,7 +989,6 @@
             history.scrollTop = history.scrollHeight;
             saveChatHistory();
             
-            // Typing Indicator
             const typingId = 'typing-' + Date.now();
             history.innerHTML += `
             <div id="${typingId}" class="text-left text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 shadow-sm w-16 flex items-center justify-center gap-1.5 mt-2">
@@ -958,7 +998,6 @@
             </div>`;
             history.scrollTop = history.scrollHeight;
 
-            // সাধারণ কথাবার্তার জন্য কাস্টম লজিক (Greetings & Casual Chat)
             const lowerQuery = query.toLowerCase();
             let directReply = "";
 
@@ -974,7 +1013,6 @@
                 directReply = "আপনাকেও অনেক ধন্যবাদ! আরও কিছু জানার থাকলে নির্দ্বিধায় প্রশ্ন করতে পারেন।";
             }
 
-            // যদি সাধারণ কথা হয়, তবে সরাসরি উত্তর দিয়ে দেবে
             if (directReply !== "") {
                 setTimeout(() => {
                     const typingElement = document.getElementById(typingId);
@@ -986,11 +1024,10 @@
                     </div>`;
                     history.scrollTop = history.scrollHeight;
                     saveChatHistory();
-                }, 800); // 800ms পর উত্তর দেবে যাতে রিয়ালিস্টিক লাগে
+                }, 800); 
                 return;
             }
 
-            // যদি সাধারণ কথা না হয়, তবে উইকিপিডিয়া থেকে খুঁজবে
             try {
                 const response = await fetch(`https://bn.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&exchars=600&exintro=1&explaintext=1&generator=search&gsrsearch=${encodeURIComponent(query)}&origin=*`);
                 const data = await response.json();
@@ -1048,7 +1085,6 @@
             document.getElementById('auth-modal').classList.add('hidden');
         }
 
-        // --- Profile Picture Cropping Logic ---
         document.getElementById('edit-pic').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -1058,7 +1094,7 @@
                 };
                 reader.readAsDataURL(file);
             }
-            e.target.value = ''; // Reset input so same file can trigger change again
+            e.target.value = ''; 
         });
 
         function openCropModal(imgSrc) {
@@ -1073,7 +1109,7 @@
             
             if(cropper) { cropper.destroy(); }
             cropper = new Cropper(img, {
-                aspectRatio: 1, // 1:1 Ratio Strict
+                aspectRatio: 1, 
                 viewMode: 1,
                 dragMode: 'move',
                 autoCropArea: 1,
@@ -1101,7 +1137,6 @@
                 const canvas = cropper.getCroppedCanvas({ width: 400, height: 400 });
                 selectedFileBase64 = canvas.toDataURL('image/jpeg', 0.9);
                 
-                // Update live preview in edit modal
                 const previewContainer = document.getElementById('edit-pic-preview-container');
                 previewContainer.innerHTML = `<img src="${selectedFileBase64}" class="w-full h-full object-cover">`;
                 
@@ -1114,7 +1149,7 @@
             document.getElementById('edit-name').value = currentName;
             document.getElementById('edit-pic').value = ""; 
             
-            selectedFileBase64 = null; // Reset temp variable
+            selectedFileBase64 = null; 
             
             const currentPic = localStorage.getItem('portalUserPic');
             const previewContainer = document.getElementById('edit-pic-preview-container');
@@ -1260,6 +1295,21 @@
                     ? `<img src="${profilePic}" class="w-full h-full object-cover">`
                     : loggedInName.substring(0, 2).toUpperCase();
 
+                // New Feature: Recent Quiz History Display in Profile
+                let historyHtml = '';
+                if (fullQuizHistory.length > 0) {
+                    const lastThree = fullQuizHistory.slice(-3).reverse();
+                    historyHtml = `<h4 class="font-bold text-sm text-slate-800 dark:text-slate-200 mt-5 mb-2">সাম্প্রতিক কুইজ</h4><div class="space-y-2">`;
+                    lastThree.forEach(q => {
+                        historyHtml += `
+                        <div class="bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600 flex justify-between items-center text-xs">
+                            <span class="font-bold text-slate-700 dark:text-slate-300 truncate pr-2">${q.subject}</span>
+                            <span class="font-black text-brand-600 dark:text-brand-400 shrink-0">${q.percentage}%</span>
+                        </div>`;
+                    });
+                    historyHtml += `</div>`;
+                }
+
                 profileContainer.innerHTML = `
                     <div class="flex items-center gap-4">
                         <div class="w-16 h-16 rounded-2xl bg-brand-50 dark:bg-slate-700 border border-brand-200 dark:border-slate-600 flex items-center justify-center text-brand-700 dark:text-brand-300 font-bold text-2xl shadow-sm overflow-hidden shrink-0">
@@ -1284,7 +1334,10 @@
                         <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>মোট কুইজ দিয়েছেন:</span> <span class="text-brand-600 dark:text-brand-400 font-bold">${totalQuizzes} টি</span></p>
                         <p class="text-slate-600 dark:text-slate-300 flex justify-between bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-600"><span>গড় অ্যাকুরেসি (Average):</span> <span class="text-brand-600 dark:text-brand-400 font-bold">${avgScore}%</span></p>
                     </div>
-                    <div class="flex gap-3 mt-4">
+
+                    ${historyHtml}
+
+                    <div class="flex gap-3 mt-5">
                         <button onclick="shareScore('${lastQuizScore}')" title="স্কোর শেয়ার করুন" class="bg-brand-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 hover:bg-brand-100 px-4 py-3 rounded-xl text-xs font-bold transition flex-1 shadow-sm hover:-translate-y-0.5 cursor-pointer text-center"><i class="fa-solid fa-share-nodes"></i> শেয়ার</button>
                         <button onclick="logoutUser()" title="লগআউট" class="bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-xl text-xs font-bold transition flex-1 shadow-md hover:-translate-y-0.5 cursor-pointer text-center"><i class="fa-solid fa-right-from-bracket"></i> লগআউট</button>
                     </div>
@@ -1587,12 +1640,15 @@
             subjects.forEach(subject => {
                 const count = groupedQuizData[subject].length;
                 container.innerHTML += `
-                <div onclick="startQuizExam('${subject}')" title="${subject} কুইজ শুরু করুন" class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:border-brand-400 hover:shadow-md hover:-translate-y-1 transition duration-300 cursor-pointer flex flex-col justify-between group">
+                <div onclick="startQuizExam('${subject}')" title="${subject} কুইজ শুরু করুন" class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:border-brand-400 hover:shadow-md hover:-translate-y-1 transition duration-300 cursor-pointer flex flex-col justify-between group relative">
+                    <!-- New Feature: Share Quiz Specific -->
+                    <button onclick="event.stopPropagation(); shareQuizLink('${subject}')" title="কুইজ শেয়ার করুন" class="absolute top-4 right-4 text-slate-300 hover:text-brand-600 transition p-2 bg-slate-50 dark:bg-slate-700 rounded-lg hover:bg-brand-50"><i class="fa-solid fa-share-nodes"></i></button>
+
                     <div>
                         <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xl font-bold mb-4 border border-brand-200 dark:border-slate-600 group-hover:bg-brand-600 group-hover:text-white group-hover:shadow-md transition duration-300">
                             <i class="fa-solid fa-book-open"></i>
                         </div>
-                        <h3 class="font-black text-lg text-slate-900 dark:text-white mb-1">${subject}</h3>
+                        <h3 class="font-black text-lg text-slate-900 dark:text-white mb-1 pr-6">${subject}</h3>
                         <p class="text-slate-500 dark:text-slate-400 text-xs font-bold">${count} টি প্রশ্ন রয়েছে</p>
                     </div>
                     <div class="mt-6 flex items-center gap-1 text-brand-600 dark:text-brand-400 text-xs font-bold bg-brand-50 dark:bg-slate-700 w-fit px-3 py-1.5 rounded-lg border border-brand-100 dark:border-slate-600 group-hover:bg-brand-600 group-hover:text-white group-hover:border-brand-600 transition duration-300">
@@ -1927,6 +1983,11 @@
             applySavedTheme();
             loadChatHistory();
             updateHeaderBadge();
+            
+            // Initiate new features
+            setupDailyQuote();
+            setGreeting();
+            
             loadAllData();
 
             const hash = window.location.hash.replace('#', '');
