@@ -27,14 +27,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
 
-    <!-- FontAwesome, Tailwind, Confetti, Cropper.js & Supabase -->
+    <!-- FontAwesome, Tailwind, Confetti, Cropper.js, html2pdf & Supabase -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <!-- Supabase JS Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
@@ -88,7 +88,6 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
-        /* Fix for cropper background */
         .cropper-view-box, .cropper-face {
             border-radius: 10%;
         }
@@ -309,8 +308,13 @@
                         <button onclick="confirmBackToQuizSubjects()" title="পরীক্ষা বাতিল করে ফিরে যান" class="text-xs bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer">
                             <i class="fa-solid fa-arrow-left"></i> ফিরে যান
                         </button>
-                        <div id="quiz-timer-box" title="বাকি সময়" class="flex items-center gap-2 bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 px-3.5 py-1.5 rounded-lg text-xs font-bold border border-brand-200 dark:border-slate-600 shadow-sm transition-colors duration-300">
-                            <i class="fa-solid fa-clock"></i> সময় বাকি: <span id="time-remaining">05:00</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleFullScreen()" title="ফুলস্ক্রিন মোড" class="text-xs bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-lg font-bold transition shadow-sm cursor-pointer flex items-center justify-center">
+                                <i class="fa-solid fa-expand" id="fullscreen-icon"></i>
+                            </button>
+                            <div id="quiz-timer-box" title="বাকি সময়" class="flex items-center gap-2 bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 px-3.5 py-1.5 rounded-lg text-xs font-bold border border-brand-200 dark:border-slate-600 shadow-sm transition-colors duration-300">
+                                <i class="fa-solid fa-clock"></i> সময় বাকি: <span id="time-remaining">05:00</span>
+                            </div>
                         </div>
                     </div>
 
@@ -443,8 +447,8 @@
     <div id="crop-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[250] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-sm rounded-3xl p-6 shadow-2xl">
             <h3 class="font-black text-xl text-slate-900 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-3">ছবি কাটুন (Crop)</h3>
-            <div class="w-full h-64 bg-slate-100 dark:bg-slate-900 rounded-2xl overflow-hidden mb-5 flex justify-center items-center">
-                <img id="crop-image-target" src="" class="max-w-full max-h-full hidden">
+            <div class="w-full h-[300px] sm:h-[400px] bg-slate-100 dark:bg-slate-900 rounded-2xl overflow-hidden mb-5 flex justify-center items-center">
+                <img id="crop-image-target" src="" class="block max-w-full max-h-full">
             </div>
             <div class="flex gap-3">
                 <button type="button" onclick="closeCropModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 py-3 rounded-xl text-sm font-bold transition shadow-sm border border-slate-200 dark:border-slate-600">বাতিল</button>
@@ -454,7 +458,7 @@
     </div>
 
     <!-- Auth Modal -->
-    <div id="auth-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="auth-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[150] hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-6 md:p-8 shadow-2xl relative">
             <button onclick="closeAuthModal()" title="বন্ধ করুন" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-2 rounded-xl transition cursor-pointer">
                 <i class="fa-solid fa-xmark text-lg"></i>
@@ -498,9 +502,10 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">পাসওয়ার্ড</label>
                     <div class="relative">
-                        <input type="password" id="reg-pass" required placeholder="কমপক্ষে ৬ সংখ্যার পাসওয়ার্ড" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600">
+                        <input type="password" id="reg-pass" required placeholder="কমপক্ষে ৬ সংখ্যার পাসওয়ার্ড" class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-xs outline-none focus:border-brand-600" onkeyup="checkPasswordStrength()">
                         <i onclick="togglePassVisibility('reg-pass', this)" title="পাসওয়ার্ড দেখুন" class="fa-solid fa-eye absolute right-3.5 top-3.5 text-slate-400 cursor-pointer text-xs"></i>
                     </div>
+                    <p id="pass-strength" class="text-[10px] mt-1 font-bold"></p>
                 </div>
                 <button type="submit" id="reg-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-xs font-bold transition shadow-md hover:-translate-y-0.5 flex justify-center items-center gap-2 cursor-pointer">
                     <span>অ্যাকাউন্ট খুলুন</span>
@@ -534,7 +539,7 @@
     </div>
 
     <!-- Custom Confirm Modal -->
-    <div id="custom-confirm-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+    <div id="custom-confirm-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[300] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-sm rounded-3xl p-6 shadow-2xl transform scale-95 transition-transform duration-300" id="custom-confirm-box">
             <div class="flex flex-col items-center text-center space-y-4">
                 <div class="w-16 h-16 rounded-full bg-brand-50 dark:bg-slate-700 text-brand-600 flex items-center justify-center text-3xl border border-brand-200 dark:border-slate-600 shadow-sm">
@@ -550,10 +555,67 @@
         </div>
     </div>
 
+    <!-- Certificate Live Preview Modal -->
+    <div id="certificate-modal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-[250] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-5xl rounded-3xl p-4 md:p-6 shadow-2xl relative flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-black text-xl text-slate-900 dark:text-white">আপনার সার্টিফিকেট</h3>
+                <button type="button" onclick="closeCertificateModal()" class="text-slate-400 hover:text-red-500 p-2 rounded-xl transition cursor-pointer bg-slate-100 dark:bg-slate-700"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div class="flex-1 overflow-auto bg-slate-100 dark:bg-slate-900 rounded-xl p-4 flex justify-center items-start">
+                <div id="certificate-content" class="bg-white relative shrink-0" style="width: 297mm; height: 210mm; box-sizing: border-box; padding: 15mm; font-family: 'Times New Roman', 'Kalpurush', serif; color: black;">
+                    <div style="border: 4mm solid #16a34a; border-radius: 4mm; height: 100%; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10mm; box-sizing: border-box;">
+                        
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120mm; opacity: 0.05; z-index: 1; pointer-events: none;">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="100" height="100" rx="25" fill="#16a34a" />
+                                <path d="M50 25 L20 42.5 L50 60 L80 42.5 Z" fill="#ffffff"/>
+                                <path d="M20 52.5 L50 70 L80 52.5" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        
+                        <div style="z-index: 2; text-align: center; margin-top: -10mm; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                            <h1 style="color: #4ade80; font-size: 14mm; font-weight: bold; margin: 0 0 8mm 0; letter-spacing: 0.5mm;">Certificate of Achievement</h1>
+                            <p style="font-size: 5.5mm; color: #444; margin: 0 0 6mm 0;">This is proudly presented to</p>
+                            <h2 id="cert-gen-name" style="font-size: 10mm; color: #111; font-weight: bold; margin: 0 0 8mm 0; border-bottom: 0.8mm solid #2ea85c; padding-bottom: 2mm; min-width: 80mm; display: inline-block;">Student Name</h2>
+                            <p style="font-size: 5mm; color: #444; margin: 0 0 6mm 0;">For successfully completing the Mock Test on</p>
+                            <h3 id="cert-gen-subject" style="font-size: 7.5mm; color: #16a34a; font-weight: bold; margin: 0 0 6mm 0;">Subject</h3>
+                            <p id="cert-gen-score" style="font-size: 5.5mm; color: #111; font-weight: bold; margin: 0;">Score: 0%</p>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 10mm;">
+                            <div style="width: 65mm; text-align: center;">
+                                <div style="border-top: 0.4mm solid #111; margin-bottom: 2mm; width: 100%;"></div>
+                                <p id="cert-gen-date" style="font-size: 4.5mm; color: #111; font-weight: bold; margin: 0 0 1.5mm 0; line-height: 1.2;">Date</p>
+                                <p style="font-size: 4mm; color: #555; margin: 0; line-height: 1.2;">Date</p>
+                            </div>
+                            <div style="width: 65mm; text-align: center;">
+                                <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 25mm; margin-bottom: 1mm; position: relative;">
+                                    <img src="https://lh3.googleusercontent.com/d/1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN" style="width: 33mm; height: auto; max-height: 11mm; object-fit: contain; margin-bottom: -1mm; z-index: 2; position: relative;">
+                                </div>
+                                <div style="border-top: 0.4mm solid #111; margin-bottom: 2mm; width: 100%;"></div>
+                                <p style="font-size: 4.5mm; color: #111; font-weight: bold; margin: 0 0 1.5mm 0; line-height: 1.2;">MukulDhaliOfficial</p>
+                                <p style="font-size: 4mm; color: #555; margin: 0; line-height: 1.2;">Authority</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4 flex justify-end gap-3 shrink-0">
+                <button type="button" onclick="closeCertificateModal()" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-6 py-3 rounded-xl text-sm font-bold transition shadow-sm border border-slate-200 dark:border-slate-600">বন্ধ করুন</button>
+                <button type="button" id="download-cert-btn" onclick="downloadCertificatePDF()" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-xl text-sm font-bold transition shadow-md hover:-translate-y-0.5 flex items-center gap-2">
+                    <i class="fa-solid fa-download"></i> PDF ডাউনলোড করুন
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxwbVlJxSQKdXufRZkXaiPiTKXLPuUyJsTrjiCoabdotJFSX3tkpSH9dx_5KwHFd7J5/exec"; 
         
-        // Supabase Proper Initialization to avoid global variable conflict
+        // Supabase Initialization
         const supabaseUrl = 'https://gbvkxtmyqmlkmcxvbfsx.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdidmt4dG15cW1sa21jeHZiZnN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMzgzNTEsImV4cCI6MjEwMjYxNDM1MX0.jGXOP0Y_Q78m7DCI6A0tiLQ5KDNW1-K0ypr0AVW9H8w';
         
@@ -562,7 +624,6 @@
             const { createClient } = window.supabase;
             supabaseClient = createClient(supabaseUrl, supabaseKey);
 
-            // Set up Auth Listener safely
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (session) {
                     localStorage.setItem('portalUserEmail', session.user.email);
@@ -605,6 +666,31 @@
         let cropper = null;
         let selectedFileBase64 = null;
         let pendingConfirmAction = null;
+
+        // --- NEW FEATURE: Smart Tab Alert ---
+        let originalTitle = document.title;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "ফিরে আসুন! 📚 | MukulDhaliOfficial";
+            } else {
+                document.title = originalTitle;
+            }
+        });
+
+        // --- NEW FEATURE: Full Screen Mode for Quiz ---
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    showToast("ফুলস্ক্রিন মোড সাপোর্ট করছে না।", "error");
+                });
+                document.getElementById('fullscreen-icon').classList.replace('fa-expand', 'fa-compress');
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                    document.getElementById('fullscreen-icon').classList.replace('fa-compress', 'fa-expand');
+                }
+            }
+        }
 
         function openConfirmModal(msg, action) {
             document.getElementById('confirm-modal-msg').innerText = msg;
@@ -1134,9 +1220,9 @@
             if(cropper) { cropper.destroy(); }
             cropper = new Cropper(img, {
                 aspectRatio: 1, 
-                viewMode: 1,
+                viewMode: 2,
                 dragMode: 'move',
-                autoCropArea: 1,
+                autoCropArea: 0.8,
                 restore: false,
                 guides: true,
                 center: true,
@@ -1175,8 +1261,10 @@
             
             selectedFileBase64 = null; 
             
-            const currentPic = localStorage.getItem('portalUserPic');
+            const currentEmail = localStorage.getItem('portalUserEmail');
+            const currentPic = localStorage.getItem('portalUserPic_' + currentEmail);
             const previewContainer = document.getElementById('edit-pic-preview-container');
+            
             if(currentPic) {
                 previewContainer.innerHTML = `<img src="${currentPic}" class="w-full h-full object-cover">`;
             } else {
@@ -1193,11 +1281,12 @@
         function handleProfileEdit(e) {
             e.preventDefault();
             const newName = document.getElementById('edit-name').value.trim();
+            const currentEmail = localStorage.getItem('portalUserEmail');
             
             if (newName) localStorage.setItem('portalUserName', newName);
             
-            if (selectedFileBase64) {
-                localStorage.setItem('portalUserPic', selectedFileBase64);
+            if (selectedFileBase64 && currentEmail) {
+                localStorage.setItem('portalUserPic_' + currentEmail, selectedFileBase64);
             }
             
             finalizeProfileUpdate();
@@ -1207,6 +1296,34 @@
             closeEditProfile();
             showToast("প্রোফাইল সফলভাবে আপডেট হয়েছে!", "success");
             renderProfileSection();
+        }
+
+        function checkPasswordStrength() {
+            const pass = document.getElementById('reg-pass').value;
+            const strengthText = document.getElementById('pass-strength');
+            
+            if (pass.length === 0) {
+                strengthText.innerText = '';
+                return;
+            }
+            
+            let strength = 0;
+            if (pass.length >= 6) strength++;
+            if (pass.length >= 8) strength++;
+            if (/[A-Z]/.test(pass)) strength++;
+            if (/[0-9]/.test(pass)) strength++;
+            if (/[^A-Za-z0-9]/.test(pass)) strength++;
+
+            if (strength <= 2) {
+                strengthText.innerText = 'দুর্বল পাসওয়ার্ড';
+                strengthText.className = 'text-[10px] mt-1 font-bold text-red-500';
+            } else if (strength === 3 || strength === 4) {
+                strengthText.innerText = 'মাঝারি পাসওয়ার্ড';
+                strengthText.className = 'text-[10px] mt-1 font-bold text-orange-500';
+            } else {
+                strengthText.innerText = 'শক্তিশালী পাসওয়ার্ড';
+                strengthText.className = 'text-[10px] mt-1 font-bold text-emerald-500';
+            }
         }
 
         function switchAuthTab(type) {
@@ -1280,7 +1397,7 @@
 
                     if (error) throw error;
                     
-                    showToast("রেজিস্ট্রেশন সফল হয়েছে! দয়া করে ইমেইল ভেরিফাই করুন অথবা লগইন করুন।", "success");
+                    showToast("রেজিস্ট্রেশন সফল হয়েছে! দয়া করে লগইন করুন।", "success");
                     closeAuthModal();
                     switchAuthTab('login');
                     
@@ -1323,11 +1440,20 @@
             });
         }
 
+        function copyUserEmail() {
+            const email = localStorage.getItem('portalUserEmail');
+            if (email) {
+                navigator.clipboard.writeText(email).then(() => {
+                    showToast("ইমেইল কপি করা হয়েছে!", "success");
+                });
+            }
+        }
+
         function renderProfileSection() {
             const profileContainer = document.getElementById('profile-content');
             const loggedInUser = localStorage.getItem('portalUserEmail');
             const loggedInName = localStorage.getItem('portalUserName');
-            const profilePic = localStorage.getItem('portalUserPic');
+            const profilePic = localStorage.getItem('portalUserPic_' + loggedInUser);
             
             let fullQuizHistory = JSON.parse(localStorage.getItem('fullQuizHistory')) || [];
             let totalQuizzes = fullQuizHistory.length;
@@ -1373,7 +1499,9 @@
                                 ${escapeHTML(loggedInName)}
                                 <span class="${rankClass} px-2 py-0.5 rounded text-[10px] font-black uppercase shadow-sm border border-slate-200 dark:border-slate-600">${userRank}</span>
                             </h3>
-                            <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 mt-0.5">${escapeHTML(loggedInUser)}</p>
+                            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1 cursor-pointer hover:text-brand-600 transition w-fit" onclick="copyUserEmail()" title="ইমেইল কপি করুন">
+                                <i class="fa-regular fa-copy"></i> ${escapeHTML(loggedInUser)}
+                            </p>
                         </div>
                     </div>
                     
@@ -1414,7 +1542,6 @@
         function logoutUser() {
             openConfirmModal('আপনি কি সত্যিই লগআউট করতে চান?', async () => {
                 if(supabaseClient) await supabaseClient.auth.signOut();
-                localStorage.removeItem('portalUserPic'); 
                 showToast("লগআউট সম্পন্ন হয়েছে!", "success");
                 renderProfileSection();
                 updateHeaderBadge();
@@ -1423,7 +1550,8 @@
 
         function updateHeaderBadge() {
             const name = localStorage.getItem('portalUserName');
-            const pic = localStorage.getItem('portalUserPic');
+            const email = localStorage.getItem('portalUserEmail');
+            const pic = localStorage.getItem('portalUserPic_' + email);
             const badge = document.getElementById('mobile-user-badge');
             
             if (badge) {
@@ -1737,6 +1865,13 @@
         }
 
         function startQuizExam(subject) {
+            // New Feature: Request Login specific to starting the test
+            if (!localStorage.getItem('portalUserEmail')) {
+                showToast("এই কুইজটি দিতে হলে প্রথমে লগইন বা রেজিস্ট্রেশন করুন।", "error");
+                triggerRegisterPopup();
+                return;
+            }
+
             currentActiveSubject = subject;
             
             let questions = [...groupedQuizData[subject]];
@@ -1824,86 +1959,58 @@
             const name = localStorage.getItem('portalUserName') || 'Student';
             const dateObj = new Date();
             const dateStr = dateObj.toLocaleDateString('en-GB'); 
-            const signImgLink = "https://lh3.googleusercontent.com/d/1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN";
-
-            const certHTML = `
-                <div class="cert-box">
-                    <div class="watermark">
-                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="100" height="100" rx="25" fill="#16a34a" />
-                            <path d="M50 25 L20 42.5 L50 60 L80 42.5 Z" fill="#ffffff"/>
-                            <path d="M20 52.5 L50 70 L80 52.5" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    
-                    <div class="cert-content">
-                        <h1 class="cert-title">Certificate of Achievement</h1>
-                        <p class="cert-subtitle">This is proudly presented to</p>
-                        <h2 class="cert-name">${escapeHTML(name)}</h2>
-                        <p class="cert-desc">For successfully completing the Mock Test on</p>
-                        <h3 class="cert-subject">${subject}</h3>
-                        <p class="cert-score">Score: ${score}%</p>
-                    </div>
-                    
-                    <div class="cert-footer">
-                        <div class="footer-left">
-                            <div class="line"></div>
-                            <p class="f-date">${dateStr}</p>
-                            <p class="f-label">Date</p>
-                        </div>
-                        <div class="footer-right">
-                            <div class="sign-area">
-                                <img src="${signImgLink}" class="sign-img" alt="Sign">
-                                <p class="hand-date">${dateStr}</p>
-                            </div>
-                            <div class="line"></div>
-                            <p class="f-name">MukulDhaliOfficial</p>
-                            <p class="f-label">Authority</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            const printWindow = window.open('', '', 'width=1000,height=750');
-            printWindow.document.write('<html><head><title>Certificate - ' + subject + '</title>');
-            printWindow.document.write('<link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">');
-            printWindow.document.write('<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">');
             
-            printWindow.document.write('<style>' + 
-                '@import url("https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap"); ' +
-                '@page { size: A4 landscape; margin: 0; } ' + 
-                'body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; overflow: hidden; } ' +
-                '.cert-box { width: 270mm; height: 180mm; border: 4mm solid #2ea85c; border-radius: 4mm; box-sizing: border-box; padding: 15mm; position: relative; text-align: center; display: flex; flex-direction: column; font-family: "Times New Roman", "Kalpurush", serif; background: white; margin: auto; } ' +
-                '.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120mm; opacity: 0.05; z-index: 1; pointer-events: none; } ' +
-                '.cert-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; margin-top: -10mm; } ' +
-                '.cert-title { color: #4ade80; font-size: 14mm; font-weight: bold; margin: 0 0 8mm 0; letter-spacing: 0.5mm; } ' +
-                '.cert-subtitle { font-size: 5.5mm; color: #444; margin: 0 0 6mm 0; } ' +
-                '.cert-name { font-size: 10mm; color: #111; font-weight: bold; margin: 0 0 8mm 0; border-bottom: 0.8mm solid #2ea85c; padding-bottom: 2mm; min-width: 80mm; } ' +
-                '.cert-desc { font-size: 5mm; color: #444; margin: 0 0 6mm 0; } ' +
-                '.cert-subject { font-size: 7.5mm; color: #16a34a; font-weight: bold; margin: 0 0 6mm 0; } ' +
-                '.cert-score { font-size: 5.5mm; color: #111; font-weight: bold; margin: 0; } ' +
-                '.cert-footer { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 10mm 5mm 10mm; box-sizing: border-box; } ' +
-                '.footer-left, .footer-right { width: 65mm; text-align: center; position: relative; } ' +
-                '.line { border-top: 0.4mm solid #111; margin-bottom: 2mm; width: 100%; } ' +
-                '.f-date, .f-name { font-size: 4.5mm; color: #111; font-weight: bold; margin: 0 0 1.5mm 0; line-height: 1.2; } ' +
-                '.f-label { font-size: 4mm; color: #555; margin: 0; line-height: 1.2; } ' +
-                '.sign-area { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 25mm; margin-bottom: 1mm; position: relative;} ' +
-                '.sign-img { width: 33mm; height: auto; max-height: 11mm; object-fit: contain; margin-bottom: -1mm; z-index: 2; position: relative; } ' +
-                '.hand-date { font-family: "Caveat", cursive; font-size: 7mm; color: #00139C; margin: 0; transform: rotate(-3deg); z-index: -3; position: relative; } ' +
-            '</style>');
-            printWindow.document.write('</head><body>');
-            printWindow.document.write(certHTML);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
+            document.getElementById('cert-gen-name').innerText = name;
+            document.getElementById('cert-gen-subject').innerText = subject;
+            document.getElementById('cert-gen-score').innerText = `Score: ${score}%`;
+            document.getElementById('cert-gen-date').innerText = dateStr;
             
-            setTimeout(() => { 
-                printWindow.focus();
-                printWindow.print(); 
-            }, 2000);
+            const modal = document.getElementById('certificate-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeCertificateModal() {
+            const modal = document.getElementById('certificate-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function downloadCertificatePDF() {
+            const element = document.getElementById('certificate-content');
+            const btn = document.getElementById('download-cert-btn');
+            const originalHTML = btn.innerHTML;
+            
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ডাউনলোড হচ্ছে...`;
+            btn.disabled = true;
+
+            const opt = {
+              margin:       0,
+              filename:     `Certificate_${document.getElementById('cert-gen-subject').innerText}.pdf`,
+              image:        { type: 'jpeg', quality: 0.98 },
+              html2canvas:  { scale: 2, useCORS: true },
+              jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                showToast("সার্টিফিকেট সফলভাবে ডাউনলোড হয়েছে!", "success");
+            }).catch(err => {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                showToast("ডাউনলোড করতে সমস্যা হয়েছে!", "error");
+            });
         }
 
         function submitExam() {
             if(examTimer) clearInterval(examTimer);
+            
+            if(document.fullscreenElement && document.exitFullscreen) {
+                document.exitFullscreen();
+                document.getElementById('fullscreen-icon').classList.replace('fa-compress', 'fa-expand');
+            }
+
             const questions = groupedQuizData[currentActiveSubject];
             let score = 0;
 
@@ -2023,6 +2130,10 @@
 
         function backToQuizSubjects() {
             if(examTimer) clearInterval(examTimer);
+            if(document.fullscreenElement && document.exitFullscreen) {
+                document.exitFullscreen();
+                document.getElementById('fullscreen-icon').classList.replace('fa-compress', 'fa-expand');
+            }
             document.getElementById('quiz-exam-view').classList.add('hidden');
             document.getElementById('quiz-result-view').classList.add('hidden');
             document.getElementById('quiz-subject-view').classList.remove('hidden');
