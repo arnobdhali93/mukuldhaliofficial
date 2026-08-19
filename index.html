@@ -358,7 +358,7 @@
                     </h2>
                     <div class="relative w-full md:w-72">
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
-                        <input type="text" id="news-search" oninput="filterNews()" title="খবর খুঁজুন" placeholder="খবর খুঁজুন..." class="pl-10 p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm w-full outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm transition-all">
+                        <input type="search" id="news-search" oninput="filterNews()" title="খবর খুঁজুন" placeholder="খবর খুঁজুন..." class="pl-10 p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm w-full outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm transition-all">
                     </div>
                 </div>
                 <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -377,7 +377,7 @@
                     </h2>
                     <div class="relative w-full md:w-72">
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
-                        <input type="text" id="quiz-search" oninput="filterQuizSubjects()" title="বিষয় খুঁজুন" placeholder="বিষয় অনুসন্ধান করুন..." class="pl-10 p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm w-full outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 shadow-sm transition-all">
+                        <input type="search" id="quiz-search" oninput="filterQuizSubjects()" title="বিষয় খুঁজুন" placeholder="বিষয় অনুসন্ধান করুন..." class="pl-10 p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm w-full outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 shadow-sm transition-all">
                     </div>
                 </div>
                 
@@ -416,7 +416,7 @@
 
                     <div id="active-quiz-title" class="text-xl md:text-2xl font-black text-slate-900 dark:text-white border-l-4 border-brand-600 pl-4 py-1"></div>
 
-                    <div id="active-questions-container" class="space-y-8 mt-6"></div>
+                    <div id="active-questions-container" class="space-y-6 mt-6"></div>
 
                     <button onclick="confirmSubmitExam()" title="সব উত্তর জমা দিন" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-700 hover:to-brand-600 text-white py-4 rounded-xl text-sm font-black transition-all shadow-lg hover:shadow-xl shadow-brand-600/30 hover:-translate-y-1 cursor-pointer mt-8 tracking-wider">
                         <i class="fa-solid fa-paper-plane mr-2"></i> সব উত্তর জমা দিন (Submit Exam)
@@ -460,7 +460,7 @@
                     </h2>
                     <div class="relative w-full md:w-72">
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
-                        <input type="text" id="books-search" oninput="filterBooks()" title="বই খুঁজুন" placeholder="বই খুঁজুন..." class="pl-10 p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm w-full outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 shadow-sm transition-all">
+                        <input type="search" id="books-search" oninput="filterBooks()" title="বই খুঁজুন" placeholder="বই খুঁজুন..." class="pl-10 p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm w-full outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 shadow-sm transition-all">
                     </div>
                 </div>
                 <div id="books-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -726,6 +726,13 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdidmt4dG15cW1sa21jeHZiZnN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMzgzNTEsImV4cCI6MjEwMjYxNDM1MX0.jGXOP0Y_Q78m7DCI6A0tiLQ5KDNW1-K0ypr0AVW9H8w';
         
         let supabaseClient;
+
+        // NEW HELPER: Namespace localStorage based on authenticated user or guest
+        function getStorageKey(baseKey) {
+            const email = localStorage.getItem('portalUserEmail');
+            return email ? `${email}_${baseKey}` : `guest_${baseKey}`;
+        }
+
         try {
             const { createClient } = window.supabase;
             supabaseClient = createClient(supabaseUrl, supabaseKey);
@@ -733,13 +740,20 @@
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (session) {
                     localStorage.setItem('portalUserEmail', session.user.email);
-                    localStorage.setItem('portalUserName', session.user.user_metadata.full_name || session.user.email.split('@')[0]);
+                    if(session.user.user_metadata.full_name) {
+                        localStorage.setItem(getStorageKey('portalUserName'), session.user.user_metadata.full_name);
+                    } else {
+                        if(!localStorage.getItem(getStorageKey('portalUserName'))) {
+                            localStorage.setItem(getStorageKey('portalUserName'), session.user.email.split('@')[0]);
+                        }
+                    }
                 } else {
                     localStorage.removeItem('portalUserEmail');
-                    localStorage.removeItem('portalUserName');
                 }
                 renderProfileSection();
                 updateHeaderBadge();
+                renderBookmarks();
+                loadChatHistory();
             });
         } catch (err) {
             console.error("Supabase Init Error:", err);
@@ -792,7 +806,6 @@
             }
         });
 
-        // Dummy SW Registration for PWA Criteria
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js').catch(err => {
@@ -961,7 +974,7 @@
 
         function confirmClearBookmarks() {
             openConfirmModal("আপনি কি সমস্ত বুকমার্ক মুছে ফেলতে চান?", () => {
-                localStorage.removeItem('portalBookmarks');
+                localStorage.removeItem(getStorageKey('portalBookmarks'));
                 showToast("সমস্ত বুকমার্ক মুছে ফেলা হয়েছে!", "success");
                 renderBookmarks();
             });
@@ -978,7 +991,7 @@
         }
 
         function toggleBookmark(title, category, type, link = '') {
-            let bookmarks = JSON.parse(localStorage.getItem('portalBookmarks')) || [];
+            let bookmarks = JSON.parse(localStorage.getItem(getStorageKey('portalBookmarks'))) || [];
             const index = bookmarks.findIndex(b => b.title === title);
             
             if (index > -1) {
@@ -988,13 +1001,13 @@
                 bookmarks.push({ title, category, type, link });
                 showToast("বুকমার্কে সেভ করা হয়েছে!", 'success');
             }
-            localStorage.setItem('portalBookmarks', JSON.stringify(bookmarks));
+            localStorage.setItem(getStorageKey('portalBookmarks'), JSON.stringify(bookmarks));
             renderBookmarks();
         }
 
         function renderBookmarks(filterType = 'All') {
             const container = document.getElementById('bookmarks-container');
-            let bookmarks = JSON.parse(localStorage.getItem('portalBookmarks')) || [];
+            let bookmarks = JSON.parse(localStorage.getItem(getStorageKey('portalBookmarks'))) || [];
             
             if (filterType !== 'All') {
                 bookmarks = bookmarks.filter(b => b.type === filterType);
@@ -1234,12 +1247,24 @@
         }
 
         function loadChatHistory() {
-            const savedChat = localStorage.getItem('aiChatHistory');
-            if (savedChat) document.getElementById('chat-history').innerHTML = savedChat;
+            const savedChat = localStorage.getItem(getStorageKey('aiChatHistory'));
+            if (savedChat) {
+                document.getElementById('chat-history').innerHTML = savedChat;
+            } else {
+                document.getElementById('chat-history').innerHTML = `
+                <div class="flex gap-3">
+                    <div class="w-8 h-8 rounded-full bg-brand-100 dark:bg-slate-700 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-robot text-brand-600 dark:text-brand-400 text-xs"></i>
+                    </div>
+                    <div class="bg-white dark:bg-slate-700 p-3.5 rounded-2xl rounded-tl-sm border border-slate-200 dark:border-slate-600 shadow-sm text-slate-700 dark:text-slate-200 font-medium">
+                        হ্যালো! আমি MukulDhali এর এআই অ্যাসিস্ট্যান্ট। কীভাবে আপনাকে সাহায্য করতে পারি?
+                    </div>
+                </div>`;
+            }
         }
         function saveChatHistory() {
             const chatHtml = document.getElementById('chat-history').innerHTML;
-            localStorage.setItem('aiChatHistory', chatHtml);
+            localStorage.setItem(getStorageKey('aiChatHistory'), chatHtml);
         }
         
         function confirmClearChatHistory() {
@@ -1253,7 +1278,7 @@
                         হ্যালো! আমি MukulDhali এর এআই অ্যাসিস্ট্যান্ট। কীভাবে আপনাকে সাহায্য করতে পারি?
                     </div>
                 </div>`;
-                localStorage.removeItem('aiChatHistory');
+                localStorage.removeItem(getStorageKey('aiChatHistory'));
                 showToast('চ্যাট মুছে ফেলা হয়েছে।', 'success');
             });
         }
@@ -1483,13 +1508,13 @@
         }
 
         function openEditProfile() {
-            const currentName = localStorage.getItem('portalUserName') || '';
+            const currentName = localStorage.getItem(getStorageKey('portalUserName')) || '';
             document.getElementById('edit-name').value = currentName;
             document.getElementById('edit-pic').value = ""; 
             
             selectedFileBase64 = null; 
             
-            const currentPic = localStorage.getItem('portalUserPic');
+            const currentPic = localStorage.getItem(getStorageKey('portalUserPic'));
             const previewContainer = document.getElementById('edit-pic-preview-container');
             if(currentPic) {
                 previewContainer.innerHTML = `<img src="${currentPic}" class="w-full h-full object-cover">`;
@@ -1520,10 +1545,10 @@
             e.preventDefault();
             const newName = document.getElementById('edit-name').value.trim();
             
-            if (newName) localStorage.setItem('portalUserName', newName);
+            if (newName) localStorage.setItem(getStorageKey('portalUserName'), newName);
             
             if (selectedFileBase64) {
-                localStorage.setItem('portalUserPic', selectedFileBase64);
+                localStorage.setItem(getStorageKey('portalUserPic'), selectedFileBase64);
             }
             
             finalizeProfileUpdate();
@@ -1641,10 +1666,10 @@
 
         function resetAllData() {
             openConfirmModal("আপনি কি নিশ্চিত? এর ফলে আপনার কুইজ হিস্ট্রি এবং বুকমার্ক মুছে যাবে, কিন্তু অ্যাকাউন্ট লগইন থাকবে!", () => {
-                localStorage.removeItem('fullQuizHistory');
-                localStorage.removeItem('lastQuizScore');
-                localStorage.removeItem('portalBookmarks');
-                localStorage.removeItem('aiChatHistory');
+                localStorage.removeItem(getStorageKey('fullQuizHistory'));
+                localStorage.removeItem(getStorageKey('lastQuizScore'));
+                localStorage.removeItem(getStorageKey('portalBookmarks'));
+                localStorage.removeItem(getStorageKey('aiChatHistory'));
                 showToast("অ্যাপ ডেটা রিসেট হয়েছে।", "success");
                 setTimeout(() => location.reload(), 1000);
             });
@@ -1653,17 +1678,17 @@
         function renderProfileSection() {
             const profileContainer = document.getElementById('profile-content');
             const loggedInUser = localStorage.getItem('portalUserEmail');
-            const loggedInName = localStorage.getItem('portalUserName');
-            const profilePic = localStorage.getItem('portalUserPic');
+            const loggedInName = localStorage.getItem(getStorageKey('portalUserName'));
+            const profilePic = localStorage.getItem(getStorageKey('portalUserPic'));
             
-            let fullQuizHistory = JSON.parse(localStorage.getItem('fullQuizHistory')) || [];
+            let fullQuizHistory = JSON.parse(localStorage.getItem(getStorageKey('fullQuizHistory'))) || [];
             let totalQuizzes = fullQuizHistory.length;
             let avgScore = 0;
             if (totalQuizzes > 0) {
                 let sum = fullQuizHistory.reduce((acc, curr) => acc + curr.percentage, 0);
                 avgScore = Math.round(sum / totalQuizzes);
             }
-            const lastQuizScore = localStorage.getItem('lastQuizScore') || 'N/A';
+            const lastQuizScore = localStorage.getItem(getStorageKey('lastQuizScore')) || 'N/A';
 
             let userRank = "Beginner";
             let rankIcon = "🥉";
@@ -1764,7 +1789,6 @@
         function logoutUser() {
             openConfirmModal('আপনি কি সত্যিই লগআউট করতে চান?', async () => {
                 if(supabaseClient) await supabaseClient.auth.signOut();
-                localStorage.removeItem('portalUserPic'); 
                 showToast("লগআউট সম্পন্ন হয়েছে!", "success");
                 renderProfileSection();
                 updateHeaderBadge();
@@ -1772,15 +1796,20 @@
         }
 
         function updateHeaderBadge() {
-            const name = localStorage.getItem('portalUserName');
-            const pic = localStorage.getItem('portalUserPic');
+            const loggedInUser = localStorage.getItem('portalUserEmail');
             const badge = document.getElementById('mobile-user-badge');
             
             if (badge) {
-                if (pic) {
-                    badge.innerHTML = `<img src="${pic}" class="w-full h-full object-cover" alt="Profile">`;
-                } else if (name) {
-                    badge.innerText = name.substring(0, 2).toUpperCase();
+                if(loggedInUser) {
+                    const name = localStorage.getItem(getStorageKey('portalUserName'));
+                    const pic = localStorage.getItem(getStorageKey('portalUserPic'));
+                    if (pic) {
+                        badge.innerHTML = `<img src="${pic}" class="w-full h-full object-cover" alt="Profile">`;
+                    } else if (name) {
+                        badge.innerText = name.substring(0, 2).toUpperCase();
+                    } else {
+                        badge.innerHTML = `<i class="fa-solid fa-user"></i>`;
+                    }
                 } else {
                     badge.innerHTML = `<i class="fa-solid fa-user"></i>`;
                 }
@@ -2105,7 +2134,6 @@
             const examView = document.getElementById('quiz-exam-view');
             examView.classList.remove('hidden');
             
-            // Force reflow for animation
             void examView.offsetWidth;
             examView.classList.add('animate-fade-in-up');
 
@@ -2128,23 +2156,23 @@
                 optionsList.forEach((opt, optIndex) => {
                     const uniqueId = `q_${index}_opt_${optIndex}`;
                     optionsHtml += `
-                    <label for="${uniqueId}" class="flex items-start gap-4 p-4 bg-white dark:bg-slate-700 border-2 border-slate-100 dark:border-slate-600 rounded-xl cursor-pointer hover:border-brand-400 hover:bg-brand-50 dark:hover:bg-slate-600 transition-all text-sm font-bold relative group">
+                    <label for="${uniqueId}" class="flex items-start gap-3 p-3 bg-white dark:bg-slate-700 border border-slate-100 dark:border-slate-600 rounded-lg cursor-pointer hover:border-brand-400 hover:bg-brand-50 dark:hover:bg-slate-600 transition-all text-sm font-bold relative group">
                         <input type="radio" id="${uniqueId}" name="exam_question_${index}" value="${opt}" onchange="updateQuizProgressBar()" class="peer sr-only">
-                        <div class="w-5 h-5 rounded-full border-2 border-slate-300 dark:border-slate-500 peer-checked:border-brand-600 peer-checked:bg-brand-600 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
-                            <div class="w-2 h-2 rounded-full bg-white opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+                        <div class="w-4 h-4 rounded-full border-2 border-slate-300 dark:border-slate-500 peer-checked:border-brand-600 peer-checked:bg-brand-600 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                            <div class="w-1.5 h-1.5 rounded-full bg-white opacity-0 peer-checked:opacity-100 transition-opacity"></div>
                         </div>
-                        <span class="text-slate-700 dark:text-slate-200 peer-checked:text-brand-700 dark:peer-checked:text-brand-300 leading-relaxed">${opt}</span>
+                        <span class="text-slate-700 dark:text-slate-200 peer-checked:text-brand-700 dark:peer-checked:text-brand-300 leading-tight">${opt}</span>
                     </label>`;
                 });
 
                 qContainer.innerHTML += `
-                <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 space-y-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-1.5 h-full bg-brand-400"></div>
-                    <div class="flex gap-4">
-                        <div class="bg-brand-100 dark:bg-slate-800 text-brand-700 dark:text-brand-400 font-black px-3 py-1.5 rounded-lg h-fit text-sm shrink-0">Q${index + 1}</div>
-                        <p class="font-black text-slate-900 dark:text-white text-base md:text-lg leading-relaxed pt-1">${q.Question}</p>
+                <div class="p-4 md:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 space-y-2 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-brand-400"></div>
+                    <div class="flex gap-3 md:gap-4">
+                        <div class="bg-brand-100 dark:bg-slate-800 text-brand-700 dark:text-brand-400 font-black px-2 py-1 rounded-md h-fit text-xs md:text-sm shrink-0">Q${index + 1}</div>
+                        <p class="font-black text-slate-900 dark:text-white text-base leading-snug pt-0.5">${q.Question}</p>
                     </div>
-                    <div class="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-700 pl-[3.25rem]">
+                    <div class="space-y-2 pt-3 border-t border-slate-200 dark:border-slate-700 pl-[2.5rem]">
                         ${optionsHtml}
                     </div>
                 </div>`;
@@ -2198,7 +2226,7 @@
         }
 
         function generateCertificate(subject, score) {
-            const name = localStorage.getItem('portalUserName') || 'Student';
+            const name = localStorage.getItem(getStorageKey('portalUserName')) || 'Student';
             const dateObj = new Date();
             const dateStr = dateObj.toLocaleDateString('en-GB'); 
             const signImgLink = "https://lh3.googleusercontent.com/d/1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN";
@@ -2382,7 +2410,7 @@
                         }
 
                         optionsReviewHtml += `
-                        <div class="p-3.5 border-2 rounded-xl flex items-center justify-between text-xs sm:text-sm ${optClass} transition-colors">
+                        <div class="p-2.5 border rounded-lg flex items-center justify-between text-xs sm:text-sm ${optClass} transition-colors">
                             <span>${optVal}</span>
                             ${badge}
                         </div>`;
@@ -2392,15 +2420,15 @@
                 let skippedBadge = !selectedVal ? `<span class="text-[10px] text-orange-700 bg-orange-100 dark:bg-orange-900/40 dark:text-orange-400 px-3 py-1 rounded-md font-black uppercase tracking-wide border border-orange-200 dark:border-orange-800 whitespace-nowrap"><i class="fa-solid fa-circle-exclamation mr-1"></i> উত্তর দেওয়া হয়নি</span>` : '';
 
                 reviewContainer.innerHTML += `
-                <div class="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 space-y-3 mb-5 shadow-sm">
-                    <div class="flex justify-between items-start gap-3 border-b border-slate-200 dark:border-slate-700 pb-3">
-                        <div class="flex gap-3">
-                            <span class="font-black text-brand-600 dark:text-brand-400 mt-0.5 text-sm md:text-base">Q${index + 1}.</span>
-                            <p class="font-black text-slate-900 dark:text-white text-sm md:text-base leading-relaxed">${q.Question}</p>
+                <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 space-y-2 mb-4 shadow-sm">
+                    <div class="flex justify-between items-start gap-3 border-b border-slate-200 dark:border-slate-700 pb-2">
+                        <div class="flex gap-2">
+                            <span class="font-bold text-brand-600 dark:text-brand-400 text-sm md:text-base">Q${index + 1}.</span>
+                            <p class="font-bold text-slate-900 dark:text-white text-sm md:text-base leading-snug">${q.Question}</p>
                         </div>
                         ${skippedBadge}
                     </div>
-                    <div class="space-y-2.5 pt-1 pl-[2rem]">
+                    <div class="space-y-2 pt-2 pl-[1.5rem]">
                         ${optionsReviewHtml}
                     </div>
                 </div>`;
@@ -2416,7 +2444,7 @@
                 playQuizSound('fail');
             }
 
-            if (percentage >= 80 && window.confetti) {
+            if (percentage >= 100 && window.confetti) {
                 const duration = 3000;
                 const end = Date.now() + duration;
 
@@ -2442,8 +2470,8 @@
                 }());
             }
 
-            localStorage.setItem('lastQuizScore', `${scoreFormatted} (${percentage}%)`);
-            let fullQuizHistory = JSON.parse(localStorage.getItem('fullQuizHistory')) || [];
+            localStorage.setItem(getStorageKey('lastQuizScore'), `${scoreFormatted} (${percentage}%)`);
+            let fullQuizHistory = JSON.parse(localStorage.getItem(getStorageKey('fullQuizHistory'))) || [];
             fullQuizHistory.push({
                 subject: currentActiveSubject,
                 score: score,
@@ -2451,7 +2479,7 @@
                 percentage: percentage,
                 date: new Date().toLocaleDateString()
             });
-            localStorage.setItem('fullQuizHistory', JSON.stringify(fullQuizHistory));
+            localStorage.setItem(getStorageKey('fullQuizHistory'), JSON.stringify(fullQuizHistory));
 
             let messageHtml = percentage >= 80 
                 ? '<div class="text-emerald-600 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl text-sm font-bold mt-2"><i class="fa-solid fa-party-horn mr-1"></i> অসাধারণ পারফরম্যান্স!</div>' 
