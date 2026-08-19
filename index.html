@@ -505,7 +505,7 @@
                 <div id="bookmarks-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div class="col-span-full text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <i class="fa-regular fa-bookmark text-slate-300 dark:text-slate-600 text-6xl mb-4"></i>
-                        <p class="text-slate-500 dark:text-slate-400 text-base font-bold">আপনার বুকমার্ক করা কোনো কন্টেন্ট নেই।</p>
+                        <p class="text-slate-500 dark:text-slate-400 text-base font-bold">আপনার বুকমার্ক করা কোনো কন্টেন্ট নেই。</p>
                     </div>
                 </div>
             </section>
@@ -756,7 +756,7 @@
             { text: "স্বপ্ন সেটা নয় যেটা তুমি ঘুমিয়ে দেখো, স্বপ্ন সেটা যেটা তোমায় ঘুমোতে দেয় না।", author: "এ. পি. জে. আব্দুল কালাম" },
             { text: "নিজেকে পরিবর্তন করো, পৃথিবী এমনিতেই বদলে যাবে।", author: "স্বামী বিবেকানন্দ" },
             { text: "যে ভুল করেনি, সে কখনো নতুন কিছু করার চেষ্টা করেনি।", author: "অ্যালবার্ট আইনস্টাইন" },
-            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেন না।", author: "স্টিভ জবস" },
+            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেন বায়।", author: "স্টিভ জবস" },
             { text: "সত্যিকারের জ্ঞানী সে, যে জানে সে কিছুই জানে না।", author: "সক্রেটিস" }
         ];
 
@@ -2209,81 +2209,137 @@
             const signImgLink = "https://lh3.googleusercontent.com/d/1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN";
 
             const certHTML = `
-                <div class="cert-box">
-                    <div class="watermark">
-                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="100" height="100" rx="25" fill="#16a34a" />
-                            <path d="M50 25 L20 42.5 L50 60 L80 42.5 Z" fill="#ffffff"/>
-                            <path d="M20 52.5 L50 70 L80 52.5" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    
-                    <div class="cert-content">
-                        <h1 class="cert-title">Certificate of Achievement</h1>
-                        <p class="cert-subtitle">This is proudly presented to</p>
-                        <h2 class="cert-name">${escapeHTML(name)}</h2>
-                        <p class="cert-desc">For successfully completing the Mock Test on</p>
-                        <h3 class="cert-subject">${subject}</h3>
-                        <div class="score-badge">Score: ${score}%</div>
-                    </div>
-                    
-                    <div class="cert-footer">
-                        <div class="footer-left">
-                            <div class="line"></div>
-                            <p class="f-date">${dateStr}</p>
-                            <p class="f-label">Date</p>
+                <div class="cert-wrapper">
+                    <div class="cert-box">
+                        <div class="watermark">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="100" height="100" rx="25" fill="#16a34a" />
+                                <path d="M50 25 L20 42.5 L50 60 L80 42.5 Z" fill="#ffffff"/>
+                                <path d="M20 52.5 L50 70 L80 52.5" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                         </div>
-                        <div class="footer-center">
-                            <div class="seal">
-                                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
-                                    <circle cx="50" cy="50" r="45" fill="#facc15" stroke="#ca8a04" stroke-width="2" stroke-dasharray="4 2"/>
-                                    <circle cx="50" cy="50" r="38" fill="#ca8a04"/>
-                                    <path d="M50 25 L35 60 L65 60 Z" fill="#fff" opacity="0.8"/>
-                                </svg>
-                            </div>
+                        
+                        <div class="cert-content">
+                            <h1 class="cert-title">Certificate of Achievement</h1>
+                            <p class="cert-subtitle">This is proudly presented to</p>
+                            <h2 class="cert-name">${escapeHTML(name)}</h2>
+                            <p class="cert-desc">For successfully completing the Mock Test on</p>
+                            <h3 class="cert-subject">${subject}</h3>
+                            <div class="score-badge">Score: ${score}%</div>
                         </div>
-                        <div class="footer-right">
-                            <div class="sign-area">
-                                <img src="${signImgLink}" class="sign-img" alt="Sign">
-                                <p class="hand-date">${dateStr}</p>
+                        
+                        <div class="cert-footer">
+                            <div class="footer-left">
+                                <div class="line"></div>
+                                <p class="f-date">${dateStr}</p>
+                                <p class="f-label">Date</p>
                             </div>
-                            <div class="line"></div>
-                            <p class="f-name">MukulDhaliOfficial</p>
-                            <p class="f-label">Authority</p>
+                            <div class="footer-center">
+                                <div class="seal">
+                                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
+                                        <circle cx="50" cy="50" r="45" fill="#facc15" stroke="#ca8a04" stroke-width="2" stroke-dasharray="4 2"/>
+                                        <circle cx="50" cy="50" r="38" fill="#ca8a04"/>
+                                        <path d="M50 25 L35 60 L65 60 Z" fill="#fff" opacity="0.8"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="footer-right">
+                                <div class="sign-area">
+                                    <img src="${signImgLink}" class="sign-img" alt="Sign">
+                                    <p class="hand-date">${dateStr}</p>
+                                </div>
+                                <div class="line"></div>
+                                <p class="f-name">MukulDhaliOfficial</p>
+                                <p class="f-label">Authority</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
 
             const printWindow = window.open('', '', 'width=1000,height=750');
-            printWindow.document.write('<html><head><title>Certificate - ' + subject + '</title>');
+            printWindow.document.write('<!DOCTYPE html><html lang="bn"><head>');
+            printWindow.document.write('<meta charset="UTF-8">');
+            
+            // মোবাইল প্রিভিউতে জুম হয়ে কেটে যাওয়া আটকাতে Viewport মেটা ট্যাগ
+            printWindow.document.write('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">');
+            printWindow.document.write('<title>Certificate - ' + subject + '</title>');
             printWindow.document.write('<link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">');
-            printWindow.document.write('<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">');
+            printWindow.document.write('<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Cinzel:wght@700&display=swap" rel="stylesheet">');
             
             printWindow.document.write('<style>' + 
                 '@import url("https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap"); ' +
-                '@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap"); ' +
+                '* { box-sizing: border-box; } ' +
                 '@page { size: A4 landscape; margin: 0; } ' + 
-                'body, html { margin: 0; padding: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: #f0fdf4; -webkit-print-color-adjust: exact; print-color-adjust: exact; overflow: hidden; } ' +
-                '.cert-box { width: 275mm; height: 190mm; border: 2mm solid #15803d; outline: 1mm solid #4ade80; outline-offset: -4mm; box-sizing: border-box; padding: 15mm; position: relative; text-align: center; display: flex; flex-direction: column; font-family: "Times New Roman", "Kalpurush", serif; background: #fff; background-image: radial-gradient(#f0fdf4 10%, transparent 10%), radial-gradient(#f0fdf4 10%, transparent 10%); background-size: 20px 20px; background-position: 0 0, 10px 10px; margin: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.1); } ' +
-                '.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 140mm; opacity: 0.03; z-index: 1; pointer-events: none; } ' +
-                '.cert-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; margin-top: -5mm; } ' +
-                '.cert-title { font-family: "Cinzel", serif; color: #16a34a; font-size: 16mm; font-weight: bold; margin: 0 0 8mm 0; letter-spacing: 1mm; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); } ' +
-                '.cert-subtitle { font-size: 6mm; color: #555; margin: 0 0 6mm 0; font-style: italic; } ' +
-                '.cert-name { font-family: "Caveat", cursive; font-size: 16mm; color: #0f172a; font-weight: bold; margin: 0 0 8mm 0; border-bottom: 1px solid #cbd5e1; padding-bottom: 2mm; min-width: 100mm; line-height: 1; } ' +
-                '.cert-desc { font-size: 5.5mm; color: #555; margin: 0 0 6mm 0; } ' +
-                '.cert-subject { font-size: 8mm; color: #15803d; font-weight: bold; margin: 0 0 8mm 0; border: 2px solid #bbf7d0; padding: 2mm 10mm; border-radius: 50px; background: #f0fdf4; } ' +
-                '.score-badge { font-family: sans-serif; font-size: 5mm; background: #facc15; color: #854d0e; font-weight: bold; padding: 2mm 5mm; border-radius: 5px; box-shadow: 2px 2px 0 #ca8a04; margin-top: 2mm;} ' +
-                '.cert-footer { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 5mm; box-sizing: border-box; } ' +
-                '.footer-left, .footer-right { width: 60mm; text-align: center; position: relative; } ' +
-                '.footer-center { width: 40mm; display: flex; justify-content: center; } ' +
-                '.seal { width: 35mm; height: 35mm; } ' +
-                '.line { border-top: 1px solid #333; margin-bottom: 2mm; width: 100%; } ' +
-                '.f-date, .f-name { font-size: 4.5mm; color: #111; font-weight: bold; margin: 0 0 1mm 0; line-height: 1.2; } ' +
-                '.f-label { font-size: 3.5mm; color: #666; margin: 0; line-height: 1.2; text-transform: uppercase; letter-spacing: 1px;} ' +
-                '.sign-area { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 25mm; margin-bottom: 1mm; position: relative;} ' +
-                '.sign-img { width: 40mm; height: auto; max-height: 15mm; object-fit: contain; margin-bottom: -1mm; z-index: 2; position: relative; } ' +
-                '.hand-date { font-family: "Caveat", cursive; font-size: 7mm; color: #1d4ed8; margin: 0; transform: rotate(-5deg); z-index: -3; position: relative; } ' +
+                'body, html { margin: 0; padding: 0; width: 100vw; height: 100vh; background: #e2e8f0; display: flex; justify-content: center; align-items: center; font-family: "Times New Roman", "Kalpurush", serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; overflow: hidden; } ' +
+                
+                /* মোবাইল ও সাধারণ স্ক্রিনের জন্য VW ইউনিট নির্ভর রেসপন্সিভ ডিজাইন */
+                '.cert-wrapper { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; padding: 5vw; } ' +
+                '.cert-box { width: 90vw; height: 60vw; max-width: 270mm; max-height: 180mm; background: #fff; border: 1.2vw solid #15803d; outline: 0.4vw solid #4ade80; outline-offset: -1.6vw; padding: 4vw 6vw; position: relative; text-align: center; display: flex; flex-direction: column; background-image: radial-gradient(#f0fdf4 10%, transparent 10%), radial-gradient(#f0fdf4 10%, transparent 10%); background-size: 2vw 2vw; background-position: 0 0, 1vw 1vw; box-shadow: 0 10px 30px rgba(0,0,0,0.15); } ' +
+                '.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40vw; max-width: 120mm; opacity: 0.04; z-index: 1; pointer-events: none; } ' +
+                '.cert-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; margin-top: -2vw; } ' +
+                '.cert-title { font-family: "Cinzel", serif; color: #16a34a; font-size: 4.8vw; font-weight: bold; margin: 0 0 1vw 0; letter-spacing: 0.2vw; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); } ' +
+                '.cert-subtitle { font-size: 2vw; color: #555; margin: 0 0 2vw 0; font-style: italic; } ' +
+                '.cert-name { font-family: "Caveat", cursive; font-size: 6.5vw; color: #0f172a; font-weight: bold; margin: 0 0 2vw 0; border-bottom: 0.2vw solid #cbd5e1; padding-bottom: 1vw; min-width: 50vw; line-height: 1; text-align: center;} ' +
+                '.cert-desc { font-size: 1.8vw; color: #555; margin: 0 0 2vw 0; } ' +
+                '.cert-subject { font-size: 2.8vw; color: #15803d; font-weight: bold; margin: 0 0 2vw 0; border: 0.3vw solid #bbf7d0; padding: 1vw 3vw; border-radius: 5vw; background: #f0fdf4; } ' +
+                '.score-badge { font-family: sans-serif; font-size: 1.8vw; background: #facc15; color: #854d0e; font-weight: bold; padding: 0.8vw 2vw; border-radius: 0.5vw; box-shadow: 0.2vw 0.2vw 0 #ca8a04; margin-top: 1vw;} ' +
+                '.cert-footer { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 2vw; } ' +
+                '.footer-left, .footer-right { width: 22vw; text-align: center; position: relative; } ' +
+                '.footer-center { width: 15vw; display: flex; justify-content: center; align-items: center; } ' +
+                '.seal { width: 12vw; height: 12vw; } ' +
+                '.line { border-top: 0.2vw solid #333; margin-bottom: 0.8vw; width: 100%; } ' +
+                '.f-date, .f-name { font-size: 1.6vw; color: #111; font-weight: bold; margin: 0 0 0.2vw 0; line-height: 1.2; } ' +
+                '.f-label { font-size: 1.2vw; color: #666; margin: 0; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.1vw;} ' +
+                '.sign-area { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 7vw; margin-bottom: 0.5vw; position: relative;} ' +
+                '.sign-img { width: 15vw; height: auto; max-height: 4.5vw; object-fit: contain; margin-bottom: -0.5vw; z-index: 2; position: relative; } ' +
+                '.hand-date { font-family: "Caveat", cursive; font-size: 2.5vw; color: #1d4ed8; margin: 0; transform: rotate(-5deg); z-index: -3; position: relative; } ' +
+                
+                /* ডেস্কটপ স্ক্রিনে ওভারসাইজড হওয়া রুখতে ফিক্সড সাইজ (Desktop Screens) */
+                '@media screen and (min-width: 1200px) { ' +
+                '   .cert-box { border-width: 14px; outline-width: 5px; outline-offset: -19px; padding: 48px 72px; background-size: 24px 24px; background-position: 0 0, 12px 12px; } ' +
+                '   .cert-title { font-size: 57px; margin-bottom: 12px; letter-spacing: 2px; } ' +
+                '   .cert-subtitle { font-size: 24px; margin-bottom: 24px; } ' +
+                '   .cert-name { font-size: 78px; margin-bottom: 24px; border-bottom-width: 2px; padding-bottom: 12px; min-width: 600px; } ' +
+                '   .cert-desc { font-size: 21px; margin-bottom: 24px; } ' +
+                '   .cert-subject { font-size: 33px; margin-bottom: 24px; border-width: 3px; padding: 12px 36px; border-radius: 60px; } ' +
+                '   .score-badge { font-size: 21px; padding: 9px 24px; border-radius: 6px; box-shadow: 2px 2px 0 #ca8a04; margin-top: 12px;} ' +
+                '   .cert-footer { padding: 0 24px; } ' +
+                '   .footer-left, .footer-right { width: 264px; } ' +
+                '   .footer-center { width: 180px; } ' +
+                '   .seal { width: 144px; height: 144px; } ' +
+                '   .line { border-top-width: 2px; margin-bottom: 9px; } ' +
+                '   .f-date, .f-name { font-size: 19px; margin-bottom: 2px; } ' +
+                '   .f-label { font-size: 14px; letter-spacing: 1px;} ' +
+                '   .sign-area { min-height: 84px; margin-bottom: 6px;} ' +
+                '   .sign-img { width: 180px; max-height: 54px; margin-bottom: -6px; } ' +
+                '   .hand-date { font-size: 30px; } ' +
+                '} ' +
+                
+                /* প্রিন্টের জন্য সম্পূর্ণ নির্দিষ্ট সাইজ (A4 Landscape, 3:2 Ratio) */
+                '@media print { ' +
+                '   body { background: white; margin: 0; padding: 0; } ' +
+                '   .cert-wrapper { width: 297mm; height: 210mm; max-width: none; max-height: none; padding: 0; display: flex; align-items: center; justify-content: center; page-break-inside: avoid; } ' +
+                '   .cert-box { box-shadow: none; width: 270mm; height: 180mm; max-width: none; max-height: none; border-width: 3.5mm; outline-width: 1.2mm; outline-offset: -4.5mm; padding: 12mm 18mm; background-size: 5mm 5mm; background-position: 0 0, 2.5mm 2.5mm;} ' +
+                '   .watermark { width: 120mm; max-width: none; } ' +
+                '   .cert-content { margin-top: -6mm; } ' +
+                '   .cert-title { font-size: 14.5mm; margin-bottom: 3mm; letter-spacing: 0.6mm; } ' +
+                '   .cert-subtitle { font-size: 6mm; margin-bottom: 6mm; } ' +
+                '   .cert-name { font-size: 19.5mm; margin-bottom: 6mm; border-bottom-width: 0.6mm; padding-bottom: 3mm; min-width: 150mm; } ' +
+                '   .cert-desc { font-size: 5.5mm; margin-bottom: 6mm; } ' +
+                '   .cert-subject { font-size: 8.5mm; margin-bottom: 6mm; border-width: 1mm; padding: 3mm 9mm; border-radius: 15mm; } ' +
+                '   .score-badge { font-size: 5.5mm; padding: 2.5mm 6mm; border-radius: 1.5mm; box-shadow: 0.6mm 0.6mm 0 #ca8a04; margin-top: 3mm;} ' +
+                '   .cert-footer { padding: 0 6mm; } ' +
+                '   .footer-left, .footer-right { width: 66mm; } ' +
+                '   .footer-center { width: 45mm; } ' +
+                '   .seal { width: 36mm; height: 36mm; } ' +
+                '   .line { border-top-width: 0.6mm; margin-bottom: 2.5mm; } ' +
+                '   .f-date, .f-name { font-size: 4.8mm; margin-bottom: 0.6mm; } ' +
+                '   .f-label { font-size: 3.6mm; letter-spacing: 0.3mm;} ' +
+                '   .sign-area { min-height: 21mm; margin-bottom: 1.5mm;} ' +
+                '   .sign-img { width: 45mm; max-height: 13.5mm; margin-bottom: -1.5mm; } ' +
+                '   .hand-date { font-size: 7.5mm; } ' +
+                '} ' +
             '</style>');
             printWindow.document.write('</head><body>');
             printWindow.document.write(certHTML);
@@ -2293,7 +2349,7 @@
             setTimeout(() => { 
                 printWindow.focus();
                 printWindow.print(); 
-            }, 2000);
+            }, 1000);
         }
 
         function submitExam() {
