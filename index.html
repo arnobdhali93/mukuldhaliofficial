@@ -795,7 +795,6 @@
         // Dummy SW Registration for PWA Criteria
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                // Ignore SW logic if file doesn't exist, just trying to satisfy PWA minimums
                 navigator.serviceWorker.register('/sw.js').catch(err => {
                     console.log('SW setup pending or not found on this path.');
                 });
@@ -908,7 +907,6 @@
         }
 
         function applySavedTheme() {
-            // Advanced Theme Check respecting system preference if no local storage
             let isDark = localStorage.getItem('theme') === 'dark';
             if(localStorage.getItem('theme') === null) {
                 isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -1071,7 +1069,6 @@
         function setChatQuery(text) {
             document.getElementById('userQuery').value = text;
             askGemini();
-            // Show chatbot if not open
             const chatWindow = document.getElementById('chat-window');
             if(chatWindow.classList.contains('hidden')) toggleChat();
         }
@@ -1088,7 +1085,6 @@
         }
 
         function shareContent(title) {
-            // Enhanced custom fallback share modal or standard navigator
             if (navigator.share) {
                 navigator.share({ title: title, url: window.location.href }).catch(() => {});
             } else {
@@ -1168,7 +1164,7 @@
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'bn-BD'; 
                 utterance.rate = 0.9;
-                utterance.pitch = 1.1; // Make it sound slightly more natural
+                utterance.pitch = 1.1; 
                 
                 utterance.onend = () => {
                     isSpeaking = false;
@@ -1195,7 +1191,7 @@
             const sections = document.querySelectorAll('.section-content');
             sections.forEach(sec => {
                 sec.classList.add('hidden');
-                sec.classList.remove('section-fade-in'); // Reset animation
+                sec.classList.remove('section-fade-in'); 
             });
 
             const buttons = document.querySelectorAll('.nav-btn');
@@ -1207,7 +1203,6 @@
             const targetSection = document.getElementById(sectionId);
             if(targetSection) {
                 targetSection.classList.remove('hidden');
-                // Force reflow
                 void targetSection.offsetWidth;
                 targetSection.classList.add('section-fade-in');
             }
@@ -1755,7 +1750,7 @@
                         </div>
                         <div>
                             <h3 class="font-black text-slate-900 dark:text-white text-2xl mb-2">অ্যাকাউন্টে প্রবেশ করুন</h3>
-                            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed">কুইজ পরীক্ষা দিতে, বই ডাউনলোড করতে এবং প্রোফাইল ট্র্যাক করতে একটি ফ্রি অ্যাকাউন্ট তৈরি করুন অথবা লগইন করুন。</p>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed">কুইজ পরীক্ষা দিতে, বই ডাউনলোড করতে এবং প্রোফাইল ট্র্যাক করতে একটি ফ্রি অ্যাকাউন্ট তৈরি করুন অথবা লগইন করুন।</p>
                         </div>
                         <button onclick="triggerRegisterPopup()" title="অ্যাকাউন্ট খুলুন" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-700 hover:to-brand-600 text-white py-4 rounded-xl text-sm font-black transition-all shadow-lg shadow-brand-600/30 hover:-translate-y-1 cursor-pointer mt-4">
                             রেজিস্ট্রেশন / লগইন করুন
@@ -2265,7 +2260,6 @@
             printWindow.document.write('<link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">');
             printWindow.document.write('<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Cinzel:wght@700&display=swap" rel="stylesheet">');
             
-            // ✅ Only changed the @media print CSS below
             printWindow.document.write('<style>' + 
                 '@import url("https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap"); ' +
                 '* { box-sizing: border-box; margin: 0; padding: 0; } ' +
@@ -2292,9 +2286,11 @@
                 '   background-size: 2.5cqw 2.5cqw; ' +
                 '   background-position: 0 0, 1.25cqw 1.25cqw; ' +
                 '   box-shadow: 0 10px 30px rgba(0,0,0,0.15); ' +
+                '   overflow: hidden; ' +
                 '} ' +
                 
-                '.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40cqw; opacity: 0.04; z-index: 1; pointer-events: none; } ' +
+                '.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 45%; opacity: 0.04; z-index: 1; pointer-events: none; display: flex; justify-content: center; align-items: center; } ' +
+                '.watermark svg { width: 100%; height: auto; } ' +
                 
                 '.cert-content { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; margin-top: -1cqw; } ' +
                 
@@ -2315,15 +2311,15 @@
                 '.f-date, .f-name { font-size: 1.6cqw; color: #111; font-weight: bold; margin-bottom: 0.3cqw; line-height: 1.2; } ' +
                 '.f-label { font-size: 1.1cqw; color: #666; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.1cqw;} ' +
                 
-                '.sign-area { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 7cqw; margin-bottom: 0.5cqw; position: relative; } ' +
-                '.sign-img { width: 16cqw; max-height: 5cqw; object-fit: contain; z-index: 2; position: relative; margin-bottom: -1.5cqw; } ' +
-                '.hand-date { font-family: "Caveat", "Brush Script MT", cursive; font-size: 2.2cqw; color: #1d4ed8; transform: rotate(-5deg); z-index: -1; position: relative; top: -1cqw;} ' +
+                '.sign-area { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 6cqw; margin-bottom: 0.5cqw; } ' +
+                '.sign-img { width: 14cqw; max-height: 4cqw; object-fit: contain; z-index: 2; margin: 0; } ' +
+                '.hand-date { font-family: "Caveat", "Brush Script MT", cursive; font-size: 1.8cqw; color: #1d4ed8; margin-top: 0.2cqw; font-weight: bold; } ' +
                 
                 '@media print { ' +
                 '   @page { size: landscape; margin: 0; } ' +
-                '   body, html { width: 100%; height: 100%; background: white; margin: 0; padding: 0; overflow: visible; } ' +
+                '   body, html { width: 100%; height: 100%; background: white; margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; } ' +
                 '   .cert-wrapper { padding: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; } ' +
-                '   .cert-box { box-shadow: none; width: 100%; max-width: 100%; height: auto; aspect-ratio: 3 / 2; page-break-inside: avoid; margin: 0 auto; transform: scale(0.98); } ' +
+                '   .cert-box { box-shadow: none; width: 270mm !important; height: 180mm !important; aspect-ratio: auto; page-break-inside: avoid; margin: 0 auto; transform: scale(0.95); } ' +
                 '} ' +
             '</style>');
             printWindow.document.write('</head><body>');
