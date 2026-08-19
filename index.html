@@ -33,15 +33,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
 
-    <!-- FontAwesome, Tailwind, Confetti, Cropper.js, html2canvas, jsPDF & Supabase -->
+    <!-- FontAwesome, Tailwind, Confetti, Cropper.js & Supabase -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
@@ -530,68 +528,6 @@
 
     <!-- Modals -->
 
-    <!-- Certificate Preview Auto-Download Modal -->
-    <div id="cert-preview-modal" class="fixed inset-0 bg-slate-900/95 backdrop-blur-md z-[300] hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0">
-        <button onclick="closeCertModal()" class="absolute top-5 right-5 text-white/70 hover:text-white p-2 rounded-xl bg-white/10 transition cursor-pointer z-50 shadow-md">
-            <i class="fa-solid fa-xmark text-xl"></i>
-        </button>
-        
-        <p class="text-white mb-6 font-bold animate-pulse tracking-wide" id="cert-downloading-text">সার্টিফিকেট PDF ডাউনলোড হচ্ছে, অপেক্ষা করুন...</p>
-        
-        <!-- Wrapper for responsive mobile preview scaling -->
-        <div id="cert-scale-wrapper" class="relative origin-center shadow-2xl transition-transform duration-300">
-            
-            <!-- Actual Certificate Canvas DOM (Fixed 900x600 for 3:2 Ratio Quality Output) -->
-            <div id="certificate-dom" style="width: 900px; height: 600px; background: #ffffff; border: 12px solid #15803d; outline: 4px solid #4ade80; outline-offset: -16px; padding: 40px; position: relative; display: flex; flex-direction: column; justify-content: space-between; background-image: radial-gradient(#f0fdf4 10%, transparent 10%), radial-gradient(#f0fdf4 10%, transparent 10%); background-size: 20px 20px; background-position: 0 0, 10px 10px; overflow: hidden; font-family: 'Times New Roman', serif;">
-                
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; opacity: 0.04; z-index: 1; pointer-events: none; display: flex; justify-content: center; align-items: center;">
-                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
-                        <rect width="100" height="100" rx="25" fill="#16a34a" />
-                        <path d="M50 25 L20 42.5 L50 60 L80 42.5 Z" fill="#ffffff"/>
-                        <path d="M20 52.5 L50 70 L80 52.5" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                
-                <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; margin-top: -10px; text-align: center;">
-                    <h1 style="color: #16a34a; font-size: 42px; font-weight: bold; margin-bottom: 15px; letter-spacing: 2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); text-transform: uppercase;">Certificate of Achievement</h1>
-                    <p style="font-size: 16px; color: #555; margin-bottom: 20px; font-style: italic;">This is proudly presented to</p>
-                    <h2 id="cert-dynamic-name" style="font-size: 55px; color: #0f172a; font-weight: bold; margin-bottom: 25px; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px; min-width: 450px; line-height: 1; font-family: cursive;">Student Name</h2>
-                    <p style="font-size: 16px; color: #555; margin-bottom: 20px;">For successfully completing the Mock Test on</p>
-                    <h3 id="cert-dynamic-subject" style="font-size: 24px; color: #15803d; font-weight: bold; margin-bottom: 20px; border: 3px solid #bbf7d0; padding: 10px 30px; border-radius: 50px; background: #f0fdf4;">Subject Name</h3>
-                    <div id="cert-dynamic-score" style="font-family: sans-serif; font-size: 16px; background: #facc15; color: #854d0e; font-weight: bold; padding: 8px 20px; border-radius: 6px; box-shadow: 2px 2px 0 #ca8a04;">Score: 100%</div>
-                </div>
-                
-                <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 20px; margin-bottom: 10px;">
-                    <div style="width: 220px; text-align: center;">
-                        <div style="border-top: 2px solid #333; margin-bottom: 8px; width: 100%;"></div>
-                        <p id="cert-dynamic-date" style="font-size: 16px; color: #111; font-weight: bold; margin-bottom: 3px; line-height: 1.2;">Date</p>
-                        <p style="font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px;">Date</p>
-                    </div>
-                    <div style="width: 140px; display: flex; justify-content: center;">
-                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 90px; height: 90px;">
-                            <circle cx="50" cy="50" r="45" fill="#facc15" stroke="#ca8a04" stroke-width="2" stroke-dasharray="4 2"/>
-                            <circle cx="50" cy="50" r="38" fill="#ca8a04"/>
-                            <path d="M50 25 L35 60 L65 60 Z" fill="#fff" opacity="0.8"/>
-                        </svg>
-                    </div>
-                    <div style="width: 220px; text-align: center;">
-                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 60px; margin-bottom: 5px; position: relative;">
-                            <img src="https://lh3.googleusercontent.com/d/1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN" crossorigin="anonymous" style="width: 120px; max-height: 40px; object-fit: contain; z-index: 2; margin-bottom: 0;" alt="Sign">
-                            <p id="cert-dynamic-hand-date" style="font-family: cursive; font-size: 16px; color: #1d4ed8; font-weight: bold; margin-top: 2px;">Date</p>
-                        </div>
-                        <div style="border-top: 2px solid #333; margin-bottom: 8px; width: 100%;"></div>
-                        <p style="font-size: 16px; color: #111; font-weight: bold; margin-bottom: 3px; line-height: 1.2;">MukulDhaliOfficial</p>
-                        <p style="font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px;">Authority</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <button id="cert-manual-download-btn" class="mt-8 bg-brand-600 hover:bg-brand-700 text-white px-6 py-3.5 rounded-xl font-bold transition shadow-lg hidden items-center justify-center gap-2 w-full max-w-[250px] cursor-pointer">
-            <i class="fa-solid fa-download"></i> আবার ডাউনলোড করুন (PDF)
-        </button>
-    </div>
-
     <!-- Edit Profile Modal -->
     <div id="edit-profile-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-8 shadow-2xl relative transform transition-transform scale-95 duration-300" id="edit-profile-box">
@@ -856,6 +792,7 @@
             }
         });
 
+        // Dummy SW Registration for PWA Criteria
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js').catch(err => {
@@ -2168,6 +2105,7 @@
             const examView = document.getElementById('quiz-exam-view');
             examView.classList.remove('hidden');
             
+            // Force reflow for animation
             void examView.offsetWidth;
             examView.classList.add('animate-fade-in-up');
 
@@ -2259,104 +2197,141 @@
             });
         }
 
-        // ============================================
-        // NEW AUTO DOWNLOAD CERTIFICATE LOGIC (PDF FORMAT)
-        // ============================================
         function generateCertificate(subject, score) {
             const name = localStorage.getItem('portalUserName') || 'Student';
             const dateObj = new Date();
             const dateStr = dateObj.toLocaleDateString('en-GB'); 
+            const signImgLink = "https://lh3.googleusercontent.com/d/1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN";
 
-            // Update DOM with Data
-            document.getElementById('cert-dynamic-name').innerText = name;
-            document.getElementById('cert-dynamic-subject').innerText = subject;
-            document.getElementById('cert-dynamic-score').innerText = `Score: ${score}%`;
-            document.getElementById('cert-dynamic-date').innerText = dateStr;
-            document.getElementById('cert-dynamic-hand-date').innerText = dateStr;
+            const certHTML = `
+                <div class="cert-wrapper">
+                    <div class="cert-box">
+                        <div class="watermark">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="100" height="100" rx="25" fill="#16a34a" />
+                                <path d="M50 25 L20 42.5 L50 60 L80 42.5 Z" fill="#ffffff"/>
+                                <path d="M20 52.5 L50 70 L80 52.5" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="cert-content">
+                            <h1 class="cert-title">CERTIFICATE OF ACHIEVEMENT</h1>
+                            <p class="cert-subtitle">This is proudly presented to</p>
+                            <h2 class="cert-name">${escapeHTML(name)}</h2>
+                            <p class="cert-desc">For successfully completing the Mock Test on</p>
+                            <h3 class="cert-subject">${subject}</h3>
+                            <div class="score-badge">Score: ${score}%</div>
+                        </div>
+                        
+                        <div class="cert-footer">
+                            <div class="footer-block">
+                                <div class="line"></div>
+                                <p class="f-date">${dateStr}</p>
+                                <p class="f-label">DATE</p>
+                            </div>
+                            <div class="footer-block center-block">
+                                <div class="seal">
+                                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
+                                        <circle cx="50" cy="50" r="45" fill="#facc15" stroke="#ca8a04" stroke-width="2" stroke-dasharray="4 2"/>
+                                        <circle cx="50" cy="50" r="38" fill="#ca8a04"/>
+                                        <path d="M50 25 L35 60 L65 60 Z" fill="#fff" opacity="0.8"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="footer-block">
+                                <div class="sign-area">
+                                    <img src="${signImgLink}" class="sign-img" alt="Sign">
+                                    <p class="hand-date">${dateStr}</p>
+                                </div>
+                                <div class="line"></div>
+                                <p class="f-name">MukulDhaliOfficial</p>
+                                <p class="f-label">AUTHORITY</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
 
-            // Prepare Modal for Preview
-            const modal = document.getElementById('cert-preview-modal');
-            const wrapper = document.getElementById('cert-scale-wrapper');
-            const textLoad = document.getElementById('cert-downloading-text');
-            const manualBtn = document.getElementById('cert-manual-download-btn');
+            const printWindow = window.open('', '', 'width=1000,height=750');
+            printWindow.document.write('<!DOCTYPE html><html lang="bn"><head>');
+            printWindow.document.write('<meta charset="UTF-8">');
+            printWindow.document.write('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">');
+            printWindow.document.write('<title>Certificate - ' + subject + '</title>');
+            printWindow.document.write('<link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">');
+            printWindow.document.write('<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Cinzel:wght@700&display=swap" rel="stylesheet">');
             
-            // Set dynamic button click
-            manualBtn.setAttribute('onclick', `downloadCertPDF('${subject.replace(/'/g, "\\'")}')`);
-
-            modal.classList.remove('hidden');
-            textLoad.classList.remove('hidden');
-            manualBtn.classList.add('hidden');
-            manualBtn.classList.remove('flex');
+            printWindow.document.write('<style>' + 
+                '@import url("https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap"); ' +
+                '* { box-sizing: border-box; margin: 0; padding: 0; } ' +
+                '@page { size: A4 landscape; margin: 0; } ' + 
+                'body, html { width: 100vw; height: 100vh; background: #e2e8f0; display: flex; justify-content: center; align-items: center; font-family: "Times New Roman", "Kalpurush", serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; overflow: hidden; } ' +
+                
+                '.cert-wrapper { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; padding: 4vw; } ' +
+                
+                '.cert-box { ' +
+                '   container-type: inline-size; ' +
+                '   width: 92vw; ' +
+                '   max-width: 270mm; ' +
+                '   aspect-ratio: 3 / 2; ' +
+                '   background: #fff; ' +
+                '   border: 1.2cqw solid #15803d; ' +
+                '   outline: 0.4cqw solid #4ade80; ' +
+                '   outline-offset: -1.8cqw; ' +
+                '   padding: 4cqw 5cqw 2cqw 5cqw; ' +
+                '   position: relative; ' +
+                '   display: flex; ' +
+                '   flex-direction: column; ' +
+                '   justify-content: space-between; ' +
+                '   background-image: radial-gradient(#f0fdf4 10%, transparent 10%), radial-gradient(#f0fdf4 10%, transparent 10%); ' +
+                '   background-size: 2.5cqw 2.5cqw; ' +
+                '   background-position: 0 0, 1.25cqw 1.25cqw; ' +
+                '   box-shadow: 0 10px 30px rgba(0,0,0,0.15); ' +
+                '   overflow: hidden; ' +
+                '} ' +
+                
+                '.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 45%; opacity: 0.04; z-index: 1; pointer-events: none; display: flex; justify-content: center; align-items: center; } ' +
+                '.watermark svg { width: 100%; height: auto; } ' +
+                
+                '.cert-content { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; margin-top: -1cqw; } ' +
+                
+                '.cert-title { font-family: "Cinzel", "Georgia", serif; color: #16a34a; font-size: 4.8cqw; font-weight: bold; margin-bottom: 1.5cqw; letter-spacing: 0.3cqw; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); text-transform: uppercase; } ' +
+                '.cert-subtitle { font-size: 1.8cqw; color: #555; margin-bottom: 2cqw; font-style: italic; } ' +
+                '.cert-name { font-family: "Caveat", "Brush Script MT", cursive; font-size: 6.5cqw; color: #0f172a; font-weight: bold; margin-bottom: 2.5cqw; border-bottom: 0.2cqw solid #cbd5e1; padding-bottom: 1cqw; min-width: 50cqw; line-height: 1; text-align: center; } ' +
+                '.cert-desc { font-size: 1.6cqw; color: #555; margin-bottom: 2cqw; } ' +
+                '.cert-subject { font-size: 2.6cqw; color: #15803d; font-weight: bold; margin-bottom: 2cqw; border: 0.3cqw solid #bbf7d0; padding: 1cqw 3cqw; border-radius: 5cqw; background: #f0fdf4; } ' +
+                '.score-badge { font-family: sans-serif; font-size: 1.6cqw; background: #facc15; color: #854d0e; font-weight: bold; padding: 0.8cqw 2cqw; border-radius: 0.5cqw; box-shadow: 0.2cqw 0.2cqw 0 #ca8a04; } ' +
+                
+                '.cert-footer { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 2cqw; margin-bottom: 1cqw; } ' +
+                '.footer-block { width: 25cqw; text-align: center; } ' +
+                '.center-block { width: 15cqw; display: flex; justify-content: center; } ' +
+                
+                '.seal { width: 10cqw; height: 10cqw; } ' +
+                '.line { border-top: 0.2cqw solid #333; margin-bottom: 1cqw; width: 100%; } ' +
+                
+                '.f-date, .f-name { font-size: 1.6cqw; color: #111; font-weight: bold; margin-bottom: 0.3cqw; line-height: 1.2; } ' +
+                '.f-label { font-size: 1.1cqw; color: #666; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.1cqw;} ' +
+                
+                '.sign-area { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 6cqw; margin-bottom: 0.5cqw; } ' +
+                '.sign-img { width: 14cqw; max-height: 4cqw; object-fit: contain; z-index: 2; margin: 0; } ' +
+                '.hand-date { font-family: "Caveat", "Brush Script MT", cursive; font-size: 1.8cqw; color: #000495; rote: -3; margin-top: 0.2cqw; font-weight: bold; } ' +
+                
+                '@media print { ' +
+                '   @page { size: landscape; margin: 0; } ' +
+                '   body, html { width: 100%; height: 100%; background: white; margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; } ' +
+                '   .cert-wrapper { padding: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; } ' +
+                '   .cert-box { box-shadow: none; width: 270mm !important; height: 180mm !important; aspect-ratio: auto; page-break-inside: avoid; margin: 0 auto; transform: scale(0.95); } ' +
+                '} ' +
+            '</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(certHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
             
-            setTimeout(() => modal.classList.remove('opacity-0'), 10);
-
-            // Responsive Scaling for Preview only (Mobile view)
-            const screenWidth = window.innerWidth;
-            if(screenWidth < 950) {
-                const scale = (screenWidth - 40) / 900; 
-                wrapper.style.transform = `scale(${scale})`;
-            } else {
-                wrapper.style.transform = `scale(1)`;
-            }
-
-            // Small delay to ensure rendering is complete before screenshot
-            setTimeout(() => {
-                downloadCertPDF(subject);
-            }, 800);
+            setTimeout(() => { 
+                printWindow.focus();
+                printWindow.print(); 
+            }, 1000);
         }
-
-        function downloadCertPDF(subjectTitle) {
-            const certDom = document.getElementById('certificate-dom');
-            const textLoad = document.getElementById('cert-downloading-text');
-            const manualBtn = document.getElementById('cert-manual-download-btn');
-            
-            textLoad.classList.remove('hidden');
-            textLoad.innerText = "PDF তৈরি হচ্ছে, একটু অপেক্ষা করুন...";
-
-            // Use html2canvas to convert DOM to image, then jsPDF to convert it to PDF
-            html2canvas(certDom, {
-                scale: 2, // High resolution
-                useCORS: true, 
-                backgroundColor: "#ffffff"
-            }).then(canvas => {
-                const imgData = canvas.toDataURL("image/jpeg", 0.95);
-                
-                // Initialize jsPDF (Landscape, Pixels, Custom A4ish Format matching Canvas 900x600)
-                window.jspdf = window.jspdf || {};
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF({
-                    orientation: 'landscape',
-                    unit: 'px',
-                    format: [900, 600]
-                });
-                
-                // Add Image to PDF
-                pdf.addImage(imgData, 'JPEG', 0, 0, 900, 600);
-                
-                // Download PDF
-                const safeName = subjectTitle ? subjectTitle.replace(/\s+/g, '_') : 'Result';
-                pdf.save(`Certificate_${safeName}.pdf`);
-                
-                // Update UI state
-                textLoad.classList.add('hidden');
-                manualBtn.classList.remove('hidden');
-                manualBtn.classList.add('flex');
-                
-                showToast("সার্টিফিকেট PDF সফলভাবে ডাউনলোড হয়েছে!", "success");
-            }).catch(err => {
-                console.error("Certificate generation error", err);
-                textLoad.innerText = "ডাউনলোড ব্যর্থ হয়েছে। আবার চেষ্টা করুন।";
-                manualBtn.classList.remove('hidden');
-                manualBtn.classList.add('flex');
-            });
-        }
-
-        function closeCertModal() {
-            const modal = document.getElementById('cert-preview-modal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-        // ============================================
 
         function submitExam() {
             if(examTimer) clearInterval(examTimer);
