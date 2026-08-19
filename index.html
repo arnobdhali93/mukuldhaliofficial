@@ -386,7 +386,7 @@
                 <div id="quiz-subject-view" class="space-y-6">
                     <div class="bg-brand-50 dark:bg-slate-800 border border-brand-200 dark:border-slate-700 p-4 rounded-xl flex items-center gap-3 shadow-sm">
                         <i class="fa-solid fa-circle-info text-brand-600 text-xl"></i>
-                        <p class="text-slate-700 dark:text-slate-300 text-sm font-bold">নিচের যেকোনো বিষয়ে ক্লিক করে কুইজ পরীক্ষা শুরু করুন। প্রতিটি পরীক্ষার জন্য নির্দিষ্ট সময় বরাদ্দ আছে।</p>
+                        <p class="text-slate-700 dark:text-slate-300 text-sm font-bold">নিচের যেকোনো বিষয়ে ক্লিক করে কুইজ পরীক্ষা শুরু করুন। প্রতিটি পরীক্ষার জন্য নির্দিষ্ট সময় বরাদ্দ আছে.</p>
                     </div>
                     <div id="quiz-subjects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div class="text-center py-20 col-span-full bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
@@ -538,16 +538,16 @@
         
         <p class="text-white mb-6 font-bold animate-pulse tracking-wide" id="cert-downloading-text">সার্টিফিকেট PDF ডাউনলোড হচ্ছে, অপেক্ষা করুন...</p>
         
-        <!-- Bounding box to prevent mobile overflow -->
-        <div id="cert-bounding-box" style="width: 900px; height: 600px; position: relative; margin: 0 auto;">
-            <!-- Wrapper for responsive mobile preview scaling -->
-            <div id="cert-scale-wrapper" style="transform-origin: top left; width: 100%; height: 100%; transition: transform 0.3s ease;">
+        <!-- Bounding box to perfectly fit scaled content inside mobile viewport -->
+        <div id="cert-bounding-box" style="position: relative; margin: 0 auto; overflow: hidden; border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <!-- Wrapper for responsive preview scaling -->
+            <div id="cert-scale-wrapper" style="transform-origin: top left; transition: transform 0.2s ease;">
                 
-                <!-- Actual Certificate Canvas DOM -->
-                <div id="certificate-dom" style="width: 900px; height: 600px; background: #ffffff; border: 12px solid #15803d; outline: 4px solid #4ade80; outline-offset: -16px; padding: 40px; position: relative; display: flex; flex-direction: column; justify-content: space-between; background-image: radial-gradient(#f0fdf4 10%, transparent 10%), radial-gradient(#f0fdf4 10%, transparent 10%); background-size: 20px 20px; background-position: 0 0, 10px 10px; overflow: hidden; font-family: 'Times New Roman', serif;">
+                <!-- CERTIFICATE DOM (Using Absolute Positioning for perfect PDF clone rendering) -->
+                <div id="certificate-dom" style="width: 900px; height: 600px; background: #ffffff; border: 12px solid #15803d; outline: 4px solid #4ade80; outline-offset: -16px; box-sizing: border-box; position: relative; background-image: radial-gradient(#f0fdf4 10%, transparent 10%), radial-gradient(#f0fdf4 10%, transparent 10%); background-size: 20px 20px; background-position: 0 0, 10px 10px; overflow: hidden; font-family: 'Times New Roman', serif;">
                     
                     <!-- Watermark -->
-                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; opacity: 0.04; z-index: 1; pointer-events: none; display: flex; justify-content: center; align-items: center;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; opacity: 0.04; z-index: 1; pointer-events: none;">
                         <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
                             <rect width="100" height="100" rx="25" fill="#16a34a" />
                             <path d="M50 25 L20 42.5 L50 60 L80 42.5 Z" fill="#ffffff"/>
@@ -555,45 +555,60 @@
                         </svg>
                     </div>
                     
-                    <!-- Header & Body -->
-                    <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; margin-top: -10px; text-align: center;">
-                        <h1 style="color: #16a34a; font-size: 42px; font-weight: bold; margin-bottom: 15px; letter-spacing: 2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); text-transform: uppercase;">Certificate of Achievement</h1>
-                        <p style="font-size: 16px; color: #555; margin-bottom: 20px; font-style: italic;">This is proudly presented to</p>
-                        <h2 id="cert-dynamic-name" style="font-size: 55px; color: #0f172a; font-weight: bold; margin-bottom: 25px; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px; min-width: 450px; line-height: 1; font-family: 'Times New Roman', serif;">Student Name</h2>
-                        <p style="font-size: 16px; color: #555; margin-bottom: 20px;">For successfully completing the Mock Test on</p>
-                        <h3 id="cert-dynamic-subject" style="font-size: 24px; color: #15803d; font-weight: bold; margin-bottom: 20px; border: 3px solid #bbf7d0; padding: 10px 30px; border-radius: 50px; background: #f0fdf4;">Subject Name</h3>
-                        <div id="cert-dynamic-score" style="font-family: sans-serif; font-size: 16px; background: #facc15; color: #854d0e; font-weight: bold; padding: 8px 20px; border-radius: 6px; box-shadow: 2px 2px 0 #ca8a04;">Score: 100%</div>
+                    <!-- Main Content Center -->
+                    <div style="position: absolute; top: 70px; left: 0; right: 0; text-align: center; z-index: 2;">
+                        <h1 style="color: #16a34a; font-size: 42px; font-weight: bold; margin: 0 0 15px 0; letter-spacing: 2px; text-transform: uppercase;">CERTIFICATE OF ACHIEVEMENT</h1>
+                        <p style="font-size: 16px; color: #555; margin: 0 0 20px 0; font-style: italic;">This is proudly presented to</p>
+                        
+                        <div style="margin-bottom: 25px;">
+                            <h2 id="cert-dynamic-name" style="font-size: 50px; color: #0f172a; font-weight: bold; margin: 0; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px; display: inline-block; min-width: 450px; line-height: 1.2; font-family: 'Times New Roman', serif;">Student Name</h2>
+                        </div>
+                        
+                        <p style="font-size: 16px; color: #555; margin: 0 0 20px 0;">For successfully completing the Mock Test on</p>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h3 id="cert-dynamic-subject" style="font-size: 24px; color: #15803d; font-weight: bold; margin: 0; border: 3px solid #bbf7d0; padding: 10px 30px; border-radius: 50px; background: #f0fdf4; display: inline-block;">Subject Name</h3>
+                        </div>
+                        
+                        <div>
+                            <div id="cert-dynamic-score" style="font-family: sans-serif; font-size: 16px; background: #facc15; color: #854d0e; font-weight: bold; padding: 8px 20px; border-radius: 6px; display: inline-block;">Score: 100%</div>
+                        </div>
                     </div>
                     
-                    <!-- Footer Elements -->
-                    <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 20px; margin-bottom: 10px;">
-                        <div style="width: 220px; text-align: center;">
-                            <div style="border-top: 2px solid #333; margin-bottom: 8px; width: 100%;"></div>
-                            <p id="cert-dynamic-date" style="font-size: 16px; color: #111; font-weight: bold; margin-bottom: 3px; line-height: 1.2;">Date</p>
-                            <p style="font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px;">Date</p>
+                    <!-- Footer Left (Date) -->
+                    <div style="position: absolute; bottom: 40px; left: 40px; width: 220px; text-align: center; z-index: 2;">
+                        <div style="border-top: 2px solid #333; margin-bottom: 8px; width: 100%;"></div>
+                        <p id="cert-dynamic-date" style="font-size: 16px; color: #111; font-weight: bold; margin: 0 0 3px 0; line-height: 1.2;">Date</p>
+                        <p style="font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; margin: 0;">Date</p>
+                    </div>
+                    
+                    <!-- Footer Center (Seal) -->
+                    <div style="position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); width: 90px; height: 90px; z-index: 2;">
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                            <circle cx="50" cy="50" r="45" fill="#facc15" stroke="#ca8a04" stroke-width="2" stroke-dasharray="4 2"/>
+                            <circle cx="50" cy="50" r="38" fill="#ca8a04"/>
+                            <path d="M50 25 L35 60 L65 60 Z" fill="#fff" opacity="0.8"/>
+                        </svg>
+                    </div>
+                    
+                    <!-- Footer Right (Signature) -->
+                    <div style="position: absolute; bottom: 40px; right: 40px; width: 220px; text-align: center; z-index: 2;">
+                        <!-- Signature positioned directly above the line via Absolute Positioning -->
+                        <div style="position: absolute; bottom: 35px; left: 0; width: 100%; text-align: center;">
+                            <img src="https://lh3.googleusercontent.com/d/1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN" crossorigin="anonymous" style="width: 120px; height: 40px; object-fit: contain; margin: 0 auto; display: block;" alt="Sign">
+                            <div id="cert-dynamic-hand-date" style="font-family: 'Times New Roman', serif; font-style: italic; font-size: 16px; color: #1d4ed8; font-weight: bold; line-height: 1; margin-top: -2px;">Date</div>
                         </div>
-                        <div style="width: 140px; display: flex; justify-content: center;">
-                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 90px; height: 90px;">
-                                <circle cx="50" cy="50" r="45" fill="#facc15" stroke="#ca8a04" stroke-width="2" stroke-dasharray="4 2"/>
-                                <circle cx="50" cy="50" r="38" fill="#ca8a04"/>
-                                <path d="M50 25 L35 60 L65 60 Z" fill="#fff" opacity="0.8"/>
-                            </svg>
-                        </div>
-                        <div style="width: 220px; text-align: center;">
-                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 60px; margin-bottom: 5px; position: relative;">
-                                <img src="https://lh3.googleusercontent.com/d/1R1aBh_NBiPWHs9Vr_nMLYRBogoEjHZGN" crossorigin="anonymous" style="width: 120px; height: 40px; object-fit: contain; z-index: 2; margin-bottom: 0;" alt="Sign">
-                                <p id="cert-dynamic-hand-date" style="font-size: 16px; color: #1d4ed8; font-weight: bold; margin-top: 2px; line-height:1;">Date</p>
-                            </div>
-                            <div style="border-top: 2px solid #333; margin-bottom: 8px; width: 100%;"></div>
-                            <p style="font-size: 16px; color: #111; font-weight: bold; margin-bottom: 3px; line-height: 1.2;">MukulDhaliOfficial</p>
-                            <p style="font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px;">Authority</p>
-                        </div>
+                        <div style="border-top: 2px solid #333; margin-bottom: 8px; width: 100%;"></div>
+                        <p style="font-size: 16px; color: #111; font-weight: bold; margin: 0 0 3px 0; line-height: 1.2;">MukulDhaliOfficial</p>
+                        <p style="font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; margin: 0;">Authority</p>
                     </div>
                 </div>
+                <!-- END CERTIFICATE DOM -->
+
             </div>
         </div>
         
-        <button id="cert-manual-download-btn" class="mt-8 bg-brand-600 hover:bg-brand-700 text-white px-6 py-3.5 rounded-xl font-bold transition shadow-lg hidden items-center justify-center gap-2 w-full max-w-[250px] cursor-pointer">
+        <button id="cert-manual-download-btn" class="mt-8 bg-brand-600 hover:bg-brand-700 text-white px-6 py-3.5 rounded-xl font-bold transition shadow-lg hidden items-center justify-center gap-2 w-full max-w-[250px] cursor-pointer z-10">
             <i class="fa-solid fa-download"></i> আবার ডাউনলোড করুন (PDF)
         </button>
     </div>
@@ -2299,13 +2314,12 @@
 
             // Responsive Scaling for Preview: Centers and bounds perfectly on small screens
             const screenWidth = window.innerWidth;
-            const padding = 32; // 16px padding on each side
+            const padding = 32; 
             const availWidth = screenWidth - padding;
             
             if(availWidth < 900) {
                 const scale = availWidth / 900; 
                 wrapper.style.transform = `scale(${scale})`;
-                // Shrink the bounding box physically so it doesn't overflow or misalign
                 bbox.style.width = `${900 * scale}px`;
                 bbox.style.height = `${600 * scale}px`;
             } else {
@@ -2314,7 +2328,7 @@
                 bbox.style.height = `600px`;
             }
 
-            // Generate PDF off-screen so html2canvas doesn't get confused by the mobile scale
+            // Generate PDF
             setTimeout(() => {
                 downloadCertPDF(subject);
             }, 800);
@@ -2322,30 +2336,31 @@
 
         function downloadCertPDF(subjectTitle) {
             const originalDom = document.getElementById('certificate-dom');
+            const wrapper = document.getElementById('cert-scale-wrapper');
             const textLoad = document.getElementById('cert-downloading-text');
             const manualBtn = document.getElementById('cert-manual-download-btn');
             
             textLoad.classList.remove('hidden');
             textLoad.innerText = "PDF তৈরি হচ্ছে, একটু অপেক্ষা করুন...";
 
-            // CRITICAL FIX: Clone DOM and render it entirely OFF-SCREEN at full 1.0 scale
-            // This prevents the overlapping and broken layouts shown in image 2
-            const clone = originalDom.cloneNode(true);
-            clone.id = "certificate-dom-clone";
-            clone.style.position = 'fixed';
-            clone.style.top = '0';
-            clone.style.left = '-10000px'; // Render far off-screen
-            clone.style.transform = 'none'; // REMOVE ANY CSS SCALE
-            document.body.appendChild(clone);
+            // Temporary remove scale to capture 1:1 original format
+            const prevTransform = wrapper.style.transform;
+            wrapper.style.transform = 'scale(1)';
 
             setTimeout(() => {
-                html2canvas(clone, {
-                    scale: 2, // High resolution capture
+                html2canvas(originalDom, {
+                    scale: 2, 
                     useCORS: true, 
                     backgroundColor: "#ffffff",
-                    windowWidth: 900,
-                    windowHeight: 600
+                    logging: false,
+                    onclone: function (clonedDoc) {
+                        const clonedWrapper = clonedDoc.getElementById('cert-scale-wrapper');
+                        if(clonedWrapper) clonedWrapper.style.transform = 'scale(1)';
+                    }
                 }).then(canvas => {
+                    // Restore scale immediately after capture
+                    wrapper.style.transform = prevTransform; 
+                    
                     const imgData = canvas.toDataURL("image/jpeg", 0.95);
                     
                     window.jspdf = window.jspdf || {};
@@ -2361,18 +2376,14 @@
                     const safeName = subjectTitle ? subjectTitle.replace(/\s+/g, '_') : 'Result';
                     pdf.save(`Certificate_${safeName}.pdf`);
                     
-                    // Remove clone from DOM
-                    document.body.removeChild(clone);
-                    
-                    // Update UI
                     textLoad.classList.add('hidden');
                     manualBtn.classList.remove('hidden');
                     manualBtn.classList.add('flex');
                     
                     showToast("সার্টিফিকেট PDF সফলভাবে ডাউনলোড হয়েছে!", "success");
                 }).catch(err => {
+                    wrapper.style.transform = prevTransform;
                     console.error("Certificate generation error", err);
-                    document.body.removeChild(clone); 
                     textLoad.innerText = "ডাউনলোড ব্যর্থ হয়েছে। আবার চেষ্টা করুন।";
                     manualBtn.classList.remove('hidden');
                     manualBtn.classList.add('flex');
