@@ -1809,11 +1809,17 @@
                     if (window.confetti) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
                 }
             } catch (error) {
-                console.error(error);
+                console.error("Supabase Error:", error);
                 let errorMsg = "একটি সমস্যা হয়েছে, আবার চেষ্টা করুন!";
-                if(error.message.includes("Invalid login credentials")) errorMsg = "ইমেইল বা পাসওয়ার্ড ভুল!";
-                if(error.message.includes("already registered") || error.message.includes("User already exists")) errorMsg = "এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট খোলা আছে!";
-                if(error.message.includes("Password should be at least")) errorMsg = "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে!";
+                
+                if (error.message) {
+                    const msg = error.message.toLowerCase();
+                    if(msg.includes("invalid login credentials")) errorMsg = "ইমেইল বা পাসওয়ার্ড ভুল!";
+                    else if(msg.includes("already registered") || msg.includes("user already exists")) errorMsg = "এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট খোলা আছে!";
+                    else if(msg.includes("password should be at least")) errorMsg = "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে!";
+                    else if(msg.includes("rate limit") || msg.includes("too many requests")) errorMsg = "সার্ভার বিজি! এক ঘণ্টায় অনেকবার চেষ্টা করেছেন। কিছুক্ষণ পর আবার চেষ্টা করুন (Rate Limit)।";
+                    else errorMsg = `Supabase Error: ${error.message}`; 
+                }
                 
                 showAuthMsg(errorMsg, 'error');
             } finally {
@@ -1847,8 +1853,13 @@
                 if (window.confetti) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
 
             } catch (error) {
-                console.error(error);
+                console.error("OTP Error:", error);
                 let errorMsg = "ভেরিফিকেশন কোডটি ভুল বা মেয়াদ শেষ হয়ে গেছে!";
+                if (error.message) {
+                     const msg = error.message.toLowerCase();
+                     if(msg.includes("rate limit") || msg.includes("too many requests")) errorMsg = "আপনি অনেকবার ভুল চেষ্টা করেছেন। কিছুক্ষণ পর আবার চেষ্টা করুন!";
+                     else errorMsg = `Error: ${error.message}`;
+                }
                 showAuthMsg(errorMsg, 'error');
             } finally {
                 btn.innerHTML = originalText;
@@ -2064,7 +2075,7 @@
                 }
             }
 
-            if(freshNews.length < 5) {
+            if(freshNews.length < 6) {
                 freshNews = [
                     {
                         Title: "মাধ্যমিক ও উচ্চমাধ্যমিক পরীক্ষার সময়সূচী ও নতুন আপডেট সংক্রান্ত বিশেষ নির্দেশিকা",
