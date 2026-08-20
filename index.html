@@ -945,7 +945,7 @@
             else greeting = "শুভ রাত্রি,";
             
             const loggedInName = localStorage.getItem(getStorageKey('portalUserName'));
-            const displayName = loggedInName ? loggedInName.split(' ')[0] : "MukulDhaliOfficial";
+            const displayName = loggedInName ? loggedInName : "MukulDhaliOfficial";
 
             const gEl = document.getElementById('greeting-text');
             if(gEl) gEl.innerHTML = `${greeting} <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-brand-400">${displayName}</span>`;
@@ -1945,9 +1945,8 @@
                 const name = localStorage.getItem(getStorageKey('portalUserName'));
                 const pic = localStorage.getItem(getStorageKey('portalUserPic'));
                 
-                // Show User Name on Header and Sidebar if logged in (First name only to save space in mobile)
-                if(headerName) headerName.innerText = name ? name.split(' ')[0] : 'MukulDhaliOfficial';
-                if(sidebarName) sidebarName.innerText = name ? name.split(' ')[0] : 'MukulDhaliOfficial';
+                if(headerName) headerName.innerText = name ? name : 'MukulDhaliOfficial';
+                if(sidebarName) sidebarName.innerText = name ? name : 'MukulDhaliOfficial';
 
                 if (pic) {
                     badge.innerHTML = `<img src="${pic}" class="w-full h-full object-cover" alt="Profile">`;
@@ -1957,12 +1956,11 @@
                     badge.innerHTML = `<i class="fa-solid fa-user"></i>`;
                 }
             } else {
-                // Default Official texts if not logged in
                 if(headerName) headerName.innerText = 'MukulDhaliOfficial';
                 if(sidebarName) sidebarName.innerText = 'MukulDhaliOfficial';
                 if(badge) badge.innerHTML = `<i class="fa-solid fa-user"></i>`;
             }
-            setGreeting(); // Sync greetings text
+            setGreeting(); 
         }
 
         async function fetchAutoNews() {
@@ -2164,14 +2162,16 @@
         }
 
         window.handleBookDownload = function(link) {
-            const loggedInUser = localStorage.getItem('portalUserEmail');
-            if (!loggedInUser) {
-                showToast("বই ডাউনলোড করতে লগইন বা রেজিস্ট্রেশন করুন!", "error");
-                triggerRegisterPopup();
-                return;
-            }
             if (link && link !== '#') {
-                window.open(link, '_blank');
+                if (window.confetti) {
+                    confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 }, colors: ['#9333ea', '#c084fc'] });
+                }
+                showToast("বইটি ডাউনলোড শুরু হচ্ছে...", "success");
+                setTimeout(() => {
+                    window.open(link, '_blank');
+                }, 800);
+            } else {
+                showToast("দুঃখিত, এই বইটির ডাউনলোড লিংক দেওয়া নেই!", "error");
             }
         }
 
@@ -2770,6 +2770,12 @@
             resultView.classList.remove('hidden');
             void resultView.offsetWidth;
             resultView.classList.add('animate-fade-in-up');
+            
+            // Scroll to the top of the result view
+            window.scrollTo({
+                top: document.getElementById('quiz-result-view').offsetTop - 100, 
+                behavior: 'smooth'
+            });
         }
 
         function backToQuizSubjects() {
