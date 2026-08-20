@@ -154,6 +154,20 @@
             transition: all 0.5s ease-out;
             text-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
+        /* Custom scrollbar for history panel */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100 overflow-x-hidden w-full transition-colors duration-300">
@@ -1809,10 +1823,21 @@
             let fullQuizHistory = JSON.parse(localStorage.getItem(getStorageKey('fullQuizHistory'))) || [];
             let totalQuizzes = fullQuizHistory.length;
             let avgScore = 0;
+            let totalXP = 0;
+            let totalCorrect = 0;
+            let totalQuestions = 0;
+
             if (totalQuizzes > 0) {
                 let sum = fullQuizHistory.reduce((acc, curr) => acc + curr.percentage, 0);
                 avgScore = Math.round(sum / totalQuizzes);
+                fullQuizHistory.forEach(q => {
+                    totalXP += (q.score * 10);
+                    totalCorrect += q.score;
+                    totalQuestions += q.total;
+                });
             }
+            
+            let accuracy = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
             const lastQuizScore = localStorage.getItem(getStorageKey('lastQuizScore')) || 'N/A';
 
             let userRank = "Beginner";
@@ -1831,31 +1856,39 @@
                 if (fullQuizHistory.length > 0) {
                     let uniqueSubjects = {};
                     let latestQuizzes = [];
-                    // Reverse loop to keep the most recent of each subject
+                    // Reverse loop to keep the most recent of each subject (No limit now)
                     for (let i = fullQuizHistory.length - 1; i >= 0; i--) {
                         let q = fullQuizHistory[i];
                         if (!uniqueSubjects[q.subject]) {
                             uniqueSubjects[q.subject] = true;
                             latestQuizzes.push(q);
-                            if (latestQuizzes.length === 3) break; // keep only latest 3 distinct subjects
                         }
                     }
 
-                    historyHtml = `<h4 class="font-black text-base text-slate-900 dark:text-white mt-8 mb-4 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-brand-600"></i> সাম্প্রতিক কুইজ ও সার্টিফিকেট</h4><div class="space-y-3">`;
+                    historyHtml = `<h4 class="font-black text-base text-slate-900 dark:text-white mt-8 mb-4 flex items-center gap-2"><i class="fa-solid fa-chart-pie text-brand-600"></i> বিষয়ভিত্তিক সর্বশেষ ফলাফল ও সার্টিফিকেট</h4>
+                    <div class="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">`;
+                    
                     latestQuizzes.forEach(q => {
                         let certBtn = q.percentage >= 40
-                            ? `<button onclick="generateCertificate('${q.subject.replace(/'/g, "\\'")}', ${q.percentage})" class="flex items-center gap-1.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600 hover:text-white transition-colors cursor-pointer"><i class="fa-solid fa-certificate"></i> সার্টিফিকেট</button>`
-                            : `<span class="flex items-center gap-1 text-[10px] text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-md border border-orange-200 dark:border-orange-800"><i class="fa-solid fa-lock"></i> ৪০% প্রয়োজন</span>`;
+                            ? `<button onclick="generateCertificate('${q.subject.replace(/'/g, "\\'")}', ${q.percentage})" class="flex items-center gap-1.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600 hover:text-white transition-colors cursor-pointer"><i class="fa-solid fa-certificate"></i></button>`
+                            : `<span class="flex items-center gap-1 text-[10px] text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-md border border-orange-200 dark:border-orange-800"><i class="fa-solid fa-lock"></i> ৪০% চাই</span>`;
+
+                        let progressColor = q.percentage >= 80 ? 'bg-emerald-500' : (q.percentage >= 50 ? 'bg-brand-500' : 'bg-orange-500');
 
                         historyHtml += `
-                        <div class="bg-white dark:bg-slate-700 p-4 rounded-2xl border border-slate-200 dark:border-slate-600 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-sm shadow-sm hover:shadow-md transition-shadow">
-                            <div class="flex flex-col">
-                                <span class="font-bold text-slate-800 dark:text-slate-100">${q.subject}</span>
-                                <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium mt-0.5"><i class="fa-regular fa-calendar mr-1"></i> ${q.date || 'সাম্প্রতিক'}</span>
+                        <div class="bg-white dark:bg-slate-700 p-4 rounded-2xl border border-slate-200 dark:border-slate-600 flex flex-col gap-3 text-sm shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-slate-800 dark:text-slate-100">${q.subject}</span>
+                                    <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium mt-0.5"><i class="fa-regular fa-calendar mr-1"></i> ${q.date || 'সাম্প্রতিক'}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-black ${q.percentage >= 40 ? 'text-brand-600 dark:text-brand-400' : 'text-red-500 dark:text-red-400'} bg-slate-50 dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-100 dark:border-slate-600">${q.percentage}%</span>
+                                    ${certBtn}
+                                </div>
                             </div>
-                            <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-                                <span class="font-black ${q.percentage >= 40 ? 'text-brand-600 dark:text-brand-400' : 'text-red-500 dark:text-red-400'} bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-600">${q.percentage}%</span>
-                                ${certBtn}
+                            <div class="w-full bg-slate-100 dark:bg-slate-600 h-1.5 rounded-full overflow-hidden">
+                                <div class="${progressColor} h-full rounded-full" style="width: ${q.percentage}%"></div>
                             </div>
                         </div>`;
                     });
@@ -1888,6 +1921,7 @@
                         <i class="fa-solid fa-pen-to-square text-brand-600 mr-2"></i> প্রোফাইল এডিট করুন
                     </button>
 
+                    <!-- Advanced Feature Grid -->
                     <div class="grid grid-cols-2 gap-4 mt-8">
                         <div class="bg-gradient-to-br from-brand-50 to-emerald-50 dark:from-brand-900/20 dark:to-emerald-900/20 p-4 rounded-2xl border border-brand-100 dark:border-brand-800/50">
                             <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">মোট কুইজ</p>
@@ -1896,6 +1930,14 @@
                         <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-4 rounded-2xl border border-blue-100 dark:border-blue-800/50">
                             <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">গড় স্কোর</p>
                             <p class="text-2xl font-black text-blue-700 dark:text-blue-400">${avgScore}%</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-50 to-fuchsia-50 dark:from-purple-900/20 dark:to-fuchsia-900/20 p-4 rounded-2xl border border-purple-100 dark:border-purple-800/50">
+                            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">মোট XP (পয়েন্ট)</p>
+                            <p class="text-2xl font-black text-purple-700 dark:text-purple-400"><i class="fa-solid fa-star text-sm mr-1"></i>${totalXP}</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 p-4 rounded-2xl border border-orange-100 dark:border-orange-800/50">
+                            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">সঠিক উত্তর</p>
+                            <p class="text-2xl font-black text-orange-700 dark:text-orange-400">${accuracy}%</p>
                         </div>
                     </div>
 
@@ -2795,7 +2837,6 @@
             void resultView.offsetWidth;
             resultView.classList.add('animate-fade-in-up');
             
-            // নতুন স্ক্রোলিং লজিক: রেজাল্ট কার্ডটি পেজের একদম উপরে পারফেক্টলি সেট হবে (হেডারের হাইট বাদ দিয়ে)
             setTimeout(() => {
                 const header = document.getElementById('mobile-header');
                 const headerHeight = header ? header.offsetHeight : 0;
