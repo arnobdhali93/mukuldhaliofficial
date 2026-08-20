@@ -140,6 +140,11 @@
         .section-fade-in {
             animation: fadeInUp 0.4s ease-out forwards;
         }
+        /* Pulse effect for mic icon while listening */
+        .mic-listening {
+            color: #ef4444 !important;
+            animation: pulse 1s infinite;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100 overflow-x-hidden w-full transition-colors duration-300">
@@ -358,7 +363,8 @@
                     </h2>
                     <div class="relative w-full md:w-72">
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
-                        <input type="search" id="news-search" oninput="filterNews()" title="খবর খুঁজুন" placeholder="খবর খুঁজুন..." class="pl-10 p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm w-full outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm transition-all">
+                        <input type="search" id="news-search" oninput="filterNews()" title="খবর খুঁজুন" placeholder="খবর খুঁজুন..." class="pl-10 pr-10 p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm w-full outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm transition-all">
+                        <i onclick="startVoiceSearch('news-search')" title="ভয়েস সার্চ" id="mic-news-search" class="fa-solid fa-microphone absolute right-4 top-3.5 text-slate-400 hover:text-blue-500 cursor-pointer transition-colors"></i>
                     </div>
                 </div>
                 <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -377,7 +383,8 @@
                     </h2>
                     <div class="relative w-full md:w-72">
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
-                        <input type="search" id="quiz-search" oninput="filterQuizSubjects()" title="বিষয় খুঁজুন" placeholder="বিষয় অনুসন্ধান করুন..." class="pl-10 p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm w-full outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 shadow-sm transition-all">
+                        <input type="search" id="quiz-search" oninput="filterQuizSubjects()" title="বিষয় খুঁজুন" placeholder="বিষয় অনুসন্ধান করুন..." class="pl-10 pr-10 p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm w-full outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 shadow-sm transition-all">
+                        <i onclick="startVoiceSearch('quiz-search')" title="ভয়েস সার্চ" id="mic-quiz-search" class="fa-solid fa-microphone absolute right-4 top-3.5 text-slate-400 hover:text-brand-500 cursor-pointer transition-colors"></i>
                     </div>
                 </div>
                 
@@ -460,7 +467,8 @@
                     </h2>
                     <div class="relative w-full md:w-72">
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
-                        <input type="search" id="books-search" oninput="filterBooks()" title="বই খুঁজুন" placeholder="বই খুঁজুন..." class="pl-10 p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm w-full outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 shadow-sm transition-all">
+                        <input type="search" id="books-search" oninput="filterBooks()" title="বই খুঁজুন" placeholder="বই খুঁজুন..." class="pl-10 pr-10 p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm w-full outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 shadow-sm transition-all">
+                        <i onclick="startVoiceSearch('books-search')" title="ভয়েস সার্চ" id="mic-books-search" class="fa-solid fa-microphone absolute right-4 top-3.5 text-slate-400 hover:text-purple-500 cursor-pointer transition-colors"></i>
                     </div>
                 </div>
                 <div id="books-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -685,9 +693,10 @@
                 <button onclick="setChatQuery('পিডিএফ বই ডাউনলোড করব কীভাবে?')" class="shrink-0 bg-brand-50 hover:bg-brand-100 dark:bg-slate-700 dark:hover:bg-slate-600 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-slate-500 px-3 py-1.5 rounded-full text-xs font-bold transition">বই ডাউনলোড</button>
             </div>
 
-            <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700">
+            <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 flex flex-col gap-2">
                 <div class="flex gap-2 relative">
-                    <input id="userQuery" type="text" placeholder="এখানে প্রশ্ন লিখুন..." title="আপনার প্রশ্ন লিখুন" class="flex-1 p-3.5 pl-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-transparent text-slate-800 dark:text-slate-100 text-sm font-medium outline-none focus:border-brand-500 focus:bg-white dark:focus:bg-slate-800 transition-all shadow-inner" onkeydown="if(event.key === 'Enter') askGemini()">
+                    <input id="userQuery" type="text" placeholder="এখানে প্রশ্ন লিখুন..." title="আপনার প্রশ্ন লিখুন" class="flex-1 p-3.5 pl-4 pr-10 rounded-xl bg-slate-100 dark:bg-slate-900 border border-transparent text-slate-800 dark:text-slate-100 text-sm font-medium outline-none focus:border-brand-500 focus:bg-white dark:focus:bg-slate-800 transition-all shadow-inner" onkeydown="if(event.key === 'Enter') askGemini()">
+                    <i onclick="startVoiceSearch('userQuery')" title="ভয়েস ইনপুট" id="mic-userQuery" class="fa-solid fa-microphone absolute right-16 top-4 text-slate-400 hover:text-brand-600 cursor-pointer transition-colors"></i>
                     <button onclick="askGemini()" title="মেসেজ পাঠান" class="bg-brand-600 hover:bg-brand-700 text-white w-12 rounded-xl text-sm transition shadow-md flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
@@ -727,7 +736,7 @@
         
         let supabaseClient;
 
-        // NEW HELPER: Namespace localStorage based on authenticated user or guest
+        // Namespace localStorage based on authenticated user or guest
         function getStorageKey(baseKey) {
             const email = localStorage.getItem('portalUserEmail');
             return email ? `${email}_${baseKey}` : `guest_${baseKey}`;
@@ -770,7 +779,7 @@
             { text: "স্বপ্ন সেটা নয় যেটা তুমি ঘুমিয়ে দেখো, স্বপ্ন সেটা যেটা তোমায় ঘুমোতে দেয় না।", author: "এ. পি. জে. আব্দুল কালাম" },
             { text: "নিজেকে পরিবর্তন করো, পৃথিবী এমনিতেই বদলে যাবে।", author: "স্বামী বিবেকানন্দ" },
             { text: "যে ভুল করেনি, সে কখনো নতুন কিছু করার চেষ্টা করেনি।", author: "অ্যালবার্ট আইনস্টাইন" },
-            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেন না।", author: "স্টিভ জবস" },
+            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেনলগ্ন না।", author: "স্টিভ জবস" },
             { text: "সত্যিকারের জ্ঞানী সে, যে জানে সে কিছুই জানে না।", author: "সক্রেটিস" }
         ];
 
@@ -812,6 +821,54 @@
                     console.log('SW setup pending or not found on this path.');
                 });
             });
+        }
+
+        // Smart Tab Title Feature
+        let originalTitle = document.title;
+        window.addEventListener("blur", () => {
+            document.title = "ফিরে আসুন! 📚 | MukulDhali";
+        });
+        window.addEventListener("focus", () => {
+            document.title = originalTitle;
+        });
+
+        // Advanced Feature: Voice Search function
+        function startVoiceSearch(inputId) {
+            if (!('webkitSpeechRecognition' in window)) {
+                showToast("আপনার ব্রাউজার ভয়েস সার্চ সাপোর্ট করে না।", "error");
+                return;
+            }
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'bn-BD';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            const micIcon = document.getElementById('mic-' + inputId);
+
+            recognition.onstart = function() {
+                if(micIcon) micIcon.classList.add('mic-listening');
+                showToast("বলুন, আমি শুনছি...", "success");
+            };
+
+            recognition.onresult = function(event) {
+                const text = event.results[0][0].transcript;
+                document.getElementById(inputId).value = text;
+                
+                if (inputId === 'news-search') filterNews();
+                if (inputId === 'books-search') filterBooks();
+                if (inputId === 'quiz-search') filterQuizSubjects();
+                if (inputId === 'userQuery') askGemini();
+            };
+
+            recognition.onerror = function(event) {
+                showToast("কথা বুঝতে সমস্যা হয়েছে!", "error");
+            };
+
+            recognition.onend = function() {
+                if(micIcon) micIcon.classList.remove('mic-listening');
+            }
+
+            recognition.start();
         }
 
         function openConfirmModal(msg, action) {
@@ -1670,6 +1727,7 @@
                 localStorage.removeItem(getStorageKey('lastQuizScore'));
                 localStorage.removeItem(getStorageKey('portalBookmarks'));
                 localStorage.removeItem(getStorageKey('aiChatHistory'));
+                localStorage.removeItem(getStorageKey('quizActiveSession'));
                 showToast("অ্যাপ ডেটা রিসেট হয়েছে।", "success");
                 setTimeout(() => location.reload(), 1000);
             });
@@ -1816,26 +1874,14 @@
             }
         }
 
+        // News fetch function - Cache removed as requested by user
         async function fetchAutoNews() {
-            const CACHE_KEY = 'cachedAutoNews_v1';
-            const CACHE_TIME_KEY = 'cachedAutoNewsTime_v1';
-            const CACHE_DURATION_MS = 6 * 60 * 60 * 1000; 
-
-            const now = new Date().getTime();
-            const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
-            const cachedNews = localStorage.getItem(CACHE_KEY);
-
-            if (cachedTime && cachedNews && (now - parseInt(cachedTime) < CACHE_DURATION_MS)) {
-                try {
-                    return JSON.parse(cachedNews);
-                } catch (e) {}
-            }
-
             const rssFeeds = [
                 'https://bengali.news18.com/rss/khobor/west-bengal.xml',
                 'https://news.google.com/rss/search?q=West+Bengal+Education+when:1d&hl=bn&gl=IN&ceid=IN:bn'
             ];
 
+            let freshNews = [];
             for (let feed of rssFeeds) {
                 try {
                     const timestamp = new Date().getTime();
@@ -1854,27 +1900,22 @@
                                 Category: 'আজকের আপডেট'
                             };
                         });
-
-                        localStorage.setItem(CACHE_KEY, JSON.stringify(formattedNews));
-                        localStorage.setItem(CACHE_TIME_KEY, now.toString());
-
-                        return formattedNews;
+                        freshNews = [...freshNews, ...formattedNews];
                     }
                 } catch (e) {}
             }
-            
-            if (cachedNews) return JSON.parse(cachedNews);
-            return [];
+            return freshNews;
         }
 
         async function loadAllData() {
             groupedQuizData = {};
             
-            // 1. ফাস্ট লোডিং এর জন্য ক্যাশ থেকে ডেটা লোড করা
+            // 1. ফাস্ট লোডিং এর জন্য ক্যাশ থেকে ডেটা লোড করা (News বাদে)
             const cachedData = localStorage.getItem('portalMainDataCache_v1');
             if (cachedData) {
                 try {
                     const data = JSON.parse(cachedData);
+                    data.News = []; // Clear news from cached render
                     processApiData(data, false);
                 } catch(e) {}
             }
@@ -1897,9 +1938,7 @@
             if(data.BreakingNews) {
                 document.getElementById('breaking-news-text').innerHTML = `📢 ${data.BreakingNews}`;
             }
-            if(data.News && Array.isArray(data.News)) {
-                rawNewsData = data.News;
-            }
+            
             if(data.Books && Array.isArray(data.Books)) {
                 rawBooksData = data.Books;
                 renderBooksList(rawBooksData);
@@ -1908,7 +1947,7 @@
                 renderStoriesList(data.Stories);
             }
             if(data.Quiz && Array.isArray(data.Quiz)) {
-                groupedQuizData = {}; // reset
+                groupedQuizData = {}; 
                 data.Quiz.forEach(q => {
                     let sub = q.Subject ? q.Subject.trim() : "সাধারণ জ্ঞান";
                     if (!groupedQuizData[sub]) groupedQuizData[sub] = [];
@@ -1917,15 +1956,14 @@
                 renderQuizSubjects(Object.keys(groupedQuizData));
             }
 
-            // নিউজ অটো ফিড যোগ করা
+            // নিউজ শুধু লাইভ রিলোডেই আসবে (No short memory)
             if (isFresh) {
+                rawNewsData = data.News && Array.isArray(data.News) ? data.News : [];
                 const autoNews = await fetchAutoNews();
                 if(autoNews.length > 0) {
                     rawNewsData = [...autoNews, ...rawNewsData];
                 }
                 renderNewsList(rawNewsData);
-            } else {
-                 renderNewsList(rawNewsData);
             }
         }
 
@@ -2122,6 +2160,51 @@
             });
         }
 
+        // Advanced Feature: Auto Save Quiz Progress
+        function saveQuizProgress() {
+            if(!currentActiveSubject) return;
+            const questions = groupedQuizData[currentActiveSubject];
+            let savedAnswers = {};
+            
+            questions.forEach((q, index) => {
+                const radios = document.getElementsByName(`exam_question_${index}`);
+                for (const radio of radios) {
+                    if (radio.checked) {
+                        savedAnswers[`exam_question_${index}`] = radio.value;
+                        break;
+                    }
+                }
+            });
+
+            localStorage.setItem(getStorageKey('quizActiveSession'), JSON.stringify({
+                subject: currentActiveSubject,
+                timeLeft: timeLeftSeconds,
+                answers: savedAnswers
+            }));
+        }
+
+        function restoreQuizProgress(subject) {
+            const savedSessionStr = localStorage.getItem(getStorageKey('quizActiveSession'));
+            if(savedSessionStr) {
+                const session = JSON.parse(savedSessionStr);
+                if(session.subject === subject) {
+                    timeLeftSeconds = session.timeLeft;
+                    for (const [key, value] of Object.entries(session.answers)) {
+                        const radios = document.getElementsByName(key);
+                        for (const radio of radios) {
+                            if (radio.value === value) {
+                                radio.checked = true;
+                                break;
+                            }
+                        }
+                    }
+                    updateQuizProgressBar();
+                    return true;
+                }
+            }
+            return false;
+        }
+
         function updateQuizProgressBar() {
             if (!currentActiveSubject) return;
             const total = groupedQuizData[currentActiveSubject].length;
@@ -2138,6 +2221,8 @@
             const pct = Math.round((answered / total) * 100);
             document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
             document.getElementById('quiz-progress-text').innerText = `${pct}%`;
+            
+            saveQuizProgress(); // Auto save
         }
         
         function shuffleArray(array) {
@@ -2150,7 +2235,6 @@
             return array;
         }
 
-        // কুইজ স্টার্ট করার সময় লগইন চেক করা হয়েছে
         function startQuizExam(subject) {
             const loggedInUser = localStorage.getItem('portalUserEmail');
             if (!loggedInUser) {
@@ -2162,8 +2246,15 @@
             currentActiveSubject = subject;
             
             let questions = [...groupedQuizData[subject]];
-            questions = shuffleArray(questions);
-            groupedQuizData[subject] = questions; 
+            
+            // Check if resuming, if not shuffle
+            const savedSessionStr = localStorage.getItem(getStorageKey('quizActiveSession'));
+            const session = savedSessionStr ? JSON.parse(savedSessionStr) : null;
+            
+            if(!session || session.subject !== subject) {
+                questions = shuffleArray(questions);
+                groupedQuizData[subject] = questions; 
+            }
 
             document.getElementById('quiz-subject-view').classList.add('hidden');
             document.getElementById('quiz-result-view').classList.add('hidden');
@@ -2188,7 +2279,10 @@
                 ['Option1', 'Option2', 'Option3', 'Option4'].forEach(optKey => {
                     if (q[optKey]) optionsList.push(q[optKey]);
                 });
-                optionsList = shuffleArray(optionsList);
+                
+                if(!session || session.subject !== subject) {
+                    optionsList = shuffleArray(optionsList);
+                }
                 
                 optionsList.forEach((opt, optIndex) => {
                     const uniqueId = `q_${index}_opt_${optIndex}`;
@@ -2216,11 +2310,19 @@
             });
 
             timeLeftSeconds = 300; 
+            if(session && session.subject === subject) {
+                restoreQuizProgress(subject);
+            }
+
             if(examTimer) clearInterval(examTimer);
             updateTimerDisplay();
             examTimer = setInterval(() => {
                 timeLeftSeconds--;
                 updateTimerDisplay();
+                
+                // Auto save every 5 seconds
+                if(timeLeftSeconds % 5 === 0) saveQuizProgress();
+
                 if (timeLeftSeconds <= 0) {
                     clearInterval(examTimer);
                     submitExam();
@@ -2517,6 +2619,7 @@
                 date: new Date().toLocaleDateString()
             });
             localStorage.setItem(getStorageKey('fullQuizHistory'), JSON.stringify(fullQuizHistory));
+            localStorage.removeItem(getStorageKey('quizActiveSession')); // Remove auto-save
 
             let messageHtml = percentage >= 80 
                 ? '<div class="text-emerald-600 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl text-sm font-bold mt-2"><i class="fa-solid fa-party-horn mr-1"></i> অসাধারণ পারফরম্যান্স!</div>' 
