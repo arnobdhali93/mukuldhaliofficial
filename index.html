@@ -1870,79 +1870,96 @@
         async function loadAllData() {
             groupedQuizData = {};
             
-            GOOGLE_FORM_QUESTIONS.forEach(q => {
-                let sub = q.Subject ? q.Subject.trim() : "Google Form Quiz";
-                if (!groupedQuizData[sub]) groupedQuizData[sub] = [];
-                groupedQuizData[sub].push(q);
-            });
+            // 1. ফাস্ট লোডিং এর জন্য ক্যাশ থেকে ডেটা লোড করা
+            const cachedData = localStorage.getItem('portalMainDataCache_v1');
+            if (cachedData) {
+                try {
+                    const data = JSON.parse(cachedData);
+                    processApiData(data, false);
+                } catch(e) {}
+            }
 
+            // 2. ব্যাকগ্রাউন্ডে গুগল শিট থেকে নতুন ডেটা আনা
             try {
                 if (API_URL) {
                     const response = await fetch(API_URL);
                     const data = await response.json(); 
-
-                    if(data.BreakingNews) {
-                        document.getElementById('breaking-news-text').innerHTML = `📢 ${data.BreakingNews}`;
-                    }
-
-                    if(data.News && Array.isArray(data.News)) rawNewsData = data.News;
-
-                    if(data.Books && Array.isArray(data.Books)) {
-                        rawBooksData = data.Books;
-                        renderBooksList(rawBooksData);
-                    }
-
-                    if(data.Stories && Array.isArray(data.Stories)) {
-                        const storiesContainer = document.getElementById('stories-container');
-                        storiesContainer.innerHTML = ''; 
-                        data.Stories.slice().reverse().forEach((story, index) => {
-                            if (!story.Title) return;
-                            const readTime = calculateReadingTime(story.Description);
-                            storiesContainer.innerHTML += `
-                            <div class="group p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between">
-                                <div>
-                                    <div class="flex justify-between items-center mb-4">
-                                        <div class="flex items-center gap-3">
-                                            <div class="text-[10px] text-brand-700 dark:text-brand-300 font-black bg-brand-50 dark:bg-brand-900/30 px-3 py-1 rounded-full uppercase tracking-widest border border-brand-200 dark:border-brand-700/50">${story.Category || 'গল্প'}</div>
-                                            <div class="text-[10px] text-slate-500 font-bold bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full"><i class="fa-regular fa-clock"></i> ${readTime} min read</div>
-                                        </div>
-                                        <div class="flex gap-1 bg-slate-50 dark:bg-slate-900 p-1 rounded-lg border border-slate-100 dark:border-slate-700">
-                                            <button id="audio-btn-story-desc-${index}" onclick="toggleSpeech('story-desc-${index}', this)" title="গল্প শুনুন / বন্ধ করুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-solid fa-volume-high"></i></button>
-                                            <button onclick="toggleBookmark('${story.Title.replace(/'/g, "\\'")}', '${story.Category}', 'Story', '${story.ReadLink || ''}')" title="বুকমার্ক করুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-regular fa-bookmark"></i></button>
-                                            <button onclick="shareContent('${story.Title.replace(/'/g, "\\'")}')" title="শেয়ার করুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-solid fa-share-nodes"></i></button>
-                                        </div>
-                                    </div>
-                                    <h3 class="font-black text-xl md:text-2xl text-slate-900 dark:text-white mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">${story.Title}</h3>
-                                    <p id="story-desc-${index}" class="text-slate-600 dark:text-slate-300 text-sm md:text-base mb-6 leading-loose line-clamp-3 transition-all duration-300">${story.Description || ''}</p>
-                                </div>
-                                <div class="flex flex-wrap gap-3">
-                                    <button onclick="toggleReadMore('story-desc-${index}', this)" title="বিস্তারিত পড়ুন" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:border-brand-300 dark:hover:border-brand-600 hover:bg-white text-slate-700 dark:text-slate-200 px-5 py-3 rounded-xl text-xs font-black transition-all shadow-sm flex items-center gap-2 cursor-pointer group-hover:shadow">
-                                        <i class="fa-solid fa-book-open"></i> সম্পূর্ণ পড়ুন
-                                    </button>
-                                    ${story.ReadLink ? `<a href="${story.ReadLink}" target="_blank" rel="noopener noreferrer" title="মূল লিংকে যান" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl text-xs font-black transition-all shadow-md flex items-center gap-2"><i class="fa-solid fa-link"></i> বিস্তারিত লিংক</a>` : ''}
-                                </div>
-                            </div>`;
-                        });
-                    }
-
-                    if(data.Quiz && Array.isArray(data.Quiz)) {
-                        data.Quiz.forEach(q => {
-                            let sub = q.Subject ? q.Subject.trim() : "সাধারণ জ্ঞান";
-                            if (!groupedQuizData[sub]) groupedQuizData[sub] = [];
-                            groupedQuizData[sub].push(q);
-                        });
-                    }
+                    
+                    localStorage.setItem('portalMainDataCache_v1', JSON.stringify(data));
+                    processApiData(data, true);
                 }
-
-                const autoNews = await fetchAutoNews();
-                if(autoNews.length > 0) rawNewsData = [...autoNews, ...rawNewsData];
-
             } catch (error) {
                 console.error("API Fetch Data error:", error);
-            } finally {
-                renderNewsList(rawNewsData);
+            }
+        }
+
+        async function processApiData(data, isFresh) {
+            if(data.BreakingNews) {
+                document.getElementById('breaking-news-text').innerHTML = `📢 ${data.BreakingNews}`;
+            }
+            if(data.News && Array.isArray(data.News)) {
+                rawNewsData = data.News;
+            }
+            if(data.Books && Array.isArray(data.Books)) {
+                rawBooksData = data.Books;
+                renderBooksList(rawBooksData);
+            }
+            if(data.Stories && Array.isArray(data.Stories)) {
+                renderStoriesList(data.Stories);
+            }
+            if(data.Quiz && Array.isArray(data.Quiz)) {
+                groupedQuizData = {}; // reset
+                data.Quiz.forEach(q => {
+                    let sub = q.Subject ? q.Subject.trim() : "সাধারণ জ্ঞান";
+                    if (!groupedQuizData[sub]) groupedQuizData[sub] = [];
+                    groupedQuizData[sub].push(q);
+                });
                 renderQuizSubjects(Object.keys(groupedQuizData));
             }
+
+            // নিউজ অটো ফিড যোগ করা
+            if (isFresh) {
+                const autoNews = await fetchAutoNews();
+                if(autoNews.length > 0) {
+                    rawNewsData = [...autoNews, ...rawNewsData];
+                }
+                renderNewsList(rawNewsData);
+            } else {
+                 renderNewsList(rawNewsData);
+            }
+        }
+
+        function renderStoriesList(list) {
+            const storiesContainer = document.getElementById('stories-container');
+            storiesContainer.innerHTML = ''; 
+            list.slice().reverse().forEach((story, index) => {
+                if (!story.Title) return;
+                const readTime = calculateReadingTime(story.Description);
+                storiesContainer.innerHTML += `
+                <div class="group p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="text-[10px] text-brand-700 dark:text-brand-300 font-black bg-brand-50 dark:bg-brand-900/30 px-3 py-1 rounded-full uppercase tracking-widest border border-brand-200 dark:border-brand-700/50">${story.Category || 'গল্প'}</div>
+                                <div class="text-[10px] text-slate-500 font-bold bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full"><i class="fa-regular fa-clock"></i> ${readTime} min read</div>
+                            </div>
+                            <div class="flex gap-1 bg-slate-50 dark:bg-slate-900 p-1 rounded-lg border border-slate-100 dark:border-slate-700">
+                                <button id="audio-btn-story-desc-${index}" onclick="toggleSpeech('story-desc-${index}', this)" title="গল্প শুনুন / বন্ধ করুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-solid fa-volume-high"></i></button>
+                                <button onclick="toggleBookmark('${story.Title.replace(/'/g, "\\'")}', '${story.Category}', 'Story', '${story.ReadLink || ''}')" title="বুকমার্ক করুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-regular fa-bookmark"></i></button>
+                                <button onclick="shareContent('${story.Title.replace(/'/g, "\\'")}')" title="শেয়ার করুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-solid fa-share-nodes"></i></button>
+                            </div>
+                        </div>
+                        <h3 class="font-black text-xl md:text-2xl text-slate-900 dark:text-white mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">${story.Title}</h3>
+                        <p id="story-desc-${index}" class="text-slate-600 dark:text-slate-300 text-sm md:text-base mb-6 leading-loose line-clamp-3 transition-all duration-300">${story.Description || ''}</p>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="toggleReadMore('story-desc-${index}', this)" title="বিস্তারিত পড়ুন" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:border-brand-300 dark:hover:border-brand-600 hover:bg-white text-slate-700 dark:text-slate-200 px-5 py-3 rounded-xl text-xs font-black transition-all shadow-sm flex items-center gap-2 cursor-pointer group-hover:shadow">
+                            <i class="fa-solid fa-book-open"></i> সম্পূর্ণ পড়ুন
+                        </button>
+                        ${story.ReadLink ? `<a href="${story.ReadLink}" target="_blank" rel="noopener noreferrer" title="মূল লিংকে যান" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 rounded-xl text-xs font-black transition-all shadow-md flex items-center gap-2"><i class="fa-solid fa-link"></i> বিস্তারিত লিংক</a>` : ''}
+                    </div>
+                </div>`;
+            });
         }
 
         function renderNewsList(list) {
@@ -1995,6 +2012,18 @@
             });
         }
 
+        window.handleBookDownload = function(link) {
+            const loggedInUser = localStorage.getItem('portalUserEmail');
+            if (!loggedInUser) {
+                showToast("বই ডাউনলোড করতে লগইন বা রেজিস্ট্রেশন করুন!", "error");
+                triggerRegisterPopup();
+                return;
+            }
+            if (link && link !== '#') {
+                window.open(link, '_blank');
+            }
+        }
+
         function renderBooksList(list) {
             const booksContainer = document.getElementById('books-container');
             booksContainer.innerHTML = ''; 
@@ -2024,7 +2053,7 @@
                         <h3 class="font-black text-lg md:text-xl text-slate-900 dark:text-white mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">${book.Title}</h3>
                         <p class="text-slate-600 dark:text-slate-300 text-sm mb-6 leading-loose line-clamp-3">${book.Description || ''}</p>
                     </div>
-                    <a href="${book.DownloadLink || '#'}" target="_blank" rel="noopener noreferrer" title="পিডিএফ ডাউনলোড করুন" class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-3.5 rounded-xl text-xs font-black transition-all w-full shadow-md flex items-center justify-center gap-2 hover:-translate-y-1"><i class="fa-solid fa-download"></i> পিডিএফ ডাউনলোড</a>
+                    <button onclick="handleBookDownload('${book.DownloadLink}')" title="পিডিএফ ডাউনলোড করুন" class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-3.5 rounded-xl text-xs font-black transition-all w-full shadow-md flex items-center justify-center gap-2 hover:-translate-y-1"><i class="fa-solid fa-download"></i> পিডিএফ ডাউনলোড</button>
                 </div>`;
             });
         }
@@ -2121,7 +2150,15 @@
             return array;
         }
 
+        // কুইজ স্টার্ট করার সময় লগইন চেক করা হয়েছে
         function startQuizExam(subject) {
+            const loggedInUser = localStorage.getItem('portalUserEmail');
+            if (!loggedInUser) {
+                showToast("কুইজ শুরু করতে লগইন বা রেজিস্ট্রেশন করুন!", "error");
+                triggerRegisterPopup();
+                return;
+            }
+
             currentActiveSubject = subject;
             
             let questions = [...groupedQuizData[subject]];
