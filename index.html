@@ -1870,8 +1870,8 @@
                     
                     latestQuizzes.forEach(q => {
                         let certBtn = q.percentage >= 40
-                            ? `<button onclick="generateCertificate('${q.subject.replace(/'/g, "\\'")}', ${q.percentage})" class="flex items-center gap-1.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600 hover:text-white transition-colors cursor-pointer"><i class="fa-solid fa-certificate"></i></button>`
-                            : `<span class="flex items-center gap-1 text-[10px] text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-md border border-orange-200 dark:border-orange-800"><i class="fa-solid fa-lock"></i> ৪০% চাই</span>`;
+                            ? `<button onclick="generateCertificate('${q.subject.replace(/'/g, "\\'")}', ${q.percentage})" class="flex items-center gap-1.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600 hover:text-white transition-colors cursor-pointer shadow-sm hover:shadow-md"><i class="fa-solid fa-certificate"></i> ডাউনলোড</button>`
+                            : `<span class="flex items-center gap-1 text-[10px] text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-md border border-orange-200 dark:border-orange-800"><i class="fa-solid fa-lock"></i> ৪০% প্রয়োজন</span>`;
 
                         let progressColor = q.percentage >= 80 ? 'bg-emerald-500' : (q.percentage >= 50 ? 'bg-brand-500' : 'bg-orange-500');
 
@@ -1957,7 +1957,7 @@
                         </div>
                         <div>
                             <h3 class="font-black text-slate-900 dark:text-white text-2xl mb-2">অ্যাকাউন্টে প্রবেশ করুন</h3>
-                            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed">কুইজ পরীক্ষা দিতে, বই ডাউনলোড করতে এবং প্রোফাইল ট্র্যাক করতে একটি ফ্রি অ্যাকাউন্ট তৈরি করুন অথবা লগইন করুন।</p>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed">কুইজ পরীক্ষা দিতে, বই ডাউনলোড করতে এবং প্রোফাইল ট্র্যাক করতে একটি ফ্রি অ্যাকাউন্ট তৈরি করুন অথবা লগইন করুন。</p>
                         </div>
                         <button onclick="triggerRegisterPopup()" title="অ্যাকাউন্ট খুলুন" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-700 hover:to-brand-600 text-white py-4 rounded-xl text-sm font-black transition-all shadow-lg shadow-brand-600/30 hover:-translate-y-1 cursor-pointer mt-4">
                             রেজিস্ট্রেশন / লগইন করুন
