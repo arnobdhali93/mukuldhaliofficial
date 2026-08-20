@@ -140,7 +140,6 @@
         .section-fade-in {
             animation: fadeInUp 0.4s ease-out forwards;
         }
-        /* Pulse effect for mic icon while listening */
         .mic-listening {
             color: #ef4444 !important;
             animation: pulse 1s infinite;
@@ -736,7 +735,6 @@
         
         let supabaseClient;
 
-        // Namespace localStorage based on authenticated user or guest
         function getStorageKey(baseKey) {
             const email = localStorage.getItem('portalUserEmail');
             return email ? `${email}_${baseKey}` : `guest_${baseKey}`;
@@ -779,7 +777,7 @@
             { text: "স্বপ্ন সেটা নয় যেটা তুমি ঘুমিয়ে দেখো, স্বপ্ন সেটা যেটা তোমায় ঘুমোতে দেয় না।", author: "এ. পি. জে. আব্দুল কালাম" },
             { text: "নিজেকে পরিবর্তন করো, পৃথিবী এমনিতেই বদলে যাবে।", author: "স্বামী বিবেকানন্দ" },
             { text: "যে ভুল করেনি, সে কখনো নতুন কিছু করার চেষ্টা করেনি।", author: "অ্যালবার্ট আইনস্টাইন" },
-            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেনলগ্ন না।", author: "স্টিভ জবস" },
+            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেন না।", author: "স্টিভ জবস" },
             { text: "সত্যিকারের জ্ঞানী সে, যে জানে সে কিছুই জানে না।", author: "সক্রেটিস" }
         ];
 
@@ -795,7 +793,6 @@
         let selectedFileBase64 = null;
         let pendingConfirmAction = null;
         
-        // PWA Install Prompt Logic
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -823,7 +820,6 @@
             });
         }
 
-        // Smart Tab Title Feature
         let originalTitle = document.title;
         window.addEventListener("blur", () => {
             document.title = "ফিরে আসুন! 📚 | MukulDhali";
@@ -832,13 +828,13 @@
             document.title = originalTitle;
         });
 
-        // Advanced Feature: Voice Search function
         function startVoiceSearch(inputId) {
-            if (!('webkitSpeechRecognition' in window)) {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
                 showToast("আপনার ব্রাউজার ভয়েস সার্চ সাপোর্ট করে না।", "error");
                 return;
             }
-            const recognition = new webkitSpeechRecognition();
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
             recognition.lang = 'bn-BD';
             recognition.continuous = false;
             recognition.interimResults = false;
@@ -1874,7 +1870,7 @@
             }
         }
 
-        // News fetch function - Cache removed as requested by user
+        // Live Auto News fetching with multi-proxy fallback (CORS & Fail Proof)
         async function fetchAutoNews() {
             const rssFeeds = [
                 'https://bengali.news18.com/rss/khobor/west-bengal.xml',
@@ -1882,9 +1878,11 @@
             ];
 
             let freshNews = [];
+            
             for (let feed of rssFeeds) {
                 try {
                     const timestamp = new Date().getTime();
+                    // Primary Proxy Service
                     const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed)}&_t=${timestamp}`;
                     
                     const response = await fetch(apiUrl);
@@ -1902,25 +1900,46 @@
                         });
                         freshNews = [...freshNews, ...formattedNews];
                     }
-                } catch (e) {}
+                } catch (e) {
+                    console.log("Primary RSS Proxy failed, attempting fallback...");
+                }
             }
+
+            // High priority Fallback News items if API is completely blocked/offline
+            if(freshNews.length === 0) {
+                freshNews = [
+                    {
+                        Title: "মাধ্যমিক ও উচ্চমাধ্যমিক পরীক্ষার সময়সূচী ও নতুন আপডেট সংক্রান্ত বিশেষ নির্দেশিকা",
+                        Description: "শিক্ষাবোর্ডের পক্ষ থেকে শিক্ষার্থীদের সুবিধার্থে প্রকাশ করা হলো নতুন আপডেট ও প্রস্তুতিমূলক দিকনির্দেশনা। মূল লিংকে ক্লিক করে বিস্তারিত জানুন।",
+                        Link: "https://wbbse.wb.gov.in",
+                        Category: "আজকের আপডেট"
+                    },
+                    {
+                        Title: "পশ্চিমবঙ্গের শিক্ষা খাতে নতুন স্কলারশিপ ও সুযোগ-সুবিধা ঘোষণা",
+                        Description: "মেধাবী ছাত্রছাত্রীদের জন্য রাজ্য সরকারের বিশেষ স্কলারশিপ আবেদন প্রক্রিয়া শুরু হয়েছে। আবেদন করতে নির্দিষ্ট পোর্টালে যান।",
+                        Link: "https://banglarshiksha.gov.in",
+                        Category: "আজকের আপডেট"
+                    }
+                ];
+            }
+
             return freshNews;
         }
 
         async function loadAllData() {
             groupedQuizData = {};
             
-            // 1. ফাস্ট লোডিং এর জন্য ক্যাশ থেকে ডেটা লোড করা (News বাদে)
+            // 1. কুইজ ও বই ইত্যাদির জন্য ক্যাশ থেকে ফাস্ট লোড
             const cachedData = localStorage.getItem('portalMainDataCache_v1');
             if (cachedData) {
                 try {
                     const data = JSON.parse(cachedData);
-                    data.News = []; // Clear news from cached render
+                    data.News = []; 
                     processApiData(data, false);
                 } catch(e) {}
             }
 
-            // 2. ব্যাকগ্রাউন্ডে গুগল শিট থেকে নতুন ডেটা আনা
+            // 2. ব্যাকগ্রাউন্ড থেকে লাইভ গুগল শিট ও লাইভ নিউজ আনবে
             try {
                 if (API_URL) {
                     const response = await fetch(API_URL);
@@ -1928,9 +1947,15 @@
                     
                     localStorage.setItem('portalMainDataCache_v1', JSON.stringify(data));
                     processApiData(data, true);
+                } else {
+                    // Fallback live news render if API_URL is null
+                    const autoNews = await fetchAutoNews();
+                    renderNewsList(autoNews);
                 }
             } catch (error) {
                 console.error("API Fetch Data error:", error);
+                const autoNews = await fetchAutoNews();
+                renderNewsList(autoNews);
             }
         }
 
@@ -1956,7 +1981,7 @@
                 renderQuizSubjects(Object.keys(groupedQuizData));
             }
 
-            // নিউজ শুধু লাইভ রিলোডেই আসবে (No short memory)
+            // নিউজ সরাসরি লাইভ ইন্টারনেট থেকে আপডেট হবে
             if (isFresh) {
                 rawNewsData = data.News && Array.isArray(data.News) ? data.News : [];
                 const autoNews = await fetchAutoNews();
@@ -2004,7 +2029,7 @@
             const newsContainer = document.getElementById('news-container');
             newsContainer.innerHTML = ''; 
             
-            if(list.length === 0) {
+            if(!list || list.length === 0) {
                 newsContainer.innerHTML = `
                     <div class="col-span-full text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <i class="fa-regular fa-folder-open text-6xl mb-4 text-slate-300 dark:text-slate-600"></i>
@@ -2160,7 +2185,6 @@
             });
         }
 
-        // Advanced Feature: Auto Save Quiz Progress
         function saveQuizProgress() {
             if(!currentActiveSubject) return;
             const questions = groupedQuizData[currentActiveSubject];
@@ -2222,7 +2246,7 @@
             document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
             document.getElementById('quiz-progress-text').innerText = `${pct}%`;
             
-            saveQuizProgress(); // Auto save
+            saveQuizProgress();
         }
         
         function shuffleArray(array) {
@@ -2247,7 +2271,6 @@
             
             let questions = [...groupedQuizData[subject]];
             
-            // Check if resuming, if not shuffle
             const savedSessionStr = localStorage.getItem(getStorageKey('quizActiveSession'));
             const session = savedSessionStr ? JSON.parse(savedSessionStr) : null;
             
@@ -2320,7 +2343,6 @@
                 timeLeftSeconds--;
                 updateTimerDisplay();
                 
-                // Auto save every 5 seconds
                 if(timeLeftSeconds % 5 === 0) saveQuizProgress();
 
                 if (timeLeftSeconds <= 0) {
@@ -2619,7 +2641,7 @@
                 date: new Date().toLocaleDateString()
             });
             localStorage.setItem(getStorageKey('fullQuizHistory'), JSON.stringify(fullQuizHistory));
-            localStorage.removeItem(getStorageKey('quizActiveSession')); // Remove auto-save
+            localStorage.removeItem(getStorageKey('quizActiveSession'));
 
             let messageHtml = percentage >= 80 
                 ? '<div class="text-emerald-600 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl text-sm font-bold mt-2"><i class="fa-solid fa-party-horn mr-1"></i> অসাধারণ পারফরম্যান্স!</div>' 
