@@ -593,13 +593,14 @@
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
             
-            <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl mb-8 border border-slate-200 dark:border-slate-700">
+            <div id="auth-tabs" class="flex items-center gap-2 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl mb-8 border border-slate-200 dark:border-slate-700">
                 <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 py-2.5 rounded-lg font-black text-sm bg-white dark:bg-slate-700 text-brand-600 dark:text-white shadow-sm transition-all cursor-pointer">লগইন</button>
                 <button id="tab-register" onclick="switchAuthTab('register')" class="flex-1 py-2.5 rounded-lg font-bold text-sm text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer">রেজিস্ট্রেশন</button>
             </div>
 
             <div id="auth-msg" class="hidden p-4 rounded-xl text-sm font-bold mb-6 text-center border"></div>
 
+            <!-- Login Form -->
             <form id="login-form" onsubmit="handleAuthSubmit(event, 'login')" class="space-y-5 animate-fade-in-up">
                 <div class="text-center mb-6">
                     <h3 class="font-black text-2xl text-slate-900 dark:text-white mb-1">স্বাগতম!</h3>
@@ -625,6 +626,7 @@
                 </button>
             </form>
 
+            <!-- Registration Form -->
             <form id="register-form" onsubmit="handleAuthSubmit(event, 'register')" class="space-y-5 hidden animate-fade-in-up">
                 <div class="text-center mb-6">
                     <h3 class="font-black text-2xl text-slate-900 dark:text-white mb-1">নতুন অ্যাকাউন্ট</h3>
@@ -653,7 +655,31 @@
                     </div>
                 </div>
                 <button type="submit" id="reg-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-4 rounded-xl text-sm font-black transition-all shadow-lg shadow-brand-600/30 hover:-translate-y-1 flex justify-center items-center gap-2 cursor-pointer mt-4">
-                    <span>অ্যাকাউন্ট খুলুন</span> <i class="fa-solid fa-user-plus"></i>
+                    <span>কোড পাঠান (OTP)</span> <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+
+            <!-- OTP Verification Form -->
+            <form id="otp-form" onsubmit="handleOtpSubmit(event)" class="space-y-5 hidden animate-fade-in-up">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-brand-50 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto text-brand-600 dark:text-brand-400 text-2xl mb-4 border border-brand-200 dark:border-slate-600">
+                        <i class="fa-solid fa-envelope-open-text"></i>
+                    </div>
+                    <h3 class="font-black text-2xl text-slate-900 dark:text-white mb-1">ইমেইল ভেরিফিকেশন</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">আপনার ইমেইলে পাঠানো ৬ ডিজিটের কোডটি বসান</p>
+                    <p id="otp-email-display" class="text-xs font-bold text-brand-600 mt-2 bg-brand-50 dark:bg-slate-900 inline-block px-3 py-1 rounded-md border border-brand-100 dark:border-slate-700"></p>
+                </div>
+                <div>
+                    <div class="relative">
+                        <i class="fa-solid fa-key absolute left-4 top-4 text-slate-400"></i>
+                        <input type="text" id="otp-code" required placeholder="123456" maxlength="6" class="pl-11 w-full p-3.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-center text-xl font-bold tracking-[0.5em] outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                    </div>
+                </div>
+                <button type="submit" id="verify-otp-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-4 rounded-xl text-sm font-black transition-all shadow-lg shadow-brand-600/30 hover:-translate-y-1 flex justify-center items-center gap-2 cursor-pointer mt-4">
+                    <span>ভেরিফাই করুন</span> <i class="fa-solid fa-check-circle"></i>
+                </button>
+                <button type="button" onclick="switchAuthTab('register')" class="w-full text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-bold transition-colors cursor-pointer mt-2 underline">
+                    ইমেইল পরিবর্তন করুন
                 </button>
             </form>
         </div>
@@ -739,6 +765,7 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdidmt4dG15cW1sa21jeHZiZnN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMzgzNTEsImV4cCI6MjEwMjYxNDM1MX0.jGXOP0Y_Q78m7DCI6A0tiLQ5KDNW1-K0ypr0AVW9H8w';
         
         let supabaseClient;
+        let pendingOtpEmail = '';
 
         function getStorageKey(baseKey) {
             const email = localStorage.getItem('portalUserEmail');
@@ -782,7 +809,7 @@
             { text: "স্বপ্ন সেটা নয় যেটা তুমি ঘুমিয়ে দেখো, স্বপ্ন সেটা যেটা তোমায় ঘুমোতে দেয় না।", author: "এ. পি. জে. আব্দুল কালাম" },
             { text: "নিজেকে পরিবর্তন করো, পৃথিবী এমনিতেই বদলে যাবে।", author: "স্বামী বিবেকানন্দ" },
             { text: "যে ভুল করেনি, সে কখনো নতুন কিছু করার চেষ্টা করেনি।", author: "অ্যালবার্ট আইনস্টাইন" },
-            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেন ঘৃনা।", author: "স্টিভ জবস" },
+            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেন না।", author: "স্টিভ জবস" },
             { text: "সত্যিকারের জ্ঞানী সে, যে জানে সে কিছুই জানে না।", author: "সক্রেটিস" }
         ];
 
@@ -1241,7 +1268,7 @@
 
         function toggleSpeech(elementId, btnElement) {
             if (!('speechSynthesis' in window)) {
-                showToast("আপনার ব্রাউজার টেক্সট-টু-স্পিচ সাপোর্ট করেলগ্ন না।", "error");
+                showToast("আপনার ব্রাউজার টেক্সট-টু-স্পিচ সাপোর্ট করে না।", "error");
                 return;
             }
 
@@ -1683,19 +1710,29 @@
             showAuthMsg('', '');
             const loginForm = document.getElementById('login-form');
             const regForm = document.getElementById('register-form');
+            const otpForm = document.getElementById('otp-form');
+            const authTabs = document.getElementById('auth-tabs');
             const tabLogin = document.getElementById('tab-login');
             const tabReg = document.getElementById('tab-register');
+
+            otpForm.classList.add('hidden'); 
+            authTabs.classList.remove('hidden'); 
 
             if (type === 'login') {
                 loginForm.classList.remove('hidden');
                 regForm.classList.add('hidden');
                 tabLogin.className = "flex-1 py-2.5 rounded-lg font-black text-sm bg-white dark:bg-slate-700 text-brand-600 dark:text-white shadow-sm transition-all cursor-pointer";
                 tabReg.className = "flex-1 py-2.5 rounded-lg font-bold text-sm text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer";
-            } else {
+            } else if (type === 'register') {
                 regForm.classList.remove('hidden');
                 loginForm.classList.add('hidden');
                 tabReg.className = "flex-1 py-2.5 rounded-lg font-black text-sm bg-white dark:bg-slate-700 text-brand-600 dark:text-white shadow-sm transition-all cursor-pointer";
                 tabLogin.className = "flex-1 py-2.5 rounded-lg font-bold text-sm text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer";
+            } else if (type === 'otp') {
+                regForm.classList.add('hidden');
+                loginForm.classList.add('hidden');
+                authTabs.classList.add('hidden'); 
+                otpForm.classList.remove('hidden');
             }
         }
 
@@ -1751,12 +1788,10 @@
 
                     if (error) throw error;
                     
-                    showToast("রেজিস্ট্রেশন সফল হয়েছে! দয়া করে ইমেইল ভেরিফাই করুন অথবা লগইন করুন।", "success");
-                    closeAuthModal();
-                    
-                    // Confetti on success
-                    if (window.confetti) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-                    switchAuthTab('login');
+                    pendingOtpEmail = email;
+                    document.getElementById('otp-email-display').innerText = email;
+                    showToast("আপনার ইমেইলে OTP পাঠানো হয়েছে!", "success");
+                    switchAuthTab('otp');
                     
                 } else {
                     const email = document.getElementById('login-id').value.trim();
@@ -1771,7 +1806,6 @@
 
                     showToast("সফলভাবে প্রবেশ করেছেন!", "success");
                     closeAuthModal();
-                    // Confetti on success
                     if (window.confetti) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
                 }
             } catch (error) {
@@ -1781,6 +1815,40 @@
                 if(error.message.includes("already registered") || error.message.includes("User already exists")) errorMsg = "এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট খোলা আছে!";
                 if(error.message.includes("Password should be at least")) errorMsg = "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে!";
                 
+                showAuthMsg(errorMsg, 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function handleOtpSubmit(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('verify-otp-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ভেরিফাই হচ্ছে...`;
+            btn.disabled = true;
+            showAuthMsg('', '');
+
+            const otpCode = document.getElementById('otp-code').value.trim();
+
+            try {
+                const { data, error } = await supabaseClient.auth.verifyOtp({
+                    email: pendingOtpEmail,
+                    token: otpCode,
+                    type: 'signup'
+                });
+
+                if (error) throw error;
+
+                showToast("অ্যাকাউন্ট ভেরিফিকেশন সফল হয়েছে!", "success");
+                closeAuthModal();
+                if (window.confetti) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+
+            } catch (error) {
+                console.error(error);
+                let errorMsg = "ভেরিফিকেশন কোডটি ভুল বা মেয়াদ শেষ হয়ে গেছে!";
                 showAuthMsg(errorMsg, 'error');
             } finally {
                 btn.innerHTML = originalText;
@@ -2795,7 +2863,6 @@
             void resultView.offsetWidth;
             resultView.classList.add('animate-fade-in-up');
             
-            // নতুন স্ক্রোলিং লজিক: রেজাল্ট কার্ডটি পেজের একদম উপরে পারফেক্টলি সেট হবে (হেডারের হাইট বাদ দিয়ে)
             setTimeout(() => {
                 const header = document.getElementById('mobile-header');
                 const headerHeight = header ? header.offsetHeight : 0;
