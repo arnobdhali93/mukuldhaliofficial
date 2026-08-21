@@ -2144,7 +2144,7 @@
             }
         }
 
-        // --- NEW FEATURE: Auto Update News Every 3 Hours (12, 3, 6, 9) ---
+        // --- Auto Update News Every 3 Hours ---
         function scheduleNextNewsUpdate() {
             const now = new Date();
             const currentHour = now.getHours();
@@ -2847,6 +2847,32 @@
             });
             localStorage.setItem(getStorageKey('fullQuizHistory'), JSON.stringify(fullQuizHistory));
             localStorage.removeItem(getStorageKey('quizActiveSession'));
+
+            // --- NEW FEATURE: Send Email with Score ---
+            const userEmailToNotify = localStorage.getItem('portalUserEmail');
+            const userNameToNotify = localStorage.getItem(getStorageKey('portalUserName')) || 'Student';
+
+            if (userEmailToNotify) {
+                fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: userEmailToNotify,
+                        name: userNameToNotify,
+                        subject: currentActiveSubject,
+                        score: scoreFormatted,
+                        percentage: percentage
+                    })
+                }).then(() => {
+                    console.log("Score email sent request triggered successfully.");
+                }).catch(err => {
+                    console.error("Failed to trigger score email:", err);
+                });
+            }
+            // ------------------------------------------
 
             let messageHtml = percentage >= 80 
                 ? '<div class="text-emerald-600 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl text-sm font-bold mt-2"><i class="fa-solid fa-party-horn mr-1"></i> অসাধারণ পারফরম্যান্স!</div>' 
