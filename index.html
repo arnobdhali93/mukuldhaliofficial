@@ -1179,6 +1179,10 @@
                 setTimeout(() => {
                     chatWindow.classList.remove('scale-95', 'opacity-0');
                     chatWindow.classList.add('scale-100', 'opacity-100');
+                    
+                    // NEW FEATURE: Scroll to bottom of chat automatically when opened
+                    const history = document.getElementById('chat-history');
+                    history.scrollTop = history.scrollHeight;
                 }, 10);
             } else {
                 chatWindow.classList.remove('scale-100', 'opacity-100');
@@ -1605,7 +1609,6 @@
 
         function saveCroppedImage() {
             if(cropper) {
-                // Downscale image to 256x256 to save localStorage space & make it faster
                 const canvas = cropper.getCroppedCanvas({ width: 256, height: 256, fillColor: '#fff' });
                 selectedFileBase64 = canvas.toDataURL('image/jpeg', 0.8);
                 
@@ -1690,7 +1693,7 @@
             closeEditProfile();
             showToast("প্রোফাইল সফলভাবে আপডেট হয়েছে!", "success");
             renderProfileSection();
-            updateHeaderBadge(); // Update name everywhere
+            updateHeaderBadge(); 
         }
 
         function switchAuthTab(type) {
@@ -1768,7 +1771,6 @@
                     showToast("রেজিস্ট্রেশন সফল হয়েছে! দয়া করে ইমেইল ভেরিফাই করুন অথবা লগইন করুন।", "success");
                     closeAuthModal();
                     
-                    // Confetti on success
                     if (window.confetti) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
                     switchAuthTab('login');
                     
@@ -1785,7 +1787,6 @@
 
                     showToast("সফলভাবে প্রবেশ করেছেন!", "success");
                     closeAuthModal();
-                    // Confetti on success
                     if (window.confetti) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
                 }
             } catch (error) {
@@ -1856,7 +1857,6 @@
                 if (fullQuizHistory.length > 0) {
                     let uniqueSubjects = {};
                     let latestQuizzes = [];
-                    // Reverse loop to keep the most recent of each subject (No limit now)
                     for (let i = fullQuizHistory.length - 1; i >= 0; i--) {
                         let q = fullQuizHistory[i];
                         if (!uniqueSubjects[q.subject]) {
@@ -2143,6 +2143,57 @@
                 renderNewsList(rawNewsData);
             }
         }
+
+        // --- NEW FEATURE: Auto Update News Every 3 Hours (12, 3, 6, 9) ---
+        function scheduleNextNewsUpdate() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            
+            // Target hours: 0, 3, 6, 9, 12, 15, 18, 21
+            let nextTargetHour = Math.floor(currentHour / 3) * 3 + 3; 
+            let daysToAdd = 0;
+            
+            if (nextTargetHour >= 24) {
+                nextTargetHour = 0;
+                daysToAdd = 1;
+            }
+
+            const nextUpdate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysToAdd, nextTargetHour, 0, 0, 0);
+            const timeToWait = nextUpdate.getTime() - now.getTime();
+
+            console.log(`Next news auto-update scheduled at: ${nextUpdate.toLocaleTimeString()}`);
+
+            setTimeout(async () => {
+                console.log("Auto-updating news section...");
+                await updateNewsDataOnly();
+                scheduleNextNewsUpdate(); // Schedule the next one
+            }, timeToWait);
+        }
+
+        async function updateNewsDataOnly() {
+            try {
+                if (API_URL) {
+                    const response = await fetch(API_URL);
+                    const data = await response.json();
+                    if (data.News && Array.isArray(data.News)) {
+                        rawNewsData = data.News;
+                    }
+                }
+                
+                const autoNews = await fetchAutoNews();
+                if (autoNews.length > 0) {
+                    let apiNews = Array.isArray(rawNewsData) ? rawNewsData : [];
+                    rawNewsData = [...autoNews, ...apiNews.filter(n => n.Category !== 'আজকের আপডেট')];
+                }
+                
+                renderNewsList(rawNewsData);
+                showToast("নতুন খবর আপডেট করা হয়েছে!", "success");
+                
+            } catch (error) {
+                console.error("News Auto-update failed:", error);
+            }
+        }
+        // -----------------------------------------------------------------
 
         function renderStoriesList(list) {
             const storiesContainer = document.getElementById('stories-container');
@@ -2867,10 +2918,14 @@
             applySavedTheme();
             loadChatHistory();
             updateHeaderBadge();
-            
             setupDailyQuote();
-            
             loadAllData();
+            
+            // Start Auto Scheduler for News Update
+            scheduleNextNewsUpdate();
+            
+            // NEW FEATURE: Update time/greeting dynamically every minute
+            setInterval(setGreeting, 60000);
 
             const hash = window.location.hash.replace('#', '');
             if (hash && document.getElementById(hash)) {
