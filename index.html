@@ -425,7 +425,7 @@
                             <i class="fa-solid fa-arrow-left"></i> বাতিল করুন
                         </button>
                         <div id="quiz-timer-box" title="বাকি সময়" class="flex items-center gap-2.5 bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 px-5 py-2.5 rounded-xl text-sm font-black border border-brand-200 dark:border-slate-600 shadow-sm transition-colors duration-300 tracking-wider">
-                            <i class="fa-solid fa-stopwatch animate-pulse"></i> <span id="time-remaining">05:00</span>
+                            <i class="fa-solid fa-stopwatch animate-pulse"></i> <span id="time-remaining">00:00</span>
                         </div>
                     </div>
 
@@ -785,8 +785,6 @@
             console.error("Supabase Init Error:", err);
         }
 
-        const GOOGLE_FORM_QUESTIONS = [];
-
         const dailyQuotes = [
             { text: "শিক্ষাই হলো সবচেয়ে শক্তিশালী অস্ত্র, যার মাধ্যমে আপনি পুরো বিশ্বকে বদলে দিতে পারেন।", author: "নেলসন ম্যান্ডেলা" },
             { text: "জ্ঞানের বিনিয়োগে সর্বোচ্চ মুনাফা পাওয়া যায়।", author: "বেঞ্জামিন ফ্রাঙ্কলিন" },
@@ -803,6 +801,7 @@
         let rawNewsData = [];
         let rawBooksData = [];
         let groupedQuizData = {};
+        let quizConfigData = {}; // NEW - For storing dynamic limits 
         let currentActiveSubject = null;
         let examTimer = null;
         let timeLeftSeconds = 300;
@@ -1180,7 +1179,6 @@
                     chatWindow.classList.remove('scale-95', 'opacity-0');
                     chatWindow.classList.add('scale-100', 'opacity-100');
                     
-                    // NEW FEATURE: Scroll to bottom of chat automatically when opened
                     const history = document.getElementById('chat-history');
                     history.scrollTop = history.scrollHeight;
                 }, 10);
@@ -2084,6 +2082,7 @@
 
         async function loadAllData() {
             groupedQuizData = {};
+            quizConfigData = {}; // NEW
             
             const cachedData = localStorage.getItem('portalMainDataCache_v1');
             if (cachedData) {
@@ -2126,9 +2125,18 @@
             }
             if(data.Quiz && Array.isArray(data.Quiz)) {
                 groupedQuizData = {}; 
+                quizConfigData = {}; 
+                
                 data.Quiz.forEach(q => {
                     let sub = q.Subject ? q.Subject.trim() : "সাধারণ জ্ঞান";
-                    if (!groupedQuizData[sub]) groupedQuizData[sub] = [];
+                    if (!groupedQuizData[sub]) {
+                        groupedQuizData[sub] = [];
+                        // Save config for time limit and attempts
+                        quizConfigData[sub] = {
+                            timeLimit: parseInt(q.TimeLimit) || 5, // Default 5 mins
+                            attemptLimit: q.AttemptLimit ? q.AttemptLimit.trim() : 'Multiple'
+                        };
+                    }
                     groupedQuizData[sub].push(q);
                 });
                 renderQuizSubjects(Object.keys(groupedQuizData));
@@ -2144,12 +2152,10 @@
             }
         }
 
-        // --- Auto Update News Every 3 Hours ---
         function scheduleNextNewsUpdate() {
             const now = new Date();
             const currentHour = now.getHours();
             
-            // Target hours: 0, 3, 6, 9, 12, 15, 18, 21
             let nextTargetHour = Math.floor(currentHour / 3) * 3 + 3; 
             let daysToAdd = 0;
             
@@ -2193,7 +2199,6 @@
                 console.error("News Auto-update failed:", error);
             }
         }
-        // -----------------------------------------------------------------
 
         function renderStoriesList(list) {
             const storiesContainer = document.getElementById('stories-container');
@@ -2472,6 +2477,17 @@
                 return;
             }
 
+            // NEW FEATURE: Check Attempt Limit (Once or Multiple)
+            const config = quizConfigData[subject] || { timeLimit: 5, attemptLimit: 'Multiple' };
+            if (config.attemptLimit === 'Once') {
+                let fullQuizHistory = JSON.parse(localStorage.getItem(getStorageKey('fullQuizHistory'))) || [];
+                let hasTaken = fullQuizHistory.some(q => q.subject === subject);
+                if (hasTaken) {
+                    showToast("আপনি ইতিমধ্যেই এই কুইজটি একবার দিয়েছেন। এটি পুনরায় দেওয়া যাবে না!", "error");
+                    return; 
+                }
+            }
+
             currentActiveSubject = subject;
             
             let questions = [...groupedQuizData[subject]];
@@ -2537,7 +2553,9 @@
                 </div>`;
             });
 
-            timeLeftSeconds = 300; 
+            // NEW FEATURE: Dynamic Time Limit
+            timeLeftSeconds = config.timeLimit * 60; 
+
             if(session && session.subject === subject) {
                 restoreQuizProgress(subject);
             }
@@ -2848,7 +2866,7 @@
             localStorage.setItem(getStorageKey('fullQuizHistory'), JSON.stringify(fullQuizHistory));
             localStorage.removeItem(getStorageKey('quizActiveSession'));
 
-            // --- NEW FEATURE: Send Email with Score ---
+            // --- NEW FEATURE: Auto Save Score to Google Sheet ---
             const userEmailToNotify = localStorage.getItem('portalUserEmail');
             const userNameToNotify = localStorage.getItem(getStorageKey('portalUserName')) || 'Student';
 
@@ -2860,16 +2878,18 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
+                        action: "save_score", // Tell Google Script to save this
                         email: userEmailToNotify,
                         name: userNameToNotify,
                         subject: currentActiveSubject,
                         score: scoreFormatted,
-                        percentage: percentage
+                        percentage: percentage,
+                        date: new Date().toLocaleString()
                     })
                 }).then(() => {
-                    console.log("Score email sent request triggered successfully.");
+                    console.log("Score automatically saved to Google Sheet.");
                 }).catch(err => {
-                    console.error("Failed to trigger score email:", err);
+                    console.error("Failed to save score:", err);
                 });
             }
             // ------------------------------------------
@@ -2950,7 +2970,6 @@
             // Start Auto Scheduler for News Update
             scheduleNextNewsUpdate();
             
-            // NEW FEATURE: Update time/greeting dynamically every minute
             setInterval(setGreeting, 60000);
 
             const hash = window.location.hash.replace('#', '');
