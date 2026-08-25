@@ -332,7 +332,7 @@
                 </div>
                 <span class="text-xs text-slate-700 dark:text-slate-300 font-bold">System Online</span>
             </div>
-            <span class="text-[10px] text-slate-400 font-mono font-bold bg-white dark:bg-slate-900 px-2 py-1 rounded-md border border-slate-200 dark:border-slate-700">v5.4 Pro FB</span>
+            <span class="text-[10px] text-slate-400 font-mono font-bold bg-white dark:bg-slate-900 px-2 py-1 rounded-md border border-slate-200 dark:border-slate-700">v5.5 Pro FB</span>
         </div>
     </aside>
 
@@ -616,7 +616,7 @@
                 <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
                     <h3 class="font-bold text-slate-700 dark:text-slate-300 mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-user-group text-blue-500"></i> Suggested Friends</h3>
                     <div id="suggested-friends-container" class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
-                        <!-- Populated by JS -->
+                        <!-- Populated by JS dynamically based on posts -->
                     </div>
                 </div>
 
@@ -1064,7 +1064,7 @@
             { text: "স্বপ্ন সেটা নয় যেটা তুমি ঘুমিয়ে দেখো, স্বপ্ন সেটা যেটা তোমায় ঘুমোতে দেয় না।", author: "এ. পি. জে. আব্দুল কালাম" },
             { text: "নিজেকে পরিবর্তন করো, পৃথিবী এমনিতেই বদলে যাবে।", author: "স্বামী বিবেকানন্দ" },
             { text: "যে ভুল করেনি, সে কখনো নতুন কিছু করার চেষ্টা করেনি।", author: "অ্যালবার্ট আইনস্টাইন" },
-            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেনলগ্ন।", author: "স্টিভ জবস" },
+            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেন না।", author: "স্টিভ জবস" },
             { text: "সত্যিকারের জ্ঞানী সে, যে জানে সে কিছুই জানে না।", author: "সক্রেটিস" }
         ];
 
@@ -1601,7 +1601,7 @@
 
         window.shareQuizLink = function(subject) {
             const url = window.location.href.split('#')[0] + '#quiz';
-            const text = `আমি MukulDhaliOfficial এ '${subject}' কুইজটি দিচ্ছি। আপনিও চেষ্টা করুন: ${url}`;
+            const text = `আমি MukulDhaliOfficial এ '${subject}' কুইজটি দিচ্ছি। আপনিও চেষ্টা করুন!`;
             shareContent('MukulDhaliOfficial Quiz', text, url);
         }
 
@@ -1721,7 +1721,7 @@
             window.history.replaceState(null, null, `#${sectionId}`);
             if(sectionId === 'profile') renderProfileSection();
             if(sectionId === 'bookmarks') renderBookmarks();
-            if(sectionId === 'community') loadSuggestedFriends(); // Load suggestions when opening community
+            if(sectionId === 'community') loadSuggestedFriends(); 
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
@@ -1764,7 +1764,7 @@
 
         window.copyChatText = function(text) {
             navigator.clipboard.writeText(text).then(() => {
-                showToast("উত্তরটি কপি করা হয়েছে!", "success");
+                showToast("কপি করা হয়েছে!", "success");
             }).catch(err => {
                 showToast("কপি করা সম্ভব হয়নি!", "error");
             });
@@ -2601,16 +2601,13 @@
         // Helper to convert date to Relative time (Time Ago)
         function timeAgo(dateString) {
             if(!dateString) return "Just now";
-            
-            // Assume format DD/MM/YYYY or similar if possible. If simple string like '28/08/2023', try to parse.
             let pastDate;
             if(dateString.includes('/')) {
                 const parts = dateString.split('/');
-                pastDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`); // convert DD/MM/YYYY to YYYY-MM-DD
+                pastDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`); 
             } else {
                 pastDate = new Date(dateString);
             }
-            
             if (isNaN(pastDate.getTime())) return "Today";
 
             const now = new Date();
@@ -2624,27 +2621,57 @@
             return dateString;
         }
 
-        // Mock User Data for Suggested Friends & Avatars
-        const mockUsers = [
-            { name: "Rahul Das", pic: "https://i.pravatar.cc/150?img=11" },
-            { name: "Priya Sen", pic: "https://i.pravatar.cc/150?img=5" },
-            { name: "Aritra Roy", pic: "https://i.pravatar.cc/150?img=12" },
-            { name: "Sneha Ghosh", pic: "https://i.pravatar.cc/150?img=9" },
-            { name: "Bikram Saha", pic: "https://i.pravatar.cc/150?img=15" },
-            { name: "Riya Mondal", pic: "https://i.pravatar.cc/150?img=20" }
-        ];
+        // Helper: Delete post locally (Since we use google sheet, just hiding from UI for now)
+        window.deletePost = function(index) {
+            openConfirmModal("আপনি কি নিশ্চিত যে এই পোস্টটি মুছে ফেলতে চান?", () => {
+                const element = document.getElementById(`post-item-${index}`);
+                if(element) element.remove();
+                showToast("পোস্টটি মুছে ফেলা হয়েছে!", "success");
+            });
+        }
+        
+        window.togglePostMenu = function(index) {
+            const menu = document.getElementById(`post-menu-${index}`);
+            if(menu.classList.contains('hidden')) {
+                // close all other menus first
+                document.querySelectorAll('.post-3dot-menu').forEach(m => m.classList.add('hidden'));
+                menu.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
+        }
+        
+        window.copyPostText = function(index) {
+            const textEl = document.getElementById(`post-desc-text-${index}`);
+            if(textEl) {
+                navigator.clipboard.writeText(textEl.innerText);
+                showToast("পোস্টের টেক্সট কপি হয়েছে!", "success");
+                document.getElementById(`post-menu-${index}`).classList.add('hidden');
+            }
+        }
 
         function loadSuggestedFriends() {
             const container = document.getElementById('suggested-friends-container');
             if(!container) return;
             container.innerHTML = '';
-            
-            mockUsers.forEach((u, i) => {
+            const loggedInName = localStorage.getItem(getStorageKey('portalUserName'));
+
+            // Extract unique users who have actually posted
+            let uniqueNames = [...new Set(rawUserPosts.map(p => p.Name))];
+            uniqueNames = uniqueNames.filter(name => name && name !== loggedInName && name !== 'Student');
+
+            if(uniqueNames.length === 0) {
+               container.innerHTML = '<p class="text-xs text-slate-500 p-2 font-bold">নতুন কোনো ফ্রেন্ড সাজেশন নেই।</p>';
+               return;
+            }
+
+            uniqueNames.slice(0, 10).forEach((name, i) => {
+                let pic = "https://i.pravatar.cc/150?u=" + encodeURIComponent(name); 
                 container.innerHTML += `
                 <div class="flex flex-col items-center min-w-[80px] shrink-0 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-3 rounded-xl text-center">
-                    <img src="${u.pic}" alt="Profile" class="w-12 h-12 rounded-full object-cover mb-2 border-2 border-white dark:border-slate-800 shadow-sm cursor-pointer hover:scale-105 transition-transform" onclick="openUserProfile('${u.name.replace(/'/g, "\\'")}', '${u.pic}')">
-                    <p class="text-[10px] font-bold text-slate-800 dark:text-slate-200 truncate w-full mb-2">${u.name.split(' ')[0]}</p>
-                    <button onclick="showToast('Friend request sent to ${u.name.split(' ')[0]}!', 'success')" class="bg-blue-100 hover:bg-blue-600 text-blue-600 hover:text-white dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-600 dark:hover:text-white text-[10px] font-bold px-3 py-1 rounded-md transition-colors w-full"><i class="fa-solid fa-user-plus"></i></button>
+                    <img src="${pic}" alt="Profile" class="w-12 h-12 rounded-full object-cover mb-2 border-2 border-white dark:border-slate-800 shadow-sm cursor-pointer hover:scale-105 transition-transform" onclick="openUserProfile('${name.replace(/'/g, "\\'")}', '${pic}')">
+                    <p class="text-[10px] font-bold text-slate-800 dark:text-slate-200 truncate w-full mb-2">${name.split(' ')[0]}</p>
+                    <button onclick="showToast('Friend request sent to ${name.split(' ')[0]}!', 'success')" class="bg-blue-100 hover:bg-blue-600 text-blue-600 hover:text-white dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-600 dark:hover:text-white text-[10px] font-bold px-3 py-1 rounded-md transition-colors w-full"><i class="fa-solid fa-user-plus"></i></button>
                 </div>`;
             });
         }
@@ -2683,6 +2710,8 @@
         function renderUserPostsList(list) {
             const container = document.getElementById('community-container');
             container.innerHTML = '';
+            
+            const loggedInName = localStorage.getItem(getStorageKey('portalUserName'));
 
             if(!list || list.length === 0) {
                 container.innerHTML = `<div class="col-span-full text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm"><p class="text-slate-500 dark:text-slate-400 font-bold">এখনো কোনো কমিউনিটি পোস্ট নেই।</p></div>`;
@@ -2690,30 +2719,31 @@
             }
 
             list.slice().reverse().forEach((post, index) => {
-                let imgHtml = post.ImageBase64 ? `<div class="w-full mt-2 bg-slate-100 dark:bg-slate-900 border-y border-slate-200 dark:border-slate-700"><img src="${post.ImageBase64}" class="w-full max-h-[500px] object-contain" loading="lazy"></div>` : '';
+                let imgHtml = post.ImageBase64 ? `<div class="w-full mt-2 bg-slate-100 dark:bg-slate-900 border-y border-slate-200 dark:border-slate-700 relative"><img ondblclick="toggleDefaultLike(${index})" src="${post.ImageBase64}" class="w-full max-h-[500px] object-contain cursor-pointer" loading="lazy"></div>` : '';
                 
-                // Deterministic mock data based on index to keep state
-                let mockLikes = (Math.floor(Math.random() * 50) + 15) + index;
-                let mockComments = Math.floor(Math.random() * 20);
+                // Fixed logic to keep likes and comments starting at 0
+                let mockLikes = 0;
+                let mockComments = 0;
                 
                 let postName = post.Name || 'Student';
                 let initialChar = postName.charAt(0).toUpperCase();
                 let relativeTime = timeAgo(post.Date);
                 
-                // Generate a random avatar from mockUsers based on name length just for UI aesthetics
-                let randomAvatar = mockUsers[postName.length % mockUsers.length].pic;
-                let avatarHtml = `<img src="${randomAvatar}" class="w-full h-full object-cover">`;
+                // Use a consistent avatar logic
+                let avatarPic = "https://i.pravatar.cc/150?u=" + encodeURIComponent(postName);
+                let avatarHtml = `<img src="${avatarPic}" class="w-full h-full object-cover">`;
 
                 // Try to use logged in user's pic if it's their post
-                const loggedInName = localStorage.getItem(getStorageKey('portalUserName'));
+                let isMyPost = false;
                 if(postName === loggedInName) {
+                    isMyPost = true;
                     const myPic = localStorage.getItem(getStorageKey('portalUserPic'));
                     if(myPic) avatarHtml = `<img src="${myPic}" class="w-full h-full object-cover">`;
                     else avatarHtml = initialChar;
                 }
 
                 container.innerHTML += `
-                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-visible transform transition-all duration-300 relative">
+                <div id="post-item-${index}" class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-visible transform transition-all duration-300 relative">
                     
                     <div class="p-4 flex items-center justify-between">
                         <div class="flex items-center gap-3">
@@ -2728,12 +2758,18 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors w-8 h-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center cursor-pointer"><i class="fa-solid fa-ellipsis"></i></button>
+                        <div class="relative">
+                            <button onclick="togglePostMenu(${index})" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors w-8 h-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center cursor-pointer"><i class="fa-solid fa-ellipsis"></i></button>
+                            <div id="post-menu-${index}" class="post-3dot-menu hidden absolute right-0 mt-2 w-40 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 z-50 overflow-hidden">
+                                <button onclick="copyPostText(${index})" class="w-full text-left px-4 py-3 text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"><i class="fa-regular fa-copy mr-2 text-slate-400"></i> কপি টেক্সট</button>
+                                ${isMyPost ? `<button onclick="deletePost(${index})" class="w-full text-left px-4 py-3 text-sm font-bold hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600"><i class="fa-solid fa-trash mr-2 opacity-70"></i> ডিলিট পোস্ট</button>` : ''}
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="px-4 pb-2">
                         ${post.Title ? `<h3 class="font-black text-slate-800 dark:text-slate-100 text-base mb-1.5">${post.Title}</h3>` : ''}
-                        <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">${post.Description || ''}</p>
+                        <p id="post-desc-text-${index}" class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">${post.Description || ''}</p>
                     </div>
                     
                     ${imgHtml}
@@ -2742,7 +2778,6 @@
                         <div class="flex items-center gap-1.5 cursor-pointer hover:underline group">
                             <div class="flex -space-x-1.5" id="react-icons-${index}">
                                 <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-[8px] border-2 border-white dark:border-slate-800 shadow-sm z-10 group-hover:scale-110 transition-transform"><i class="fa-solid fa-thumbs-up"></i></div>
-                                <div class="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center text-white text-[8px] border-2 border-white dark:border-slate-800 shadow-sm group-hover:scale-110 transition-transform"><i class="fa-solid fa-heart"></i></div>
                             </div>
                             <span class="font-medium ml-1" id="like-count-${index}">${mockLikes}</span>
                         </div>
@@ -2772,7 +2807,7 @@
                         <button onclick="toggleCommentBox(${index})" class="flex-1 py-2 flex items-center justify-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all cursor-pointer">
                             <i class="fa-regular fa-message text-lg mb-0.5"></i> Comment
                         </button>
-                        <button onclick="shareContent('${post.Title ? post.Title.replace(/'/g, "\\'") : 'Community Post'}', 'Checkout this post from MukulDhaliOfficial', window.location.href)" class="flex-1 py-2 flex items-center justify-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all cursor-pointer">
+                        <button onclick="shareContent('${post.Title ? post.Title.replace(/'/g, "\\'") : 'Community Post'}', 'MukulDhaliOfficial Community থেকে দারুণ একটি পোস্ট শেয়ার করা হয়েছে! দেখুন: ', window.location.href)" class="flex-1 py-2 flex items-center justify-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all cursor-pointer">
                             <i class="fa-solid fa-share text-lg mb-0.5"></i> Share
                         </button>
                     </div>
@@ -2820,6 +2855,7 @@
             } else {
                 btn.innerHTML = `<span class="text-xl leading-none mb-0.5">${emoji}</span> <span id="like-text-${index}">${text}</span>`;
             }
+            document.getElementById(`post-menu-${index}`).classList.add('hidden');
         }
 
         // Handle Default Click Like
@@ -3033,25 +3069,18 @@
             }
         }
 
+        let lastNewsUpdateHour = -1;
         function scheduleNextNewsUpdate() {
-            const now = new Date();
-            const currentHour = now.getHours();
-
-            let nextTargetHour = Math.floor(currentHour / 3) * 3 + 3; 
-            let daysToAdd = 0;
-
-            if (nextTargetHour >= 24) {
-                nextTargetHour = 0;
-                daysToAdd = 1;
-            }
-
-            const nextUpdate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysToAdd, nextTargetHour, 0, 0, 0);
-            const timeToWait = nextUpdate.getTime() - now.getTime();
-
-            setTimeout(async () => {
-                await updateNewsDataOnly();
-                scheduleNextNewsUpdate();
-            }, timeToWait);
+            // Using setInterval to perfectly match 3 hourly interval dynamically
+            setInterval(async () => {
+                const now = new Date();
+                const h = now.getHours();
+                // 3, 6, 9, 12, 15, 18, 21, 0 (24)
+                if (h % 3 === 0 && h !== lastNewsUpdateHour) {
+                    lastNewsUpdateHour = h;
+                    await updateNewsDataOnly();
+                }
+            }, 60000); // Check every minute
         }
 
         async function updateNewsDataOnly() {
