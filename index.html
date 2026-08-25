@@ -168,8 +168,14 @@
         }
         
         /* Protection specific styles */
-        .select-none { user-select: none; -webkit-user-select: none; }
-        .hidden-quiz { opacity: 0 !important; pointer-events: none; }
+        .select-none { 
+            user-select: none !important; 
+            -webkit-user-select: none !important; 
+            -ms-user-select: none !important; 
+            -moz-user-select: none !important; 
+        }
+        /* prevent image drag */
+        img { -webkit-user-drag: none; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100 overflow-x-hidden w-full transition-colors duration-300">
@@ -200,7 +206,7 @@
         </div>
         <div class="flex items-center gap-2 shrink-0 ml-1">
             <!-- Notification Bell Mobile -->
-            <button onclick="toggleNotifications()" class="relative text-slate-500 dark:text-slate-300 hover:text-brand-600 p-1.5 transition-colors">
+            <button onclick="toggleNotifications()" class="relative text-slate-500 dark:text-slate-300 hover:text-brand-600 p-1.5 transition-colors cursor-pointer">
                 <i class="fa-regular fa-bell text-lg"></i>
                 <span id="notif-badge-mobile" class="absolute top-1.5 right-1 w-2.5 h-2.5 bg-red-500 border-2 border-white dark:border-slate-900 rounded-full hidden"></span>
             </button>
@@ -305,7 +311,7 @@
             </div>
             <div class="hidden md:flex items-center gap-3 relative z-10">
                 <!-- Notification Bell Desktop -->
-                <button onclick="toggleNotifications()" class="relative text-white/90 hover:text-white p-1.5 transition-colors">
+                <button onclick="toggleNotifications()" class="relative text-white/90 hover:text-white p-1.5 transition-colors cursor-pointer">
                     <i class="fa-regular fa-bell text-lg"></i>
                     <span id="notif-badge-desktop" class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 border border-brand-600 rounded-full hidden"></span>
                 </button>
@@ -564,16 +570,16 @@
                         সেভ করা আইটেম
                     </h2>
                     <div class="flex items-center gap-3">
-                        <button onclick="downloadBookmarks()" class="px-5 py-2.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-500 hover:text-white border border-blue-200 dark:border-blue-800/50 rounded-xl text-sm font-black whitespace-nowrap shadow-sm transition-all flex items-center gap-2"><i class="fa-solid fa-file-export"></i> এক্সপোর্ট</button>
-                        <button onclick="confirmClearBookmarks()" class="px-5 py-2.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-500 hover:text-white border border-red-200 dark:border-red-800/50 rounded-xl text-sm font-black whitespace-nowrap shadow-sm transition-all flex items-center gap-2"><i class="fa-solid fa-trash-can"></i> Clear All</button>
+                        <button onclick="downloadBookmarks()" class="px-5 py-2.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-500 hover:text-white border border-blue-200 dark:border-blue-800/50 rounded-xl text-sm font-black whitespace-nowrap shadow-sm transition-all flex items-center gap-2 cursor-pointer"><i class="fa-solid fa-file-export"></i> এক্সপোর্ট</button>
+                        <button onclick="confirmClearBookmarks()" class="px-5 py-2.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-500 hover:text-white border border-red-200 dark:border-red-800/50 rounded-xl text-sm font-black whitespace-nowrap shadow-sm transition-all flex items-center gap-2 cursor-pointer"><i class="fa-solid fa-trash-can"></i> Clear All</button>
                     </div>
                 </div>
                 
                 <div id="bookmark-filters" class="flex flex-wrap gap-3 mb-4 overflow-x-auto pb-2 items-center">
-                    <button onclick="filterBookmarksView('All', this)" class="bookmark-filter-btn px-5 py-2 bg-slate-800 dark:bg-white text-white dark:text-slate-900 rounded-full text-xs font-bold whitespace-nowrap shadow-md transition-all scale-105">All Items</button>
-                    <button onclick="filterBookmarksView('News', this)" class="bookmark-filter-btn px-5 py-2 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-bold whitespace-nowrap shadow-sm transition-all hover:bg-slate-50">News</button>
-                    <button onclick="filterBookmarksView('Book', this)" class="bookmark-filter-btn px-5 py-2 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-bold whitespace-nowrap shadow-sm transition-all hover:bg-slate-50">Books</button>
-                    <button onclick="filterBookmarksView('Story', this)" class="bookmark-filter-btn px-5 py-2 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-bold whitespace-nowrap shadow-sm transition-all hover:bg-slate-50">Stories</button>
+                    <button onclick="filterBookmarksView('All', this)" class="bookmark-filter-btn px-5 py-2 bg-slate-800 dark:bg-white text-white dark:text-slate-900 rounded-full text-xs font-bold whitespace-nowrap shadow-md transition-all scale-105 cursor-pointer">All Items</button>
+                    <button onclick="filterBookmarksView('News', this)" class="bookmark-filter-btn px-5 py-2 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-bold whitespace-nowrap shadow-sm transition-all hover:bg-slate-50 cursor-pointer">News</button>
+                    <button onclick="filterBookmarksView('Book', this)" class="bookmark-filter-btn px-5 py-2 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-bold whitespace-nowrap shadow-sm transition-all hover:bg-slate-50 cursor-pointer">Books</button>
+                    <button onclick="filterBookmarksView('Story', this)" class="bookmark-filter-btn px-5 py-2 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-bold whitespace-nowrap shadow-sm transition-all hover:bg-slate-50 cursor-pointer">Stories</button>
                 </div>
 
                 <div id="bookmarks-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -606,7 +612,7 @@
     <div id="notification-panel" class="fixed top-16 md:top-14 right-4 md:right-8 w-80 max-h-96 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 z-[110] transform transition-all duration-300 scale-95 opacity-0 hidden flex-col overflow-hidden">
         <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
             <h4 class="font-bold text-slate-800 dark:text-white text-sm"><i class="fa-regular fa-bell text-brand-600 mr-2"></i> নোটিফিকেশন</h4>
-            <button onclick="toggleNotifications()" class="text-slate-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="toggleNotifications()" class="text-slate-400 hover:text-red-500 transition-colors cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div id="notification-content" class="p-4 overflow-y-auto custom-scrollbar flex-1 space-y-3">
             <div class="text-center text-sm text-slate-500 py-4 font-bold">নতুন কোনো আপডেট নেই।</div>
@@ -714,8 +720,8 @@
                 <img id="crop-image-target" src="" class="max-w-full max-h-full hidden">
             </div>
             <div class="flex gap-4">
-                <button type="button" onclick="closeCropModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 py-3.5 rounded-xl text-sm font-bold transition-all shadow-sm border border-slate-200 dark:border-slate-600">বাতিল</button>
-                <button type="button" onclick="saveCroppedImage()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-3.5 rounded-xl text-sm font-bold transition-all shadow-md shadow-brand-600/20 hover:-translate-y-0.5">সংরক্ষণ করুন</button>
+                <button type="button" onclick="closeCropModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 py-3.5 rounded-xl text-sm font-bold transition-all shadow-sm border border-slate-200 dark:border-slate-600 cursor-pointer">বাতিল</button>
+                <button type="button" onclick="saveCroppedImage()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-3.5 rounded-xl text-sm font-bold transition-all shadow-md shadow-brand-600/20 hover:-translate-y-0.5 cursor-pointer">সংরক্ষণ করুন</button>
             </div>
         </div>
     </div>
