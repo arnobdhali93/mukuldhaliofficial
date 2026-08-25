@@ -86,7 +86,7 @@
         }
     </script>
     <style>
-        body, p, h2, h3, h4, span, div, button, input, label, a, select {
+        body, p, h2, h3, h4, span, div, button, input, label, a {
             font-family: 'Times New Roman', 'Kalpurush', serif !important;
         }
         .menu-font {
@@ -144,6 +144,7 @@
             color: #ef4444 !important;
             animation: pulse 1s infinite;
         }
+        /* Style for floating double tap heart/bookmark */
         .floating-icon {
             position: fixed;
             color: #16a34a;
@@ -153,6 +154,7 @@
             transition: all 0.5s ease-out;
             text-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
+        /* Custom scrollbar for history panel */
         .custom-scrollbar::-webkit-scrollbar {
             width: 5px;
         }
@@ -165,13 +167,6 @@
         }
         .dark .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #475569;
-        }
-        /* Protection class */
-        .no-select {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
         }
     </style>
 </head>
@@ -202,6 +197,7 @@
             </div>
         </div>
         <div class="flex items-center gap-2 shrink-0 ml-1">
+            <!-- New Feature: Notification Bell Mobile -->
             <button onclick="toggleNotifications()" class="relative text-slate-500 dark:text-slate-300 hover:text-brand-600 p-1.5 transition-colors">
                 <i class="fa-regular fa-bell text-lg"></i>
                 <span id="notif-badge-mobile" class="absolute top-1.5 right-1 w-2.5 h-2.5 bg-red-500 border-2 border-white dark:border-slate-900 rounded-full hidden"></span>
@@ -237,7 +233,7 @@
             </button>
         </div>
 
-        <nav class="flex-1 px-4 py-6 space-y-2.5 text-base overflow-y-auto custom-scrollbar">
+        <nav class="flex-1 px-4 py-6 space-y-2.5 text-base overflow-y-auto">
             <button onclick="showSection('home', event)" title="হোমপেজ" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl font-bold transition-all bg-gradient-to-r from-brand-600 to-brand-500 text-white shadow-lg shadow-brand-600/30 cursor-pointer hover:scale-[1.02]">
                 <i class="fa-solid fa-house w-5 text-center"></i> হোমপেজ
             </button>
@@ -252,10 +248,6 @@
             </button>
             <button onclick="showSection('stories', event)" title="গল্প পড়ুন" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-brand-600 cursor-pointer hover:scale-[1.02]">
                 <i class="fa-solid fa-feather w-5 text-center"></i> বাংলা সাহিত্য
-            </button>
-            <!-- New Menu Item: Community / Feed -->
-            <button onclick="showSection('community', event)" title="কমিউনিটি ফিড" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-brand-600 cursor-pointer hover:scale-[1.02]">
-                <i class="fa-solid fa-users text-center w-5"></i> কমিউনিটি পোস্ট
             </button>
             <button onclick="showSection('bookmarks', event)" title="সেভ করা কন্টেন্ট" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-brand-600 cursor-pointer hover:scale-[1.02]">
                 <i class="fa-solid fa-bookmark w-5 text-center"></i> সেভ করা আইটেম
@@ -307,6 +299,7 @@
                 </marquee>
             </div>
             <div class="hidden md:flex items-center gap-3 relative z-10">
+                <!-- Notification Bell Desktop -->
                 <button onclick="toggleNotifications()" class="relative text-white/90 hover:text-white p-1.5 transition-colors">
                     <i class="fa-regular fa-bell text-lg"></i>
                     <span id="notif-badge-desktop" class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 border border-brand-600 rounded-full hidden"></span>
@@ -320,7 +313,6 @@
 
         <div class="p-4 md:p-8 lg:p-12 max-w-7xl mx-auto w-full flex-1 box-border relative z-0">
             <section id="home" class="section-content section-fade-in space-y-8">
-                <!-- Home Content ... -->
                 <div class="bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/40 dark:to-blue-900/20 border border-indigo-100 dark:border-indigo-800/50 rounded-2xl p-5 flex items-start gap-5 shadow-sm relative overflow-hidden transition-all hover:shadow-md">
                     <div class="absolute -right-4 -top-4 text-indigo-500/10 dark:text-indigo-400/5 text-6xl rotate-12">
                         <i class="fa-solid fa-quote-right"></i>
@@ -358,8 +350,8 @@
                             <button onclick="showSection('quiz', null)" title="কুইজ সেকশনে যান" class="bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-700 hover:to-brand-600 text-white px-8 py-4 rounded-2xl text-sm font-bold transition-all shadow-lg shadow-brand-600/30 flex items-center gap-3 hover:-translate-y-1 hover:scale-105 cursor-pointer">
                                 <i class="fa-solid fa-rocket"></i> স্মার্ট মক টেস্ট দিন
                             </button>
-                            <button onclick="showSection('community', null)" title="কমিউনিটি" class="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-white border-2 border-slate-200 dark:border-slate-600 px-8 py-4 rounded-2xl text-sm font-bold transition-all shadow-sm flex items-center gap-3 hover:-translate-y-1 hover:scale-105 cursor-pointer">
-                                <i class="fa-solid fa-users text-brand-600 dark:text-brand-400"></i> কমিউনিটি পোস্ট
+                            <button onclick="showSection('books', null)" title="বই সেকশনে যান" class="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-white border-2 border-slate-200 dark:border-slate-600 px-8 py-4 rounded-2xl text-sm font-bold transition-all shadow-sm flex items-center gap-3 hover:-translate-y-1 hover:scale-105 cursor-pointer">
+                                <i class="fa-solid fa-book-bookmark text-brand-600 dark:text-brand-400"></i> ই-বুক ডাউনলোড
                             </button>
                         </div>
                     </div>
@@ -409,45 +401,6 @@
                     <div class="col-span-full text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <div class="w-16 h-16 border-4 border-slate-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
                         <p class="text-slate-500 dark:text-slate-400 text-base font-bold">খবর লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- New Community / User Post Section -->
-            <section id="community" class="section-content hidden space-y-8">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-slate-200 dark:border-slate-700 pb-5">
-                    <h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shadow-inner"><i class="fa-solid fa-users"></i></div>
-                        কমিউনিটি পোস্ট
-                    </h2>
-                </div>
-                
-                <!-- Upload Form -->
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-md">
-                    <h3 class="font-black text-lg mb-4 text-slate-800 dark:text-white"><i class="fa-solid fa-pen-nib text-brand-600 mr-2"></i> আপনার মতামত বা ছবি শেয়ার করুন</h3>
-                    <form id="community-post-form" onsubmit="submitCommunityPost(event)" class="space-y-4">
-                        <textarea id="community-text" rows="3" placeholder="এখানে কিছু লিখুন..." required class="w-full p-4 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 outline-none focus:border-brand-500 transition-colors text-sm"></textarea>
-                        
-                        <div class="flex items-center gap-4">
-                            <label class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg cursor-pointer border border-slate-200 dark:border-slate-600 hover:bg-slate-200 transition-colors text-sm font-bold">
-                                <i class="fa-solid fa-image"></i> ছবি আপলোড
-                                <input type="file" id="community-image" accept="image/*" class="hidden" onchange="previewCommunityImage(event)">
-                            </label>
-                            <span id="community-img-name" class="text-xs text-slate-500">কোনো ছবি নেই</span>
-                        </div>
-                        <img id="community-img-preview" src="" class="hidden max-h-40 rounded-xl object-contain border border-slate-200">
-                        
-                        <button type="submit" id="community-submit-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl text-sm font-black transition-all shadow-lg hover:-translate-y-1">
-                            <i class="fa-solid fa-paper-plane mr-2"></i> পোস্ট জমা দিন
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Feed Container -->
-                <div id="community-feed" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="col-span-full text-center py-10">
-                        <div class="w-10 h-10 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
-                        <p class="text-slate-500 font-bold">পোস্ট লোড হচ্ছে...</p>
                     </div>
                 </div>
             </section>
@@ -537,7 +490,6 @@
             </section>
 
             <section id="books" class="section-content hidden space-y-8">
-                <!-- Books Code Unchanged... -->
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-slate-200 dark:border-slate-700 pb-5">
                     <h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-4">
                         <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-slate-800 text-purple-600 dark:text-purple-400 flex items-center justify-center shadow-inner"><i class="fa-solid fa-book-open-reader"></i></div>
@@ -558,7 +510,6 @@
             </section>
 
             <section id="stories" class="section-content hidden space-y-8">
-                <!-- Stories Code Unchanged... -->
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-slate-200 dark:border-slate-700 pb-5">
                     <h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-4">
                         <div class="w-12 h-12 rounded-xl bg-orange-100 dark:bg-slate-800 text-orange-600 dark:text-orange-400 flex items-center justify-center shadow-inner"><i class="fa-solid fa-feather-pointed"></i></div>
@@ -579,6 +530,7 @@
                         <div class="w-12 h-12 rounded-xl bg-red-100 dark:bg-slate-800 text-red-600 dark:text-red-400 flex items-center justify-center shadow-inner"><i class="fa-solid fa-bookmark"></i></div>
                         সেভ করা আইটেম
                     </h2>
+                    <!-- New Feature: Export Bookmarks -->
                     <div class="flex items-center gap-3">
                         <button onclick="downloadBookmarks()" class="px-5 py-2.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-500 hover:text-white border border-blue-200 dark:border-blue-800/50 rounded-xl text-sm font-black whitespace-nowrap shadow-sm transition-all flex items-center gap-2"><i class="fa-solid fa-file-export"></i> এক্সপোর্ট</button>
                         <button onclick="confirmClearBookmarks()" class="px-5 py-2.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-500 hover:text-white border border-red-200 dark:border-red-800/50 rounded-xl text-sm font-black whitespace-nowrap shadow-sm transition-all flex items-center gap-2"><i class="fa-solid fa-trash-can"></i> Clear All</button>
@@ -617,6 +569,8 @@
     </main>
 
     <!-- Modals -->
+
+    <!-- New Feature: Notification Panel -->
     <div id="notification-panel" class="fixed top-16 md:top-14 right-4 md:right-8 w-80 max-h-96 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 z-[110] transform transition-all duration-300 scale-95 opacity-0 hidden flex-col overflow-hidden">
         <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
             <h4 class="font-bold text-slate-800 dark:text-white text-sm"><i class="fa-regular fa-bell text-brand-600 mr-2"></i> নোটিফিকেশন</h4>
@@ -652,18 +606,6 @@
                 </div>
                 <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-4 rounded-xl text-sm font-black transition-all shadow-lg shadow-brand-600/30 hover:-translate-y-1 flex justify-center items-center gap-2 cursor-pointer mt-2">
                     <i class="fa-solid fa-floppy-disk"></i> পরিবর্তন সেভ করুন
-                </button>
-            </form>
-            <hr class="my-6 border-slate-200 dark:border-slate-700">
-            <!-- Password Change Option in Profile -->
-            <form onsubmit="handleChangePassword(event)" class="space-y-4">
-                <h4 class="font-bold text-slate-800 dark:text-white mb-2"><i class="fa-solid fa-key text-brand-600"></i> পাসওয়ার্ড পরিবর্তন</h4>
-                <div class="relative">
-                    <i class="fa-solid fa-lock absolute left-4 top-4 text-slate-400"></i>
-                    <input type="password" id="profile-new-pass" required minlength="6" placeholder="নতুন পাসওয়ার্ড (নূন্যতম ৬ অক্ষর)" class="pl-11 w-full p-3.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
-                </div>
-                <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white py-3 rounded-xl text-sm font-bold transition-all shadow-md">
-                    পাসওয়ার্ড আপডেট করুন
                 </button>
             </form>
         </div>
@@ -718,9 +660,6 @@
                         <input type="password" id="login-pass" required placeholder="••••••••" class="pl-11 w-full p-3.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
                         <i onclick="togglePassVisibility('login-pass', this)" title="পাসওয়ার্ড দেখুন" class="fa-solid fa-eye absolute right-4 top-4 text-slate-400 hover:text-brand-600 cursor-pointer transition-colors"></i>
                     </div>
-                    <div class="text-right mt-2">
-                        <button type="button" onclick="openForgotPassword()" class="text-xs text-brand-600 dark:text-brand-400 hover:underline font-bold">পাসওয়ার্ড ভুলে গেছেন?</button>
-                    </div>
                 </div>
                 <button type="submit" id="login-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-4 rounded-xl text-sm font-black transition-all shadow-lg shadow-brand-600/30 hover:-translate-y-1 flex justify-center items-center gap-2 cursor-pointer mt-4">
                     <span>লগইন করুন</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
@@ -754,64 +693,8 @@
                         <i onclick="togglePassVisibility('reg-pass', this)" title="পাসওয়ার্ড দেখুন" class="fa-solid fa-eye absolute right-4 top-4 text-slate-400 hover:text-brand-600 cursor-pointer transition-colors"></i>
                     </div>
                 </div>
-                <!-- New Feature: Security Question for Reset -->
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wide">সিকিউরিটি প্রশ্ন (পাসওয়ার্ড উদ্ধারের জন্য)</label>
-                    <div class="relative mb-2">
-                        <select id="reg-sec-question" required class="w-full p-3.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all appearance-none cursor-pointer">
-                            <option value="">একটি প্রশ্ন নির্বাচন করুন</option>
-                            <option value="আপনার প্রিয় শিক্ষকের নাম কী?">আপনার প্রিয় শিক্ষকের নাম কী?</option>
-                            <option value="আপনার প্রিয় মানুষের নাম কী?">আপনার প্রিয় মানুষের নাম কী?</option>
-                            <option value="আপনার প্রিয় রঙের নাম কী?">আপনার প্রিয় রঙের নাম কী?</option>
-                            <option value="আপনার ছোটবেলার ডাকনাম কী ছিল?">আপনার ছোটবেলার ডাকনাম কী ছিল?</option>
-                        </select>
-                        <i class="fa-solid fa-chevron-down absolute right-4 top-4 text-slate-400 pointer-events-none"></i>
-                    </div>
-                    <div class="relative">
-                        <i class="fa-solid fa-pen absolute left-4 top-4 text-slate-400"></i>
-                        <input type="text" id="reg-sec-answer" required placeholder="আপনার উত্তর লিখুন" class="pl-11 w-full p-3.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
-                    </div>
-                </div>
-                
                 <button type="submit" id="reg-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-4 rounded-xl text-sm font-black transition-all shadow-lg shadow-brand-600/30 hover:-translate-y-1 flex justify-center items-center gap-2 cursor-pointer mt-4">
                     <span>অ্যাকাউন্ট খুলুন</span> <i class="fa-solid fa-user-plus"></i>
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Forgot Password Modal -->
-    <div id="forgot-pass-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[160] hidden flex items-center justify-center p-4 transition-opacity duration-300">
-        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-8 shadow-2xl relative transform transition-transform scale-95 duration-300">
-            <button onclick="closeForgotPassword()" title="বন্ধ করুন" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-2 rounded-xl bg-slate-100 dark:bg-slate-700 transition cursor-pointer">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            <h3 class="font-black text-2xl text-slate-900 dark:text-white mb-2">পাসওয়ার্ড উদ্ধার</h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-6">আপনার সিকিউরিটি প্রশ্নের মাধ্যমে পাসওয়ার্ড রিসেট করুন</p>
-            
-            <form id="forgot-pass-form" onsubmit="handleForgotPasswordFlow(event)" class="space-y-4">
-                <div id="fp-step-1">
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wide">রেজিস্টার করা ইমেইল</label>
-                    <input type="email" id="fp-email" required placeholder="name@example.com" class="w-full p-3.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
-                </div>
-                
-                <div id="fp-step-2" class="hidden space-y-4">
-                    <div class="p-3 bg-brand-50 dark:bg-slate-700 rounded-lg border border-brand-200 dark:border-slate-600">
-                        <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">আপনার সিকিউরিটি প্রশ্ন:</p>
-                        <p id="fp-question-display" class="font-black text-brand-700 dark:text-brand-300 text-sm"></p>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wide">আপনার উত্তর</label>
-                        <input type="text" id="fp-answer" placeholder="উত্তর লিখুন" class="w-full p-3.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wide">নতুন পাসওয়ার্ড</label>
-                        <input type="password" id="fp-new-pass" minlength="6" placeholder="••••••••" class="w-full p-3.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
-                    </div>
-                </div>
-
-                <button type="submit" id="fp-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3.5 rounded-xl text-sm font-black transition-all shadow-md mt-4">
-                    পরবর্তী ধাপ
                 </button>
             </form>
         </div>
@@ -944,7 +827,6 @@
 
         let rawNewsData = [];
         let rawBooksData = [];
-        let rawCommunityData = [];
         let groupedQuizData = {};
         let quizConfigData = {}; 
         let currentActiveSubject = null;
@@ -954,11 +836,8 @@
         let currentSpeakingId = null;
         let cropper = null;
         let selectedFileBase64 = null;
-        let communityImageBase64 = null;
         let pendingConfirmAction = null;
         let lastScrollY = 0;
-        let examStartTime = 0;
-        let screenshotProtectionEnabled = false;
         
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -976,20 +855,6 @@
                     }
                     deferredPrompt = null;
                 });
-            }
-        });
-
-        // Screenshot Protection Listeners
-        document.addEventListener('keyup', (e) => {
-            if (screenshotProtectionEnabled && (e.key === 'PrintScreen' || e.keyCode === 44)) {
-                navigator.clipboard.writeText('');
-                showToast("এই কুইজে স্ক্রিনশট নেওয়া নিষেধ!", "error");
-            }
-        });
-        document.addEventListener('contextmenu', (e) => {
-            if (screenshotProtectionEnabled) {
-                e.preventDefault();
-                showToast("রাইট ক্লিক করা নিষেধ!", "error");
             }
         });
 
@@ -1070,6 +935,7 @@
             recognition.start();
         }
 
+        // New Feature: Notification Panel Toggle
         function toggleNotifications() {
             const panel = document.getElementById('notification-panel');
             const badgeM = document.getElementById('notif-badge-mobile');
@@ -1282,6 +1148,7 @@
             }
         });
 
+        // New Feature: Download/Export Bookmarks
         window.downloadBookmarks = function() {
             let bookmarks = JSON.parse(localStorage.getItem(getStorageKey('portalBookmarks'))) || [];
             if(bookmarks.length === 0) {
@@ -1442,6 +1309,7 @@
             }
         }
         
+        // New Feature: Dedicated WhatsApp Share
         window.shareToWhatsApp = function(title, link) {
             const text = `*${title}*\n\nবিস্তারিত জানতে লিংকে ক্লিক করুন: ${link || window.location.href}`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
@@ -1582,7 +1450,6 @@
             window.history.replaceState(null, null, `#${sectionId}`);
             if(sectionId === 'profile') renderProfileSection();
             if(sectionId === 'bookmarks') renderBookmarks();
-            if(sectionId === 'community') renderCommunityFeed(rawCommunityData);
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
@@ -1672,11 +1539,7 @@
             } else if (lowerQuery.includes('tomar nam') || lowerQuery.includes('name') || lowerQuery.includes('তোমার নাম')) {
                 directReply = "আমার নাম এআই অ্যাসিস্ট্যান্ট। আমি উইকিপিডিয়া থেকে আপনার জন্য যেকোনো তথ্য খুঁজে আনতে পারি।";
             } else if (lowerQuery.includes('ke tumi') || lowerQuery.includes('who are you') || lowerQuery.includes('তুমি কে')) {
-                directReply = "আমি একটি ভার্চুয়াল এআই অ্যাসিস্ট্যান্ট। এই পোর্টালের ইউজারদের তথ্য দিয়ে সাহায্য করার জন্য আমাকে তৈরি করা হয়েছে।";
-            } else if (lowerQuery.includes('ki koro') || lowerQuery.includes('tomar kaj ki') || lowerQuery.includes('কী করো') || lowerQuery.includes('তোমার কাজ কী')) {
-                directReply = "আমি একটি এআই অ্যাসিস্ট্যান্ট। আমি উইকিপিডিয়া থেকে তথ্য খুঁজে দিতে পারি এবং এই পোর্টালের বিভিন্ন বিষয়ে যেমন কুইজ বা পিডিএফ নিয়ে সাহায্য করতে পারি।";
-            } else if (lowerQuery.includes('tumi ki amake help korte parbe') || lowerQuery.includes('help') || lowerQuery.includes('সাহায্য')) {
-                directReply = "হ্যাঁ, অবশ্যই! আমি আপনাকে পড়াশোনা, কুইজ এবং বই সংক্রান্ত যেকোনো তথ্যে সাহায্য করতে প্রস্তুত। আপনার প্রশ্নটি লিখুন।";
+                directReply = "আমি একটি ভার্চুয়াল অ্যাসিস্ট্যান্ট। এই পোর্টালের ইউজারদের তথ্য দিয়ে সাহায্য করার জন্য আমাকে তৈরি করা হয়েছে।";
             } else if (lowerQuery.includes('thanks') || lowerQuery.includes('thank you') || lowerQuery.includes('ধন্যবাদ')) {
                 directReply = "আপনাকেও অনেক ধন্যবাদ! আরও কিছু জানার থাকলে নির্দ্বিধায় প্রশ্ন করতে পারেন।";
             } else if (lowerQuery.includes('খবর') || lowerQuery.includes('news')) {
@@ -1782,113 +1645,6 @@
             authBox.classList.remove('scale-100');
             authBox.classList.add('scale-95');
             setTimeout(() => authModal.classList.add('hidden'), 300);
-        }
-
-        function openForgotPassword() {
-            closeAuthModal();
-            const fpModal = document.getElementById('forgot-pass-modal');
-            fpModal.classList.remove('hidden');
-            setTimeout(() => fpModal.classList.remove('opacity-0'), 10);
-            
-            document.getElementById('fp-step-1').classList.remove('hidden');
-            document.getElementById('fp-step-2').classList.add('hidden');
-            document.getElementById('fp-email').value = '';
-            document.getElementById('fp-answer').value = '';
-            document.getElementById('fp-new-pass').value = '';
-            document.getElementById('fp-btn').innerText = 'পরবর্তী ধাপ';
-            document.getElementById('fp-btn').dataset.step = '1';
-        }
-
-        function closeForgotPassword() {
-            const fpModal = document.getElementById('forgot-pass-modal');
-            fpModal.classList.add('opacity-0');
-            setTimeout(() => fpModal.classList.add('hidden'), 300);
-        }
-
-        async function handleForgotPasswordFlow(e) {
-            e.preventDefault();
-            const btn = document.getElementById('fp-btn');
-            const step = btn.dataset.step;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> প্রসেস হচ্ছে...`;
-            btn.disabled = true;
-
-            try {
-                if (step === '1') {
-                    const email = document.getElementById('fp-email').value.trim();
-                    // Call Google Script to get question
-                    const response = await fetch(API_URL, {
-                        method: 'POST',
-                        mode: 'cors',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ action: "get_security_question", email: email })
-                    });
-                    const resData = await response.json();
-                    
-                    if(resData.success && resData.question) {
-                        document.getElementById('fp-step-1').classList.add('hidden');
-                        document.getElementById('fp-step-2').classList.remove('hidden');
-                        document.getElementById('fp-question-display').innerText = resData.question;
-                        btn.innerText = 'পাসওয়ার্ড রিসেট করুন';
-                        btn.dataset.step = '2';
-                    } else {
-                        showToast("এই ইমেইল দিয়ে কোনো অ্যাকাউন্ট পাওয়া যায়নি বা সিকিউরিটি প্রশ্ন সেট করা নেই।", "error");
-                    }
-                } else if (step === '2') {
-                    const email = document.getElementById('fp-email').value.trim();
-                    const answer = document.getElementById('fp-answer').value.trim();
-                    const newPass = document.getElementById('fp-new-pass').value;
-
-                    const response = await fetch(API_URL, {
-                        method: 'POST',
-                        mode: 'cors',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ action: "reset_password", email: email, answer: answer, newPassword: newPass })
-                    });
-                    const resData = await response.json();
-
-                    if (resData.success) {
-                        // Attempt Supabase reset email trigger as a fallback, but show success.
-                        if (supabaseClient) {
-                            await supabaseClient.auth.resetPasswordForEmail(email);
-                        }
-                        showToast("পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে! এখন লগইন করুন।", "success");
-                        closeForgotPassword();
-                        triggerRegisterPopup();
-                    } else {
-                        showToast("ভুল উত্তর! সঠিক উত্তর প্রদান করুন।", "error");
-                    }
-                }
-            } catch(error) {
-                console.error(error);
-                showToast("সার্ভারে সমস্যা হচ্ছে, পরে চেষ্টা করুন।", "error");
-            } finally {
-                if(btn.dataset.step === step) btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        async function handleChangePassword(e) {
-            e.preventDefault();
-            const newPass = document.getElementById('profile-new-pass').value;
-            if(!supabaseClient) return;
-            
-            const btn = e.target.querySelector('button');
-            const original = btn.innerHTML;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> প্রসেস হচ্ছে...`;
-            btn.disabled = true;
-
-            try {
-                const { data, error } = await supabaseClient.auth.updateUser({ password: newPass });
-                if (error) throw error;
-                showToast("পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে!", "success");
-                e.target.reset();
-            } catch (err) {
-                showToast("পাসওয়ার্ড পরিবর্তনে সমস্যা হয়েছে: " + err.message, "error");
-            } finally {
-                btn.innerHTML = original;
-                btn.disabled = false;
-            }
         }
 
         document.getElementById('edit-pic').addEventListener('change', function(e) {
@@ -2098,23 +1854,11 @@
                     const name = document.getElementById('reg-name').value.trim();
                     const email = document.getElementById('reg-email').value.trim();
                     const password = document.getElementById('reg-pass').value;
-                    const secQ = document.getElementById('reg-sec-question').value;
-                    const secA = document.getElementById('reg-sec-answer').value;
-
-                    // Send data to Google Script for storing Security Question mapping
-                    if(API_URL) {
-                        fetch(API_URL, {
-                            method: 'POST',
-                            mode: 'no-cors',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({ action: "register_user", name, email, question: secQ, answer: secA, password: password })
-                        }).catch(console.error);
-                    }
 
                     const { data, error } = await supabaseClient.auth.signUp({
                         email: email,
                         password: password,
-                        options: { data: { full_name: name, security_question: secQ } }
+                        options: { data: { full_name: name } }
                     });
 
                     if (error) throw error;
@@ -2173,18 +1917,16 @@
             const profilePic = localStorage.getItem(getStorageKey('portalUserPic'));
             
             let fullQuizHistory = JSON.parse(localStorage.getItem(getStorageKey('fullQuizHistory'))) || [];
-            // Remove aborted from averages
-            let validQuizHistory = fullQuizHistory.filter(q => q.status !== 'Aborted');
-            let totalQuizzes = validQuizHistory.length;
+            let totalQuizzes = fullQuizHistory.length;
             let avgScore = 0;
             let totalXP = 0;
             let totalCorrect = 0;
             let totalQuestions = 0;
 
             if (totalQuizzes > 0) {
-                let sum = validQuizHistory.reduce((acc, curr) => acc + curr.percentage, 0);
+                let sum = fullQuizHistory.reduce((acc, curr) => acc + curr.percentage, 0);
                 avgScore = Math.round(sum / totalQuizzes);
-                validQuizHistory.forEach(q => {
+                fullQuizHistory.forEach(q => {
                     totalXP += (q.score * 10);
                     totalCorrect += q.score;
                     totalQuestions += q.total;
@@ -2222,11 +1964,11 @@
                     <div class="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">`;
                     
                     latestQuizzes.forEach(q => {
-                        let certBtn = q.status === 'Aborted' ? `<span class="flex items-center gap-1 text-[10px] text-red-500 bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded-md border border-red-200 dark:border-red-800"><i class="fa-solid fa-ban"></i> বাতিল</span>` : (q.percentage >= 40
+                        let certBtn = q.percentage >= 40
                             ? `<button onclick="generateCertificate('${q.subject.replace(/'/g, "\\'")}', ${q.percentage})" class="flex items-center gap-1.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600 hover:text-white transition-colors cursor-pointer shadow-sm hover:shadow-md"><i class="fa-solid fa-certificate"></i> ডাউনলোড</button>`
-                            : `<span class="flex items-center gap-1 text-[10px] text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-md border border-orange-200 dark:border-orange-800"><i class="fa-solid fa-lock"></i> ৪০% প্রয়োজন</span>`);
+                            : `<span class="flex items-center gap-1 text-[10px] text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-md border border-orange-200 dark:border-orange-800"><i class="fa-solid fa-lock"></i> ৪০% প্রয়োজন</span>`;
 
-                        let progressColor = q.status === 'Aborted' ? 'bg-red-500' : (q.percentage >= 80 ? 'bg-emerald-500' : (q.percentage >= 50 ? 'bg-brand-500' : 'bg-orange-500'));
+                        let progressColor = q.percentage >= 80 ? 'bg-emerald-500' : (q.percentage >= 50 ? 'bg-brand-500' : 'bg-orange-500');
 
                         historyHtml += `
                         <div class="bg-white dark:bg-slate-700 p-4 rounded-2xl border border-slate-200 dark:border-slate-600 flex flex-col gap-3 text-sm shadow-sm hover:shadow-md transition-shadow">
@@ -2236,12 +1978,12 @@
                                     <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium mt-0.5"><i class="fa-regular fa-calendar mr-1"></i> ${q.date || 'সাম্প্রতিক'}</span>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <span class="font-black ${q.percentage >= 40 ? 'text-brand-600 dark:text-brand-400' : 'text-red-500 dark:text-red-400'} bg-slate-50 dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-100 dark:border-slate-600">${q.status === 'Aborted' ? '0' : q.percentage}%</span>
+                                    <span class="font-black ${q.percentage >= 40 ? 'text-brand-600 dark:text-brand-400' : 'text-red-500 dark:text-red-400'} bg-slate-50 dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-100 dark:border-slate-600">${q.percentage}%</span>
                                     ${certBtn}
                                 </div>
                             </div>
                             <div class="w-full bg-slate-100 dark:bg-slate-600 h-1.5 rounded-full overflow-hidden">
-                                <div class="${progressColor} h-full rounded-full" style="width: ${q.status === 'Aborted' ? 100 : q.percentage}%"></div>
+                                <div class="${progressColor} h-full rounded-full" style="width: ${q.percentage}%"></div>
                             </div>
                         </div>`;
                     });
@@ -2458,11 +2200,6 @@
             if(data.Stories && Array.isArray(data.Stories)) {
                 renderStoriesList(data.Stories);
             }
-            if(data.CommunityPosts && Array.isArray(data.CommunityPosts)) {
-                rawCommunityData = data.CommunityPosts;
-                renderCommunityFeed(rawCommunityData);
-            }
-
             if(data.Quiz && Array.isArray(data.Quiz)) {
                 groupedQuizData = {}; 
                 quizConfigData = {}; 
@@ -2473,8 +2210,7 @@
                         groupedQuizData[sub] = [];
                         quizConfigData[sub] = {
                             timeLimit: parseInt(q.TimeLimit) || 5,
-                            attemptLimit: q.AttemptLimit ? q.AttemptLimit.trim() : 'Multiple',
-                            screenshotControl: q.ScreenshotControl ? q.ScreenshotControl.trim() : 'Yes'
+                            attemptLimit: q.AttemptLimit ? q.AttemptLimit.trim() : 'Multiple'
                         };
                     }
                     groupedQuizData[sub].push(q);
@@ -2490,98 +2226,6 @@
                 }
                 renderNewsList(rawNewsData);
             }
-        }
-
-        // Community Upload Functions
-        function previewCommunityImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                document.getElementById('community-img-name').innerText = file.name;
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imgPreview = document.getElementById('community-img-preview');
-                    imgPreview.src = e.target.result;
-                    imgPreview.classList.remove('hidden');
-                    communityImageBase64 = e.target.result;
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        async function submitCommunityPost(e) {
-            e.preventDefault();
-            const loggedInName = localStorage.getItem(getStorageKey('portalUserName'));
-            if(!loggedInName) {
-                showToast("পোস্ট করার আগে লগইন করুন!", "error");
-                triggerRegisterPopup();
-                return;
-            }
-
-            const text = document.getElementById('community-text').value;
-            const btn = document.getElementById('community-submit-btn');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> পাঠানো হচ্ছে...`;
-            btn.disabled = true;
-
-            try {
-                const payload = {
-                    action: "submit_post",
-                    name: loggedInName,
-                    text: text,
-                    image: communityImageBase64 || ""
-                };
-                
-                await fetch(API_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(payload)
-                });
-                
-                showToast("আপনার পোস্টটি সফলভাবে জমা দেওয়া হয়েছে! অ্যাডমিন অ্যাপ্রুভ করলে এখানে দেখতে পাবেন।", "success");
-                e.target.reset();
-                document.getElementById('community-img-preview').classList.add('hidden');
-                document.getElementById('community-img-name').innerText = "কোনো ছবি নেই";
-                communityImageBase64 = null;
-            } catch(err) {
-                showToast("নেটওয়ার্ক সমস্যা, পরে আবার চেষ্টা করুন।", "error");
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        function renderCommunityFeed(posts) {
-            const feedContainer = document.getElementById('community-feed');
-            feedContainer.innerHTML = '';
-            
-            // Only show approved posts
-            const approvedPosts = posts.filter(p => p.Status === 'Approved').reverse();
-
-            if (approvedPosts.length === 0) {
-                feedContainer.innerHTML = `
-                <div class="col-span-full text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                    <i class="fa-solid fa-comment-slash text-6xl mb-4 text-slate-300 dark:text-slate-600"></i>
-                    <p class="text-slate-500 dark:text-slate-400 text-base font-bold">এখনও কোনো পোস্ট নেই।</p>
-                </div>`;
-                return;
-            }
-
-            approvedPosts.forEach(post => {
-                let mediaHtml = post.Image ? `<div class="w-full bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden mb-4 border border-slate-200 dark:border-slate-700"><img src="${post.Image}" class="w-full h-auto object-cover max-h-60"></div>` : '';
-                let creditText = post.Image ? `Captured by: <span class="font-black text-brand-600">${post.UserName}</span>` : `Credited by: <span class="font-black text-brand-600">${post.UserName}</span>`;
-
-                feedContainer.innerHTML += `
-                <div class="p-6 rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm flex flex-col justify-between">
-                    <div>
-                        ${mediaHtml}
-                        <p class="text-slate-700 dark:text-slate-200 text-base leading-relaxed mb-4">${escapeHTML(post.Text)}</p>
-                    </div>
-                    <div class="border-t border-slate-100 dark:border-slate-700 pt-3 text-xs text-slate-500 dark:text-slate-400">
-                        ${creditText}
-                    </div>
-                </div>`;
-            });
         }
 
         function scheduleNextNewsUpdate() {
@@ -2905,7 +2549,7 @@
                 return;
             }
 
-            const config = quizConfigData[subject] || { timeLimit: 5, attemptLimit: 'Multiple', screenshotControl: 'Yes' };
+            const config = quizConfigData[subject] || { timeLimit: 5, attemptLimit: 'Multiple' };
             if (config.attemptLimit === 'Once') {
                 let fullQuizHistory = JSON.parse(localStorage.getItem(getStorageKey('fullQuizHistory'))) || [];
                 let hasTaken = fullQuizHistory.some(q => q.subject === subject);
@@ -2915,18 +2559,7 @@
                 }
             }
 
-            // Screenshot control
-            if (config.screenshotControl === 'No') {
-                screenshotProtectionEnabled = true;
-                document.body.classList.add('no-select');
-                showToast("এই কুইজে স্ক্রিনশট বা কপি করা নিষেধ।", "warning");
-            } else {
-                screenshotProtectionEnabled = false;
-                document.body.classList.remove('no-select');
-            }
-
             currentActiveSubject = subject;
-            examStartTime = Date.now();
             
             let questions = [...groupedQuizData[subject]];
             
@@ -3042,25 +2675,6 @@
         
         function confirmBackToQuizSubjects() {
             openConfirmModal("আপনি কি পরীক্ষা বাতিল করে ফিরে যেতে চান? আপনার অগ্রগতি মুছে যাবে।", () => {
-                // If attempt limit is 'Once' and 30 secs have passed, record attempt.
-                const config = quizConfigData[currentActiveSubject];
-                if (config && config.attemptLimit === 'Once') {
-                    if ((Date.now() - examStartTime) > 30000) { // greater than 30s
-                        let fullQuizHistory = JSON.parse(localStorage.getItem(getStorageKey('fullQuizHistory'))) || [];
-                        fullQuizHistory.push({
-                            subject: currentActiveSubject,
-                            score: 0,
-                            total: groupedQuizData[currentActiveSubject].length,
-                            percentage: 0,
-                            date: new Date().toLocaleDateString(),
-                            status: 'Aborted'
-                        });
-                        localStorage.setItem(getStorageKey('fullQuizHistory'), JSON.stringify(fullQuizHistory));
-                        showToast("আপনি ৩০ সেকেন্ডের বেশি সময় নিয়ে বাতিল করেছেন, এটি একটি অ্যাটেম্পট হিসেবে গণ্য হলো!", "error");
-                    }
-                }
-                screenshotProtectionEnabled = false;
-                document.body.classList.remove('no-select');
                 backToQuizSubjects();
             });
         }
@@ -3203,9 +2817,6 @@
 
         function submitExam() {
             if(examTimer) clearInterval(examTimer);
-            screenshotProtectionEnabled = false;
-            document.body.classList.remove('no-select');
-
             const questions = groupedQuizData[currentActiveSubject];
             let score = 0;
 
@@ -3320,8 +2931,7 @@
                 score: score,
                 total: totalQ,
                 percentage: percentage,
-                date: new Date().toLocaleDateString(),
-                status: 'Completed'
+                date: new Date().toLocaleDateString()
             });
             localStorage.setItem(getStorageKey('fullQuizHistory'), JSON.stringify(fullQuizHistory));
             localStorage.removeItem(getStorageKey('quizActiveSession'));
@@ -3353,4 +2963,88 @@
             }
 
             let messageHtml = percentage >= 80 
-                ? '<div class="text-emerald-600 bg-emerald-50 border borderLanguage model hisebe, ei bishoye sahajjo korar jonno amay design kora hoyni.
+                ? '<div class="text-emerald-600 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl text-sm font-bold mt-2"><i class="fa-solid fa-party-horn mr-1"></i> অসাধারণ পারফরম্যান্স!</div>' 
+                : percentage >= 50 
+                ? '<div class="text-blue-600 bg-blue-50 border border-blue-200 px-4 py-2 rounded-xl text-sm font-bold mt-2"><i class="fa-solid fa-thumbs-up mr-1"></i> ভালো চেষ্টা, আরও উন্নতি করতে থাকুন!</div>' 
+                : '<div class="text-orange-600 bg-orange-50 border border-orange-200 px-4 py-2 rounded-xl text-sm font-bold mt-2"><i class="fa-solid fa-book mr-1"></i> আরও মনোযোগ দিয়ে পড়ুন এবং পুনরায় চেষ্টা করুন!</div>';
+
+            document.getElementById('score-display-box').innerHTML = `
+                <p class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">আপনার প্রাপ্ত স্কোর</p>
+                <div class="text-5xl font-black text-slate-900 dark:text-white my-2">${scoreFormatted}</div>
+                <div class="text-lg font-black text-brand-600 dark:text-brand-400 mb-2">(${percentage}%)</div>
+                ${messageHtml}
+            `;
+
+            const certContainer = document.getElementById('certificate-action-container');
+            if (percentage >= 40) {
+                certContainer.innerHTML = `
+                    <button onclick="generateCertificate('${currentActiveSubject.replace(/'/g, "\\'")}', ${percentage})" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white py-4 rounded-xl text-sm font-black transition-all shadow-lg hover:shadow-xl shadow-emerald-600/30 hover:-translate-y-1 flex items-center justify-center gap-3 cursor-pointer mt-6 mb-2">
+                        <i class="fa-solid fa-certificate text-xl"></i> 
+                        <span>সার্টিফিকেট ডাউনলোড করুন</span>
+                    </button>
+                `;
+            } else {
+                certContainer.innerHTML = `
+                    <div class="flex items-center gap-3 bg-slate-100 dark:bg-slate-700/50 p-4 rounded-xl border border-slate-200 dark:border-slate-600 mt-6 mb-2">
+                        <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 font-bold text-left leading-relaxed">
+                            সার্টিফিকেট আনলক করতে কমপক্ষে <span class="text-brand-600">৪০% স্কোর</span> প্রয়োজন। নিচে উত্তরমালা দেখে পুনরায় চেষ্টা করুন।
+                        </p>
+                    </div>
+                `;
+            }
+
+            document.getElementById('quiz-exam-view').classList.add('hidden');
+            const resultView = document.getElementById('quiz-result-view');
+            resultView.classList.remove('hidden');
+            void resultView.offsetWidth;
+            resultView.classList.add('animate-fade-in-up');
+            
+            setTimeout(() => {
+                const header = document.getElementById('mobile-header');
+                const headerHeight = header ? header.offsetHeight : 0;
+                const elementPosition = resultView.getBoundingClientRect().top + window.scrollY;
+                
+                window.scrollTo({
+                    top: elementPosition - headerHeight - 16, 
+                    behavior: 'smooth'
+                });
+            }, 100);
+        }
+
+        function backToQuizSubjects() {
+            if(examTimer) clearInterval(examTimer);
+            document.getElementById('quiz-exam-view').classList.add('hidden');
+            document.getElementById('quiz-result-view').classList.add('hidden');
+            
+            const subView = document.getElementById('quiz-subject-view');
+            subView.classList.remove('hidden');
+            void subView.offsetWidth;
+            subView.classList.add('animate-fade-in-up');
+            
+            currentActiveSubject = null;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setDailyDate();
+            applySavedTheme();
+            loadChatHistory();
+            updateHeaderBadge();
+            setupDailyQuote();
+            loadAllData();
+            
+            // Start Auto Scheduler for News Update
+            scheduleNextNewsUpdate();
+            
+            setInterval(setGreeting, 60000);
+
+            const hash = window.location.hash.replace('#', '');
+            if (hash && document.getElementById(hash)) {
+                showSection(hash, null);
+            }
+        });
+    </script>
+</body>
+</html>
