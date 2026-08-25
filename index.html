@@ -70,6 +70,7 @@
                         'fade-in-up': 'fadeInUp 0.5s ease-out',
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'bounce-x': 'bounceX 1s infinite',
+                        'react-pop': 'reactPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
                     },
                     keyframes: {
                         fadeInUp: {
@@ -79,6 +80,10 @@
                         bounceX: {
                             '0%, 100%': { transform: 'translateX(0)' },
                             '50%': { transform: 'translateX(5px)' },
+                        },
+                        reactPop: {
+                            '0%': { transform: 'scale(0.5) translateY(10px)', opacity: '0' },
+                            '100%': { transform: 'scale(1) translateY(0)', opacity: '1' }
                         }
                     }
                 }
@@ -155,6 +160,7 @@
         }
         .custom-scrollbar::-webkit-scrollbar {
             width: 5px;
+            height: 5px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
             background: transparent;
@@ -166,6 +172,13 @@
         .dark .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #475569;
         }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
         .select-none { 
             user-select: none !important; 
             -webkit-user-select: none !important; 
@@ -173,6 +186,38 @@
             -moz-user-select: none !important; 
         }
         img { -webkit-user-drag: none; }
+
+        /* FB Reaction Bar Styles */
+        .reaction-bar {
+            display: none;
+            position: absolute;
+            bottom: 120%;
+            left: 0;
+            background: white;
+            border-radius: 50px;
+            padding: 5px 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            gap: 8px;
+            z-index: 50;
+            border: 1px solid #e2e8f0;
+        }
+        .dark .reaction-bar {
+            background: #1e293b;
+            border-color: #334155;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .like-btn-wrapper:hover .reaction-bar {
+            display: flex;
+            animation: reactPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .reaction-icon {
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .reaction-icon:hover {
+            transform: scale(1.3) translateY(-5px);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100 overflow-x-hidden w-full transition-colors duration-300">
@@ -237,7 +282,7 @@
             </button>
         </div>
 
-        <nav class="flex-1 px-4 py-6 space-y-2.5 text-base overflow-y-auto">
+        <nav class="flex-1 px-4 py-6 space-y-2.5 text-base overflow-y-auto custom-scrollbar">
             <button onclick="showSection('home', event)" title="হোমপেজ" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl font-bold transition-all bg-gradient-to-r from-brand-600 to-brand-500 text-white shadow-lg shadow-brand-600/30 cursor-pointer hover:scale-[1.02]">
                 <i class="fa-solid fa-house w-5 text-center"></i> হোমপেজ
             </button>
@@ -287,7 +332,7 @@
                 </div>
                 <span class="text-xs text-slate-700 dark:text-slate-300 font-bold">System Online</span>
             </div>
-            <span class="text-[10px] text-slate-400 font-mono font-bold bg-white dark:bg-slate-900 px-2 py-1 rounded-md border border-slate-200 dark:border-slate-700">v5.3 Pro</span>
+            <span class="text-[10px] text-slate-400 font-mono font-bold bg-white dark:bg-slate-900 px-2 py-1 rounded-md border border-slate-200 dark:border-slate-700">v5.4 Pro FB</span>
         </div>
     </aside>
 
@@ -319,7 +364,7 @@
 
         <div class="p-4 md:p-8 lg:p-12 max-w-7xl mx-auto w-full flex-1 box-border relative z-0">
             <section id="home" class="section-content section-fade-in space-y-8">
-                <!-- Home Section Content ... same as before -->
+                <!-- Home Section Content -->
                 <div class="bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/40 dark:to-blue-900/20 border border-indigo-100 dark:border-indigo-800/50 rounded-2xl p-5 flex items-start gap-5 shadow-sm relative overflow-hidden transition-all hover:shadow-md">
                     <div class="absolute -right-4 -top-4 text-indigo-500/10 dark:text-indigo-400/5 text-6xl rotate-12">
                         <i class="fa-solid fa-quote-right"></i>
@@ -393,7 +438,7 @@
             </section>
 
             <section id="news" class="section-content hidden space-y-8">
-                <!-- News Section Content ... same as before -->
+                <!-- News Section Content -->
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-slate-200 dark:border-slate-700 pb-5">
                     <h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-4">
                         <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-inner"><i class="fa-solid fa-newspaper"></i></div>
@@ -414,7 +459,7 @@
             </section>
 
             <section id="quiz" class="section-content hidden space-y-8">
-                <!-- Quiz Section Content ... same as before -->
+                <!-- Quiz Section Content -->
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-slate-200 dark:border-slate-700 pb-5">
                     <h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-4">
                         <div class="w-12 h-12 rounded-xl bg-brand-100 dark:bg-slate-800 text-brand-600 dark:text-brand-400 flex items-center justify-center shadow-inner"><i class="fa-solid fa-brain"></i></div>
@@ -507,7 +552,7 @@
             </section>
 
             <section id="books" class="section-content hidden space-y-8">
-                <!-- Books Section Content ... same as before -->
+                <!-- Books Section Content -->
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-slate-200 dark:border-slate-700 pb-5">
                     <h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-4">
                         <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-slate-800 text-purple-600 dark:text-purple-400 flex items-center justify-center shadow-inner"><i class="fa-solid fa-book-open-reader"></i></div>
@@ -528,7 +573,7 @@
             </section>
 
             <section id="stories" class="section-content hidden space-y-8">
-                <!-- Stories Section Content ... same as before -->
+                <!-- Stories Section Content -->
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-slate-200 dark:border-slate-700 pb-5">
                     <h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-4">
                         <div class="w-12 h-12 rounded-xl bg-orange-100 dark:bg-slate-800 text-orange-600 dark:text-orange-400 flex items-center justify-center shadow-inner"><i class="fa-solid fa-feather-pointed"></i></div>
@@ -543,7 +588,7 @@
                 </div>
             </section>
 
-            <!-- ================= NEW ADVANCED COMMUNITY SECTION (FACEBOOK LIKE) ================= -->
+            <!-- ================= ADVANCED COMMUNITY SECTION (FACEBOOK LIKE) ================= -->
             <section id="community" class="section-content hidden space-y-8">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-slate-200 dark:border-slate-700 pb-5">
                     <h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-4">
@@ -567,6 +612,14 @@
                      <input type="search" id="community-search-mobile" oninput="filterCommunityMobile()" placeholder="পোস্ট বা নাম খুঁজুন..." class="pl-10 pr-4 p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm w-full outline-none focus:border-pink-500 shadow-sm transition-all">
                 </div>
 
+                <!-- Suggested Friends Scroll -->
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <h3 class="font-bold text-slate-700 dark:text-slate-300 mb-3 text-sm flex items-center gap-2"><i class="fa-solid fa-user-group text-blue-500"></i> Suggested Friends</h3>
+                    <div id="suggested-friends-container" class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
                 <!-- Feed Layout Container -->
                 <div id="community-container" class="max-w-2xl mx-auto space-y-6 pb-10">
                     <div class="text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
@@ -575,10 +628,10 @@
                     </div>
                 </div>
             </section>
-            <!-- ================= END NEW ADVANCED COMMUNITY SECTION ================= -->
+            <!-- ================= END ADVANCED COMMUNITY SECTION ================= -->
 
             <section id="bookmarks" class="section-content hidden space-y-8">
-                <!-- Bookmarks Section Content ... same as before -->
+                <!-- Bookmarks Section Content -->
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-slate-200 dark:border-slate-700 pb-5">
                     <h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-4">
                         <div class="w-12 h-12 rounded-xl bg-red-100 dark:bg-slate-800 text-red-600 dark:text-red-400 flex items-center justify-center shadow-inner"><i class="fa-solid fa-bookmark"></i></div>
@@ -606,7 +659,7 @@
             </section>
 
             <section id="profile" class="section-content hidden space-y-8">
-                <!-- Profile Section Content ... same as before -->
+                <!-- Profile Section Content -->
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-slate-200 dark:border-slate-700 pb-5">
                     <h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-4">
                         <div class="w-12 h-12 rounded-xl bg-teal-100 dark:bg-slate-800 text-teal-600 dark:text-teal-400 flex items-center justify-center shadow-inner"><i class="fa-solid fa-user-shield"></i></div>
@@ -624,6 +677,31 @@
 
     <!-- Modals -->
 
+    <!-- User Profile Modal (NEW) -->
+    <div id="user-profile-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] hidden flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-sm rounded-3xl p-6 shadow-2xl relative transform transition-transform scale-95 duration-300" id="user-profile-box">
+            <button type="button" onclick="closeUserProfile()" title="বন্ধ করুন" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-2 rounded-full bg-slate-100 dark:bg-slate-700 transition cursor-pointer z-10">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="flex flex-col items-center mt-4">
+                <div id="modal-user-avatar" class="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-400 flex items-center justify-center text-white text-4xl font-black shadow-lg border-4 border-white dark:border-slate-800 mb-3 overflow-hidden">
+                    U
+                </div>
+                <h3 id="modal-user-name" class="font-black text-2xl text-slate-900 dark:text-white flex items-center gap-1">User Name <i class="fa-solid fa-circle-check text-blue-500 text-sm" title="Verified"></i></h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-6">Student & Community Member</p>
+                
+                <div class="flex w-full gap-3">
+                    <button onclick="showToast('Friend request sent!', 'success'); this.innerHTML='<i class=\'fa-solid fa-user-check\'></i> Request Sent'; this.classList.add('opacity-70')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl text-sm font-bold transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-user-plus"></i> Add Friend
+                    </button>
+                    <button onclick="showToast('মেসেজ ফিচার চালু হচ্ছে...', 'info')" class="flex-1 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 py-2.5 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-brands fa-facebook-messenger"></i> Message
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Notification Panel -->
     <div id="notification-panel" class="fixed top-16 md:top-14 right-4 md:right-8 w-80 max-h-96 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 z-[110] transform transition-all duration-300 scale-95 opacity-0 hidden flex-col overflow-hidden">
         <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
@@ -636,7 +714,7 @@
     </div>
 
     <!-- Community Upload Modal -->
-    <div id="post-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[150] hidden flex items-center justify-center p-4 transition-opacity duration-300">
+    <div id="post-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[150] hidden flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-lg rounded-3xl p-6 shadow-2xl relative transform transition-transform scale-95 duration-300" id="post-box">
             <button type="button" onclick="closePostModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-2 rounded-xl bg-slate-100 dark:bg-slate-700 cursor-pointer">
                 <i class="fa-solid fa-xmark text-lg"></i>
@@ -673,9 +751,8 @@
     </div>
 
     <!-- Edit Profile Modal -->
-    <div id="edit-profile-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4 transition-opacity duration-300">
+    <div id="edit-profile-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-8 shadow-2xl relative transform transition-transform scale-95 duration-300" id="edit-profile-box">
-            <!-- (Code Unchanged) -->
             <button type="button" onclick="closeEditProfile()" title="বন্ধ করুন" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-2 rounded-xl bg-slate-100 dark:bg-slate-700 transition cursor-pointer">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
@@ -704,9 +781,8 @@
     </div>
 
     <!-- Change Password Modal -->
-    <div id="change-password-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4 transition-opacity duration-300">
+    <div id="change-password-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-8 shadow-2xl relative transform transition-transform scale-95 duration-300" id="change-password-box">
-            <!-- (Code Unchanged) -->
             <button type="button" onclick="closeChangePassword()" title="বন্ধ করুন" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-2 rounded-xl bg-slate-100 dark:bg-slate-700 transition cursor-pointer">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
@@ -731,7 +807,6 @@
 
     <!-- Image Crop Modal -->
     <div id="crop-modal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[250] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-        <!-- (Code Unchanged) -->
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-6 shadow-2xl transform scale-95 transition-transform duration-300" id="crop-box">
             <h3 class="font-black text-xl text-slate-900 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-3 flex items-center gap-2">
                 <i class="fa-solid fa-crop-simple text-brand-600"></i> ছবি কাটুন (Crop)
@@ -747,8 +822,7 @@
     </div>
 
     <!-- Auth Modal -->
-    <div id="auth-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[150] hidden flex items-center justify-center p-4 transition-opacity duration-300">
-        <!-- (Code Unchanged) -->
+    <div id="auth-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[150] hidden flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-8 shadow-2xl relative transform transition-transform scale-95 duration-300" id="auth-box">
             <button onclick="closeAuthModal()" title="বন্ধ করুন" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-2 rounded-xl bg-slate-100 dark:bg-slate-700 transition cursor-pointer">
                 <i class="fa-solid fa-xmark text-lg"></i>
@@ -872,7 +946,6 @@
 
     <!-- Enhanced AI Chatbot Floating Box -->
     <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-        <!-- (Code Unchanged) -->
         <div id="chat-window" class="hidden w-80 sm:w-96 h-[450px] bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-[2rem] flex flex-col shadow-2xl mb-4 transition-all duration-300 origin-bottom-right scale-95 opacity-0 overflow-hidden">
             <div class="flex justify-between items-center px-5 py-4 bg-gradient-to-r from-brand-600 to-brand-500 text-white">
                 <div class="flex items-center gap-3">
@@ -925,7 +998,6 @@
 
     <!-- Custom Confirm Modal -->
     <div id="custom-confirm-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-        <!-- (Code Unchanged) -->
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-full max-w-sm rounded-3xl p-8 shadow-2xl transform scale-95 transition-transform duration-300" id="custom-confirm-box">
             <div class="flex flex-col items-center text-center space-y-5">
                 <div class="w-20 h-20 rounded-full bg-brand-50 dark:bg-slate-700/50 text-brand-600 flex items-center justify-center text-4xl border-4 border-brand-100 dark:border-slate-600 shadow-inner relative">
@@ -992,7 +1064,7 @@
             { text: "স্বপ্ন সেটা নয় যেটা তুমি ঘুমিয়ে দেখো, স্বপ্ন সেটা যেটা তোমায় ঘুমোতে দেয় না।", author: "এ. পি. জে. আব্দুল কালাম" },
             { text: "নিজেকে পরিবর্তন করো, পৃথিবী এমনিতেই বদলে যাবে।", author: "স্বামী বিবেকানন্দ" },
             { text: "যে ভুল করেনি, সে কখনো নতুন কিছু করার চেষ্টা করেনি।", author: "অ্যালবার্ট আইনস্টাইন" },
-            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেন না।", author: "স্টিভ জবস" },
+            { text: "আপনার সময় সীমিত, তাই অন্যের জীবন যাপন করে এটি নষ্ট করবেনলগ্ন।", author: "স্টিভ জবস" },
             { text: "সত্যিকারের জ্ঞানী সে, যে জানে সে কিছুই জানে না।", author: "সক্রেটিস" }
         ];
 
@@ -1503,11 +1575,16 @@
             }
         }
 
-        function shareContent(title) {
+        // Updated Share Content function (Native Share API)
+        function shareContent(title, text, url) {
             if (navigator.share) {
-                navigator.share({ title: title, url: window.location.href }).catch(() => {});
+                navigator.share({
+                    title: title,
+                    text: text,
+                    url: url || window.location.href
+                }).catch(() => { console.log('Share failed'); });
             } else {
-                navigator.clipboard.writeText(window.location.href);
+                navigator.clipboard.writeText((url || window.location.href) + " - " + text);
                 showToast("লিংক কপি করা হয়েছে!", "success");
             }
         }
@@ -1519,21 +1596,13 @@
 
         function shareScore(scoreStr) {
             const text = `আমি MukulDhaliOfficial পোর্টালে মক টেস্ট দিয়ে ${scoreStr} স্কোর করেছি! আপনিও যাচাই করুন: ${window.location.href}`;
-            if (navigator.share) {
-                navigator.share({ title: 'My Quiz Score', text: text }).catch(() => {});
-            } else {
-                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
-            }
+            shareContent('My Quiz Score', text, window.location.href);
         }
 
         window.shareQuizLink = function(subject) {
             const url = window.location.href.split('#')[0] + '#quiz';
             const text = `আমি MukulDhaliOfficial এ '${subject}' কুইজটি দিচ্ছি। আপনিও চেষ্টা করুন: ${url}`;
-            if (navigator.share) {
-                navigator.share({ title: 'MukulDhaliOfficial Quiz', text: text }).catch(() => {});
-            } else {
-                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
-            }
+            shareContent('MukulDhaliOfficial Quiz', text, url);
         }
 
         function stopAllSpeech() {
@@ -1652,6 +1721,7 @@
             window.history.replaceState(null, null, `#${sectionId}`);
             if(sectionId === 'profile') renderProfileSection();
             if(sectionId === 'bookmarks') renderBookmarks();
+            if(sectionId === 'community') loadSuggestedFriends(); // Load suggestions when opening community
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
@@ -2526,38 +2596,134 @@
             }
         }
 
-        // ====================== NEW FACEBOOK LIKE RENDER FUNCTION =========================
+        // ====================== ENHANCED FACEBOOK LIKE RENDER FUNCTION =========================
+        
+        // Helper to convert date to Relative time (Time Ago)
+        function timeAgo(dateString) {
+            if(!dateString) return "Just now";
+            
+            // Assume format DD/MM/YYYY or similar if possible. If simple string like '28/08/2023', try to parse.
+            let pastDate;
+            if(dateString.includes('/')) {
+                const parts = dateString.split('/');
+                pastDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`); // convert DD/MM/YYYY to YYYY-MM-DD
+            } else {
+                pastDate = new Date(dateString);
+            }
+            
+            if (isNaN(pastDate.getTime())) return "Today";
+
+            const now = new Date();
+            const seconds = Math.floor((now - pastDate) / 1000);
+
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return Math.floor(seconds / 60) + 'm';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h';
+            if (seconds < 604800) return Math.floor(seconds / 86400) + 'd';
+            
+            return dateString;
+        }
+
+        // Mock User Data for Suggested Friends & Avatars
+        const mockUsers = [
+            { name: "Rahul Das", pic: "https://i.pravatar.cc/150?img=11" },
+            { name: "Priya Sen", pic: "https://i.pravatar.cc/150?img=5" },
+            { name: "Aritra Roy", pic: "https://i.pravatar.cc/150?img=12" },
+            { name: "Sneha Ghosh", pic: "https://i.pravatar.cc/150?img=9" },
+            { name: "Bikram Saha", pic: "https://i.pravatar.cc/150?img=15" },
+            { name: "Riya Mondal", pic: "https://i.pravatar.cc/150?img=20" }
+        ];
+
+        function loadSuggestedFriends() {
+            const container = document.getElementById('suggested-friends-container');
+            if(!container) return;
+            container.innerHTML = '';
+            
+            mockUsers.forEach((u, i) => {
+                container.innerHTML += `
+                <div class="flex flex-col items-center min-w-[80px] shrink-0 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-3 rounded-xl text-center">
+                    <img src="${u.pic}" alt="Profile" class="w-12 h-12 rounded-full object-cover mb-2 border-2 border-white dark:border-slate-800 shadow-sm cursor-pointer hover:scale-105 transition-transform" onclick="openUserProfile('${u.name.replace(/'/g, "\\'")}', '${u.pic}')">
+                    <p class="text-[10px] font-bold text-slate-800 dark:text-slate-200 truncate w-full mb-2">${u.name.split(' ')[0]}</p>
+                    <button onclick="showToast('Friend request sent to ${u.name.split(' ')[0]}!', 'success')" class="bg-blue-100 hover:bg-blue-600 text-blue-600 hover:text-white dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-600 dark:hover:text-white text-[10px] font-bold px-3 py-1 rounded-md transition-colors w-full"><i class="fa-solid fa-user-plus"></i></button>
+                </div>`;
+            });
+        }
+
+        // Open Profile Modal
+        window.openUserProfile = function(name, picUrl = null) {
+            const modal = document.getElementById('user-profile-modal');
+            const box = document.getElementById('user-profile-box');
+            
+            document.getElementById('modal-user-name').innerHTML = `${name} <i class="fa-solid fa-circle-check text-blue-500 text-sm" title="Verified"></i>`;
+            
+            const avatarBox = document.getElementById('modal-user-avatar');
+            if(picUrl && picUrl !== 'null') {
+                avatarBox.innerHTML = `<img src="${picUrl}" class="w-full h-full object-cover">`;
+            } else {
+                avatarBox.innerHTML = name.charAt(0).toUpperCase();
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                box.classList.remove('scale-95');
+                box.classList.add('scale-100');
+            }, 10);
+        }
+
+        window.closeUserProfile = function() {
+            const modal = document.getElementById('user-profile-modal');
+            const box = document.getElementById('user-profile-box');
+            modal.classList.add('opacity-0');
+            box.classList.remove('scale-100');
+            box.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
         function renderUserPostsList(list) {
             const container = document.getElementById('community-container');
             container.innerHTML = '';
-
-            // Layout update
-            container.className = 'max-w-2xl mx-auto space-y-6 pb-10';
 
             if(!list || list.length === 0) {
                 container.innerHTML = `<div class="col-span-full text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm"><p class="text-slate-500 dark:text-slate-400 font-bold">এখনো কোনো কমিউনিটি পোস্ট নেই।</p></div>`;
                 return;
             }
 
-            list.slice().reverse().forEach(post => {
+            list.slice().reverse().forEach((post, index) => {
                 let imgHtml = post.ImageBase64 ? `<div class="w-full mt-2 bg-slate-100 dark:bg-slate-900 border-y border-slate-200 dark:border-slate-700"><img src="${post.ImageBase64}" class="w-full max-h-[500px] object-contain" loading="lazy"></div>` : '';
                 
-                let mockLikes = Math.floor(Math.random() * 100) + 5;
-                let mockComments = Math.floor(Math.random() * 30);
+                // Deterministic mock data based on index to keep state
+                let mockLikes = (Math.floor(Math.random() * 50) + 15) + index;
+                let mockComments = Math.floor(Math.random() * 20);
+                
+                let postName = post.Name || 'Student';
+                let initialChar = postName.charAt(0).toUpperCase();
+                let relativeTime = timeAgo(post.Date);
+                
+                // Generate a random avatar from mockUsers based on name length just for UI aesthetics
+                let randomAvatar = mockUsers[postName.length % mockUsers.length].pic;
+                let avatarHtml = `<img src="${randomAvatar}" class="w-full h-full object-cover">`;
 
-                let initialChar = post.Name ? post.Name.charAt(0).toUpperCase() : 'S';
+                // Try to use logged in user's pic if it's their post
+                const loggedInName = localStorage.getItem(getStorageKey('portalUserName'));
+                if(postName === loggedInName) {
+                    const myPic = localStorage.getItem(getStorageKey('portalUserPic'));
+                    if(myPic) avatarHtml = `<img src="${myPic}" class="w-full h-full object-cover">`;
+                    else avatarHtml = initialChar;
+                }
 
                 container.innerHTML += `
-                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transform transition-all duration-300">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-visible transform transition-all duration-300 relative">
+                    
                     <div class="p-4 flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-pink-500 to-rose-400 flex items-center justify-center text-white font-black shadow-sm text-lg border border-pink-200">
-                                ${initialChar}
+                            <div onclick="openUserProfile('${postName.replace(/'/g, "\\'")}', '${avatarHtml.includes('<img') ? avatarHtml.match(/src="([^"]+)"/)[1] : 'null'}')" class="cursor-pointer hover:opacity-80 w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-400 flex items-center justify-center text-white font-black shadow-sm text-lg border border-indigo-200 overflow-hidden shrink-0">
+                                ${avatarHtml}
                             </div>
                             <div class="flex flex-col">
-                                <h4 class="font-bold text-slate-900 dark:text-white text-[15px] leading-tight flex items-center gap-1">${post.Name || 'Student'} <i class="fa-solid fa-circle-check text-blue-500 text-[10px]" title="Verified User"></i></h4>
+                                <h4 onclick="openUserProfile('${postName.replace(/'/g, "\\'")}', '${avatarHtml.includes('<img') ? avatarHtml.match(/src="([^"]+)"/)[1] : 'null'}')" class="font-bold text-slate-900 dark:text-white text-[15px] leading-tight flex items-center gap-1 cursor-pointer hover:underline">${postName} <i class="fa-solid fa-circle-check text-blue-500 text-[10px]" title="Verified User"></i></h4>
                                 <div class="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">
-                                    <span>${post.Date || 'Recently'}</span> • <i class="fa-solid fa-earth-asia"></i>
+                                    <span>${relativeTime}</span> • <i class="fa-solid fa-earth-asia"></i>
                                     <span class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[9px] uppercase font-bold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">${post.Type || 'Post'}</span>
                                 </div>
                             </div>
@@ -2574,57 +2740,142 @@
                     
                     <div class="px-4 py-2.5 flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700">
                         <div class="flex items-center gap-1.5 cursor-pointer hover:underline group">
-                            <div class="flex -space-x-1.5">
+                            <div class="flex -space-x-1.5" id="react-icons-${index}">
                                 <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-[8px] border-2 border-white dark:border-slate-800 shadow-sm z-10 group-hover:scale-110 transition-transform"><i class="fa-solid fa-thumbs-up"></i></div>
                                 <div class="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center text-white text-[8px] border-2 border-white dark:border-slate-800 shadow-sm group-hover:scale-110 transition-transform"><i class="fa-solid fa-heart"></i></div>
                             </div>
-                            <span class="font-medium ml-1 like-count-disp">${mockLikes}</span>
+                            <span class="font-medium ml-1" id="like-count-${index}">${mockLikes}</span>
                         </div>
                         <div class="flex gap-3 font-medium">
-                            <span class="cursor-pointer hover:underline">${mockComments} Comments</span>
-                            <span class="cursor-pointer hover:underline">Shares</span>
+                            <span class="cursor-pointer hover:underline" onclick="toggleCommentBox(${index})"><span id="comment-count-${index}">${mockComments}</span> Comments</span>
+                            <span class="cursor-pointer hover:underline" onclick="shareContent('${post.Title ? post.Title.replace(/'/g, "\\'") : 'Community Post'}', '${post.Description ? post.Description.substring(0, 50).replace(/'/g, "\\'") : ''}...', window.location.href)">Shares</span>
                         </div>
                     </div>
 
-                    <div class="px-2 py-1 flex justify-between items-center">
-                        <button onclick="toggleFbLike(this)" class="flex-1 py-2 flex items-center justify-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all cursor-pointer">
-                            <i class="fa-regular fa-thumbs-up text-lg mb-0.5 transition-transform duration-200"></i> <span>Like</span>
-                        </button>
-                        <button onclick="showToast('কমেন্ট ফিচার তৈরি হচ্ছে!', 'info')" class="flex-1 py-2 flex items-center justify-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all cursor-pointer">
+                    <div class="px-2 py-1 flex justify-between items-center relative">
+                        <!-- Reaction Wrapper -->
+                        <div class="flex-1 like-btn-wrapper relative">
+                            <!-- Hidden Reaction Bar -->
+                            <div class="reaction-bar">
+                                <span class="reaction-icon" onclick="setReaction(${index}, '👍', 'Like', 'text-blue-600')">👍</span>
+                                <span class="reaction-icon" onclick="setReaction(${index}, '❤️', 'Love', 'text-red-500')">❤️</span>
+                                <span class="reaction-icon" onclick="setReaction(${index}, '😂', 'Haha', 'text-yellow-500')">😂</span>
+                                <span class="reaction-icon" onclick="setReaction(${index}, '😮', 'Wow', 'text-orange-500')">😮</span>
+                                <span class="reaction-icon" onclick="setReaction(${index}, '😢', 'Sad', 'text-yellow-600')">😢</span>
+                                <span class="reaction-icon" onclick="setReaction(${index}, '😡', 'Angry', 'text-red-600')">😡</span>
+                            </div>
+                            <button id="like-btn-${index}" onclick="toggleDefaultLike(${index})" class="w-full py-2 flex items-center justify-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all cursor-pointer">
+                                <i class="fa-regular fa-thumbs-up text-lg mb-0.5"></i> <span id="like-text-${index}">Like</span>
+                            </button>
+                        </div>
+
+                        <button onclick="toggleCommentBox(${index})" class="flex-1 py-2 flex items-center justify-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all cursor-pointer">
                             <i class="fa-regular fa-message text-lg mb-0.5"></i> Comment
                         </button>
-                        <button onclick="shareToWhatsApp('${post.Title ? post.Title.replace(/'/g, "\\'") : 'Community Post'}', '')" class="flex-1 py-2 flex items-center justify-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all cursor-pointer">
+                        <button onclick="shareContent('${post.Title ? post.Title.replace(/'/g, "\\'") : 'Community Post'}', 'Checkout this post from MukulDhaliOfficial', window.location.href)" class="flex-1 py-2 flex items-center justify-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all cursor-pointer">
                             <i class="fa-solid fa-share text-lg mb-0.5"></i> Share
                         </button>
+                    </div>
+
+                    <!-- Hidden Comment Box -->
+                    <div id="comment-box-${index}" class="hidden px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-700">
+                        <div class="flex gap-2">
+                            <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0 overflow-hidden">
+                                <i class="fa-solid fa-user text-slate-400 text-xs"></i>
+                            </div>
+                            <div class="flex-1 flex gap-2 items-center bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-full px-3 py-1 shadow-inner">
+                                <input type="text" id="comment-input-${index}" placeholder="Write a comment..." class="bg-transparent border-none outline-none w-full text-sm text-slate-700 dark:text-slate-200" onkeydown="if(event.key === 'Enter') submitComment(${index})">
+                                <button onclick="submitComment(${index})" class="text-brand-600 hover:text-brand-800 transition-colors p-1"><i class="fa-solid fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                        <!-- Comments Display Area -->
+                        <div id="comments-display-${index}" class="mt-3 space-y-3 max-h-40 overflow-y-auto custom-scrollbar pr-1">
+                            <!-- Filled dynamically -->
+                        </div>
                     </div>
                 </div>`;
             });
         }
 
-        // Toggle Facebook-like interaction
-        window.toggleFbLike = function(btn) {
+        // --- Post Interaction Logic ---
+        
+        // Handle Hover Reactions
+        window.setReaction = function(index, emoji, text, colorClass) {
+            const btn = document.getElementById(`like-btn-${index}`);
+            const textSpan = document.getElementById(`like-text-${index}`);
             const icon = btn.querySelector('i');
-            const span = btn.querySelector('span');
-            const postBox = btn.closest('.bg-white, .bg-slate-800');
-            let likeCountEl = postBox.querySelector('.like-count-disp');
-            let currentLikes = parseInt(likeCountEl.innerText);
-
-            if (icon.classList.contains('fa-regular')) {
-                icon.classList.replace('fa-regular', 'fa-solid');
-                btn.classList.add('text-blue-600', 'dark:text-blue-400');
-                btn.classList.remove('text-slate-600', 'dark:text-slate-400');
-                span.innerText = "Liked";
-                likeCountEl.innerText = currentLikes + 1;
-                icon.classList.add('scale-125', '-translate-y-1');
-                setTimeout(() => icon.classList.remove('scale-125', '-translate-y-1'), 200);
-            } else {
-                icon.classList.replace('fa-solid', 'fa-regular');
-                btn.classList.remove('text-blue-600', 'dark:text-blue-400');
-                btn.classList.add('text-slate-600', 'dark:text-slate-400');
-                span.innerText = "Like";
-                likeCountEl.innerText = currentLikes - 1;
+            
+            // Increment logic if it wasn't liked before
+            if(textSpan.innerText === 'Like' || textSpan.innerText === '') {
+                const countEl = document.getElementById(`like-count-${index}`);
+                countEl.innerText = parseInt(countEl.innerText) + 1;
             }
-        };
+
+            // Remove previous classes
+            btn.className = `w-full py-2 flex items-center justify-center gap-2 text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all cursor-pointer ${colorClass}`;
+            
+            // Update Icon & Text
+            if(emoji === '👍') {
+                btn.innerHTML = `<i class="fa-solid fa-thumbs-up text-lg mb-0.5"></i> <span id="like-text-${index}">${text}</span>`;
+            } else {
+                btn.innerHTML = `<span class="text-xl leading-none mb-0.5">${emoji}</span> <span id="like-text-${index}">${text}</span>`;
+            }
+        }
+
+        // Handle Default Click Like
+        window.toggleDefaultLike = function(index) {
+            const textSpan = document.getElementById(`like-text-${index}`);
+            const btn = document.getElementById(`like-btn-${index}`);
+            const countEl = document.getElementById(`like-count-${index}`);
+
+            if (textSpan.innerText !== 'Like') {
+                // Unlike
+                btn.className = "w-full py-2 flex items-center justify-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all cursor-pointer";
+                btn.innerHTML = `<i class="fa-regular fa-thumbs-up text-lg mb-0.5"></i> <span id="like-text-${index}">Like</span>`;
+                countEl.innerText = parseInt(countEl.innerText) - 1;
+            } else {
+                // Default Like
+                setReaction(index, '👍', 'Liked', 'text-blue-600 dark:text-blue-400');
+            }
+        }
+
+        // Toggle Comments
+        window.toggleCommentBox = function(index) {
+            const box = document.getElementById(`comment-box-${index}`);
+            if(box.classList.contains('hidden')) {
+                box.classList.remove('hidden');
+                document.getElementById(`comment-input-${index}`).focus();
+            } else {
+                box.classList.add('hidden');
+            }
+        }
+
+        // Submit Comment
+        window.submitComment = function(index) {
+            const input = document.getElementById(`comment-input-${index}`);
+            const text = input.value.trim();
+            if(!text) return;
+
+            const name = localStorage.getItem(getStorageKey('portalUserName')) || 'Me';
+            const displayArea = document.getElementById(`comments-display-${index}`);
+            const countEl = document.getElementById(`comment-count-${index}`);
+
+            // Append Comment UI
+            displayArea.innerHTML += `
+                <div class="flex gap-2">
+                    <div class="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 font-bold text-xs shrink-0">${name.charAt(0).toUpperCase()}</div>
+                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl rounded-tl-none px-3 py-2 text-sm shadow-sm inline-block max-w-[85%]">
+                        <p class="font-bold text-slate-800 dark:text-slate-200 text-xs mb-0.5">${name}</p>
+                        <p class="text-slate-700 dark:text-slate-300 leading-snug">${escapeHTML(text)}</p>
+                    </div>
+                </div>
+            `;
+            
+            // Clear and scroll
+            input.value = '';
+            displayArea.scrollTop = displayArea.scrollHeight;
+            countEl.innerText = parseInt(countEl.innerText) + 1;
+        }
 
         // Community Search Filter Logic
         let communitySearchTimeout;
@@ -2645,7 +2896,7 @@
                 renderUserPostsList(filtered);
             }, 300);
         }
-        // ====================== END NEW COMMUNITY JS LOGIC =========================
+        // ====================== END ADVANCED COMMUNITY JS LOGIC =========================
 
         async function fetchAutoNews() {
             const rssFeeds = [
