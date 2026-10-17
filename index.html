@@ -3566,14 +3566,21 @@
                         </div>
 
                         <div class="cert-footer">
-                            <div class="footer-block">
-                                <div class="sign-area verify-sign-area">
-                                    <img src="${signImgLink}" class="sign-img" alt="Verified authority signature">
-                                    <p class="verify-time">${dateTimeStr}</p>
+                            <div class="footer-block verification-block">
+                                <div class="verification-heading">
+                                    <svg class="verification-tick" viewBox="0 0 100 100" aria-hidden="true">
+                                        <path d="M14 52 L39 77 L88 20" fill="none" stroke="#000000" stroke-width="19" stroke-linecap="butt" stroke-linejoin="miter" transform="translate(5 6)"/>
+                                        <path d="M14 52 L39 77 L88 20" fill="none" stroke="#00e51b" stroke-width="14" stroke-linecap="butt" stroke-linejoin="miter"/>
+                                    </svg>
+                                    <span>Signature valid</span>
+                                </div>
+                                <div class="verification-details">
+                                    <p><strong>Digitally verified by:</strong> MukulDhaliOfficial</p>
+                                    <p><strong>Date &amp; Time:</strong> ${dateTimeStr}</p>
+                                    <p><strong>Authority:</strong> MukulDhaliOfficial</p>
                                 </div>
                                 <div class="line"></div>
-                                <p class="f-name">MukulDhaliOfficial</p>
-                                <p class="f-label">VERIFIED AUTHORITY</p>
+                                <p class="f-label">VISUAL SIGNATURE RECORD</p>
                             </div>
                             <div class="footer-block center-block">
                                 <div class="seal">
@@ -3632,7 +3639,7 @@
                 '   background-size: 2.5cqw 2.5cqw; ' +
                 '   background-position: 0 0, 1.25cqw 1.25cqw; ' +
                 '   box-shadow: 0 10px 30px rgba(0,0,0,0.15); ' +
-                '   overflow: hidden; ' +
+                '   overflow: visible; ' +
                 '} ' +
 
                 '.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 45%; opacity: 0.04; z-index: 1; pointer-events: none; display: flex; justify-content: center; align-items: center; } ' +
@@ -3647,9 +3654,18 @@
                 '.cert-subject { font-size: 2.6cqw; color: #15803d; font-weight: bold; margin-bottom: 2cqw; border: 0.3cqw solid #bbf7d0; padding: 1cqw 3cqw; border-radius: 5cqw; background: #f0fdf4; } ' +
                 '.score-badge { font-family: sans-serif; font-size: 1.6cqw; background: #facc15; color: #854d0e; font-weight: bold; padding: 0.8cqw 2cqw; border-radius: 0.5cqw; box-shadow: 0.2cqw 0.2cqw 0 #ca8a04; } ' +
 
-                '.cert-footer { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; z-index: 2; padding: 0 2cqw; margin-bottom: 1cqw; } ' +
+                '.cert-footer { display: flex; justify-content: space-between; align-items: flex-end; position: relative; width: 100%; z-index: 2; padding: 0 2cqw; margin-bottom: 1cqw; } ' +
                 '.footer-block { width: 25cqw; text-align: center; } ' +
-                '.center-block { width: 15cqw; display: flex; justify-content: center; } ' +
+                '.verification-block { text-align: left; width: 31cqw; align-self: flex-end; position: relative; } ' +
+                '.verification-heading { display: block; position: relative; color: #000; font-family: Arial, sans-serif; font-size: 2.35cqw; line-height: 1.1; font-weight: 500; margin-bottom: 1.1cqw; white-space: nowrap; min-height: 5.5cqw; padding-top: 0.5cqw; isolation: isolate; } ' +
+                '.verification-heading span { position: relative; z-index: 2; } ' +
+                '.verification-tick { position: absolute; width: 10cqw; height: 7.5cqw; left: 3.2cqw; right: auto; top: -1.8cqw; transform: none; z-index: 1; overflow: visible; pointer-events: none; } ' +
+                '.verification-details { font-family: Arial, sans-serif; font-size: 1.12cqw; line-height: 1.5; color: #111; overflow-wrap: anywhere; } ' +
+                '.verification-details p { margin: 0.15cqw 0; } ' +
+                '.verification-details strong { font-weight: 600; } ' +
+                '.verification-block .line { margin-top: 1.1cqw; } ' +
+                '.verification-block .f-label { text-align: center; letter-spacing: 0.05cqw; } ' +
+                '.center-block { width: 15cqw; display: flex; justify-content: center; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); } ' +
 
                 '.seal { width: 10cqw; height: 10cqw; } ' +
                 '.line { border-top: 0.2cqw solid #333; margin-bottom: 1cqw; width: 100%; } ' +
