@@ -231,6 +231,90 @@
         @media (min-width: 768px) {
             #active-questions-container > div { padding: 1.1rem 1.25rem !important; }
         }
+
+        /* Compact quiz layout: remove oversized cards and side whitespace */
+        #active-questions-container { width: 100%; max-width: 100%; margin: 0 auto; padding-left: 0 !important; padding-right: 0 !important; gap: 0.35rem !important; }
+        #active-questions-container .quiz-question { width: 100%; border-radius: 0; box-shadow: none; }
+        #active-questions-container .quiz-option { width: 100%; min-height: 0; }
+        #active-questions-container .quiz-option:has(input:checked) { background: rgba(22,163,74,.07); }
+        @media (max-width: 640px) {
+            #active-questions-container .quiz-question { padding-top: .65rem; padding-bottom: .65rem; }
+            #active-questions-container .quiz-question p { font-size: 1rem; line-height: 1.55; }
+            #active-questions-container .quiz-option { padding: .45rem .25rem; font-size: .95rem; }
+            #active-questions-container .quiz-option > div { width: 1rem; height: 1rem; }
+        }
+
+        /* Final quiz separation + outlined radio selection */
+        #active-questions-container { gap: 1rem !important; }
+        #active-questions-container .quiz-question {
+            border: 1px solid #dbe3ea !important;
+            border-radius: 1rem !important;
+            padding: 1rem !important;
+            margin: 0 !important;
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, .04) !important;
+        }
+        .dark #active-questions-container .quiz-question {
+            background: #0f172a;
+            border-color: #334155 !important;
+        }
+        #active-questions-container .quiz-question > div:last-child {
+            padding-left: 0 !important;
+            margin-top: .75rem;
+            display: flex;
+            flex-direction: column;
+            gap: .55rem !important;
+        }
+        #active-questions-container .quiz-option {
+            box-sizing: border-box;
+            width: 100%;
+            min-height: 3.1rem;
+            padding: .7rem .8rem !important;
+            border: 1px solid #dbe3ea !important;
+            border-radius: .75rem !important;
+            background: #fff !important;
+            align-items: center !important;
+            gap: .7rem !important;
+            transition: border-color .15s ease, background-color .15s ease;
+        }
+        .dark #active-questions-container .quiz-option {
+            background: #111c30 !important;
+            border-color: #334155 !important;
+        }
+        #active-questions-container .quiz-option:has(input:checked) {
+            border-color: #16a34a !important;
+            background: #f0fdf4 !important;
+        }
+        .dark #active-questions-container .quiz-option:has(input:checked) {
+            background: rgba(22, 163, 74, .12) !important;
+        }
+        #active-questions-container .quiz-option > div:first-of-type {
+            width: 1.25rem !important;
+            height: 1.25rem !important;
+            min-width: 1.25rem;
+            border: 2px solid #cbd5e1 !important;
+            border-radius: 9999px !important;
+            background: transparent !important;
+            margin-top: 0 !important;
+        }
+        #active-questions-container .quiz-option input:checked + div {
+            border-color: #16a34a !important;
+        }
+        #active-questions-container .quiz-option input:checked + div > div {
+            width: .65rem !important;
+            height: .65rem !important;
+            border-radius: 9999px !important;
+            background: #16a34a !important;
+            opacity: 1 !important;
+        }
+        #active-questions-container .quiz-option:has(input:checked) span {
+            color: #15803d !important;
+        }
+        @media (max-width: 640px) {
+            #active-questions-container .quiz-question { padding: .8rem !important; }
+            #active-questions-container .quiz-question p { font-size: 1rem !important; line-height: 1.5 !important; }
+            #active-questions-container .quiz-option { padding: .65rem .7rem !important; font-size: .95rem !important; }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100 overflow-x-hidden w-full transition-colors duration-300">
@@ -1023,10 +1107,11 @@
             </div>
         </div>
 
-        <button onclick="toggleChat()" title="এআই অ্যাসিস্ট্যান্ট" class="bg-gradient-to-tr from-brand-700 to-brand-400 text-white w-16 h-16 rounded-full shadow-xl hover:shadow-2xl hover:shadow-brand-500/40 hover:scale-110 transition-all duration-300 flex items-center justify-center relative cursor-pointer group">
+        <button id="chatbotFloatBtn" onclick="toggleChat()" title="এআই অ্যাসিস্ট্যান্ট" class="bg-gradient-to-tr from-brand-700 to-brand-400 text-white w-16 h-16 rounded-full shadow-xl hover:shadow-2xl hover:shadow-brand-500/40 hover:scale-110 transition-all duration-300 flex items-center justify-center relative cursor-pointer group opacity-0 pointer-events-none translate-y-6">
             <i class="fa-solid fa-robot text-2xl group-hover:animate-bounce"></i>
             <span class="absolute top-1 right-1 w-4 h-4 bg-emerald-400 border-[3px] border-white dark:border-slate-900 rounded-full"></span>
         </button>
+        <button id="showChatbotHandle" onclick="showChatbotTemporarily()" title="চ্যাটবট দেখান" aria-label="চ্যাটবট দেখান" class="fixed bottom-8 right-2 z-50 w-3 h-16 rounded-full bg-brand-600/70 shadow-md opacity-70 hover:opacity-100 transition-all cursor-pointer"></button>
     </div>
 
     <!-- Custom Confirm Modal -->
@@ -1498,14 +1583,8 @@
             }
             lastScrollY = winScroll;
 
-            const scrollToTopBtn = document.getElementById("scrollToTopBtn");
-            if(winScroll > 300) {
-                scrollToTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-10');
-                scrollToTopBtn.classList.add('opacity-100', 'translate-y-0');
-            } else {
-                scrollToTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-10');
-                scrollToTopBtn.classList.remove('opacity-100', 'translate-y-0');
-            }
+            // Floating scroll controls are shown temporarily during scrolling.
+            // The dedicated listener near the end handles direction and auto-hide.
         });
 
         // Download/Export Bookmarks
@@ -3641,23 +3720,22 @@
                 optionsList.forEach((opt, optIndex) => {
                     const uniqueId = `q_${index}_opt_${optIndex}`;
                     optionsHtml += `
-                    <label for="${uniqueId}" class="flex items-start gap-3 p-3 bg-white dark:bg-slate-700 border border-slate-100 dark:border-slate-600 rounded-lg cursor-pointer hover:border-brand-400 hover:bg-brand-50 dark:hover:bg-slate-600 transition-all text-sm font-bold relative group">
+                    <label for="${uniqueId}" class="quiz-option flex items-start gap-3 px-2 py-2 bg-transparent dark:bg-transparent border-0 rounded-md cursor-pointer hover:bg-brand-50/70 dark:hover:bg-slate-800 transition-colors text-sm font-bold relative group">
                         <input type="radio" id="${uniqueId}" name="exam_question_${index}" value="${opt}" onchange="updateQuizProgressBar()" class="peer sr-only">
-                        <div class="w-4 h-4 rounded-full border-2 border-slate-300 dark:border-slate-500 peer-checked:border-brand-600 peer-checked:bg-brand-600 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
-                            <div class="w-1.5 h-1.5 rounded-full bg-white opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+                        <div class="w-4 h-4 rounded-full border-2 border-slate-300 dark:border-slate-500 peer-checked:border-brand-600 flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                            <div class="w-2 h-2 rounded-full bg-brand-600 opacity-0 peer-checked:opacity-100 transition-opacity"></div>
                         </div>
                         <span class="text-slate-700 dark:text-slate-200 peer-checked:text-brand-700 dark:peer-checked:text-brand-300 leading-tight">${opt}</span>
                     </label>`;
                 });
 
                 qContainer.innerHTML += `
-                <div class="p-4 md:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 space-y-2 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-brand-400"></div>
-                    <div class="flex gap-3 md:gap-4">
-                        <div class="bg-brand-100 dark:bg-slate-800 text-brand-700 dark:text-brand-400 font-black px-2 py-1 rounded-md h-fit text-xs md:text-sm shrink-0">Q${index + 1}</div>
+                <div class="quiz-question py-3 px-1 md:px-2 border-b border-slate-200 dark:border-slate-700 space-y-2 relative">
+                    <div class="flex gap-2 md:gap-3">
+                        <div class="bg-brand-100 dark:bg-slate-800 text-brand-700 dark:text-brand-400 font-black px-2 py-1 rounded-md h-fit text-xs shrink-0">Q${index + 1}</div>
                         <p class="font-black text-slate-900 dark:text-white text-base leading-snug pt-0.5">${q.Question}</p>
                     </div>
-                    <div class="space-y-2 pt-3 border-t border-slate-200 dark:border-slate-700 pl-[2.5rem]">
+                    <div class="space-y-1 pt-1 pl-7 md:pl-9">
                         ${optionsHtml}
                     </div>
                 </div>`;
@@ -4219,14 +4297,75 @@
             currentActiveSubject = null;
         }
 
+        let floatingScrollHideTimer = null;
+        let chatbotHideTimer = null;
+        let previousFloatingScrollY = window.scrollY || 0;
+        function setChatbotFloatVisible(visible) {
+            const btn = document.getElementById('chatbotFloatBtn');
+            if (!btn) return;
+            btn.classList.toggle('opacity-0', !visible);
+            btn.classList.toggle('pointer-events-none', !visible);
+            btn.classList.toggle('translate-y-6', !visible);
+            btn.classList.toggle('opacity-100', visible);
+            btn.classList.toggle('translate-y-0', visible);
+        }
+        function showChatbotTemporarily() {
+            setChatbotFloatVisible(true);
+            if (chatbotHideTimer) clearTimeout(chatbotHideTimer);
+            chatbotHideTimer = setTimeout(() => {
+                const chatWindow = document.getElementById('chat-window');
+                if (chatWindow && chatWindow.classList.contains('hidden')) setChatbotFloatVisible(false);
+            }, 5000);
+        }
+        function setFloatingScrollButton(button, visible) {
+            if (!button) return;
+            button.classList.toggle('opacity-0', !visible);
+            button.classList.toggle('pointer-events-none', !visible);
+            button.classList.toggle('translate-y-10', !visible);
+            button.classList.toggle('opacity-100', visible);
+            button.classList.toggle('translate-y-0', visible);
+        }
+        function hideFloatingScrollButtons() {
+            setFloatingScrollButton(document.getElementById('scrollToTopBtn'), false);
+            setFloatingScrollButton(document.getElementById('scrollToBottomBtn'), false);
+        }
         window.addEventListener('scroll', () => {
+            const y = window.scrollY || document.documentElement.scrollTop || 0;
             const topBtn = document.getElementById('scrollToTopBtn');
             const bottomBtn = document.getElementById('scrollToBottomBtn');
-            const atTop = window.scrollY < 180;
-            const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 180;
-            if (topBtn) { topBtn.classList.toggle('opacity-0', atTop); topBtn.classList.toggle('pointer-events-none', atTop); topBtn.classList.toggle('translate-y-10', atTop); }
-            if (bottomBtn) { bottomBtn.classList.toggle('opacity-0', atBottom); bottomBtn.classList.toggle('pointer-events-none', atBottom); bottomBtn.classList.toggle('translate-y-10', atBottom); }
+            const atTop = y < 100;
+            const atBottom = window.innerHeight + y >= document.documentElement.scrollHeight - 100;
+            const scrollingDown = y > previousFloatingScrollY;
+            previousFloatingScrollY = y;
+            showChatbotTemporarily();
+
+            // Show only the useful direction arrow, then hide it after 5 seconds.
+            if (scrollingDown && !atBottom) {
+                setFloatingScrollButton(bottomBtn, true);
+                setFloatingScrollButton(topBtn, false);
+            } else if (!scrollingDown && !atTop) {
+                setFloatingScrollButton(topBtn, true);
+                setFloatingScrollButton(bottomBtn, false);
+            } else {
+                hideFloatingScrollButtons();
+            }
+            if (floatingScrollHideTimer) clearTimeout(floatingScrollHideTimer);
+            floatingScrollHideTimer = setTimeout(hideFloatingScrollButtons, 5000);
         }, { passive: true });
+        // The chatbot launcher appears for 5 seconds after scrolling or tapping the small side handle.
+        // Tapping the launcher opens the chat; the launcher stays available while the chat is open.
+        const chatbotFloatBtn = document.getElementById('chatbotFloatBtn');
+        if (chatbotFloatBtn) chatbotFloatBtn.addEventListener('click', () => {
+            if (chatbotHideTimer) clearTimeout(chatbotHideTimer);
+        });
+        // A tap on a scroll arrow also starts the 5-second auto-hide period.
+        ['scrollToTopBtn', 'scrollToBottomBtn'].forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) btn.addEventListener('click', () => {
+                if (floatingScrollHideTimer) clearTimeout(floatingScrollHideTimer);
+                floatingScrollHideTimer = setTimeout(hideFloatingScrollButtons, 5000);
+            });
+        });
 
         window.addEventListener('DOMContentLoaded', () => {
             setDailyDate();
