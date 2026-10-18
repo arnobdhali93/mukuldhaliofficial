@@ -3537,7 +3537,7 @@
             });
         }
 
-        window.generateCertificate = function(subject, score) {
+        window.generateCertificate = async function(subject, score, options = {}) {
             const name = localStorage.getItem(getStorageKey('portalUserName')) || 'Student';
             const dateObj = new Date();
             const dateStr = dateObj.toLocaleDateString('en-GB');
@@ -3692,10 +3692,49 @@
             printWindow.document.write('</body></html>');
             printWindow.document.close();
 
-            setTimeout(() => { 
+            if (options && options.pdfOnly) {
+                // Use the exact certificate HTML/CSS above, then render that same certificate to PDF.
+                const loadScript = (src) => new Promise((resolve, reject) => {
+                    const script = printWindow.document.createElement('script');
+                    script.src = src;
+                    script.onload = resolve;
+                    script.onerror = () => reject(new Error('PDF লাইব্রেরি লোড করা যায়নি: ' + src));
+                    printWindow.document.head.appendChild(script);
+                });
+                try {
+                    await new Promise(resolve => setTimeout(resolve, 1200));
+                    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+                    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+                    await printWindow.document.fonts.ready;
+                    const certElement = printWindow.document.querySelector('.cert-box');
+                    if (!certElement) throw new Error('সার্টিফিকেটের অংশটি পাওয়া যায়নি।');
+                    const canvas = await printWindow.html2canvas(certElement, {
+                        scale: 2,
+                        backgroundColor: '#ffffff',
+                        useCORS: true,
+                        allowTaint: false,
+                        logging: false
+                    });
+                    const imageData = canvas.toDataURL('image/jpeg', 0.95);
+                    const jsPDF = printWindow.jspdf.jsPDF;
+                    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4', compress: true });
+                    const pageWidth = 277;
+                    const pageHeight = pageWidth * canvas.height / canvas.width;
+                    pdf.addImage(imageData, 'JPEG', (297 - pageWidth) / 2, (210 - pageHeight) / 2, pageWidth, pageHeight, undefined, 'FAST');
+                    const dataUri = pdf.output('datauristring');
+                    try { printWindow.close(); } catch (_) {}
+                    return dataUri.split(',')[1];
+                } catch (pdfError) {
+                    try { printWindow.close(); } catch (_) {}
+                    throw pdfError;
+                }
+            }
+
+            setTimeout(() => {
                 printWindow.focus();
-                printWindow.print(); 
+                printWindow.print();
             }, 1000);
+            return null;
         }
 
         function submitExam() {
@@ -3823,26 +3862,43 @@
             const userNameToNotify = localStorage.getItem(getStorageKey('portalUserName')) || 'Student';
 
             if (userEmailToNotify && API_URL) {
-                fetch(API_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        action: "save_score", 
-                        email: userEmailToNotify,
-                        name: userNameToNotify,
-                        subject: currentActiveSubject,
-                        score: scoreFormatted,
-                        percentage: percentage,
-                        date: new Date().toLocaleString()
-                    })
-                }).then(() => {
-                    console.log("Score automatically saved.");
-                }).catch(err => {
-                    console.error("Failed to save score:", err);
-                });
+                (async () => {
+                    try {
+                        let certificatePdfBase64 = '';
+                        if (percentage >= 40) {
+                            try {
+                                certificatePdfBase64 = await window.generateCertificate(
+                                    currentActiveSubject,
+                                    percentage,
+                                    { pdfOnly: true }
+                                );
+                            } catch (pdfError) {
+                                console.error('Certificate PDF generation failed:', pdfError);
+                                // Still save the score and send the result email if PDF generation fails.
+                            }
+                        }
+
+                        await fetch(API_URL, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: JSON.stringify({
+                                action: 'save_score',
+                                email: userEmailToNotify,
+                                name: userNameToNotify,
+                                subject: currentActiveSubject,
+                                score: scoreFormatted,
+                                percentage: percentage,
+                                date: new Date().toLocaleString(),
+                                certificatePdfBase64: certificatePdfBase64,
+                                certificateFileName: 'MukulDhaliOfficial_Certificate_' + String(currentActiveSubject || 'Quiz').replace(/[^a-z0-9_-]/gi, '_') + '.pdf'
+                            })
+                        });
+                        console.log('Score automatically submitted to Apps Script.');
+                    } catch (err) {
+                        console.error('Failed to save score or send email:', err);
+                    }
+                })();
             }
 
             let messageHtml = percentage >= 80 
