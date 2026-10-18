@@ -218,6 +218,19 @@
         .reaction-icon:hover {
             transform: scale(1.3) translateY(-5px);
         }
+
+
+        /* UX refinements: larger readable quiz text, tighter spacing, less card-like layout */
+        #active-questions-container { gap: 0.75rem !important; }
+        #active-questions-container > div { border-radius: 0.8rem !important; padding: 1rem !important; box-shadow: none !important; }
+        #active-questions-container p { font-size: 1.12rem !important; line-height: 1.55 !important; }
+        #active-questions-container label, #active-questions-container label span { font-size: 1.05rem !important; line-height: 1.5 !important; }
+        #quiz-exam-view { max-width: 58rem !important; }
+        #quiz-subjects-container { gap: 0.8rem !important; }
+        .cropper-view-box, .cropper-face { border-radius: 0 !important; }
+        @media (min-width: 768px) {
+            #active-questions-container > div { padding: 1.1rem 1.25rem !important; }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100 overflow-x-hidden w-full transition-colors duration-300">
@@ -503,6 +516,10 @@
                         </div>
                     </div>
 
+                    <div id="active-quiz-title" class="text-xl md:text-2xl font-black text-slate-900 dark:text-white border-l-4 border-brand-600 pl-4 py-1"></div>
+
+                    <div id="active-questions-container" class="space-y-6 mt-6"></div>
+
                     <div class="space-y-2">
                         <div class="flex justify-between text-xs font-bold text-slate-500 dark:text-slate-400">
                             <span>অগ্রগতি</span>
@@ -512,10 +529,6 @@
                             <div id="quiz-progress-bar" class="bg-gradient-to-r from-brand-400 to-brand-600 h-full w-0 transition-all duration-500 ease-out rounded-full"></div>
                         </div>
                     </div>
-
-                    <div id="active-quiz-title" class="text-xl md:text-2xl font-black text-slate-900 dark:text-white border-l-4 border-brand-600 pl-4 py-1"></div>
-
-                    <div id="active-questions-container" class="space-y-6 mt-6"></div>
 
                     <button onclick="confirmSubmitExam()" title="সব উত্তর জমা দিন" class="w-full bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-700 hover:to-brand-600 text-white py-4 rounded-xl text-sm font-black transition-all shadow-lg hover:shadow-xl shadow-brand-600/30 hover:-translate-y-1 cursor-pointer mt-8 tracking-wider">
                         <i class="fa-solid fa-paper-plane mr-2"></i> সব উত্তর জমা দিন (Submit Exam)
@@ -670,6 +683,9 @@
             </section>
         </div>
 
+        <button id="scrollToBottomBtn" onclick="window.scrollTo({top: document.documentElement.scrollHeight, behavior: 'smooth'})" title="নিচে যান" class="fixed bottom-8 md:bottom-8 right-6 z-40 bg-slate-700 hover:bg-slate-800 text-white w-12 h-12 rounded-full shadow-lg opacity-0 pointer-events-none transition-all duration-500 flex items-center justify-center cursor-pointer translate-y-10 focus:outline-none focus:ring-4 focus:ring-slate-500/50" style="bottom: 6.5rem">
+            <i class="fa-solid fa-arrow-down text-lg"></i>
+        </button>
         <button id="scrollToTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="উপরে যান" class="fixed bottom-24 md:bottom-8 right-6 z-40 bg-brand-600 hover:bg-brand-700 text-white w-14 h-14 rounded-full shadow-lg hover:shadow-xl hover:shadow-brand-500/40 opacity-0 pointer-events-none transition-all duration-500 flex items-center justify-center cursor-pointer translate-y-10 focus:outline-none focus:ring-4 focus:ring-brand-500/50">
             <i class="fa-solid fa-arrow-up text-xl"></i>
         </button>
@@ -773,6 +789,19 @@
                         <input type="file" id="edit-pic" accept="image/*" class="w-full text-xs outline-none file:cursor-pointer file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-100 file:text-brand-700 hover:file:bg-brand-200 dark:file:bg-slate-700 dark:file:text-brand-300 transition-colors">
                     </div>
                 </div>
+                <div class="p-4 rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50/70 dark:bg-amber-900/10 space-y-3">
+                    <h4 class="font-black text-base text-slate-800 dark:text-white"><i class="fa-solid fa-shield-halved text-amber-600 mr-2"></i>সিকিউরিটি প্রশ্ন</h4>
+                    <label for="security-question-select" class="block text-sm font-bold text-slate-700 dark:text-slate-300">প্রশ্ন নির্বাচন করুন</label>
+                    <select id="security-question-select" class="w-full p-3 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-sm">
+                        <option value="আপনার প্রথম স্কুলের নাম কী?">আপনার প্রথম স্কুলের নাম কী?</option>
+                        <option value="আপনার প্রিয় শিক্ষকের নাম কী?">আপনার প্রিয় শিক্ষকের নাম কী?</option>
+                        <option value="আপনার জন্মস্থানের নাম কী?">আপনার জন্মস্থানের নাম কী?</option>
+                        <option value="আপনার প্রিয় বইয়ের নাম কী?">আপনার প্রিয় বইয়ের নাম কী?</option>
+                    </select>
+                    <label for="security-question-answer" class="block text-sm font-bold text-slate-700 dark:text-slate-300">উত্তর</label>
+                    <input id="security-question-answer" type="password" autocomplete="off" placeholder="নতুন উত্তর লিখুন" class="w-full p-3 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-sm">
+                    <p id="security-question-hint" class="text-xs text-slate-500 dark:text-slate-400">আগে সেট করা থাকলে উত্তর ফাঁকা রাখলেই সেটি অপরিবর্তিত থাকবে।</p>
+                </div>
                 <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-4 rounded-xl text-sm font-black transition-all shadow-lg shadow-brand-600/30 hover:-translate-y-1 flex justify-center items-center gap-2 cursor-pointer mt-2">
                     <i class="fa-solid fa-floppy-disk"></i> পরিবর্তন সেভ করুন
                 </button>
@@ -790,6 +819,10 @@
                 <i class="fa-solid fa-key text-brand-600"></i> পাসওয়ার্ড পরিবর্তন
             </h3>
             <form id="change-password-form" onsubmit="handleChangePassword(event)" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">বর্তমান পাসওয়ার্ড</label>
+                    <input type="password" id="change-old-pass" required autocomplete="current-password" placeholder="বর্তমান পাসওয়ার্ড লিখুন" class="w-full p-3.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-sm outline-none focus:border-brand-500">
+                </div>
                 <div>
                     <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">নতুন পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)</label>
                     <div class="relative">
@@ -1029,6 +1062,45 @@
             return email ? `${email}_${baseKey}` : `guest_${baseKey}`;
         }
 
+        // Selected account data syncs through Supabase user metadata so it follows the login across browsers.
+        const CLOUD_SYNC_KEYS = ['portalUserName', 'fullQuizHistory', 'lastQuizScore', 'portalBookmarks', 'securityQuestion'];
+        let cloudSyncTimer = null;
+        let cloudSyncBusy = false;
+        async function syncLocalDataToCloud() {
+            if (!supabaseClient || cloudSyncBusy) return;
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (!user) return;
+            const payload = {};
+            CLOUD_SYNC_KEYS.forEach(base => {
+                const val = localStorage.getItem(getStorageKey(base));
+                if (val !== null && val.length < 80000) payload[base] = val;
+            });
+            // Only sync small profile photos; large data URLs should use a configured Supabase Storage bucket.
+            const pic = localStorage.getItem(getStorageKey('portalUserPic'));
+            if (pic && pic.length < 80000) payload.portalUserPic = pic;
+            if (!Object.keys(payload).length) return;
+            cloudSyncBusy = true;
+            try { await supabaseClient.auth.updateUser({ data: { portal_portal_data: payload } }); }
+            catch (e) { console.warn('Cloud profile sync skipped:', e); }
+            finally { cloudSyncBusy = false; }
+        }
+        function scheduleCloudSync() {
+            if (cloudSyncTimer) clearTimeout(cloudSyncTimer);
+            cloudSyncTimer = setTimeout(syncLocalDataToCloud, 1200);
+        }
+        async function restoreCloudDataToLocal(user) {
+            const payload = user?.user_metadata?.portal_portal_data;
+            if (!payload) return;
+            CLOUD_SYNC_KEYS.forEach(base => {
+                if (payload[base] !== undefined && localStorage.getItem(getStorageKey(base)) === null) {
+                    localStorage.setItem(getStorageKey(base), payload[base]);
+                }
+            });
+            if (payload.portalUserPic && !localStorage.getItem(getStorageKey('portalUserPic'))) {
+                localStorage.setItem(getStorageKey('portalUserPic'), payload.portalUserPic);
+            }
+        }
+
         try {
             const { createClient } = window.supabase;
             supabaseClient = createClient(supabaseUrl, supabaseKey);
@@ -1036,6 +1108,9 @@
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (session) {
                     localStorage.setItem('portalUserEmail', session.user.email);
+                    restoreCloudDataToLocal(session.user).then(() => {
+                        renderProfileSection(); updateHeaderBadge(); renderBookmarks();
+                    });
                     if(session.user.user_metadata.full_name) {
                         localStorage.setItem(getStorageKey('portalUserName'), session.user.user_metadata.full_name);
                     } else {
@@ -1046,6 +1121,7 @@
                 } else {
                     localStorage.removeItem('portalUserEmail');
                 }
+                if (session) setTimeout(scheduleCloudSync, 1800);
                 renderProfileSection();
                 updateHeaderBadge();
                 renderBookmarks();
@@ -1054,6 +1130,15 @@
         } catch (err) {
             console.error("Supabase Init Error:", err);
         }
+
+        // Watch user-specific local changes and queue a cloud sync for cross-browser continuity.
+        const originalSetItem = Storage.prototype.setItem;
+        Storage.prototype.setItem = function(key, value) {
+            originalSetItem.call(this, key, value);
+            if (this === localStorage && typeof key === 'string' && CLOUD_SYNC_KEYS.some(base => key.endsWith('_' + base)) || (this === localStorage && typeof key === 'string' && key.endsWith('_portalUserPic'))) {
+                if (typeof scheduleCloudSync === 'function') scheduleCloudSync();
+            }
+        };
 
         const dailyQuotes = [
             { text: "শিক্ষাই হলো সবচেয়ে শক্তিশালী অস্ত্র, যার মাধ্যমে আপনি পুরো বিশ্বকে বদলে দিতে পারেন।", author: "নেলসন ম্যান্ডেলা" },
@@ -1589,9 +1674,20 @@
             }
         }
 
-        window.shareToWhatsApp = function(title, link) {
-            const text = `*${title}*\n\nবিস্তারিত জানতে লিংকে ক্লিক করুন: ${link || window.location.href}`;
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+        window.shareToWhatsApp = async function(title, link) {
+            const url = link || window.location.href;
+            const text = `${title}\n\nবিস্তারিত জানতে লিংকে ক্লিক করুন: ${url}`;
+            if (navigator.share) {
+                try { await navigator.share({ title, text, url }); }
+                catch (err) { if (err && err.name !== 'AbortError') console.error('Share failed', err); }
+            } else {
+                try {
+                    await navigator.clipboard.writeText(`${text}`);
+                    showToast("শেয়ার লিংক কপি হয়েছে!", "success");
+                } catch (err) {
+                    window.prompt("এই লিংকটি কপি করে শেয়ার করুন:", `${text}`);
+                }
+            }
         };
 
         function shareScore(scoreStr) {
@@ -1999,7 +2095,15 @@
             document.getElementById('edit-name').value = currentName;
             document.getElementById('edit-pic').value = ""; 
 
-            selectedFileBase64 = null; 
+            selectedFileBase64 = null;
+
+            const savedSecurity = JSON.parse(localStorage.getItem(getStorageKey('securityQuestion')) || 'null');
+            const securitySelect = document.getElementById('security-question-select');
+            const securityAnswer = document.getElementById('security-question-answer');
+            const securityHint = document.getElementById('security-question-hint');
+            if (securitySelect) securitySelect.value = savedSecurity?.question || 'আপনার প্রথম স্কুলের নাম কী?';
+            if (securityAnswer) { securityAnswer.value = ''; securityAnswer.placeholder = savedSecurity ? 'আগের উত্তর রাখতে ফাঁকা রাখুন' : 'উত্তর লিখুন'; }
+            if (securityHint) securityHint.textContent = savedSecurity ? `বর্তমান প্রশ্ন: ${savedSecurity.question}। উত্তর বদলাতে নতুন উত্তর লিখুন।` : 'পাসওয়ার্ড ভুলে গেলে সহায়ক হিসেবে ব্যবহার করা যাবে।';
 
             const currentPic = localStorage.getItem(getStorageKey('portalUserPic'));
             const previewContainer = document.getElementById('edit-pic-preview-container');
@@ -2054,6 +2158,7 @@
                     localStorage.setItem(getStorageKey('portalUserPic'), selectedFileBase64);
                 }
 
+                if (!saveSecurityQuestion()) return;
                 finalizeProfileUpdate();
             } catch (err) {
                 console.error(err);
@@ -2072,6 +2177,7 @@
         }
 
         function openChangePassword() {
+            document.getElementById('change-old-pass').value = '';
             document.getElementById('change-new-pass').value = '';
             const modal = document.getElementById('change-password-modal');
             const box = document.getElementById('change-password-box');
@@ -2099,15 +2205,16 @@
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> প্রসেস হচ্ছে...`;
             btn.disabled = true;
 
+            const oldPass = document.getElementById('change-old-pass').value;
             const newPass = document.getElementById('change-new-pass').value;
 
             try {
-                if(supabaseClient) {
-                    const { error } = await supabaseClient.auth.updateUser({
-                      password: newPass
-                    });
-                    if(error) throw error;
-                }
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user || !user.email) throw new Error('দয়া করে আবার লগইন করুন।');
+                const { error: verifyError } = await supabaseClient.auth.signInWithPassword({ email: user.email, password: oldPass });
+                if (verifyError) throw new Error('বর্তমান পাসওয়ার্ড সঠিক নয়।');
+                const { error } = await supabaseClient.auth.updateUser({ password: newPass });
+                if(error) throw error;
 
                 showToast("পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে!", "success");
                 closeChangePassword();
@@ -2311,6 +2418,22 @@
             });
         }
 
+        function saveSecurityQuestion() {
+            const question = document.getElementById('security-question-select')?.value;
+            const answer = (document.getElementById('security-question-answer')?.value || '').trim();
+            const existing = JSON.parse(localStorage.getItem(getStorageKey('securityQuestion')) || 'null');
+            if (!question) { showToast('একটি সিকিউরিটি প্রশ্ন নির্বাচন করুন।', 'error'); return false; }
+            if (!answer && !existing) { showToast('সিকিউরিটি প্রশ্নের উত্তর লিখুন।', 'error'); return false; }
+            if (answer) {
+                localStorage.setItem(getStorageKey('securityQuestion'), JSON.stringify({
+                    question, answer: answer.toLocaleLowerCase(), updatedAt: Date.now()
+                }));
+            } else if (existing && existing.question !== question) {
+                showToast('প্রশ্ন পরিবর্তন করলে নতুন উত্তরও লিখুন।', 'error'); return false;
+            }
+            return true;
+        }
+
         function renderProfileSection() {
             const profileContainer = document.getElementById('profile-content');
             const loggedInUser = localStorage.getItem('portalUserEmail');
@@ -2418,6 +2541,11 @@
                         </div>
                     </div>
 
+                    <div id="security-question-summary" class="mt-5 p-4 rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50/70 dark:bg-amber-900/10 text-sm">
+                        <span class="font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-shield-halved text-amber-600 mr-2"></i>সিকিউরিটি প্রশ্ন:</span>
+                        <span id="security-question-summary-text" class="text-slate-600 dark:text-slate-300">সেট করা হয়নি — প্রোফাইল এডিট থেকে সেট করুন।</span>
+                    </div>
+
                     <div class="grid grid-cols-2 gap-4 mt-8">
                         <div class="bg-gradient-to-br from-brand-50 to-emerald-50 dark:from-brand-900/20 dark:to-emerald-900/20 p-4 rounded-2xl border border-brand-100 dark:border-brand-800/50">
                             <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">মোট কুইজ</p>
@@ -2440,7 +2568,7 @@
                     ${historyHtml}
 
                     <div class="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t-2 border-slate-100 dark:border-slate-700">
-                        <button onclick="shareScore('${lastQuizScore}')" title="স্কোর শেয়ার করুন" class="bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-slate-600 hover:bg-brand-100 px-4 py-3 rounded-xl text-sm font-black transition-all flex-1 shadow-sm hover:shadow cursor-pointer text-center"><i class="fa-brands fa-whatsapp mr-2 text-lg"></i> শেয়ার প্রোফাইল</button>
+                        <button onclick="shareScore('${lastQuizScore}')" title="স্কোর শেয়ার করুন" class="bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-slate-600 hover:bg-brand-100 px-4 py-3 rounded-xl text-sm font-black transition-all flex-1 shadow-sm hover:shadow cursor-pointer text-center"><i class="fa-solid fa-share-nodes mr-2 text-lg"></i> শেয়ার প্রোফাইল</button>
                         <button onclick="logoutUser()" title="লগআউট" class="bg-red-50 text-red-600 border border-red-200 hover:bg-red-600 hover:text-white dark:bg-red-900/20 dark:border-red-800/50 dark:text-red-400 dark:hover:bg-red-600 dark:hover:text-white px-4 py-3 rounded-xl text-sm font-black transition-all flex-1 shadow-sm hover:shadow cursor-pointer text-center"><i class="fa-solid fa-right-from-bracket mr-2"></i> লগআউট</button>
                     </div>
                     <button onclick="resetAllData()" title="সব ডেটা মুছুন" class="w-full text-slate-400 hover:text-red-500 py-3 text-xs font-bold transition-colors cursor-pointer text-center mt-2 underline underline-offset-4 decoration-slate-300 hover:decoration-red-300">অ্যাপ ডেটা রিসেট করুন</button>
@@ -2463,6 +2591,14 @@
             }
             updateHeaderBadge();
         }
+
+            const savedSecurity = JSON.parse(localStorage.getItem(getStorageKey('securityQuestion')) || 'null');
+            if (savedSecurity) {
+                const qEl = document.getElementById('security-question-select');
+                const aEl = document.getElementById('security-question-answer');
+                if (qEl) qEl.value = savedSecurity.question || qEl.value;
+                if (aEl) aEl.placeholder = 'আগের উত্তর সংরক্ষিত আছে (নতুন উত্তর দিলে বদলাবে)';
+            }
 
         function logoutUser() {
             openConfirmModal('আপনি কি সত্যিই লগআউট করতে চান?', async () => {
@@ -3022,6 +3158,16 @@
             }
         }
 
+        // Normalize API rows from either the legacy sheet headers or the newer Apps Script aliases.
+        function quizField(row, names, fallback = '') {
+            for (const name of names) {
+                if (row && row[name] !== undefined && row[name] !== null && String(row[name]).trim() !== '') return row[name];
+            }
+            return fallback;
+        }
+
+        let quizParentBySubject = {};
+
         async function processApiData(data, isFresh) {
             if(data.BreakingNews) {
                 document.getElementById('breaking-news-text').innerHTML = `📢 ${data.BreakingNews}`;
@@ -3040,20 +3186,39 @@
                 renderStoriesList(data.Stories);
             }
             if(data.Quiz && Array.isArray(data.Quiz)) {
-                groupedQuizData = {}; 
-                quizConfigData = {}; 
+                groupedQuizData = {};
+                quizConfigData = {};
+                quizParentBySubject = {};
 
-                data.Quiz.forEach(q => {
-                    let sub = q.Subject ? q.Subject.trim() : "সাধারণ জ্ঞান";
+                data.Quiz.forEach(raw => {
+                    const q = { ...raw };
+                    const sub = String(quizField(raw, ['Subject', 'subject', 'subjectName', 'SubjectName', 'Test Title', 'TestTitle', 'testTitle'], 'সাধারণ জ্ঞান')).trim();
+                    const parentTitle = String(quizField(raw, ['Subject Title', 'SubjectTitle', 'subjectTitle', 'subjecttitle', 'Main Subject', 'MainSubject', 'mainSubject'], '')).trim();
+
+                    // Standardize question and option keys so both old and new API responses work.
+                    q.Subject = sub;
+                    q.SubjectTitle = parentTitle;
+                    q.Question = quizField(raw, ['Question', 'question', ' প্রশ্ন', 'প্রশ্ন'], '');
+                    q.Option1 = quizField(raw, ['Option1', 'option1', 'Option A', 'OptionA', 'optionA', 'optiona', 'A'], '');
+                    q.Option2 = quizField(raw, ['Option2', 'option2', 'Option B', 'OptionB', 'optionB', 'optionb', 'B'], '');
+                    q.Option3 = quizField(raw, ['Option3', 'option3', 'Option C', 'OptionC', 'optionC', 'optionc', 'C'], '');
+                    q.Option4 = quizField(raw, ['Option4', 'option4', 'Option D', 'OptionD', 'optionD', 'optiond', 'D'], '');
+                    q.CorrectAnswer = quizField(raw, ['CorrectAnswer', 'correctAnswer', 'correctanswer', 'Answer', 'answer', 'Correct Option', 'CorrectOption'], '');
+                    q.Explanation = quizField(raw, ['Explanation', 'explanation'], '');
+                    q.TimeLimit = quizField(raw, ['TimeLimit', 'timeLimit', 'timelimit'], 5);
+                    q.AttemptLimit = quizField(raw, ['AttemptLimit', 'attemptLimit', 'attemptlimit'], 'Multiple');
+                    q.ScreenshotAllowed = quizField(raw, ['ScreenshotAllowed', 'screenshotAllowed', 'screenshotallowed'], 'yes');
+
                     if (!groupedQuizData[sub]) {
                         groupedQuizData[sub] = [];
-                        let allowSS = q.ScreenshotAllowed ? String(q.ScreenshotAllowed).trim().toLowerCase() : 'yes';
+                        const allowSS = String(q.ScreenshotAllowed || 'yes').trim().toLowerCase();
                         quizConfigData[sub] = {
-                            timeLimit: parseInt(q.TimeLimit) || 5,
-                            attemptLimit: q.AttemptLimit ? String(q.AttemptLimit).trim() : 'Multiple',
+                            timeLimit: parseInt(q.TimeLimit, 10) || 5,
+                            attemptLimit: String(q.AttemptLimit || 'Multiple').trim(),
                             screenshotAllowed: allowSS === 'no' ? 'no' : 'yes'
                         };
                     }
+                    if (!quizParentBySubject[sub]) quizParentBySubject[sub] = parentTitle || getQuizParentName(sub);
                     groupedQuizData[sub].push(q);
                 });
                 renderQuizSubjects(Object.keys(groupedQuizData));
@@ -3069,18 +3234,24 @@
             }
         }
 
-        let lastNewsUpdateHour = -1;
+        let newsUpdateTimer = null;
         function scheduleNextNewsUpdate() {
-            // Using setInterval to perfectly match 3 hourly interval dynamically
-            setInterval(async () => {
-                const now = new Date();
-                const h = now.getHours();
-                // 3, 6, 9, 12, 15, 18, 21, 0 (24)
-                if (h % 3 === 0 && h !== lastNewsUpdateHour) {
-                    lastNewsUpdateHour = h;
+            // প্রতি ৬ ঘণ্টা অন্তর আপডেট; পেজ ব্যাকগ্রাউন্ড থেকে ফিরলেও stale হলে আপডেট
+            const KEY = 'portalLastNewsUpdateAt';
+            const SIX_HOURS = 6 * 60 * 60 * 1000;
+            const runIfDue = async () => {
+                const last = Number(localStorage.getItem(KEY) || 0);
+                if (Date.now() - last >= SIX_HOURS) {
                     await updateNewsDataOnly();
+                    localStorage.setItem(KEY, String(Date.now()));
                 }
-            }, 60000); // Check every minute
+            };
+            runIfDue();
+            if (newsUpdateTimer) clearInterval(newsUpdateTimer);
+            newsUpdateTimer = setInterval(runIfDue, 5 * 60 * 1000);
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) runIfDue();
+            });
         }
 
         async function updateNewsDataOnly() {
@@ -3123,7 +3294,7 @@
                             <div class="flex gap-1 bg-slate-50 dark:bg-slate-900 p-1 rounded-lg border border-slate-100 dark:border-slate-700">
                                 <button id="audio-btn-story-desc-${index}" onclick="event.stopPropagation(); toggleSpeech('story-desc-${index}', this)" title="গল্প শুনুন / বন্ধ করুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-solid fa-volume-high"></i></button>
                                 <button onclick="event.stopPropagation(); toggleBookmark('${story.Title.replace(/'/g, "\\'")}', '${story.Category}', 'Story', '${story.ReadLink || ''}')" title="বুকমার্ক করুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-regular fa-bookmark"></i></button>
-                                <button onclick="event.stopPropagation(); shareToWhatsApp('${story.Title.replace(/'/g, "\\'")}', '${story.ReadLink || ''}')" title="WhatsApp এ শেয়ার করুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-green-500 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-brands fa-whatsapp text-lg"></i></button>
+                                <button onclick="event.stopPropagation(); shareToWhatsApp('${story.Title.replace(/'/g, "\\'")}', '${story.ReadLink || ''}')" title="WhatsApp এ শেয়ার করুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-green-500 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-solid fa-share-nodes text-lg"></i></button>
                             </div>
                         </div>
                         <h3 class="font-black text-xl md:text-2xl text-slate-900 dark:text-white mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">${story.Title}</h3>
@@ -3173,7 +3344,7 @@
                             <div class="flex gap-1 bg-slate-50 dark:bg-slate-900 p-1 rounded-lg border border-slate-100 dark:border-slate-700">
                                 <button id="audio-btn-news-desc-${index}" onclick="event.stopPropagation(); toggleSpeech('news-desc-${index}', this)" title="খবরটি শুনুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-solid fa-volume-high"></i></button>
                                 <button onclick="event.stopPropagation(); toggleBookmark('${news.Title.replace(/'/g, "\\'")}', '${news.Category}', 'News', '${news.Link || ''}')" title="বুকমার্ক করুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-regular fa-bookmark"></i></button>
-                                <button onclick="event.stopPropagation(); shareToWhatsApp('${news.Title.replace(/'/g, "\\'")}', '${news.Link || ''}')" title="WhatsApp এ শেয়ার করুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-green-500 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-brands fa-whatsapp text-lg"></i></button>
+                                <button onclick="event.stopPropagation(); shareToWhatsApp('${news.Title.replace(/'/g, "\\'")}', '${news.Link || ''}')" title="WhatsApp এ শেয়ার করুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-green-500 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-solid fa-share-nodes text-lg"></i></button>
                             </div>
                         </div>
                         <h3 class="font-black text-lg md:text-xl text-slate-900 dark:text-white mt-2 mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors leading-snug">${news.Title}</h3>
@@ -3225,7 +3396,7 @@
                             <div class="text-[10px] text-purple-700 dark:text-purple-300 font-black bg-purple-50 dark:bg-purple-900/30 px-3 py-1 rounded-full uppercase tracking-widest border border-purple-200 dark:border-purple-800/50">${book.Board || 'General'}</div>
                             <div class="flex gap-1 bg-slate-50 dark:bg-slate-900 p-1 rounded-lg border border-slate-100 dark:border-slate-700">
                                 <button onclick="event.stopPropagation(); toggleBookmark('${book.Title.replace(/'/g, "\\'")}', '${book.Board}', 'Book', '${book.DownloadLink || ''}')" title="বুকমার্ক করুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-purple-600 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-regular fa-bookmark"></i></button>
-                                <button onclick="event.stopPropagation(); shareToWhatsApp('${book.Title.replace(/'/g, "\\'")}', '${book.DownloadLink || ''}')" title="WhatsApp এ শেয়ার করুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-green-500 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-brands fa-whatsapp text-lg"></i></button>
+                                <button onclick="event.stopPropagation(); shareToWhatsApp('${book.Title.replace(/'/g, "\\'")}', '${book.DownloadLink || ''}')" title="WhatsApp এ শেয়ার করুন" class="w-8 h-8 rounded-md flex items-center justify-center text-slate-400 hover:text-green-500 hover:bg-white dark:hover:bg-slate-700 transition-all"><i class="fa-solid fa-share-nodes text-lg"></i></button>
                             </div>
                         </div>
                         <div class="w-12 h-12 rounded-xl bg-purple-50 dark:bg-slate-700 text-purple-500 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform"><i class="fa-solid fa-book"></i></div>
@@ -3261,43 +3432,61 @@
             clearTimeout(quizSearchTimeout);
             quizSearchTimeout = setTimeout(() => {
                 const query = document.getElementById('quiz-search').value.toLowerCase();
+                selectedQuizParent = null;
                 const allSubjects = Object.keys(groupedQuizData);
-                const filtered = allSubjects.filter(sub => sub.toLowerCase().includes(query));
+                const filtered = allSubjects.filter(sub => sub.toLowerCase().includes(query) || getQuizParentName(sub).toLowerCase().includes(query));
                 renderQuizSubjects(filtered);
             }, 300);
         }
 
+        let selectedQuizParent = null;
+        function getQuizParentName(subject) {
+            const original = String(subject || '').trim();
+            if (quizParentBySubject && quizParentBySubject[original]) return String(quizParentBySubject[original]).trim();
+            let name = original;
+            // Handles names such as "Geography MCQ - 1 (X)" and "Geography-2".
+            name = name.replace(/\s+MCQ\s*[-–—]?\s*\d+\s*(?:\([^)]*\))?\s*$/i, '');
+            name = name.replace(/\s*[-–—]\s*\d+\s*(?:\([^)]*\))?\s*$/, '');
+            return name.trim() || original;
+        }
         function renderQuizSubjects(subjects) {
             const container = document.getElementById('quiz-subjects-container');
             container.innerHTML = '';
-
-            if (!subjects || subjects.length === 0) {
-                container.innerHTML = `
-                    <div class="col-span-full text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                        <i class="fa-solid fa-brain text-6xl mb-4 text-slate-300 dark:text-slate-600"></i>
-                        <p class="text-slate-500 dark:text-slate-400 text-base font-bold">কোনো কুইজ পাওয়া যায়নি।</p>
-                    </div>`;
+            const allSubjects = Array.isArray(subjects) ? subjects : Object.keys(groupedQuizData);
+            if (selectedQuizParent) {
+                const tests = allSubjects.filter(sub => getQuizParentName(sub).toLocaleLowerCase() === selectedQuizParent.toLocaleLowerCase());
+                container.innerHTML = `<div class="col-span-full flex items-center justify-between gap-3 mb-2">
+                    <button onclick="selectedQuizParent=null;renderQuizSubjects(Object.keys(groupedQuizData))" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 font-bold"><i class="fa-solid fa-arrow-left mr-2"></i>সব বিষয়</button>
+                    <h3 class="text-xl font-black">${escapeHTML(selectedQuizParent)} — টেস্ট নির্বাচন করুন</h3>
+                </div>`;
+                tests.forEach(subject => {
+                    const count = groupedQuizData[subject].length;
+                    const config = quizConfigData[subject] || {};
+                    container.innerHTML += `<button type="button" onclick="startQuizExam(this.dataset.subject)" data-subject="${escapeHTML(subject)}" class="text-left p-5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-slate-700 transition flex items-center justify-between gap-4">
+                        <span><strong class="block text-lg">${escapeHTML(subject)}</strong><span class="text-sm text-slate-500">${count}টি MCQ · সময় ${parseInt(config.timeLimit)||5} মিনিট</span></span>
+                        <span class="text-brand-600 text-xl"><i class="fa-solid fa-circle-play"></i></span>
+                    </button>`;
+                });
+                if (!tests.length) container.innerHTML += '<p class="col-span-full text-center py-8">এই বিষয়ে কোনো টেস্ট নেই।</p>';
                 return;
             }
-
-            subjects.forEach(subject => {
-                const count = groupedQuizData[subject].length;
-                container.innerHTML += `
-                <div onclick="startQuizExam('${subject}')" title="${subject} কুইজ শুরু করুন" class="p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:border-brand-400 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer flex flex-col justify-between group relative overflow-hidden">
-                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-brand-50 dark:bg-slate-700 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-500 pointer-events-none"></div>
-                    <button onclick="event.stopPropagation(); shareQuizLink('${subject}')" title="কুইজ শেয়ার করুন" class="absolute top-5 right-5 text-slate-400 hover:text-brand-600 transition-colors p-2 bg-slate-50 dark:bg-slate-700 rounded-xl hover:bg-brand-50 z-10 shadow-sm"><i class="fa-brands fa-whatsapp"></i></button>
-                    <div class="relative z-10">
-                        <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 flex items-center justify-center text-2xl font-bold mb-6 border border-brand-200 dark:border-slate-600 group-hover:bg-brand-600 group-hover:text-white group-hover:shadow-md group-hover:rotate-6 transition-all duration-300">
-                            <i class="fa-solid fa-graduation-cap"></i>
-                        </div>
-                        <h3 class="font-black text-xl text-slate-900 dark:text-white mb-2 pr-8 leading-tight group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">${subject}</h3>
-                        <p class="text-slate-500 dark:text-slate-400 text-sm font-bold flex items-center gap-2"><i class="fa-solid fa-layer-group"></i> ${count} টি প্রশ্ন রয়েছে</p>
-                    </div>
-                    <div class="mt-8 flex items-center justify-between text-brand-600 dark:text-brand-400 text-sm font-black bg-slate-50 dark:bg-slate-900 px-4 py-3 rounded-xl border border-slate-100 dark:border-slate-700 group-hover:bg-brand-600 group-hover:text-white group-hover:border-brand-600 transition-all duration-300 relative z-10">
-                        <span>পরীক্ষা শুরু করুন</span>
-                        <div class="w-8 h-8 rounded-lg bg-white/50 flex items-center justify-center"><i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i></div>
-                    </div>
-                </div>`;
+            const parentMap = {};
+            allSubjects.forEach(subject => {
+                const parent = getQuizParentName(subject);
+                (parentMap[parent] ||= []).push(subject);
+            });
+            const parents = Object.keys(parentMap);
+            if (!parents.length) {
+                container.innerHTML = '<div class="col-span-full text-center py-12">কোনো কুইজ পাওয়া যায়নি।</div>';
+                return;
+            }
+            parents.forEach(parent => {
+                const tests = parentMap[parent];
+                const count = tests.reduce((sum, sub) => sum + (groupedQuizData[sub] || []).length, 0);
+                container.innerHTML += `<button type="button" onclick="selectedQuizParent=this.dataset.parent;renderQuizSubjects(Object.keys(groupedQuizData))" data-parent="${escapeHTML(parent)}" class="text-left p-5 md:p-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-slate-700 transition flex items-center justify-between gap-4">
+                    <span><strong class="block text-xl md:text-2xl">${escapeHTML(parent)}</strong><span class="text-sm text-slate-500">${tests.length}টি টেস্ট · মোট ${count}টি MCQ</span></span>
+                    <span class="text-brand-600 text-xl"><i class="fa-solid fa-chevron-right"></i></span>
+                </button>`;
             });
         }
 
@@ -3319,6 +3508,7 @@
             localStorage.setItem(getStorageKey('quizActiveSession'), JSON.stringify({
                 subject: currentActiveSubject,
                 timeLeft: timeLeftSeconds,
+                savedAt: Date.now(),
                 answers: savedAnswers
             }));
         }
@@ -3328,8 +3518,9 @@
             if(savedSessionStr) {
                 const session = JSON.parse(savedSessionStr);
                 if(session.subject === subject) {
-                    timeLeftSeconds = session.timeLeft;
-                    for (const [key, value] of Object.entries(session.answers)) {
+                    const savedAt = Number(session.savedAt || Date.now());
+                    timeLeftSeconds = Math.max(0, Number(session.timeLeft || 0) - Math.floor((Date.now() - savedAt) / 1000));
+                    for (const [key, value] of Object.entries(session.answers || {})) {
                         const radios = document.getElementsByName(key);
                         for (const radio of radios) {
                             if (radio.value === value) {
@@ -3358,7 +3549,7 @@
                     }
                 }
             }
-            const pct = Math.round((answered / total) * 100);
+            const pct = total ? Math.round((answered / total) * 100) : 0;
             document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
             document.getElementById('quiz-progress-text').innerText = `${pct}%`;
 
@@ -3393,8 +3584,14 @@
                 }
             }
 
+            if (!groupedQuizData[subject] || !groupedQuizData[subject].length) {
+                console.error('Quiz subject has no questions:', subject, Object.keys(groupedQuizData || {}));
+                showToast('এই টেস্টের প্রশ্ন লোড হয়নি। পেজ রিফ্রেশ করে আবার চেষ্টা করুন।', 'error');
+                return;
+            }
+
             currentActiveSubject = subject;
-            window.quizStartTime = Date.now(); 
+            window.quizStartTime = Date.now();
 
             let questions = [...groupedQuizData[subject]];
 
@@ -3517,22 +3714,18 @@
 
         function confirmBackToQuizSubjects() {
             openConfirmModal("আপনি কি পরীক্ষা বাতিল করে ফিরে যেতে চান? আপনার অগ্রগতি মুছে যাবে।", () => {
-                const config = quizConfigData[currentActiveSubject] || { attemptLimit: 'Multiple' };
-                const elapsedSecs = (Date.now() - window.quizStartTime) / 1000;
+                const config = quizConfigData[currentActiveSubject] || { timeLimit: 5, attemptLimit: 'Multiple' };
+                const totalSecs = Math.max(1, (parseInt(config.timeLimit) || 5) * 60);
+                const elapsedSecs = Math.max(0, totalSecs - Math.max(0, Number(timeLeftSeconds || 0)));
+                const savedKey = getStorageKey('quizActiveSession');
 
-                if (elapsedSecs > 30 && config.attemptLimit === 'Once') {
-                    let fullQuizHistory = JSON.parse(localStorage.getItem(getStorageKey('fullQuizHistory'))) || [];
-                    fullQuizHistory.push({
-                        subject: currentActiveSubject,
-                        score: 0,
-                        total: groupedQuizData[currentActiveSubject].length,
-                        percentage: 0,
-                        date: new Date().toLocaleDateString() + ' (বাতিল)'
-                    });
-                    localStorage.setItem(getStorageKey('fullQuizHistory'), JSON.stringify(fullQuizHistory));
-                    showToast("আপনি ৩০ সেকেন্ডের বেশি সময় নিয়েছিলেন, তাই এটি একটি Attempt হিসেবে কাউন্ট করা হলো।", "error");
+                if (elapsedSecs >= totalSecs * (2 / 3)) {
+                    saveQuizProgress();
+                    showToast("পরীক্ষার সময়ের দুই-তৃতীয়াংশ পার হয়েছে। বাতিল করলেও বাকি সময় ও উত্তর সংরক্ষিত থাকবে।", "success");
+                } else {
+                    localStorage.removeItem(savedKey);
+                    showToast("নির্ধারিত সময়ের দুই-তৃতীয়াংশের আগে বাতিল করেছেন, তাই পরের বার নতুন সময় পাবেন।", "success");
                 }
-
                 backToQuizSubjects();
             });
         }
@@ -4025,6 +4218,15 @@
 
             currentActiveSubject = null;
         }
+
+        window.addEventListener('scroll', () => {
+            const topBtn = document.getElementById('scrollToTopBtn');
+            const bottomBtn = document.getElementById('scrollToBottomBtn');
+            const atTop = window.scrollY < 180;
+            const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 180;
+            if (topBtn) { topBtn.classList.toggle('opacity-0', atTop); topBtn.classList.toggle('pointer-events-none', atTop); topBtn.classList.toggle('translate-y-10', atTop); }
+            if (bottomBtn) { bottomBtn.classList.toggle('opacity-0', atBottom); bottomBtn.classList.toggle('pointer-events-none', atBottom); bottomBtn.classList.toggle('translate-y-10', atBottom); }
+        }, { passive: true });
 
         window.addEventListener('DOMContentLoaded', () => {
             setDailyDate();
