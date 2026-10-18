@@ -3605,7 +3605,40 @@
                 </div>
             `;
 
-            const printWindow = window.open('', '', 'width=1000,height=750');
+            // Email PDF generation runs in a hidden iframe so it never opens
+            // a certificate popup before the score screen is shown.
+            const pdfOnlyMode = !!(options && options.pdfOnly);
+            let pdfFrame = null;
+            let printWindow = null;
+
+            if (pdfOnlyMode) {
+                pdfFrame = document.createElement('iframe');
+                pdfFrame.setAttribute('aria-hidden', 'true');
+                pdfFrame.title = 'Certificate PDF renderer';
+                pdfFrame.style.position = 'fixed';
+                pdfFrame.style.left = '-12000px';
+                pdfFrame.style.top = '0';
+                pdfFrame.style.width = '1200px';
+                pdfFrame.style.height = '850px';
+                pdfFrame.style.border = '0';
+                pdfFrame.style.visibility = 'visible';
+                pdfFrame.style.opacity = '0';
+                document.body.appendChild(pdfFrame);
+                printWindow = pdfFrame.contentWindow;
+            } else {
+                // This call is made directly by the student's certificate button,
+                // keeping it inside the browser's user-gesture popup permission.
+                printWindow = window.open('', '_blank', 'width=1100,height=850');
+                if (!printWindow) {
+                    if (typeof showToast === 'function') {
+                        showToast('সার্টিফিকেট প্রিন্ট খুলতে পপ-আপ অনুমতি দিন।', 'error');
+                    } else {
+                        alert('সার্টিফিকেট প্রিন্ট খুলতে ব্রাউজারে পপ-আপ অনুমতি দিন।');
+                    }
+                    return null;
+                }
+            }
+
             printWindow.document.write('<!DOCTYPE html><html lang="bn"><head>');
             printWindow.document.write('<meta charset="UTF-8">');
             printWindow.document.write('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">');
@@ -3692,8 +3725,8 @@
             printWindow.document.write('</body></html>');
             printWindow.document.close();
 
-            if (options && options.pdfOnly) {
-                // Use the exact certificate HTML/CSS above, then render that same certificate to PDF.
+            if (pdfOnlyMode) {
+                // Render the exact same certificate HTML/CSS at high resolution for email PDF.
                 const loadScript = (src) => new Promise((resolve, reject) => {
                     const script = printWindow.document.createElement('script');
                     script.src = src;
@@ -3702,38 +3735,65 @@
                     printWindow.document.head.appendChild(script);
                 });
                 try {
-                    await new Promise(resolve => setTimeout(resolve, 1200));
+                    await new Promise(resolve => setTimeout(resolve, 350));
                     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
                     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
-                    await printWindow.document.fonts.ready;
+                    if (printWindow.document.fonts && printWindow.document.fonts.ready) {
+                        await printWindow.document.fonts.ready;
+                    }
                     const certElement = printWindow.document.querySelector('.cert-box');
                     if (!certElement) throw new Error('সার্টিফিকেটের অংশটি পাওয়া যায়নি।');
+                    const images = Array.from(certElement.querySelectorAll('img'));
+                    await Promise.all(images.map(img => {
+                        if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+                        return new Promise(resolve => {
+                            img.onload = resolve;
+                            img.onerror = resolve;
+                        });
+                    }));
                     const canvas = await printWindow.html2canvas(certElement, {
-                        scale: 2,
+                        scale: 4,
                         backgroundColor: '#ffffff',
                         useCORS: true,
                         allowTaint: false,
-                        logging: false
+                        logging: false,
+                        windowWidth: 1200,
+                        imageTimeout: 15000
                     });
-                    const imageData = canvas.toDataURL('image/jpeg', 0.95);
+                    // PNG is lossless (unlike the previous JPEG export), and scale 4
+                    // makes small text and signature details much sharper when zoomed.
+                    const imageData = canvas.toDataURL('image/png');
                     const jsPDF = printWindow.jspdf.jsPDF;
-                    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4', compress: true });
+                    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4', compress: true, precision: 16 });
                     const pageWidth = 277;
                     const pageHeight = pageWidth * canvas.height / canvas.width;
-                    pdf.addImage(imageData, 'JPEG', (297 - pageWidth) / 2, (210 - pageHeight) / 2, pageWidth, pageHeight, undefined, 'FAST');
+                    pdf.addImage(imageData, 'PNG', (297 - pageWidth) / 2, (210 - pageHeight) / 2, pageWidth, pageHeight, 'CERTIFICATE', 'SLOW');
                     const dataUri = pdf.output('datauristring');
-                    try { printWindow.close(); } catch (_) {}
+                    try { if (pdfFrame) pdfFrame.remove(); } catch (_) {}
                     return dataUri.split(',')[1];
                 } catch (pdfError) {
-                    try { printWindow.close(); } catch (_) {}
+                    try { if (pdfFrame) pdfFrame.remove(); } catch (_) {}
                     throw pdfError;
                 }
             }
 
-            setTimeout(() => {
-                printWindow.focus();
-                printWindow.print();
-            }, 1000);
+            // Keep the original flow: certificate preview opens, then browser print UI.
+            setTimeout(async () => {
+                try {
+                    if (printWindow.document.fonts && printWindow.document.fonts.ready) {
+                        await printWindow.document.fonts.ready;
+                    }
+                    const imgs = Array.from(printWindow.document.images || []);
+                    await Promise.all(imgs.map(img => {
+                        if (img.complete) return Promise.resolve();
+                        return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
+                    }));
+                    printWindow.focus();
+                    printWindow.print();
+                } catch (printError) {
+                    console.error('Certificate print error:', printError);
+                }
+            }, 700);
             return null;
         }
 
