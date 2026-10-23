@@ -37,7 +37,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Quiz Password Modal -->
+    <div id="quiz-password-modal" class="fixed inset-0 z-[250] hidden items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md" role="dialog" aria-modal="true" aria-labelledby="quiz-password-title">
+        <div id="quiz-password-box" class="w-full max-w-sm overflow-hidden rounded-3xl border border-white/60 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xl opacity-0 scale-95 transition-all duration-200">
+            <div class="bg-gradient-to-br from-emerald-600 to-green-700 px-6 py-6 text-white">
+                <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/25"><i class="fa-solid fa-lock text-2xl"></i></div>
+                <h3 id="quiz-password-title" class="text-center text-xl font-black">কুইজের পাসওয়ার্ড</h3>
+                <p id="quiz-password-subtitle" class="mt-2 text-center text-sm text-emerald-50">কুইজ শুরু করতে পাসওয়ার্ড দিন</p>
+            </div>
+            <form id="quiz-password-form" class="space-y-4 p-6">
+                <label for="quiz-password-input" class="block text-sm font-bold text-slate-700 dark:text-slate-200">পাসওয়ার্ড</label>
+                <div class="relative">
+                    <input id="quiz-password-input" type="password" autocomplete="current-password" required class="w-full rounded-2xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-4 py-4 pr-12 text-base font-semibold text-slate-900 dark:text-white outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/15" placeholder="পাসওয়ার্ড লিখুন">
+                    <button id="quiz-password-toggle" type="button" class="absolute inset-y-0 right-2 my-auto h-10 w-10 rounded-xl text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700" aria-label="পাসওয়ার্ড দেখান"><i class="fa-regular fa-eye"></i></button>
+                </div>
+                <p id="quiz-password-error" class="hidden rounded-xl bg-red-50 dark:bg-red-900/20 px-3 py-2 text-sm font-semibold text-red-600 dark:text-red-300">পাসওয়ার্ড সঠিক নয়। আবার চেষ্টা করুন।</p>
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                    <button id="quiz-password-cancel" type="button" class="rounded-xl border border-slate-300 dark:border-slate-600 px-4 py-3 font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">বাতিল</button>
+                    <button type="submit" class="rounded-xl bg-emerald-600 px-4 py-3 font-black text-white shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 active:scale-[.98]">কুইজ শুরু করুন</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <!-- Supabase JS Library -->
@@ -876,14 +900,17 @@
                 <div class="p-4 rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50/70 dark:bg-amber-900/10 space-y-3">
                     <h4 class="font-black text-base text-slate-800 dark:text-white"><i class="fa-solid fa-shield-halved text-amber-600 mr-2"></i>সিকিউরিটি প্রশ্ন</h4>
                     <label for="security-question-select" class="block text-sm font-bold text-slate-700 dark:text-slate-300">প্রশ্ন নির্বাচন করুন</label>
-                    <select id="security-question-select" class="w-full p-3 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-sm">
+                    <select id="security-question-select" class="w-full p-3.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-base font-medium outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition-all">
                         <option value="আপনার প্রথম স্কুলের নাম কী?">আপনার প্রথম স্কুলের নাম কী?</option>
                         <option value="আপনার প্রিয় শিক্ষকের নাম কী?">আপনার প্রিয় শিক্ষকের নাম কী?</option>
                         <option value="আপনার জন্মস্থানের নাম কী?">আপনার জন্মস্থানের নাম কী?</option>
                         <option value="আপনার প্রিয় বইয়ের নাম কী?">আপনার প্রিয় বইয়ের নাম কী?</option>
                     </select>
                     <label for="security-question-answer" class="block text-sm font-bold text-slate-700 dark:text-slate-300">উত্তর</label>
-                    <input id="security-question-answer" type="password" autocomplete="off" placeholder="নতুন উত্তর লিখুন" class="w-full p-3 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-sm">
+                    <div class="relative">
+                        <input id="security-question-answer" type="password" autocomplete="new-password" autocapitalize="off" spellcheck="false" placeholder="নতুন উত্তর লিখুন" class="w-full p-3.5 pr-12 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-base font-semibold text-slate-900 dark:text-white placeholder:font-normal placeholder:text-slate-400 outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition-all">
+                        <button type="button" onclick="togglePassVisibility('security-question-answer', this.querySelector('i'))" aria-label="উত্তর দেখুন বা লুকান" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-slate-500 hover:text-brand-600 rounded-lg"><i class="fa-solid fa-eye"></i></button>
+                    </div>
                     <p id="security-question-hint" class="text-xs text-slate-500 dark:text-slate-400">আগে সেট করা থাকলে উত্তর ফাঁকা রাখলেই সেটি অপরিবর্তিত থাকবে।</p>
                 </div>
                 <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-4 rounded-xl text-sm font-black transition-all shadow-lg shadow-brand-600/30 hover:-translate-y-1 flex justify-center items-center gap-2 cursor-pointer mt-2">
@@ -997,18 +1024,16 @@
                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wide">সিকিউরিটি প্রশ্ন</label>
                     <p id="forgot-question-text" class="text-sm font-bold text-brand-600 mb-3 bg-brand-50 p-3 rounded-xl border border-brand-200"></p>
                     <div class="relative mb-4">
-                        <input type="text" id="forgot-answer" required placeholder="আপনার উত্তর লিখুন" class="w-full p-3.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-sm outline-none focus:border-brand-500 transition-all">
+                        <input type="password" id="forgot-answer" required autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="আপনার সিকিউরিটি উত্তর লিখুন" class="w-full p-3.5 pr-12 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 transition-all">
+                        <button type="button" onclick="togglePassVisibility('forgot-answer', this.querySelector('i'))" aria-label="উত্তর দেখুন বা লুকান" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-slate-500 hover:text-brand-600 rounded-lg"><i class="fa-solid fa-eye"></i></button>
                     </div>
                     <button type="button" onclick="handleForgotAnswer()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3.5 rounded-xl text-sm font-black transition-all shadow-md cursor-pointer">যাচাই করুন</button>
                 </div>
                 <div id="forgot-step-3" class="hidden">
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wide">নতুন পাসওয়ার্ড দিন</label>
-                    <div class="relative mb-4">
-                        <i class="fa-solid fa-lock absolute left-4 top-4 text-slate-400"></i>
-                        <input type="password" id="forgot-new-pass" required placeholder="••••••••" minlength="6" class="pl-11 w-full p-3.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-sm outline-none focus:border-brand-500 transition-all">
-                        <i onclick="togglePassVisibility('forgot-new-pass', this)" title="পাসওয়ার্ড দেখুন" class="fa-solid fa-eye absolute right-4 top-4 text-slate-400 hover:text-brand-600 cursor-pointer transition-colors"></i>
+                    <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 mb-4 text-sm text-emerald-800">
+                        <i class="fa-solid fa-shield-halved mr-2"></i>সিকিউরিটি উত্তর যাচাই হয়েছে। এখন ইমেইলে নিরাপদ পাসওয়ার্ড রিসেট লিংক পাঠান।
                     </div>
-                    <button type="button" onclick="handleForgotReset()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3.5 rounded-xl text-sm font-black transition-all shadow-md cursor-pointer">রিসেট করুন</button>
+                    <button type="button" onclick="handleForgotReset()" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3.5 rounded-xl text-sm font-black transition-all shadow-md cursor-pointer"><i class="fa-solid fa-envelope mr-2"></i>রিসেট লিংক ইমেইলে পাঠান</button>
                 </div>
             </form>
 
@@ -2348,50 +2373,104 @@
         }
 
         let tempForgotEmail = '';
+        let verifiedForgotSecurity = false;
+
+        function getSecurityRecordForEmail(email) {
+            const normalizedEmail = String(email || '').trim().toLowerCase();
+            if (!normalizedEmail) return null;
+
+            // First try the email-specific record used during registration.
+            try {
+                const raw = localStorage.getItem('secData_' + normalizedEmail);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && parsed.q && parsed.a) return {
+                        question: parsed.q,
+                        answer: String(parsed.a).trim().toLocaleLowerCase()
+                    };
+                }
+            } catch (e) { console.warn('Could not read email security record', e); }
+
+            // Also support the security question saved from Edit Profile.
+            const currentEmail = String(localStorage.getItem('portalUserEmail') || '').trim().toLowerCase();
+            if (currentEmail === normalizedEmail) {
+                try {
+                    const raw = localStorage.getItem(getStorageKey('securityQuestion'));
+                    const parsed = raw ? JSON.parse(raw) : null;
+                    if (parsed && parsed.question && parsed.answer) return {
+                        question: parsed.question,
+                        answer: String(parsed.answer).trim().toLocaleLowerCase()
+                    };
+                } catch (e) { console.warn('Could not read profile security record', e); }
+            }
+            return null;
+        }
+
         function handleForgotEmail() {
-            const email = document.getElementById('forgot-email').value.trim();
-            if(!email) {
-                showAuthMsg("অনুগ্রহ করে ইমেইল লিখুন", "error");
+            const email = document.getElementById('forgot-email').value.trim().toLowerCase();
+            if (!email) {
+                showAuthMsg('অনুগ্রহ করে ইমেইল লিখুন।', 'error');
                 return;
             }
 
-            const secData = localStorage.getItem('secData_' + email);
-            if(secData) {
-                const parsed = JSON.parse(secData);
+            const record = getSecurityRecordForEmail(email);
+            if (record) {
                 tempForgotEmail = email;
-                document.getElementById('forgot-question-text').innerText = parsed.q;
-
+                verifiedForgotSecurity = false;
+                document.getElementById('forgot-question-text').innerText = record.question;
+                document.getElementById('forgot-answer').value = '';
                 document.getElementById('forgot-step-1').classList.add('hidden');
                 document.getElementById('forgot-step-2').classList.remove('hidden');
                 showAuthMsg('', '');
             } else {
-                showAuthMsg("এই ইমেইলের জন্য কোনো সিকিউরিটি প্রশ্ন সেট করা নেই।", "error");
+                showAuthMsg('এই ডিভাইসে এই ইমেইলের সিকিউরিটি প্রশ্ন পাওয়া যায়নি। যে ডিভাইসে প্রশ্নটি সেট করেছিলেন, সেটি ব্যবহার করুন অথবা ইমেইল রিসেট পদ্ধতি ব্যবহার করুন।', 'error');
             }
         }
 
         function handleForgotAnswer() {
-            const ans = document.getElementById('forgot-answer').value.trim();
-            if(!ans) return;
-
-            const secData = JSON.parse(localStorage.getItem('secData_' + tempForgotEmail));
-            if(secData && secData.a.toLowerCase() === ans.toLowerCase()) {
-                document.getElementById('forgot-step-2').classList.add('hidden');
-                document.getElementById('forgot-step-3').classList.remove('hidden');
-                showAuthMsg("উত্তর সঠিক! নতুন পাসওয়ার্ড দিন।", "success");
-            } else {
-                showAuthMsg("আপনার উত্তরটি ভুল হয়েছে!", "error");
-            }
-        }
-
-        function handleForgotReset() {
-            const newPass = document.getElementById('forgot-new-pass').value;
-            if(newPass.length < 6) {
-                showAuthMsg("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে!", "error");
+            const ans = document.getElementById('forgot-answer').value.trim().toLocaleLowerCase();
+            if (!ans) {
+                showAuthMsg('সিকিউরিটি প্রশ্নের উত্তর লিখুন।', 'error');
                 return;
             }
 
-            showToast("পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে (Mocked)! দয়া করে লগইন করুন।", "success");
-            switchAuthTab('login');
+            const record = getSecurityRecordForEmail(tempForgotEmail);
+            if (record && record.answer === ans) {
+                verifiedForgotSecurity = true;
+                document.getElementById('forgot-step-2').classList.add('hidden');
+                document.getElementById('forgot-step-3').classList.remove('hidden');
+                showAuthMsg('উত্তর সঠিক! নিরাপদে পাসওয়ার্ড রিসেট করতে ইমেইলে রিসেট লিংক পাঠান।', 'success');
+            } else {
+                showAuthMsg('আপনার উত্তরটি মেলেনি। আবার চেষ্টা করুন।', 'error');
+            }
+        }
+
+        async function handleForgotReset() {
+            if (!verifiedForgotSecurity || !tempForgotEmail) {
+                showAuthMsg('আগে সিকিউরিটি উত্তর যাচাই করুন।', 'error');
+                return;
+            }
+
+            if (!supabaseClient) {
+                showAuthMsg('পাসওয়ার্ড নিরাপদে রিসেট করতে সার্ভার সংযোগ পাওয়া যায়নি।', 'error');
+                return;
+            }
+
+            const btn = document.querySelector('#forgot-step-3 button[onclick="handleForgotReset()"]');
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> লিংক পাঠানো হচ্ছে...'; }
+            try {
+                const { error } = await supabaseClient.auth.resetPasswordForEmail(tempForgotEmail, {
+                    redirectTo: window.location.origin + window.location.pathname
+                });
+                if (error) throw error;
+                showAuthMsg('রিসেট লিংক ইমেইলে পাঠানো হয়েছে। ইমেইল খুলে নতুন পাসওয়ার্ড সেট করুন।', 'success');
+            } catch (error) {
+                console.error('Password reset error:', error);
+                showAuthMsg('রিসেট ইমেইল পাঠানো যায়নি। Supabase-এর Auth URL ও Email সেটিংস পরীক্ষা করুন।', 'error');
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
+            }
         }
 
         function showAuthMsg(msg, type) {
@@ -2504,9 +2583,17 @@
             if (!question) { showToast('একটি সিকিউরিটি প্রশ্ন নির্বাচন করুন।', 'error'); return false; }
             if (!answer && !existing) { showToast('সিকিউরিটি প্রশ্নের উত্তর লিখুন।', 'error'); return false; }
             if (answer) {
-                localStorage.setItem(getStorageKey('securityQuestion'), JSON.stringify({
-                    question, answer: answer.toLocaleLowerCase(), updatedAt: Date.now()
-                }));
+                const securityRecord = {
+                    question,
+                    answer: answer.toLocaleLowerCase(),
+                    updatedAt: Date.now()
+                };
+                localStorage.setItem(getStorageKey('securityQuestion'), JSON.stringify(securityRecord));
+                // Forgot-password flow uses an email-specific key; keep both stores in sync.
+                const email = (localStorage.getItem('portalUserEmail') || '').trim().toLowerCase();
+                if (email) {
+                    localStorage.setItem('secData_' + email, JSON.stringify({ q: question, a: answer.toLocaleLowerCase() }));
+                }
             } else if (existing && existing.question !== question) {
                 showToast('প্রশ্ন পরিবর্তন করলে নতুন উত্তরও লিখুন।', 'error'); return false;
             }
@@ -3665,7 +3752,49 @@
             return defaultValue;
         }
 
-        function startQuizExam(subject) {
+        function showQuizPasswordModal(subject, expectedPassword) {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('quiz-password-modal');
+                const box = document.getElementById('quiz-password-box');
+                const form = document.getElementById('quiz-password-form');
+                const input = document.getElementById('quiz-password-input');
+                const cancel = document.getElementById('quiz-password-cancel');
+                const toggle = document.getElementById('quiz-password-toggle');
+                const error = document.getElementById('quiz-password-error');
+                const subtitle = document.getElementById('quiz-password-subtitle');
+                subtitle.textContent = `${subject} কুইজ শুরু করতে পাসওয়ার্ড দিন`;
+                input.value = ''; input.type = 'password'; error.classList.add('hidden');
+                modal.classList.remove('hidden'); modal.classList.add('flex');
+                requestAnimationFrame(() => { box.classList.remove('opacity-0', 'scale-95'); input.focus(); });
+                let finished = false;
+                const cleanup = (value) => {
+                    if (finished) return; finished = true;
+                    modal.classList.add('hidden'); modal.classList.remove('flex');
+                    box.classList.add('opacity-0', 'scale-95');
+                    form.removeEventListener('submit', onSubmit); cancel.removeEventListener('click', onCancel);
+                    toggle.removeEventListener('click', onToggle); modal.removeEventListener('click', onBackdrop);
+                    document.removeEventListener('keydown', onKey); resolve(value);
+                };
+                const onSubmit = (event) => {
+                    event.preventDefault();
+                    if (input.value === expectedPassword) cleanup(true);
+                    else { error.classList.remove('hidden'); input.value = ''; input.focus(); }
+                };
+                const onCancel = () => cleanup(false);
+                const onToggle = () => {
+                    const visible = input.type === 'password'; input.type = visible ? 'text' : 'password';
+                    toggle.innerHTML = visible ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
+                    toggle.setAttribute('aria-label', visible ? 'পাসওয়ার্ড লুকান' : 'পাসওয়ার্ড দেখান'); input.focus();
+                };
+                const onBackdrop = (event) => { if (event.target === modal) cleanup(false); };
+                const onKey = (event) => { if (event.key === 'Escape') cleanup(false); };
+                form.addEventListener('submit', onSubmit); cancel.addEventListener('click', onCancel);
+                toggle.addEventListener('click', onToggle); modal.addEventListener('click', onBackdrop);
+                document.addEventListener('keydown', onKey);
+            });
+        }
+
+        async function startQuizExam(subject) {
             const loggedInUser = localStorage.getItem('portalUserEmail');
             if (!loggedInUser) {
                 showToast("কুইজ শুরু করতে লগইন বা রেজিস্ট্রেশন করুন!", "error");
@@ -3683,13 +3812,10 @@
             };
 
             // Password = None বা ফাঁকা হলে পাসওয়ার্ড চাইবে না।
-            if (config.password) {
-                const enteredPassword = window.prompt(`\"${subject}\" কুইজ শুরু করতে পাসওয়ার্ড দিন:`);
-                if (enteredPassword === null) return;
-                if (enteredPassword !== config.password) {
-                    showToast('ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।', 'error');
-                    return;
-                }
+            const quizPassword = String(config.password == null ? '' : config.password).trim();
+            if (quizPassword && quizPassword.toLowerCase() !== 'none') {
+                const passwordAccepted = await showQuizPasswordModal(subject, quizPassword);
+                if (!passwordAccepted) return;
             }
 
             if (config.attemptLimit === 'Once') {
