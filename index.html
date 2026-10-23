@@ -2559,6 +2559,7 @@
                         let q = fullQuizHistory[i];
                         if (!uniqueSubjects[q.subject]) {
                             uniqueSubjects[q.subject] = true;
+                            q._historyIndex = i;
                             latestQuizzes.push(q);
                         }
                     }
@@ -2567,6 +2568,9 @@
                     <div class="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">`;
 
                     latestQuizzes.forEach(q => {
+                        const reviewBtn = Array.isArray(q.reviewQuestions) && q.reviewQuestions.length
+                            ? `<button onclick="openSavedQuizReview(${q._historyIndex})" class="flex items-center gap-1.5 bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300 border border-sky-200 dark:border-sky-800 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-sky-600 hover:text-white transition-colors cursor-pointer shadow-sm"><i class="fa-solid fa-list-check"></i> উত্তর দেখুন</button>`
+                            : `<span class="text-[10px] text-slate-400 px-2 py-1">পুরোনো রেকর্ডে Review নেই</span>`;
                         let certBtn = q.percentage >= 40
                             ? `<button onclick="generateCertificate('${q.subject.replace(/'/g, "\\'")}', ${q.percentage})" class="flex items-center gap-1.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-600 hover:text-white transition-colors cursor-pointer shadow-sm hover:shadow-md"><i class="fa-solid fa-certificate"></i> ডাউনলোড</button>`
                             : `<span class="flex items-center gap-1 text-[10px] text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-md border border-orange-200 dark:border-orange-800"><i class="fa-solid fa-lock"></i> ৪০% প্রয়োজন</span>`;
@@ -2580,8 +2584,9 @@
                                     <span class="font-bold text-slate-800 dark:text-slate-100">${q.subject}</span>
                                     <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium mt-0.5"><i class="fa-regular fa-calendar mr-1"></i> ${q.date || 'সাম্প্রতিক'}</span>
                                 </div>
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-2 flex-wrap justify-end">
                                     <span class="font-black ${q.percentage >= 40 ? 'text-brand-600 dark:text-brand-400' : 'text-red-500 dark:text-red-400'} bg-slate-50 dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-100 dark:border-slate-600">${q.percentage}%</span>
+                                    ${reviewBtn}
                                     ${certBtn}
                                 </div>
                             </div>
@@ -4013,7 +4018,7 @@
                         await printWindow.document.fonts.ready;
                     }
                     const certElement = printWindow.document.querySelector('.cert-box');
-                    if (!certElement) throw new Error('সার্টিফিকেটের অংশটি পাওয়া যায়নি।');
+                    if (!certElement) throw new Error('সার্টিফিকেটের অংশটি পাওয়া যায়নি।');
                     const images = Array.from(certElement.querySelectorAll('img'));
                     await Promise.all(images.map(img => {
                         if (img.complete && img.naturalWidth > 0) return Promise.resolve();
@@ -4068,6 +4073,83 @@
             return null;
         }
 
+        // Open a previously completed quiz review from Profile > History.
+        window.openSavedQuizReview = function(historyIndex) {
+            try {
+                const history = JSON.parse(localStorage.getItem(getStorageKey('fullQuizHistory')) || '[]');
+                const item = history[Number(historyIndex)];
+                if (!item) {
+                    showToast('এই কুইজের ইতিহাস পাওয়া যায়নি।', 'error');
+                    return;
+                }
+                if (!Array.isArray(item.reviewQuestions) || item.reviewQuestions.length === 0) {
+                    showToast('এই পুরোনো কুইজের Review সংরক্ষিত নেই। নতুন কুইজ দিলে Review History থাকবে।', 'error');
+                    return;
+                }
+
+                showSection('quiz');
+                document.getElementById('quiz-subject-view')?.classList.add('hidden');
+                document.getElementById('quiz-exam-view')?.classList.add('hidden');
+                const resultView = document.getElementById('quiz-result-view');
+                resultView.classList.remove('hidden');
+                currentActiveSubject = item.subject || 'Quiz';
+
+                const scoreBox = document.getElementById('score-display-box');
+                scoreBox.innerHTML = `
+                    <p class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">সংরক্ষিত কুইজের ফলাফল</p>
+                    <div class="text-4xl font-black text-slate-900 dark:text-white my-2">${escapeHTML(String(item.score))}/${escapeHTML(String(item.total))}</div>
+                    <div class="text-lg font-black text-brand-600 dark:text-brand-400">${escapeHTML(String(item.percentage))}%</div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">${escapeHTML(String(item.subject || 'Quiz'))} · ${escapeHTML(String(item.date || ''))}</p>`;
+
+                const certContainer = document.getElementById('certificate-action-container');
+                if (Number(item.percentage) >= 40) {
+                    certContainer.innerHTML = `<button onclick="generateCertificate('${String(item.subject || 'Quiz').replace(/\\/g, '\\\\').replace(/'/g, "\\'")}', ${Number(item.percentage)})" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-3 rounded-xl text-sm font-black shadow-lg mt-4"><i class="fa-solid fa-certificate mr-2"></i> সার্টিফিকেট ডাউনলোড</button>`;
+                } else {
+                    certContainer.innerHTML = `<p class="text-xs text-orange-600 mt-3">৪০% স্কোর না হওয়ায় সার্টিফিকেট পাওয়া যায়নি।</p>`;
+                }
+
+                const container = document.getElementById('review-questions-container');
+                container.innerHTML = '';
+                item.reviewQuestions.forEach((question, index) => {
+                    const options = Array.isArray(question.options) ? question.options : [];
+                    const selected = String(question.selectedAnswer || '').trim();
+                    const correct = String(question.correctAnswer || '').trim();
+                    let optionsHtml = '';
+                    options.forEach(option => {
+                        const value = String(option);
+                        const isCorrectOption = value.trim().toLocaleLowerCase() === correct.toLocaleLowerCase();
+                        const isSelectedOption = selected !== '' && value.trim().toLocaleLowerCase() === selected.toLocaleLowerCase();
+                        let classes = 'border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200';
+                        let tag = '';
+                        if (isCorrectOption) {
+                            classes = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-bold';
+                            tag = '<span class="text-xs font-black ml-2">✓ সঠিক উত্তর</span>';
+                        } else if (isSelectedOption) {
+                            classes = 'border-red-500 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 font-bold';
+                            tag = '<span class="text-xs font-black ml-2">✕ আপনার উত্তর</span>';
+                        }
+                        if (isCorrectOption && isSelectedOption) tag = '<span class="text-xs font-black ml-2">✓ আপনার সঠিক উত্তর</span>';
+                        optionsHtml += `<div class="p-3 border rounded-lg flex items-center justify-between gap-2 text-sm ${classes}"><span>${escapeHTML(value)}</span>${tag}</div>`;
+                    });
+                    const skipped = !selected ? '<span class="text-xs font-bold text-orange-600">উত্তর দেওয়া হয়নি</span>' : '';
+                    container.innerHTML += `
+                        <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 space-y-3 mb-4">
+                            <div class="flex justify-between items-start gap-3 border-b border-slate-200 dark:border-slate-700 pb-3">
+                                <p class="font-bold text-slate-900 dark:text-white"><span class="text-brand-600">Q${index + 1}.</span> ${escapeHTML(String(question.question || ''))}</p>${skipped}
+                            </div>
+                            <div class="space-y-2">${optionsHtml}</div>
+                            ${question.explanation ? `<div class="p-3 rounded-lg border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-sky-900/20"><p class="font-black text-sky-800 dark:text-sky-300 text-sm mb-1"><i class="fa-solid fa-lightbulb mr-1"></i> উত্তরের ব্যাখ্যা</p><p class="text-sm leading-7 whitespace-pre-line text-slate-700 dark:text-slate-200">${escapeHTML(String(question.explanation))}</p></div>` : ''}
+                        </div>`;
+                });
+                const reviewHeading = resultView.querySelector('h4');
+                if (reviewHeading) reviewHeading.innerHTML = '<div class="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-inner"><i class="fa-solid fa-list-check"></i></div> সংরক্ষিত উত্তরমালা পর্যালোচনা';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (error) {
+                console.error('Could not open saved quiz review:', error);
+                showToast('Review খুলতে সমস্যা হয়েছে।', 'error');
+            }
+        };
+
         function submitExam() {
             if(examTimer) clearInterval(examTimer);
             const questions = groupedQuizData[currentActiveSubject];
@@ -4075,6 +4157,9 @@
 
             const reviewContainer = document.getElementById('review-questions-container');
             reviewContainer.innerHTML = '';
+            const reviewHeading = document.querySelector('#quiz-result-view h4');
+            if (reviewHeading) reviewHeading.innerHTML = '<div class="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-inner"><i class="fa-solid fa-list-check"></i></div> উত্তরমালা পর্যালোচনা (Review)';
+            const savedReviewQuestions = [];
 
             questions.forEach((q, index) => {
                 const radios = document.getElementsByName(`exam_question_${index}`);
@@ -4095,6 +4180,17 @@
                 let isCorrect = (selectedAns !== "" && correctAns !== "" && selectedAns === correctAns);
 
                 if (isCorrect) score++;
+                const reviewOptions = ['Option1', 'Option2', 'Option3', 'Option4']
+                    .map(key => q[key] == null ? '' : String(q[key]).trim())
+                    .filter(value => value !== '');
+                savedReviewQuestions.push({
+                    question: String(q.Question || ''),
+                    options: reviewOptions,
+                    selectedAnswer: rawSelected,
+                    correctAnswer: rawCorrect,
+                    explanation: String(q.Explanation || ''),
+                    isCorrect: isCorrect
+                });
 
                 let optionsReviewHtml = '';
                 ['Option1', 'Option2', 'Option3', 'Option4'].forEach(optKey => {
@@ -4192,7 +4288,8 @@
                 score: score,
                 total: totalQ,
                 percentage: percentage,
-                date: new Date().toLocaleDateString()
+                date: new Date().toLocaleDateString(),
+                reviewQuestions: savedReviewQuestions
             });
             localStorage.setItem(getStorageKey('fullQuizHistory'), JSON.stringify(fullQuizHistory));
             localStorage.removeItem(getStorageKey('quizActiveSession'));
