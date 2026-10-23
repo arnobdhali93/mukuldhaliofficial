@@ -3292,14 +3292,21 @@
                     q.TimeLimit = quizField(raw, ['TimeLimit', 'timeLimit', 'timelimit'], 5);
                     q.AttemptLimit = quizField(raw, ['AttemptLimit', 'attemptLimit', 'attemptlimit'], 'Multiple');
                     q.ScreenshotAllowed = quizField(raw, ['ScreenshotAllowed', 'screenshotAllowed', 'screenshotallowed'], 'yes');
+                    q.Password = String(quizField(raw, ['Password', 'password', 'QuizPassword', 'quizpassword'], 'None')).trim() || 'None';
+                    q.ShuffleQuestions = quizField(raw, ['ShuffleQuestions', 'shuffleQuestions', 'shufflequestions', 'Shuffle_Questions'], 'Yes');
+                    q.ShuffleOptions = quizField(raw, ['ShuffleOptions', 'shuffleOptions', 'shuffleoptions', 'Shuffle_Options'], 'Yes');
 
                     if (!groupedQuizData[sub]) {
                         groupedQuizData[sub] = [];
                         const allowSS = String(q.ScreenshotAllowed || 'yes').trim().toLowerCase();
+                        const passwordText = String(q.Password || 'None').trim();
                         quizConfigData[sub] = {
                             timeLimit: parseInt(q.TimeLimit, 10) || 5,
                             attemptLimit: String(q.AttemptLimit || 'Multiple').trim(),
-                            screenshotAllowed: allowSS === 'no' ? 'no' : 'yes'
+                            screenshotAllowed: allowSS === 'no' ? 'no' : 'yes',
+                            password: passwordText.toLowerCase() === 'none' ? '' : passwordText,
+                            shuffleQuestions: normalizeQuizYesNo(q.ShuffleQuestions, true),
+                            shuffleOptions: normalizeQuizYesNo(q.ShuffleOptions, true)
                         };
                     }
                     if (!quizParentBySubject[sub]) quizParentBySubject[sub] = parentTitle || getQuizParentName(sub);
@@ -3650,6 +3657,14 @@
             return array;
         }
 
+        // Sheet-এর Yes/No মানকে Boolean-এ রূপান্তর করে।
+        function normalizeQuizYesNo(value, defaultValue) {
+            const text = String(value == null ? '' : value).trim().toLowerCase();
+            if (['yes', 'y', 'true', '1', 'হ্যাঁ'].includes(text)) return true;
+            if (['no', 'n', 'false', '0', 'না'].includes(text)) return false;
+            return defaultValue;
+        }
+
         function startQuizExam(subject) {
             const loggedInUser = localStorage.getItem('portalUserEmail');
             if (!loggedInUser) {
@@ -3658,7 +3673,25 @@
                 return;
             }
 
-            const config = quizConfigData[subject] || { timeLimit: 5, attemptLimit: 'Multiple', screenshotAllowed: 'yes' };
+            const config = quizConfigData[subject] || {
+                timeLimit: 5,
+                attemptLimit: 'Multiple',
+                screenshotAllowed: 'yes',
+                password: '',
+                shuffleQuestions: true,
+                shuffleOptions: true
+            };
+
+            // Password = None বা ফাঁকা হলে পাসওয়ার্ড চাইবে না।
+            if (config.password) {
+                const enteredPassword = window.prompt(`\"${subject}\" কুইজ শুরু করতে পাসওয়ার্ড দিন:`);
+                if (enteredPassword === null) return;
+                if (enteredPassword !== config.password) {
+                    showToast('ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।', 'error');
+                    return;
+                }
+            }
+
             if (config.attemptLimit === 'Once') {
                 let fullQuizHistory = JSON.parse(localStorage.getItem(getStorageKey('fullQuizHistory'))) || [];
                 let hasTaken = fullQuizHistory.some(q => q.subject === subject);
@@ -3682,9 +3715,11 @@
             const savedSessionStr = localStorage.getItem(getStorageKey('quizActiveSession'));
             const session = savedSessionStr ? JSON.parse(savedSessionStr) : null;
 
-            if(!session || session.subject !== subject) {
-                questions = shuffleArray(questions);
-                groupedQuizData[subject] = questions; 
+            if (!session || session.subject !== subject) {
+                if (config.shuffleQuestions) {
+                    questions = shuffleArray(questions);
+                }
+                groupedQuizData[subject] = questions;
             }
 
             document.getElementById('quiz-subject-view').classList.add('hidden');
@@ -3718,7 +3753,7 @@
                     if (q[optKey]) optionsList.push(q[optKey]);
                 });
 
-                if(!session || session.subject !== subject) {
+                if ((!session || session.subject !== subject) && config.shuffleOptions) {
                     optionsList = shuffleArray(optionsList);
                 }
 
