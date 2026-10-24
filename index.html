@@ -356,7 +356,21 @@
             #review-print-document, #review-print-document * { visibility: visible !important; }
             #review-print-document { position: absolute; inset: 0; width: 100%; padding: 12mm; background: white; color: #111827; }
         }
-    </style>
+    
+        /* Final quiz typography and compact spacing overrides */
+        #active-questions-container .quiz-question p,
+        #active-questions-container .quiz-question .quiz-question-text,
+        #active-questions-container .quiz-option,
+        #active-questions-container .quiz-option span { font-weight: 800 !important; }
+        #active-questions-container .quiz-question { padding-top: .45rem !important; padding-bottom: .45rem !important; }
+        #active-questions-container .quiz-question p { margin-bottom: .2rem !important; line-height: 1.45 !important; }
+        #active-questions-container .quiz-option { padding-top: .4rem !important; padding-bottom: .4rem !important; }
+        #review-questions-container .p-4 { background: transparent !important; padding: .7rem !important; margin-bottom: .6rem !important; }
+        #review-questions-container .bg-emerald-50, #review-questions-container .bg-red-50 { background: transparent !important; }
+        #review-questions-container .border-emerald-500 { border-color: #16a34a !important; }
+        #review-questions-container .border-red-500 { border-color: #dc2626 !important; }
+
+</style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100 overflow-x-hidden w-full transition-colors duration-300">
 
@@ -1836,7 +1850,11 @@
             }
             const title = currentActiveSubject || 'Quiz Review';
             const scoreText = (document.getElementById('score-display-box')?.innerText || '').trim();
-            const content = source.innerHTML;
+            // Keep the original review styling, but split questions evenly into left/right print columns.
+            const reviewItems = Array.from(source.children).map(el => el.outerHTML);
+            const splitAt = Math.ceil(reviewItems.length / 2);
+            const leftContent = reviewItems.slice(0, splitAt).join('');
+            const rightContent = reviewItems.slice(splitAt).join('');
             const popup = window.open('', '_blank');
             if (!popup) {
                 showToast('Print window ব্লক হয়েছে। Browser pop-up অনুমতি দিন।', 'error');
@@ -1844,8 +1862,8 @@
             }
             popup.document.open();
             popup.document.write(`<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHTML(title)} - Review</title><link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet"><style>
-              *{box-sizing:border-box}body{font-family:'Times New Roman','Kalpurush',serif;color:#111827;margin:0;padding:14px;line-height:1.35;font-size:12px}h1{font-size:20px;margin:0 0 5px}h2{font-size:16px;margin:10px 0 7px}.meta{white-space:pre-line;background:#f8fafc;padding:7px 9px;border:1px solid #cbd5e1;border-radius:6px;margin-bottom:9px;line-height:1.35}.review-item,.p-4{break-inside:avoid;margin:0 0 7px;padding:7px;border:1px solid #cbd5e1;border-radius:6px}.p-3{padding:5px 7px;border:1px solid #cbd5e1;border-radius:5px;margin:3px 0}.bg-emerald-50{background:#dcfce7!important}.text-emerald-700{color:#047857!important}.border-emerald-500{border:1.5px solid #059669!important}.bg-red-50{background:#fee2e2!important}.text-red-700{color:#b91c1c!important}.border-red-500{border:1.5px solid #dc2626!important}.bg-sky-50{background:#e0f2fe!important}.text-sky-800{color:#075985!important}.font-bold,.font-black,p{font-weight:800}.text-sm{font-size:12px}.text-xs{font-size:10px}.space-y-2>*+*{margin-top:3px}.space-y-3>*+*{margin-top:4px}.space-y-2,.space-y-3{gap:3px!important}.pl-\[1\.5rem\]{padding-left:10px!important}.ml-\[1\.5rem\]{margin-left:10px!important}.mt-3{margin-top:4px!important}.mb-4{margin-bottom:6px!important}.pb-2{padding-bottom:4px!important}.pt-2{padding-top:4px!important}.leading-7{line-height:1.35!important}.print-actions{margin-bottom:10px}button{border:0;border-radius:7px;padding:8px 12px;background:#047857;color:white;font-weight:bold}@media print{@page{size:auto;margin:9mm}body{padding:0;font-size:11px}.print-actions{display:none}.p-4,.review-item{break-inside:avoid}.bg-emerald-50,.bg-red-50,.bg-sky-50{print-color-adjust:exact;-webkit-print-color-adjust:exact}} 
-              </style></head><body><div class="print-actions"><button onclick="window.print()">Print / Save as PDF</button></div><h1>MukulDhaliOfficial — উত্তরমালা পর্যালোচনা</h1><h2>${escapeHTML(title)}</h2><div class="meta">${escapeHTML(scoreText)}</div>${content}<script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>`);
+              *{box-sizing:border-box}.meta{break-inside:avoid}body{font-family:'Times New Roman','Kalpurush',serif;color:#111827;margin:0;padding:12px;line-height:1.3;font-size:11px}h1{font-size:18px;margin:0 0 4px}h2{font-size:14px;margin:6px 0}.meta{white-space:pre-line;background:#fff;padding:5px 7px;border:1px solid #cbd5e1;border-radius:5px;margin-bottom:7px;line-height:1.25}.review-item,.p-4{break-inside:avoid;margin:0 0 5px;padding:5px;border:1px solid #cbd5e1;border-radius:5px;background:#fff!important}.p-3{padding:4px 5px;border:1px solid #cbd5e1;border-radius:4px;margin:2px 0;background:#fff!important}.bg-emerald-50,.bg-red-50,.bg-sky-50{background:#fff!important}.text-emerald-700{color:#047857!important}.border-emerald-500{border:1px solid #059669!important}.text-red-700{color:#b91c1c!important}.border-red-500{border:1px solid #dc2626!important}.text-sky-800{color:#075985!important}.font-bold,.font-black,p{font-weight:700}.text-sm{font-size:11px}.text-xs{font-size:10px}.space-y-2>*+*{margin-top:2px}.space-y-3>*+*{margin-top:3px}.space-y-2,.space-y-3{gap:2px!important}.pl-\[1\.5rem\]{padding-left:4px!important}.ml-\[1\.5rem\]{margin-left:4px!important}.mt-3{margin-top:3px!important}.mb-4{margin-bottom:4px!important}.pb-2{padding-bottom:3px!important}.pt-2{padding-top:3px!important}.leading-7{line-height:1.3!important}.print-actions{margin-bottom:8px}button{border:0;border-radius:7px;padding:8px 12px;background:#047857;color:white;font-weight:bold}.p-4 .bg-emerald-50:before,.p-4 .border-emerald-500:before{content:'✓ ';font-weight:900;color:#047857}.p-4 .border-red-500:before{content:'✕ ';font-weight:900;color:#dc2626}.review-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start}.review-column{min-width:0}.review-column:first-child{border-right:1px solid #94a3b8;padding-right:6px}.review-column:last-child{padding-left:6px}.review-column>.p-4{width:100%;break-inside:avoid;margin:0 0 5px}.review-column .p-3{overflow-wrap:anywhere}@media print{@page{size:A4 portrait;margin:7mm}body{padding:0;font-size:10px}.print-actions{display:none}.review-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:start}.review-column:first-child{border-right:1px solid #64748b;padding-right:5px}.review-column:last-child{padding-left:5px}.review-column>.p-4{break-inside:avoid;display:block;width:100%;vertical-align:top;margin-bottom:4px;padding:4px}.p-3{padding:3px 4px;margin:2px 0}.bg-emerald-50,.bg-red-50,.bg-sky-50{print-color-adjust:exact;-webkit-print-color-adjust:exact}} 
+              </style></head><body><div class="print-actions"><button onclick="window.print()">Print / Save as PDF</button></div><h1>MukulDhaliOfficial — উত্তরমালা পর্যালোচনা</h1><h2>${escapeHTML(title)}</h2><div class="meta">${escapeHTML(scoreText)}</div><div id="review-print-grid" class="review-columns"><div class="review-column">${leftContent}</div><div class="review-column">${rightContent}</div></div><script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>`);
             popup.document.close();
         }
 
@@ -4419,13 +4437,13 @@
 
                         if (optValLower === correctAns && optValLower === selectedAns) {
                             optClass = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-bold shadow-sm";
-                            badge = `<span class="ml-2 text-[10px] sm:text-xs bg-emerald-600 text-white px-2.5 py-1 rounded-md shadow-sm font-black uppercase tracking-wide"><i class="fa-solid fa-check-double mr-1"></i> আপনার সঠিক উত্তর</span>`;
+                            badge = `<span class="ml-2 text-[10px] sm:text-xs text-emerald-700 font-black">✓ আপনার সঠিক উত্তর</span>`;
                         } else if (optValLower === correctAns) {
                             optClass = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-bold shadow-sm";
-                            badge = `<span class="ml-2 text-[10px] sm:text-xs bg-emerald-600 text-white px-2.5 py-1 rounded-md shadow-sm font-black uppercase tracking-wide"><i class="fa-solid fa-check mr-1"></i> সঠিক উত্তর</span>`;
+                            badge = `<span class="ml-2 text-[10px] sm:text-xs text-emerald-700 font-black">✓ সঠিক উত্তর</span>`;
                         } else if (optValLower === selectedAns) {
                             optClass = "bg-red-50 dark:bg-red-900/30 border-red-500 text-red-700 dark:text-red-300 font-bold shadow-sm";
-                            badge = `<span class="ml-2 text-[10px] sm:text-xs bg-red-600 text-white px-2.5 py-1 rounded-md shadow-sm font-black uppercase tracking-wide"><i class="fa-solid fa-xmark mr-1"></i> আপনার ভুল উত্তর</span>`;
+                            badge = `<span class="ml-2 text-[10px] sm:text-xs text-red-700 font-black">✕ আপনার ভুল উত্তর</span>`;
                         }
 
                         optionsReviewHtml += `
