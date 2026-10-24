@@ -1870,9 +1870,10 @@
                 clone.querySelectorAll('.mt-3.ml-\\[1\\.5rem\\], .mt-3').forEach(el => el.remove());
                 return clone.outerHTML;
             });
-            const splitAt = Math.ceil(reviewItems.length / 2);
-            const leftContent = reviewItems.slice(0, splitAt).join('');
-            const rightContent = reviewItems.slice(splitAt).join('');
+            // Keep the original question order in a continuous print flow.
+            // CSS multicolumn will fill the left column, then the right column,
+            // and continue on the next page from the next question number.
+            const allReviewContent = reviewItems.join('');
             const popup = window.open('', '_blank');
             if (!popup) {
                 showToast('Print window ব্লক হয়েছে। Browser pop-up অনুমতি দিন।', 'error');
@@ -1880,8 +1881,8 @@
             }
             popup.document.open();
             popup.document.write(`<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHTML(title)} - Review</title><link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet"><style>
-              *{box-sizing:border-box}body{font-family:'Times New Roman','Kalpurush',serif;color:#111827;margin:0;padding:10px;line-height:1.25;font-size:10px}h1{font-size:16px;margin:0 0 3px}h2{font-size:12px;margin:3px 0}.meta{white-space:pre-line;background:#fff;padding:4px 0;border:0;border-bottom:1px solid #cbd5e1;margin-bottom:6px;line-height:1.2}.review-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:start}.review-column{min-width:0}.review-column:first-child{border-right:1px solid #64748b;padding-right:7px}.review-column:last-child{padding-left:7px}.review-question{border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;padding:0!important;margin:0 0 7px!important;break-inside:avoid}.review-question-heading{display:block!important;margin:0 0 1px!important;padding:0!important;border:0!important}.review-question-heading p{font-weight:800!important;margin:0!important;line-height:1.2!important}.review-question-heading>div{display:inline!important}.review-option{display:flex;align-items:flex-start;justify-content:space-between;gap:4px;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;line-height:1.2;font-size:10px;font-weight:400!important}.review-option>span:first-child{flex:1;min-width:0;overflow-wrap:anywhere}.review-mark{flex:none;font-weight:900!important;white-space:nowrap;margin-left:3px}.mark-correct{color:#078044!important}.mark-wrong{color:#d11f2a!important}.review-option .text-emerald-700{color:inherit!important}.review-option .text-red-700{color:inherit!important}.space-y-2>*+*{margin-top:0!important}.space-y-2,.space-y-3{gap:0!important}.pl-\\[1\\.5rem\\]{padding-left:0!important}.review-question .text-xs,.review-question .text-sm{font-size:10px!important}.print-actions{margin-bottom:6px}button{border:0;border-radius:6px;padding:7px 10px;background:#047857;color:white;font-weight:bold}@media print{@page{size:A4 portrait;margin:7mm}body{padding:0;font-size:9px}.print-actions{display:none}.review-columns{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}.review-column:first-child{border-right:1px solid #64748b;padding-right:6px}.review-column:last-child{padding-left:6px}.review-question{margin-bottom:5px!important}.review-option{font-size:9px!important;line-height:1.15!important}.meta{margin-bottom:5px}}
-              </style></head><body><div class="print-actions"><button onclick="window.print()">Print / Save as PDF</button></div><h1>MukulDhaliOfficial — উত্তরমালা পর্যালোচনা</h1><h2>${escapeHTML(title)}</h2><div class="meta">${escapeHTML(scoreText)}</div><div id="review-print-grid" class="review-columns"><div class="review-column">${leftContent}</div><div class="review-column">${rightContent}</div></div><script>window.onload=()=>setTimeout(()=>window.print(),250)<\/script></body></html>`);
+              *{box-sizing:border-box}body{font-family:'Times New Roman','Kalpurush',serif;color:#111827;margin:0;padding:10px;line-height:1.25;font-size:10px}h1{font-size:16px;margin:0 0 3px}h2{font-size:12px;margin:3px 0}.meta{white-space:pre-line;background:#fff;padding:4px 0;border:0;border-bottom:1px solid #cbd5e1;margin-bottom:6px;line-height:1.2}.review-columns{column-count:2;column-gap:14px;column-rule:1px solid #64748b;column-fill:auto;display:block}.review-column{display:contents;min-width:0}.review-question{border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;padding:0!important;margin:0 0 7px!important;break-inside:avoid;page-break-inside:avoid;display:inline-block;width:100%;}.review-question-heading{display:block!important;margin:0 0 1px!important;padding:0!important;border:0!important}.review-question-heading p{font-weight:800!important;margin:0!important;line-height:1.2!important}.review-question-heading>div{display:inline!important}.review-option{display:flex;align-items:flex-start;justify-content:space-between;gap:4px;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;line-height:1.2;font-size:10px;font-weight:400!important}.review-option>span:first-child{flex:1;min-width:0;overflow-wrap:anywhere}.review-mark{flex:none;font-weight:900!important;white-space:nowrap;margin-left:3px}.mark-correct{color:#078044!important}.mark-wrong{color:#d11f2a!important}.review-option .text-emerald-700{color:inherit!important}.review-option .text-red-700{color:inherit!important}.space-y-2>*+*{margin-top:0!important}.space-y-2,.space-y-3{gap:0!important}.pl-\\[1\\.5rem\\]{padding-left:0!important}.review-question .text-xs,.review-question .text-sm{font-size:10px!important}.print-actions{margin-bottom:6px}button{border:0;border-radius:6px;padding:7px 10px;background:#047857;color:white;font-weight:bold}@media print{@page{size:A4 portrait;margin:7mm}body{padding:0;font-size:9px}.print-actions{display:none}.review-columns{column-count:2;column-gap:12px;column-rule:1px solid #64748b;column-fill:auto}.review-question{margin-bottom:5px!important;font-weight:400!important}.review-question-heading p{font-weight:800!important}.review-option,.review-option *{font-size:9px!important;line-height:1.15!important;font-weight:400!important}.review-mark{font-weight:900!important}.meta{margin-bottom:5px}}
+              </style></head><body><div class="print-actions"><button onclick="window.print()">Print / Save as PDF</button></div><h1>MukulDhaliOfficial — উত্তরমালা পর্যালোচনা</h1><h2>${escapeHTML(title)}</h2><div class="meta">${escapeHTML(scoreText)}</div><div id="review-print-grid" class="review-columns">${allReviewContent}</div><script>window.onload=()=>setTimeout(()=>window.print(),250)<\/script></body></html>`);
             popup.document.close();
         }
 
@@ -4412,6 +4413,7 @@
             const reviewHeading = document.querySelector('#quiz-result-view h4');
             if (reviewHeading) reviewHeading.innerHTML = '<div class="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-inner"><i class="fa-solid fa-list-check"></i></div> উত্তরমালা পর্যালোচনা (Review)';
             const savedReviewQuestions = [];
+            const reviewHtmlParts = [];
 
             questions.forEach((q, index) => {
                 const radios = document.getElementsByName(`exam_question_${index}`);
@@ -4454,13 +4456,13 @@
                         let badge = "";
 
                         if (optValLower === correctAns && optValLower === selectedAns) {
-                            optClass = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-bold shadow-sm";
+                            optClass = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-normal shadow-sm";
                             badge = `<span class="ml-2 text-[10px] sm:text-xs text-emerald-700 font-black">✓ আপনার সঠিক উত্তর</span>`;
                         } else if (optValLower === correctAns) {
-                            optClass = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-bold shadow-sm";
+                            optClass = "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-normal shadow-sm";
                             badge = `<span class="ml-2 text-[10px] sm:text-xs text-emerald-700 font-black">✓ সঠিক উত্তর</span>`;
                         } else if (optValLower === selectedAns) {
-                            optClass = "bg-red-50 dark:bg-red-900/30 border-red-500 text-red-700 dark:text-red-300 font-bold shadow-sm";
+                            optClass = "bg-red-50 dark:bg-red-900/30 border-red-500 text-red-700 dark:text-red-300 font-normal shadow-sm";
                             badge = `<span class="ml-2 text-[10px] sm:text-xs text-red-700 font-black">✕ আপনার ভুল উত্তর</span>`;
                         }
 
@@ -4474,7 +4476,7 @@
 
                 let skippedBadge = !selectedVal ? `<span class="text-[10px] text-orange-700 bg-orange-100 dark:bg-orange-900/40 dark:text-orange-400 px-3 py-1 rounded-md font-black uppercase tracking-wide border border-orange-200 dark:border-orange-800 whitespace-nowrap"><i class="fa-solid fa-circle-exclamation mr-1"></i> উত্তর দেওয়া হয়নি</span>` : '';
 
-                reviewContainer.innerHTML += `
+                reviewHtmlParts.push(`
                 <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 space-y-2 mb-4 shadow-sm">
                     <div class="flex justify-between items-start gap-3 border-b border-slate-200 dark:border-slate-700 pb-2">
                         <div class="flex gap-2">
@@ -4494,8 +4496,10 @@
                         </div>
                         <p class="text-sm leading-7 text-slate-700 dark:text-slate-200 whitespace-pre-line">${escapeHTML(String(q.Explanation))}</p>
                     </div>` : ''}
-                </div>`;
+                </div>`);
             });
+            // One DOM update instead of reparsing the entire review for every question.
+            reviewContainer.innerHTML = reviewHtmlParts.join('');
 
             const totalQ = questions.length;
             const percentage = Math.round((score / totalQ) * 100);
