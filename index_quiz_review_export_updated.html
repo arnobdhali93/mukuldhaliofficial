@@ -344,7 +344,13 @@
         #active-questions-container .quiz-question p,
         #active-questions-container .quiz-question .quiz-question-text,
         #active-questions-container .quiz-option,
-        #active-questions-container .quiz-option span { font-weight: 700 !important; }
+        #active-questions-container .quiz-option span {
+            font-weight: 900 !important;
+            -webkit-text-stroke: .22px currentColor;
+            text-rendering: geometricPrecision;
+        }
+        #active-questions-container .quiz-question p { font-size: 1.08rem !important; line-height: 1.6 !important; }
+        #active-questions-container .quiz-option span { font-size: 1rem !important; }
         @media print {
             body * { visibility: hidden !important; }
             #review-print-document, #review-print-document * { visibility: visible !important; }
@@ -1838,7 +1844,7 @@
             }
             popup.document.open();
             popup.document.write(`<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHTML(title)} - Review</title><link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet"><style>
-              *{box-sizing:border-box}body{font-family:'Times New Roman','Kalpurush',serif;color:#111827;margin:0;padding:24px;line-height:1.55}h1{font-size:24px;margin:0 0 8px}h2{font-size:18px;margin:24px 0 12px}.meta{white-space:pre-line;background:#f8fafc;padding:12px;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:20px}.review-item,.p-4{break-inside:avoid;margin:0 0 14px;padding:12px;border:1px solid #d1d5db;border-radius:8px}.p-3{padding:10px;border:1px solid #d1d5db;border-radius:6px;margin:6px 0}.bg-emerald-50{background:#ecfdf5}.text-emerald-700{color:#047857}.bg-red-50{background:#fef2f2}.text-red-700{color:#b91c1c}.bg-sky-50{background:#f0f9ff}.text-sky-800{color:#075985}.font-bold,.font-black,p{font-weight:700}.text-sm{font-size:14px}.text-xs{font-size:12px}.space-y-2>*+*{margin-top:8px}.space-y-3>*+*{margin-top:12px}.print-actions{margin-bottom:18px}button{border:0;border-radius:7px;padding:10px 16px;background:#047857;color:white;font-weight:bold}@media print{body{padding:0}.print-actions{display:none}.p-4,.review-item{break-inside:avoid}} 
+              *{box-sizing:border-box}body{font-family:'Times New Roman','Kalpurush',serif;color:#111827;margin:0;padding:14px;line-height:1.35;font-size:12px}h1{font-size:20px;margin:0 0 5px}h2{font-size:16px;margin:10px 0 7px}.meta{white-space:pre-line;background:#f8fafc;padding:7px 9px;border:1px solid #cbd5e1;border-radius:6px;margin-bottom:9px;line-height:1.35}.review-item,.p-4{break-inside:avoid;margin:0 0 7px;padding:7px;border:1px solid #cbd5e1;border-radius:6px}.p-3{padding:5px 7px;border:1px solid #cbd5e1;border-radius:5px;margin:3px 0}.bg-emerald-50{background:#dcfce7!important}.text-emerald-700{color:#047857!important}.border-emerald-500{border:1.5px solid #059669!important}.bg-red-50{background:#fee2e2!important}.text-red-700{color:#b91c1c!important}.border-red-500{border:1.5px solid #dc2626!important}.bg-sky-50{background:#e0f2fe!important}.text-sky-800{color:#075985!important}.font-bold,.font-black,p{font-weight:800}.text-sm{font-size:12px}.text-xs{font-size:10px}.space-y-2>*+*{margin-top:3px}.space-y-3>*+*{margin-top:4px}.space-y-2,.space-y-3{gap:3px!important}.pl-\[1\.5rem\]{padding-left:10px!important}.ml-\[1\.5rem\]{margin-left:10px!important}.mt-3{margin-top:4px!important}.mb-4{margin-bottom:6px!important}.pb-2{padding-bottom:4px!important}.pt-2{padding-top:4px!important}.leading-7{line-height:1.35!important}.print-actions{margin-bottom:10px}button{border:0;border-radius:7px;padding:8px 12px;background:#047857;color:white;font-weight:bold}@media print{@page{size:auto;margin:9mm}body{padding:0;font-size:11px}.print-actions{display:none}.p-4,.review-item{break-inside:avoid}.bg-emerald-50,.bg-red-50,.bg-sky-50{print-color-adjust:exact;-webkit-print-color-adjust:exact}} 
               </style></head><body><div class="print-actions"><button onclick="window.print()">Print / Save as PDF</button></div><h1>MukulDhaliOfficial — উত্তরমালা পর্যালোচনা</h1><h2>${escapeHTML(title)}</h2><div class="meta">${escapeHTML(scoreText)}</div>${content}<script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>`);
             popup.document.close();
         }
@@ -4555,6 +4561,7 @@
 
             document.getElementById('score-display-box').innerHTML = `
                 <p class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">আপনার প্রাপ্ত স্কোর</p>
+                <p class="quiz-result-topic font-black text-slate-800 dark:text-slate-100 text-base md:text-lg mb-2">পরীক্ষা / টপিক: ${escapeHTML(String(currentActiveSubject || 'Quiz'))}</p>
                 <div class="text-5xl font-black text-slate-900 dark:text-white my-2">${scoreFormatted}</div>
                 <div class="text-lg font-black text-brand-600 dark:text-brand-400 mb-2">(${percentage}%)</div>
                 ${messageHtml}
