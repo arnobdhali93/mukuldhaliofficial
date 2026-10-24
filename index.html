@@ -263,7 +263,7 @@
         #active-questions-container .quiz-option:has(input:checked) { background: rgba(22,163,74,.07); }
         @media (max-width: 640px) {
             #active-questions-container .quiz-question { padding-top: .65rem; padding-bottom: .65rem; }
-            #active-questions-container .quiz-question p { font-size: 1rem; line-height: 1.55; }
+            #active-questions-container .quiz-question p { font-size: 1rem; line-height: 1.55; font-weight: 800 !important; }
             #active-questions-container .quiz-option { padding: .45rem .25rem; font-size: .95rem; }
             #active-questions-container .quiz-option > div { width: 1rem; height: 1rem; }
         }
@@ -336,8 +336,19 @@
         }
         @media (max-width: 640px) {
             #active-questions-container .quiz-question { padding: .8rem !important; }
-            #active-questions-container .quiz-question p { font-size: 1rem !important; line-height: 1.5 !important; }
+            #active-questions-container .quiz-question p { font-size: 1rem !important; line-height: 1.5 !important; font-weight: 800 !important; }
             #active-questions-container .quiz-option { padding: .65rem .7rem !important; font-size: .95rem !important; }
+        }
+
+        /* Quiz question text should be bold for both Bengali and English. */
+        #active-questions-container .quiz-question p,
+        #active-questions-container .quiz-question .quiz-question-text,
+        #active-questions-container .quiz-option,
+        #active-questions-container .quiz-option span { font-weight: 700 !important; }
+        @media print {
+            body * { visibility: hidden !important; }
+            #review-print-document, #review-print-document * { visibility: visible !important; }
+            #review-print-document { position: absolute; inset: 0; width: 100%; padding: 12mm; background: white; color: #111827; }
         }
     </style>
 </head>
@@ -655,10 +666,13 @@
                     <div id="certificate-action-container" class="max-w-sm mx-auto"></div>
 
                     <div class="text-left space-y-5 pt-8 border-t-2 border-slate-100 dark:border-slate-700">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
                         <h4 class="font-black text-xl text-slate-900 dark:text-white flex items-center gap-3">
                             <div class="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-inner"><i class="fa-solid fa-list-check"></i></div>
                             উত্তরমালা পর্যালোচনা (Review)
                         </h4>
+                        <button type="button" onclick="exportQuizReview()" class="review-export-btn inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold shadow-sm"><i class="fa-solid fa-file-pdf"></i> Review Print / PDF</button>
+                        </div>
                         <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 p-4 rounded-xl text-sm font-medium text-blue-800 dark:text-blue-300 flex gap-3">
                             <i class="fa-solid fa-lightbulb mt-0.5"></i>
                             <p>ভবিষ্যতে ভালো স্কোর করার জন্য নিচের ভুল উত্তরগুলো মনোযোগ দিয়ে দেখুন।</p>
@@ -1799,10 +1813,34 @@
             shareContent('My Quiz Score', text, window.location.href);
         }
 
-        window.shareQuizLink = function(subject) {
-            const url = window.location.href.split('#')[0] + '#quiz';
-            const text = `আমি MukulDhaliOfficial এ '${subject}' কুইজটি দিচ্ছি। আপনিও চেষ্টা করুন!`;
-            shareContent('MukulDhaliOfficial Quiz', text, url);
+        window.shareQuizLink = function(subject, type = 'topic') {
+            const base = window.location.href.split('#')[0];
+            const url = `${base}?sharedQuiz=${encodeURIComponent(subject)}&shareType=${encodeURIComponent(type)}#quiz`;
+            const label = type === 'subject' ? 'বিষয়' : 'টপিক';
+            const text = `MukulDhaliOfficial-এ ${label}: “${subject}” এর কুইজটি দিন।`;
+            shareContent('MukulDhaliOfficial Quiz — ' + subject, text, url);
+        }
+
+        // Print/export the currently visible review (works for result review and Profile history review).
+        window.exportQuizReview = function() {
+            const source = document.getElementById('review-questions-container');
+            if (!source || !source.children.length) {
+                showToast('প্রিন্ট করার মতো Review পাওয়া যায়নি।', 'error');
+                return;
+            }
+            const title = currentActiveSubject || 'Quiz Review';
+            const scoreText = (document.getElementById('score-display-box')?.innerText || '').trim();
+            const content = source.innerHTML;
+            const popup = window.open('', '_blank');
+            if (!popup) {
+                showToast('Print window ব্লক হয়েছে। Browser pop-up অনুমতি দিন।', 'error');
+                return;
+            }
+            popup.document.open();
+            popup.document.write(`<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHTML(title)} - Review</title><link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet"><style>
+              *{box-sizing:border-box}body{font-family:'Times New Roman','Kalpurush',serif;color:#111827;margin:0;padding:24px;line-height:1.55}h1{font-size:24px;margin:0 0 8px}h2{font-size:18px;margin:24px 0 12px}.meta{white-space:pre-line;background:#f8fafc;padding:12px;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:20px}.review-item,.p-4{break-inside:avoid;margin:0 0 14px;padding:12px;border:1px solid #d1d5db;border-radius:8px}.p-3{padding:10px;border:1px solid #d1d5db;border-radius:6px;margin:6px 0}.bg-emerald-50{background:#ecfdf5}.text-emerald-700{color:#047857}.bg-red-50{background:#fef2f2}.text-red-700{color:#b91c1c}.bg-sky-50{background:#f0f9ff}.text-sky-800{color:#075985}.font-bold,.font-black,p{font-weight:700}.text-sm{font-size:14px}.text-xs{font-size:12px}.space-y-2>*+*{margin-top:8px}.space-y-3>*+*{margin-top:12px}.print-actions{margin-bottom:18px}button{border:0;border-radius:7px;padding:10px 16px;background:#047857;color:white;font-weight:bold}@media print{body{padding:0}.print-actions{display:none}.p-4,.review-item{break-inside:avoid}} 
+              </style></head><body><div class="print-actions"><button onclick="window.print()">Print / Save as PDF</button></div><h1>MukulDhaliOfficial — উত্তরমালা পর্যালোচনা</h1><h2>${escapeHTML(title)}</h2><div class="meta">${escapeHTML(scoreText)}</div>${content}<script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>`);
+            popup.document.close();
         }
 
         function stopAllSpeech() {
@@ -3640,10 +3678,10 @@
                 tests.forEach(subject => {
                     const count = groupedQuizData[subject].length;
                     const config = quizConfigData[subject] || {};
-                    container.innerHTML += `<button type="button" onclick="startQuizExam(this.dataset.subject)" data-subject="${escapeHTML(subject)}" class="text-left p-5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-slate-700 transition flex items-center justify-between gap-4">
+                    container.innerHTML += `<div class="relative"><button type="button" onclick="startQuizExam(this.dataset.subject)" data-subject="${escapeHTML(subject)}" class="w-full text-left p-5 pr-16 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-slate-700 transition flex items-center justify-between gap-4">
                         <span><strong class="block text-lg">${escapeHTML(subject)}</strong><span class="text-sm text-slate-500">${count}টি MCQ · সময় ${parseInt(config.timeLimit)||5} মিনিট</span></span>
                         <span class="text-brand-600 text-xl"><i class="fa-solid fa-circle-play"></i></span>
-                    </button>`;
+                    </button><button type="button" onclick="shareQuizLink(this.dataset.name, 'topic')" data-name="${escapeHTML(subject)}" class="absolute right-3 top-1/2 -translate-y-1/2 p-3 rounded-lg text-brand-700 bg-brand-50 hover:bg-brand-100" title="টপিক শেয়ার করুন" aria-label="টপিক শেয়ার করুন"><i class="fa-solid fa-share-nodes"></i></button></div>`;
                 });
                 if (!tests.length) container.innerHTML += '<p class="col-span-full text-center py-8">এই বিষয়ে কোনো টেস্ট নেই।</p>';
                 return;
@@ -3661,11 +3699,22 @@
             parents.forEach(parent => {
                 const tests = parentMap[parent];
                 const count = tests.reduce((sum, sub) => sum + (groupedQuizData[sub] || []).length, 0);
-                container.innerHTML += `<button type="button" onclick="selectedQuizParent=this.dataset.parent;renderQuizSubjects(Object.keys(groupedQuizData))" data-parent="${escapeHTML(parent)}" class="text-left p-5 md:p-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-slate-700 transition flex items-center justify-between gap-4">
+                container.innerHTML += `<div class="relative"><button type="button" onclick="selectedQuizParent=this.dataset.parent;renderQuizSubjects(Object.keys(groupedQuizData))" data-parent="${escapeHTML(parent)}" class="w-full text-left p-5 md:p-6 pr-16 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-slate-700 transition flex items-center justify-between gap-4">
                     <span><strong class="block text-xl md:text-2xl">${escapeHTML(parent)}</strong><span class="text-sm text-slate-500">${tests.length}টি টেস্ট · মোট ${count}টি MCQ</span></span>
                     <span class="text-brand-600 text-xl"><i class="fa-solid fa-chevron-right"></i></span>
-                </button>`;
+                </button><button type="button" aria-label="বিষয় শেয়ার করুন" onclick="shareQuizLink(this.dataset.name, 'subject')" data-name="${escapeHTML(parent)}" class="absolute right-3 top-1/2 -translate-y-1/2 p-3 rounded-lg text-brand-700 bg-brand-50 hover:bg-brand-100" title="বিষয় শেয়ার করুন"><i class="fa-solid fa-share-nodes"></i></button></div>`;
             });
+            // A shared link opens the matching test directly (or the matching subject list).
+            const shared = new URLSearchParams(window.location.search).get('sharedQuiz');
+            if (shared && !window.__sharedQuizHandled) {
+                window.__sharedQuizHandled = true;
+                if (groupedQuizData[shared]) {
+                    setTimeout(() => startQuizExam(shared), 250);
+                } else {
+                    const matchingParent = parents.find(parent => parent.toLocaleLowerCase() === shared.toLocaleLowerCase());
+                    if (matchingParent) { selectedQuizParent = matchingParent; renderQuizSubjects(Object.keys(groupedQuizData)); }
+                }
+            }
         }
 
         function saveQuizProgress() {
@@ -4260,7 +4309,7 @@
                     <p class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">সংরক্ষিত কুইজের ফলাফল</p>
                     <div class="text-4xl font-black text-slate-900 dark:text-white my-2">${escapeHTML(String(item.score))}/${escapeHTML(String(item.total))}</div>
                     <div class="text-lg font-black text-brand-600 dark:text-brand-400">${escapeHTML(String(item.percentage))}%</div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">${escapeHTML(String(item.subject || 'Quiz'))} · ${escapeHTML(String(item.date || ''))}</p>`;
+                    <p class="text-sm font-bold text-slate-700 dark:text-slate-300 mt-2">পরীক্ষা / টপিক: ${escapeHTML(String(item.subject || 'Quiz'))}</p><p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${escapeHTML(String(item.date || ''))}</p>`;
 
                 const certContainer = document.getElementById('certificate-action-container');
                 if (Number(item.percentage) >= 40) {
