@@ -1923,13 +1923,9 @@
                 clone.querySelectorAll('.mt-3').forEach(explanation => {
                     const heading = explanation.querySelector('.font-black');
                     if (heading) {
-                        const label = (heading.textContent || '')
-                            .replace(/\(\s*[A-D]\s*\)/gi, ' ')
-                            .replace(/\s*→\s*$/, '')
-                            .replace(/^\s*★\s*/, '')
-                            .replace(/^\s*উত্তরের\s+ব্যাখ্যা\s*/i, 'উত্তরের ব্যাখ্যা ')
-                            .trim();
-                        heading.textContent = '★ ' + label + ' →';
+                        // Always use a fixed title so option labels like (C)/( C )
+                        // cannot leak into the explanation heading in print or preview.
+                        heading.textContent = '★ উত্তরের ব্যাখ্যা →';
                         heading.classList.add('review-explanation-heading');
                     }
                     const explanationText = explanation.querySelector('p:not(.font-black)');
