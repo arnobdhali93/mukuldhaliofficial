@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn" class="scroll-smooth overflow-x-hidden">
+<html lang="bn" class="scroll-smooth overflow-x-hidden app-booting">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -370,6 +370,12 @@
         #review-questions-container .border-emerald-500 { border-color: #16a34a !important; }
         #review-questions-container .border-red-500 { border-color: #dc2626 !important; }
 
+
+        /* Chatbot is available from the main menu only; hide floating launcher/handle. */
+        #chatbotFloatBtn, #showChatbotHandle { display:none !important; }
+        /* Prevent a flash of uninitialized sections during refresh. */
+        html.app-booting body { visibility:hidden; }
+        html.app-booting body::before { content:'MukulDhaliOfficial'; visibility:visible; position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:#f8fafc; color:#2563eb; font-weight:800; font-size:18px; z-index:99999; }
 </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100 overflow-x-hidden w-full transition-colors duration-300">
@@ -460,6 +466,9 @@
                 <i class="fa-solid fa-user-shield w-5 text-center"></i> আমার প্রোফাইল
             </button>
 
+            <button onclick="openChatFromMenu()" title="এআই চ্যাটবট" class="nav-btn w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-brand-600 cursor-pointer">
+                <i class="fa-solid fa-robot w-5 text-center"></i> এআই চ্যাটবট
+            </button>
             <div class="h-px bg-slate-200 dark:bg-slate-700 my-4"></div>
 
             <button onclick="toggleDarkMode()" title="ডার্ক মোড টগল করুন" class="w-full flex items-center justify-between px-4 py-3.5 rounded-xl font-bold transition-all text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md cursor-pointer hover:border-brand-300">
@@ -1780,6 +1789,15 @@
             }
         }
 
+        function openChatFromMenu() {
+            const chat = document.getElementById('chat-window');
+            if (chat && chat.classList.contains('hidden')) toggleChat();
+            if (window.innerWidth < 768) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar && !sidebar.classList.contains('-translate-x-full')) toggleSidebar();
+            }
+        }
+
         function setChatQuery(text) {
             document.getElementById('userQuery').value = text;
             askGemini();
@@ -1848,6 +1866,7 @@
                 showToast('প্রিন্ট করার মতো Review পাওয়া যায়নি।', 'error');
                 return;
             }
+            const includeExplanation = window.confirm('Review প্রিন্টে উত্তর + ব্যাখ্যা রাখতে OK চাপুন। শুধু উত্তর রাখতে Cancel চাপুন।');
             const title = currentActiveSubject || 'Quiz Review';
             const scoreText = (document.getElementById('score-display-box')?.innerText || '').trim();
             const reviewItems = Array.from(source.children).map(el => {
@@ -1867,7 +1886,7 @@
                     }
                 });
                 clone.querySelectorAll('.border-b').forEach(el => { el.classList.remove('border-b','pb-2'); });
-                clone.querySelectorAll('.mt-3.ml-\\[1\\.5rem\\], .mt-3').forEach(el => el.remove());
+                if (!includeExplanation) clone.querySelectorAll('.mt-3').forEach(el => el.remove());
                 return clone.outerHTML;
             });
             // Build page/column layout by actual rendered height. Fill the left
@@ -1999,6 +2018,7 @@
                  stopAllSpeech();
             }
 
+            try { sessionStorage.setItem('mdhoLastSection', sectionId); } catch(e) {}
             window.history.replaceState(null, null, `#${sectionId}`);
             if(sectionId === 'profile') renderProfileSection();
             if(sectionId === 'bookmarks') renderBookmarks();
@@ -3747,15 +3767,19 @@
                     <span class="text-brand-600 text-xl"><i class="fa-solid fa-chevron-right"></i></span>
                 </button><button type="button" aria-label="বিষয় শেয়ার করুন" onclick="shareQuizLink(this.dataset.name, 'subject')" data-name="${escapeHTML(parent)}" class="absolute right-3 top-1/2 -translate-y-1/2 p-3 rounded-lg text-brand-700 bg-brand-50 hover:bg-brand-100" title="বিষয় শেয়ার করুন"><i class="fa-solid fa-share-nodes"></i></button></div>`;
             });
-            // A shared link opens the matching test directly (or the matching subject list).
-            const shared = new URLSearchParams(window.location.search).get('sharedQuiz');
+            // Shared links open the relevant listing only; never auto-start an exam.
+            const params = new URLSearchParams(window.location.search);
+            const shared = params.get('sharedQuiz');
+            const shareType = params.get('shareType') || 'topic';
             if (shared && !window.__sharedQuizHandled) {
                 window.__sharedQuizHandled = true;
-                if (groupedQuizData[shared]) {
-                    setTimeout(() => startQuizExam(shared), 250);
+                if (shareType === 'topic' && groupedQuizData[shared]) {
+                    selectedQuizParent = null;
+                    showSection('quiz', null);
+                    // Keep the shared topic visible in the list; user starts it manually.
                 } else {
                     const matchingParent = parents.find(parent => parent.toLocaleLowerCase() === shared.toLocaleLowerCase());
-                    if (matchingParent) { selectedQuizParent = matchingParent; renderQuizSubjects(Object.keys(groupedQuizData)); }
+                    if (matchingParent) { selectedQuizParent = matchingParent; renderQuizSubjects(Object.keys(groupedQuizData)); showSection('quiz', null); }
                 }
             }
         }
@@ -4743,10 +4767,14 @@
             setInterval(setGreeting, 60000);
 
             const hash = window.location.hash.replace('#', '');
-            if (hash && document.getElementById(hash)) {
-                showSection(hash, null);
-            }
+            let savedSection = '';
+            try { savedSection = sessionStorage.getItem('mdhoLastSection') || ''; } catch(e) {}
+            const initialSection = (hash && document.getElementById(hash)) ? hash : (savedSection && document.getElementById(savedSection) ? savedSection : 'home');
+            if (initialSection && document.getElementById(initialSection)) showSection(initialSection, null);
+            // Reveal only after the initial route is selected to avoid flashing the home/menu state.
+            requestAnimationFrame(() => document.documentElement.classList.remove('app-booting'));
         });
     </script>
+<script>window.addEventListener("load",()=>document.documentElement.classList.remove("app-booting"),{once:true});</script>
 </body>
 </html>
