@@ -459,11 +459,21 @@
             width: 100% !important;
             max-width: 100% !important;
         }
+        #review-questions-container img.saved-review-question-image {
+            display: block !important; position: static !important; float: none !important;
+            width: auto !important; max-width: min(100%, 260px) !important; max-height: 160px !important;
+            height: auto !important; object-fit: contain !important; object-position: left center !important;
+            margin: .5rem 0 .5rem 2.5rem !important;
+        }
         #review-questions-container .p-4 { min-width: 0 !important; max-width: 100% !important; overflow: hidden !important; }
         @media (max-width: 640px) {
             #review-questions-container .flex.justify-between.items-start > .flex.gap-2 > img {
                 max-width: calc(100% - 2.5rem) !important;
                 max-height: 140px !important;
+                margin-left: 2.5rem !important;
+            }
+            #review-questions-container img.saved-review-question-image {
+                max-width: calc(100% - 2.5rem) !important; max-height: 140px !important;
                 margin-left: 2.5rem !important;
             }
         }
@@ -4646,11 +4656,22 @@
                         optionsHtml += `<div class="p-3 border rounded-lg flex items-center justify-between gap-2 text-sm ${classes}"><span>${escapeHTML(value)}</span>${tag}</div>`;
                     });
                     const skipped = !selected ? '<span class="text-xs font-bold text-orange-600">উত্তর দেওয়া হয়নি</span>' : '';
+                    // Older history entries did not save the image URL. Try to recover it
+                    // by matching the saved question text against the currently loaded quiz data.
+                    const savedQuestionText = String(question.question || '').trim();
+                    const matchedCurrentQuestion = Object.values(groupedQuizData || {}).flat().find(q =>
+                        String(q.Question || q.question || '').trim() === savedQuestionText
+                    );
+                    const savedImageUrl = normalizeQuestionImageUrl(
+                        question.imageUrl || question.ImageURL || question.imageURL || question.image ||
+                        (matchedCurrentQuestion && (matchedCurrentQuestion.ImageURL || matchedCurrentQuestion.ImageUrl || matchedCurrentQuestion.imageUrl || matchedCurrentQuestion.Image || matchedCurrentQuestion.QuestionImage || matchedCurrentQuestion.questionImage)) || ''
+                    );
                     container.innerHTML += `
                         <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 space-y-3 mb-4">
                             <div class="flex justify-between items-start gap-3 border-b border-slate-200 dark:border-slate-700 pb-3">
                                 <p class="font-bold text-slate-900 dark:text-white"><span class="text-brand-600">Q${index + 1}.</span> ${escapeHTML(String(question.question || ''))}</p>${skipped}
                             </div>
+                            ${savedImageUrl ? `<img src="${escapeHTML(String(savedImageUrl))}" alt="প্রশ্নের ছবি" loading="eager" class="quiz-question-image saved-review-question-image mt-2 max-w-full rounded-xl border border-slate-200 dark:border-slate-700 object-contain">` : ''}
                             <div class="space-y-2">${optionsHtml}</div>
                             ${question.explanation ? `<div class="p-3 rounded-lg border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-sky-900/20"><p class="font-black text-sky-800 dark:text-sky-300 text-sm mb-1"><i class="fa-solid fa-lightbulb mr-1"></i> উত্তরের ব্যাখ্যা</p><p class="text-sm leading-7 whitespace-pre-line text-slate-700 dark:text-slate-200">${escapeHTML(String(question.explanation))}</p></div>` : ''}
                         </div>`;
@@ -4700,6 +4721,7 @@
                     .filter(value => value !== '');
                 savedReviewQuestions.push({
                     question: String(q.Question || ''),
+                    imageUrl: normalizeQuestionImageUrl(q.ImageURL || q.ImageUrl || q.imageUrl || q.Image || q.image || q.QuestionImage || q.questionImage || ''),
                     options: reviewOptions,
                     selectedAnswer: rawSelected,
                     correctAnswer: rawCorrect,
