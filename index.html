@@ -1851,9 +1851,21 @@
             shareContent('My Quiz Score', text, window.location.href);
         }
 
+        // Short, deterministic key keeps shared quiz URLs compact without storing the title in the URL.
+        function quizShareKey(value) {
+            const str = String(value || '').trim().toLocaleLowerCase();
+            let hash = 2166136261;
+            for (let i = 0; i < str.length; i++) {
+                hash ^= str.charCodeAt(i);
+                hash = Math.imul(hash, 16777619);
+            }
+            return (hash >>> 0).toString(36);
+        }
+
         window.shareQuizLink = function(subject, type = 'topic') {
-            const base = window.location.href.split('#')[0];
-            const url = `${base}?sharedQuiz=${encodeURIComponent(subject)}&shareType=${encodeURIComponent(type)}#quiz`;
+            const base = window.location.origin + window.location.pathname;
+            const kind = type === 'subject' ? 's' : 't';
+            const url = `${base}?q=${quizShareKey(subject)}&t=${kind}#quiz`;
             const label = type === 'subject' ? 'বিষয়' : 'টপিক';
             const text = `MukulDhaliOfficial-এ ${label}: “${subject}” এর কুইজটি দিন।`;
             shareContent('MukulDhaliOfficial Quiz — ' + subject, text, url);
@@ -3732,6 +3744,32 @@
             const container = document.getElementById('quiz-subjects-container');
             container.innerHTML = '';
             const allSubjects = Array.isArray(subjects) ? subjects : Object.keys(groupedQuizData);
+
+            // A shared topic URL renders only that topic. The short q/t parameters remain in
+            // the address bar, so refreshing the page resolves to this same topic again.
+            const shareParams = new URLSearchParams(window.location.search);
+            const shareKey = shareParams.get('q');
+            const shareKind = shareParams.get('t') || 't';
+            if (shareKey && shareKind === 't') {
+                const topicName = allSubjects.find(name => quizShareKey(name) === shareKey);
+                if (topicName && groupedQuizData[topicName]) {
+                    const count = groupedQuizData[topicName].length;
+                    const config = quizConfigData[topicName] || {};
+                    container.innerHTML = `<div class="col-span-full flex items-center justify-between gap-3 mb-2">
+                        <button type="button" onclick="clearQuizShareRoute()" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 font-bold"><i class="fa-solid fa-arrow-left mr-2"></i>সব বিষয়</button>
+                        <h3 class="text-xl font-black">${escapeHTML(topicName)}</h3>
+                    </div>
+                    <div class="col-span-full relative"><button type="button" onclick="startQuizExam(this.dataset.subject)" data-subject="${escapeHTML(topicName)}" class="w-full text-left p-5 md:p-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-slate-700 transition flex items-center justify-between gap-4">
+                        <span><strong class="block text-lg">${escapeHTML(topicName)}</strong><span class="text-sm text-slate-500">${count}টি MCQ · সময় ${parseInt(config.timeLimit)||5} মিনিট</span></span>
+                        <span class="text-brand-600 text-xl"><i class="fa-solid fa-circle-play"></i></span>
+                    </button></div>`;
+                    return;
+                }
+            }
+            if (shareKey && shareKind === 's') {
+                const sharedParent = Object.keys(groupedQuizData).map(getQuizParentName).find(parent => quizShareKey(parent) === shareKey);
+                if (sharedParent) selectedQuizParent = sharedParent;
+            }
             if (selectedQuizParent) {
                 const tests = allSubjects.filter(sub => getQuizParentName(sub).toLocaleLowerCase() === selectedQuizParent.toLocaleLowerCase());
                 container.innerHTML = `<div class="col-span-full flex items-center justify-between gap-3 mb-2">
@@ -3767,22 +3805,17 @@
                     <span class="text-brand-600 text-xl"><i class="fa-solid fa-chevron-right"></i></span>
                 </button><button type="button" aria-label="বিষয় শেয়ার করুন" onclick="shareQuizLink(this.dataset.name, 'subject')" data-name="${escapeHTML(parent)}" class="absolute right-3 top-1/2 -translate-y-1/2 p-3 rounded-lg text-brand-700 bg-brand-50 hover:bg-brand-100" title="বিষয় শেয়ার করুন"><i class="fa-solid fa-share-nodes"></i></button></div>`;
             });
-            // Shared links open the relevant listing only; never auto-start an exam.
-            const params = new URLSearchParams(window.location.search);
-            const shared = params.get('sharedQuiz');
-            const shareType = params.get('shareType') || 'topic';
-            if (shared && !window.__sharedQuizHandled) {
-                window.__sharedQuizHandled = true;
-                if (shareType === 'topic' && groupedQuizData[shared]) {
-                    selectedQuizParent = null;
-                    showSection('quiz', null);
-                    // Keep the shared topic visible in the list; user starts it manually.
-                } else {
-                    const matchingParent = parents.find(parent => parent.toLocaleLowerCase() === shared.toLocaleLowerCase());
-                    if (matchingParent) { selectedQuizParent = matchingParent; renderQuizSubjects(Object.keys(groupedQuizData)); showSection('quiz', null); }
-                }
-            }
+            // Shared links are resolved at render time; do not auto-start the exam.
         }
+
+        window.clearQuizShareRoute = function() {
+            selectedQuizParent = null;
+            const cleanUrl = window.location.origin + window.location.pathname + '#quiz';
+            window.history.replaceState(null, '', cleanUrl);
+            try { sessionStorage.setItem('mdhoLastSection', 'quiz'); } catch(e) {}
+            renderQuizSubjects(Object.keys(groupedQuizData));
+            showSection('quiz', null);
+        };
 
         function saveQuizProgress() {
             if(!currentActiveSubject) return;
