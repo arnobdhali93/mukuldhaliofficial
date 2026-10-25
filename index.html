@@ -2031,7 +2031,9 @@
             }
 
             try { sessionStorage.setItem('mdhoLastSection', sectionId); } catch(e) {}
-            window.history.replaceState(null, null, `#${sectionId}`);
+            // Keep short share parameters when changing sections so a shared topic route
+            // survives refresh instead of being replaced by only #quiz.
+            window.history.replaceState(null, null, `${window.location.pathname}${window.location.search}#${sectionId}`);
             if(sectionId === 'profile') renderProfileSection();
             if(sectionId === 'bookmarks') renderBookmarks();
             if(sectionId === 'community') loadSuggestedFriends(); 
@@ -3745,25 +3747,16 @@
             container.innerHTML = '';
             const allSubjects = Array.isArray(subjects) ? subjects : Object.keys(groupedQuizData);
 
-            // A shared topic URL renders only that topic. The short q/t parameters remain in
-            // the address bar, so refreshing the page resolves to this same topic again.
+            // Shared topic links open the topic's parent page, showing ALL sibling
+            // topics. The shared topic is highlighted, but is not auto-started.
             const shareParams = new URLSearchParams(window.location.search);
             const shareKey = shareParams.get('q');
             const shareKind = shareParams.get('t') || 't';
+            let sharedTopicName = null;
             if (shareKey && shareKind === 't') {
-                const topicName = allSubjects.find(name => quizShareKey(name) === shareKey);
-                if (topicName && groupedQuizData[topicName]) {
-                    const count = groupedQuizData[topicName].length;
-                    const config = quizConfigData[topicName] || {};
-                    container.innerHTML = `<div class="col-span-full flex items-center justify-between gap-3 mb-2">
-                        <button type="button" onclick="clearQuizShareRoute()" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 font-bold"><i class="fa-solid fa-arrow-left mr-2"></i>সব বিষয়</button>
-                        <h3 class="text-xl font-black">${escapeHTML(topicName)}</h3>
-                    </div>
-                    <div class="col-span-full relative"><button type="button" onclick="startQuizExam(this.dataset.subject)" data-subject="${escapeHTML(topicName)}" class="w-full text-left p-5 md:p-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-slate-700 transition flex items-center justify-between gap-4">
-                        <span><strong class="block text-lg">${escapeHTML(topicName)}</strong><span class="text-sm text-slate-500">${count}টি MCQ · সময় ${parseInt(config.timeLimit)||5} মিনিট</span></span>
-                        <span class="text-brand-600 text-xl"><i class="fa-solid fa-circle-play"></i></span>
-                    </button></div>`;
-                    return;
+                sharedTopicName = allSubjects.find(name => quizShareKey(name) === shareKey) || null;
+                if (sharedTopicName && groupedQuizData[sharedTopicName]) {
+                    selectedQuizParent = getQuizParentName(sharedTopicName);
                 }
             }
             if (shareKey && shareKind === 's') {
@@ -3779,7 +3772,9 @@
                 tests.forEach(subject => {
                     const count = groupedQuizData[subject].length;
                     const config = quizConfigData[subject] || {};
-                    container.innerHTML += `<div class="relative"><button type="button" onclick="startQuizExam(this.dataset.subject)" data-subject="${escapeHTML(subject)}" class="w-full text-left p-5 pr-16 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-slate-700 transition flex items-center justify-between gap-4">
+                    const isSharedTopic = sharedTopicName && subject === sharedTopicName;
+                    const topicCardStyle = isSharedTopic ? 'border-brand-500 ring-2 ring-brand-300 bg-brand-50 dark:bg-slate-700' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800';
+                    container.innerHTML += `<div class="relative"><button type="button" onclick="startQuizExam(this.dataset.subject)" data-subject="${escapeHTML(subject)}" class="w-full text-left p-5 pr-16 rounded-xl border ${topicCardStyle} hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-slate-700 transition flex items-center justify-between gap-4">
                         <span><strong class="block text-lg">${escapeHTML(subject)}</strong><span class="text-sm text-slate-500">${count}টি MCQ · সময় ${parseInt(config.timeLimit)||5} মিনিট</span></span>
                         <span class="text-brand-600 text-xl"><i class="fa-solid fa-circle-play"></i></span>
                     </button><button type="button" onclick="shareQuizLink(this.dataset.name, 'topic')" data-name="${escapeHTML(subject)}" class="absolute right-3 top-1/2 -translate-y-1/2 p-3 rounded-lg text-brand-700 bg-brand-50 hover:bg-brand-100" title="টপিক শেয়ার করুন" aria-label="টপিক শেয়ার করুন"><i class="fa-solid fa-share-nodes"></i></button></div>`;
