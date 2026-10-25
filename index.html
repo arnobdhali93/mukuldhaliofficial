@@ -2031,9 +2031,13 @@
             }
 
             try { sessionStorage.setItem('mdhoLastSection', sectionId); } catch(e) {}
-            // Keep short share parameters when changing sections so a shared topic route
-            // survives refresh instead of being replaced by only #quiz.
-            window.history.replaceState(null, null, `${window.location.pathname}${window.location.search}#${sectionId}`);
+            // Share parameters are only route instructions for Quiz. Once the user leaves
+            // Quiz, remove them so navigation is not trapped in the shared topic view.
+            if (sectionId !== 'quiz') {
+                window.history.replaceState(null, null, `${window.location.pathname}#${sectionId}`);
+            } else {
+                window.history.replaceState(null, null, `${window.location.pathname}${window.location.search}#${sectionId}`);
+            }
             if(sectionId === 'profile') renderProfileSection();
             if(sectionId === 'bookmarks') renderBookmarks();
             if(sectionId === 'community') loadSuggestedFriends(); 
@@ -3752,7 +3756,15 @@
             const shareParams = new URLSearchParams(window.location.search);
             const shareKey = shareParams.get('q');
             const shareKind = shareParams.get('t') || 't';
+            const parentRouteKey = shareParams.get('p');
             let sharedTopicName = null;
+            // Normal in-site navigation stores the selected parent with a short ?p= key,
+            // so refreshing a topic list restores that same list too.
+            if (parentRouteKey) {
+                const routedParent = Object.keys(groupedQuizData).map(getQuizParentName).find(parent => quizShareKey(parent) === parentRouteKey);
+                if (routedParent) selectedQuizParent = routedParent;
+            }
+            // Shared topic/subject URLs use ?q= and are resolved only while on the Quiz route.
             if (shareKey && shareKind === 't') {
                 sharedTopicName = allSubjects.find(name => quizShareKey(name) === shareKey) || null;
                 if (sharedTopicName && groupedQuizData[sharedTopicName]) {
@@ -3766,7 +3778,7 @@
             if (selectedQuizParent) {
                 const tests = allSubjects.filter(sub => getQuizParentName(sub).toLocaleLowerCase() === selectedQuizParent.toLocaleLowerCase());
                 container.innerHTML = `<div class="col-span-full flex items-center justify-between gap-3 mb-2">
-                    <button onclick="selectedQuizParent=null;renderQuizSubjects(Object.keys(groupedQuizData))" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 font-bold"><i class="fa-solid fa-arrow-left mr-2"></i>সব বিষয়</button>
+                    <button onclick="selectedQuizParent=null;window.history.replaceState(null,'',window.location.pathname+'#quiz');renderQuizSubjects(Object.keys(groupedQuizData))" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 font-bold"><i class="fa-solid fa-arrow-left mr-2"></i>সব বিষয়</button>
                     <h3 class="text-xl font-black">${escapeHTML(selectedQuizParent)} — টেস্ট নির্বাচন করুন</h3>
                 </div>`;
                 tests.forEach(subject => {
@@ -3795,7 +3807,7 @@
             parents.forEach(parent => {
                 const tests = parentMap[parent];
                 const count = tests.reduce((sum, sub) => sum + (groupedQuizData[sub] || []).length, 0);
-                container.innerHTML += `<div class="relative"><button type="button" onclick="selectedQuizParent=this.dataset.parent;renderQuizSubjects(Object.keys(groupedQuizData))" data-parent="${escapeHTML(parent)}" class="w-full text-left p-5 md:p-6 pr-16 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-slate-700 transition flex items-center justify-between gap-4">
+                container.innerHTML += `<div class="relative"><button type="button" onclick="selectedQuizParent=this.dataset.parent;window.history.replaceState(null,'',window.location.pathname+'?p='+quizShareKey(this.dataset.parent)+'#quiz');renderQuizSubjects(Object.keys(groupedQuizData))" data-parent="${escapeHTML(parent)}" class="w-full text-left p-5 md:p-6 pr-16 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-slate-700 transition flex items-center justify-between gap-4">
                     <span><strong class="block text-xl md:text-2xl">${escapeHTML(parent)}</strong><span class="text-sm text-slate-500">${tests.length}টি টেস্ট · মোট ${count}টি MCQ</span></span>
                     <span class="text-brand-600 text-xl"><i class="fa-solid fa-chevron-right"></i></span>
                 </button><button type="button" aria-label="বিষয় শেয়ার করুন" onclick="shareQuizLink(this.dataset.name, 'subject')" data-name="${escapeHTML(parent)}" class="absolute right-3 top-1/2 -translate-y-1/2 p-3 rounded-lg text-brand-700 bg-brand-50 hover:bg-brand-100" title="বিষয় শেয়ার করুন"><i class="fa-solid fa-share-nodes"></i></button></div>`;
@@ -4797,7 +4809,9 @@
             const hash = window.location.hash.replace('#', '');
             let savedSection = '';
             try { savedSection = sessionStorage.getItem('mdhoLastSection') || ''; } catch(e) {}
-            const initialSection = (hash && document.getElementById(hash)) ? hash : (savedSection && document.getElementById(savedSection) ? savedSection : 'home');
+            const routeParams = new URLSearchParams(window.location.search);
+            const hasQuizRoute = routeParams.has('q') || routeParams.has('p');
+            const initialSection = hasQuizRoute ? 'quiz' : ((hash && document.getElementById(hash)) ? hash : (savedSection && document.getElementById(savedSection) ? savedSection : 'home'));
             if (initialSection && document.getElementById(initialSection)) showSection(initialSection, null);
             // Reveal only after the initial route is selected to avoid flashing the home/menu state.
             requestAnimationFrame(() => document.documentElement.classList.remove('app-booting'));
