@@ -1923,13 +1923,23 @@
                 clone.querySelectorAll('.mt-3').forEach(explanation => {
                     const heading = explanation.querySelector('.font-black');
                     if (heading) {
-                        const label = (heading.textContent || '').replace(/\s*\([A-D]\)\s*/gi, ' ').replace(/\s*→\s*$/, '').trim();
-                        heading.textContent = '★ ' + label.replace(/^★\s*/, '');
+                        const label = (heading.textContent || '')
+                            .replace(/\([A-D]\)/gi, ' ')
+                            .replace(/\s*→\s*$/, '')
+                            .replace(/^\s*★\s*/, '')
+                            .trim();
+                        heading.textContent = '★ ' + label;
                         heading.classList.add('review-explanation-heading');
                     }
                     const explanationText = explanation.querySelector('p:not(.font-black)');
                     if (explanationText) {
-                        explanationText.textContent = (explanationText.textContent || '').replace(/^\s*\([A-D]\)\s*/i, '').trim();
+                        // Remove an answer option marker such as (C) at the start,
+                        // including non-breaking spaces, then place one arrow after the explanation.
+                        const cleanExplanation = (explanationText.textContent || '')
+                            .replace(/^[\s\u00a0]*\([A-D]\)[\s\u00a0]*/i, '')
+                            .trim()
+                            .replace(/\s*→\s*$/, '');
+                        explanationText.textContent = cleanExplanation ? cleanExplanation + ' →' : '';
                         explanationText.classList.add('review-explanation-text');
                     }
                 });
