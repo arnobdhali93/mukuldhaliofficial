@@ -375,7 +375,12 @@
         #chatbotFloatBtn, #showChatbotHandle { display:none !important; }
         /* Prevent a flash of uninitialized sections during refresh. */
         html.app-booting body { visibility:hidden; }
-        html.app-booting body::before { content:'MukulDhaliOfficial'; visibility:visible; position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:#f8fafc; color:#2563eb; font-weight:800; font-size:18px; z-index:99999; }
+        html.app-booting body::before { content:''; visibility:visible; position:fixed; inset:0; display:block; background:#f8fafc; z-index:99999; }
+        html.app-booting body::after { content:''; visibility:visible; position:fixed; left:calc(50% - 19px); top:calc(50% - 19px); width:38px; height:38px; border:4px solid #d1fae5; border-top-color:#16a34a; border-radius:50%; animation:mdhoBootSpin .7s linear infinite; z-index:100000; }
+        @keyframes mdhoBootSpin { to { transform:rotate(360deg); } }
+        #mobile-user-badge, #mobile-user-badge img, #profile-content .profile-avatar, #edit-pic-preview-container, #edit-pic-preview-container img { border-radius:9999px !important; }
+        .quiz-shared-highlight { outline:3px solid #16a34a !important; box-shadow:0 0 0 6px rgba(22,163,74,.15) !important; background:#f0fdf4 !important; scroll-margin-top:100px; }
+        .dark .quiz-shared-highlight { background:rgba(22,163,74,.15) !important; }
 </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100 overflow-x-hidden w-full transition-colors duration-300">
@@ -1216,6 +1221,7 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdidmt4dG15cW1sa21jeHZiZnN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMzgzNTEsImV4cCI6MjEwMjYxNDM1MX0.jGXOP0Y_Q78m7DCI6A0tiLQ5KDNW1-K0ypr0AVW9H8w';
 
         let supabaseClient;
+        Object.defineProperty(window, "supabaseClient", { configurable: true, get: () => supabaseClient });
 
         function getStorageKey(baseKey) {
             const email = localStorage.getItem('portalUserEmail');
@@ -1964,7 +1970,192 @@
             popup.document.open();
             popup.document.write(`<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHTML(title)} - Review</title><link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet"><style>
               *{box-sizing:border-box}body{font-family:'Times New Roman','Kalpurush',serif;color:#111827;margin:0;padding:10px;line-height:1.25;font-size:10px}h1{font-size:16px;margin:0 0 3px}h2{font-size:12px;margin:3px 0}.meta{white-space:pre-line;background:#fff;padding:4px 0;border:0;border-bottom:1px solid #cbd5e1;margin-bottom:6px;line-height:1.2}.review-pages{display:block}.review-page{break-after:page;page-break-after:always;height:260mm;position:relative;min-height:260mm;isolation:isolate}.review-page:before{content:'Mukul Dhali Official';position:absolute;z-index:0;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-48deg) scale(1.05);transform-origin:center;font-family:Arial,sans-serif;font-size:clamp(66px,10.5vw,118px);font-weight:900;letter-spacing:3px;white-space:nowrap;width:max-content;color:rgba(65,155,225,.13);pointer-events:none;user-select:none}.review-page:last-child{break-after:auto;page-break-after:auto}.review-page-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:12px;position:relative;z-index:1;align-items:start;height:100%}.review-page-columns:before{content:'';position:absolute;top:0;bottom:0;left:50%;border-left:1px solid #64748b;transform:translateX(-.5px)}.review-column{display:block;min-width:0;height:100%;min-height:0;padding:0 6px;overflow:visible;position:relative;z-index:1}.review-question{border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;padding:0!important;margin:0 0 7px!important;break-inside:avoid;page-break-inside:avoid;display:inline-block;width:100%;}.review-question-heading{display:block!important;margin:0 0 1px!important;padding:0!important;border:0!important}.review-question-heading p{font-weight:800!important;margin:0!important;line-height:1.2!important}.review-question-heading>div{display:inline!important}.review-option{display:flex;align-items:flex-start;justify-content:space-between;gap:4px;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;line-height:1.2;font-size:10px;font-weight:400!important}.review-option>span:first-child{flex:1;min-width:0;overflow-wrap:anywhere}.review-option-letter{font-weight:400!important;display:inline-block;min-width:16px}.review-mark{flex:none;font-weight:900!important;white-space:nowrap;margin-left:3px}.review-explanation-block{display:block!important;margin:3px 0 0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important}.review-explanation-heading{display:block!important;margin:0 0 1px!important;padding:0!important;font-weight:900!important;color:#dc2626!important}.review-explanation-text{display:block!important;margin:0!important;padding:0!important;color:#dc2626!important;font-weight:400!important;white-space:pre-line!important}.mark-correct{color:#078044!important}.mark-wrong{color:#d11f2a!important}.review-option .text-emerald-700{color:inherit!important}.review-option .text-red-700{color:inherit!important}.space-y-2>*+*{margin-top:0!important}.space-y-2,.space-y-3{gap:0!important}.pl-\\[1\\.5rem\\]{padding-left:0!important}.review-question .text-xs,.review-question .text-sm{font-size:10px!important}.print-actions{margin-bottom:6px}button{border:0;border-radius:6px;padding:7px 10px;background:#047857;color:white;font-weight:bold}@media print{@page{size:A4 portrait;margin:7mm}body{padding:0;font-size:9px}.print-actions{display:none}.review-page{height:260mm;min-height:260mm;break-after:page;page-break-after:always;overflow:visible}.review-page.review-first-page{height:235mm;min-height:235mm}.review-page:last-child{break-after:auto;page-break-after:auto}.review-page-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:10px;height:100%;position:relative}.review-page-columns:before{display:block}.review-column{min-width:0;width:auto;height:100%;padding:0 5px;overflow:visible}.review-question{margin-bottom:5px!important;font-weight:400!important}.review-question-heading p{font-weight:800!important}.review-option,.review-option *{font-size:9px!important;line-height:1.15!important;font-weight:400!important}.review-mark{font-weight:900!important}.meta{margin-bottom:5px}}
-              </style></head><body><div class="print-actions"><button onclick="window.print()">Print / Save as PDF</button></div><h1>MukulDhaliOfficial — উত্তরমালা পর্যালোচনা</h1><h2>${escapeHTML(title)}</h2><div class="meta">${escapeHTML(scoreText)}</div><div id="review-print-grid" class="review-pages">${allReviewContent}</div><script>window.onload=()=>setTimeout(()=>{const src=document.getElementById('review-source-items');const root=document.getElementById('review-pages');try{const items=Array.from(src.children);root.innerHTML='';let pageNo=0;const makePage=()=>{const page=document.createElement('section');page.className='review-page'+(pageNo===0?' review-first-page':'');const cols=document.createElement('div');cols.className='review-page-columns';const left=document.createElement('div');left.className='review-column';const right=document.createElement('div');right.className='review-column';cols.append(left,right);page.append(cols);root.append(page);pageNo++;return {page,left,right,active:left};};let current=makePage();current.active=current.left;const fits=(col,item)=>{col.appendChild(item);const h=col.clientHeight;const ok=h>0 && item.getBoundingClientRect().bottom <= col.getBoundingClientRect().bottom + 1;if(!ok)col.removeChild(item);return ok;};for(const original of items){const item=original.cloneNode(true);if(current.active===current.left){if(fits(current.left,item))continue;if(fits(current.right,item)){current.active=current.right;continue;}}else{if(fits(current.right,item))continue;}current=makePage();current.active=current.left;if(!fits(current.left,item)){/* Keep unusually tall questions intact; they may use a full page rather than be clipped. */item.style.breakInside='avoid';item.style.pageBreakInside='avoid';current.left.style.height='auto';current.left.appendChild(item);}}src.remove();requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()));}catch(e){console.error('Review pagination failed',e);if(src){src.style.display='block';src.style.visibility='visible';}root.style.display='none';window.print();}},500)<\/script></body></html>`);
+              </style></head><body><div class="print-actions"><button onclick="window.print()">Print / Save as PDF</button></div><h1>MukulDhaliOfficial — উত্তরমালা পর্যালোচনা</h1><h2>${escapeHTML(title)}</h2><div class="meta">${escapeHTML(scoreText)}</div><div id="review-print-grid" class="review-pages">${allReviewContent}</div><script>window.onload=()=>setTimeout(()=>{const src=document.getElementById('review-source-items');const root=document.getElementById('review-pages');try{const items=Array.from(src.children);root.innerHTML='';let pageNo=0;const makePage=()=>{const page=document.createElement('section');page.className='review-page'+(pageNo===0?' review-first-page':'');const cols=document.createElement('div');cols.className='review-page-columns';const left=document.createElement('div');left.className='review-column';const right=document.createElement('div');right.className='review-column';cols.append(left,right);page.append(cols);root.append(page);pageNo++;return {page,left,right,active:left};};let current=makePage();current.active=current.left;const fits=(col,item)=>{col.appendChild(item);const h=col.clientHeight;const ok=h>0 && item.getBoundingClientRect().bottom <= col.getBoundingClientRect().bottom + 1;if(!ok)col.removeChild(item);return ok;};for(const original of items){const item=original.cloneNode(true);if(current.active===current.left){if(fits(current.left,item))continue;if(fits(current.right,item)){current.active=current.right;continue;}}else{if(fits(current.right,item))continue;}current=makePage();current.active=current.left;if(!fits(current.left,item)){/* Keep unusually tall questions intact; they may use a full page rather than be clipped. */item.style.breakInside='avoid';item.style.pageBreakInside='avoid';current.left.style.height='auto';current.left.appendChild(item);}}src.remove();requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()));}catch(e){console.error('Review pagination failed',e);if(src){src.style.display='block';src.style.visibility='visible';}root.style.display='none';window.print();}},500)<\/script>
+<script id="mdho-reliability-patch">
+/* Additional reliability features; keeps the existing page layout intact. */
+(function () {
+  const mdhoKeys = ['portalUserName','fullQuizHistory','lastQuizScore','portalBookmarks','securityQuestion','portalUserPic','aiChatHistory','quizActiveSession'];
+  const mdhoJson = (v, fallback) => { try { return JSON.parse(v) ?? fallback; } catch (_) { return fallback; } };
+
+  // Cloud backup in a per-user Supabase table: supports larger quiz histories and images
+  // without relying on the small auth user_metadata payload.
+  window.syncLocalDataToCloud = async function () {
+    if (!window.supabaseClient || window.mdhoCloudBusy) return;
+    const { data: { user } = {} } = await window.supabaseClient.auth.getUser();
+    if (!user) return;
+    const email = (localStorage.getItem('portalUserEmail') || user.email || '').toLowerCase();
+    const payload = {};
+    mdhoKeys.forEach(k => {
+      const value = localStorage.getItem(email ? `${email}_${k}` : `guest_${k}`);
+      if (value !== null) payload[k] = value;
+    });
+    if (!Object.keys(payload).length) return;
+    window.mdhoCloudBusy = true;
+    try {
+      const { error } = await window.supabaseClient.from('portal_user_data').upsert(
+        { user_id: user.id, data: payload, updated_at: new Date().toISOString() },
+        { onConflict: 'user_id' }
+      );
+      if (error) console.warn('Cloud backup needs portal_user_data table/RLS setup:', error.message);
+    } catch (err) { console.warn('Cloud backup failed:', err); }
+    finally { window.mdhoCloudBusy = false; }
+  };
+
+  window.restoreCloudDataToLocal = async function (user) {
+    if (!user || !window.supabaseClient) return;
+    const email = (user.email || localStorage.getItem('portalUserEmail') || '').toLowerCase();
+    if (email) localStorage.setItem('portalUserEmail', email);
+    // Read the database record first; fall back to the previous metadata backup.
+    try {
+      const { data, error } = await window.supabaseClient.from('portal_user_data')
+        .select('data').eq('user_id', user.id).maybeSingle();
+      if (!error && data && data.data) {
+        Object.entries(data.data).forEach(([k, value]) => {
+          if (mdhoKeys.includes(k) && value !== undefined && value !== null)
+            localStorage.setItem(`${email}_${k}`, String(value));
+        });
+        return;
+      }
+    } catch (err) { console.warn('Cloud restore fallback:', err); }
+    const old = user.user_metadata && user.user_metadata.portal_portal_data;
+    if (old) Object.entries(old).forEach(([k, value]) => {
+      if (mdhoKeys.includes(k) && value != null && localStorage.getItem(`${email}_${k}`) === null)
+        localStorage.setItem(`${email}_${k}`, String(value));
+    });
+  };
+
+  // Make the app's existing auth-change listener call the table-backed functions.
+  if (typeof window.supabaseClient !== 'undefined') { /* client is also exposed below */ }
+
+  // Round every profile/avatar image without changing the surrounding template.
+  const avatarStyle = document.createElement('style');
+  avatarStyle.textContent = `
+    #mobile-user-badge { border-radius:50% !important; }
+    #mobile-user-badge img { width:100%;height:100%;object-fit:cover;border-radius:50% !important; }
+    #profile-content img { border-radius:50%; }
+    #edit-pic-preview-container { border-radius:50% !important; overflow:hidden; }
+    #edit-pic-preview-container img { border-radius:50% !important; }
+    #crop-image-target { max-width:100%;display:block; }
+    .cropper-view-box,.cropper-face { border-radius:50% !important; }
+  `;
+  document.head.appendChild(avatarStyle);
+
+  // Modern circular crop interaction with touch-friendly zoom and drag.
+  const oldOpenCropModal = window.openCropModal;
+  window.openCropModal = function (src) {
+    if (typeof oldOpenCropModal === 'function') oldOpenCropModal(src);
+    setTimeout(() => {
+      if (window.cropper) {
+        try {
+          window.cropper.setAspectRatio(1);
+          window.cropper.setDragMode('move');
+          window.cropper.zoomTo(1);
+        } catch (_) {}
+      }
+    }, 80);
+  };
+
+  // Reset only a chosen quiz's history, or all quiz history if the user chooses.
+  window.resetAllData = function () {
+    const history = mdhoJson(localStorage.getItem(getStorageKey('fullQuizHistory')), []);
+    const names = [...new Set(history.map(x => String(x.subject || 'Quiz')))];
+    if (!names.length) {
+      openConfirmModal('কোনও কুইজের ইতিহাস নেই। বুকমার্ক ও চ্যাট ডেটাও কি রিসেট করবেন?', () => {
+        ['portalBookmarks','aiChatHistory','quizActiveSession'].forEach(k => localStorage.removeItem(getStorageKey(k)));
+        if (typeof scheduleCloudSync === 'function') scheduleCloudSync();
+        showToast('নির্বাচিত অ্যাপ ডেটা রিসেট হয়েছে।', 'success');
+        setTimeout(() => location.reload(), 700);
+      });
+      return;
+    }
+    const choice = prompt('কোন কুইজের ইতিহাস রিসেট করবেন?\n\n' + names.map((n,i)=>`${i+1}. ${n}`).join('\n') + '\n\nএকটি নম্বর লিখুন, অথবা ALL লিখলে সব কুইজের ইতিহাস মুছবে।');
+    if (choice === null || !choice.trim()) return;
+    if (choice.trim().toUpperCase() === 'ALL') {
+      openConfirmModal('সব কুইজের ইতিহাস, সার্টিফিকেট ও উত্তর পর্যালোচনার রেকর্ড মুছে ফেলবেন?', () => {
+        localStorage.removeItem(getStorageKey('fullQuizHistory'));
+        localStorage.removeItem(getStorageKey('lastQuizScore'));
+        if (typeof scheduleCloudSync === 'function') scheduleCloudSync();
+        showToast('সব কুইজের ইতিহাস মুছে ফেলা হয়েছে।', 'success');
+        renderProfileSection();
+      });
+      return;
+    }
+    const index = Number(choice) - 1;
+    if (!Number.isInteger(index) || index < 0 || index >= names.length) {
+      showToast('সঠিক নম্বর দিন।', 'error'); return;
+    }
+    const target = names[index];
+    openConfirmModal(`“${target}” কুইজের সব ইতিহাস, সার্টিফিকেট ও Review রেকর্ড মুছে ফেলবেন?`, () => {
+      const next = history.filter(x => String(x.subject || 'Quiz') !== target);
+      localStorage.setItem(getStorageKey('fullQuizHistory'), JSON.stringify(next));
+      localStorage.setItem(getStorageKey('lastQuizScore'), next.length ? `${next[next.length-1].score}/${next[next.length-1].total} (${next[next.length-1].percentage}%)` : 'N/A');
+      if (typeof scheduleCloudSync === 'function') scheduleCloudSync();
+      showToast('নির্বাচিত কুইজের ইতিহাস রিসেট হয়েছে।', 'success');
+      renderProfileSection();
+    });
+  };
+
+  // Shared topic links are highlighted and scrolled into view after Sheets data is rendered.
+  function focusSharedQuizTopic() {
+    const params = new URLSearchParams(location.search);
+    const key = params.get('q'), kind = params.get('t') || 't';
+    if (!key || kind !== 't') return;
+    const container = document.getElementById('quiz-subjects-container');
+    if (!container) return;
+    const findAndFocus = () => {
+      const buttons = [...container.querySelectorAll('button[data-subject]')];
+      const target = buttons.find(b => {
+        try { return typeof quizShareKey === 'function' && quizShareKey(b.dataset.subject) === key; } catch (_) { return false; }
+      });
+      if (!target) return;
+      target.classList.add('quiz-shared-highlight');
+      target.setAttribute('data-shared-topic', 'true');
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 150);
+    };
+    setTimeout(findAndFocus, 250);
+    if (window.mdhoTopicObserver) window.mdhoTopicObserver.disconnect();
+    window.mdhoTopicObserver = new MutationObserver(findAndFocus);
+    window.mdhoTopicObserver.observe(container, { childList: true, subtree: true });
+  }
+  window.addEventListener('DOMContentLoaded', () => {
+    focusSharedQuizTopic();
+    if (new URLSearchParams(location.search).get('review') === 'latest') {
+      // Wait for authentication/cloud restore, then open the newest saved review.
+      let attempts = 0;
+      const openLatestReview = () => {
+        attempts++;
+        const email = localStorage.getItem('portalUserEmail');
+        const history = mdhoJson(localStorage.getItem(email ? `${email}_fullQuizHistory` : 'guest_fullQuizHistory'), []);
+        if (history.length && typeof window.openSavedQuizReview === 'function') {
+          showSection('profile', null);
+          window.openSavedQuizReview(history.length - 1);
+        } else if (attempts < 12) setTimeout(openLatestReview, 700);
+      };
+      setTimeout(openLatestReview, 700);
+    }
+  });
+  window.addEventListener('load', focusSharedQuizTopic);
+  window.addEventListener('hashchange', focusSharedQuizTopic);
+
+  // Send a review URL to the existing Apps Script mail handler with every result.
+  // The Apps Script must read reviewUrl and include it in the outgoing email.
+  const emailPatchObserver = new MutationObserver(() => {
+    const result = document.getElementById('score-display-box');
+    if (result && !result.dataset.reviewUrlReady) {
+      result.dataset.reviewUrlReady = '1';
+      const params = new URLSearchParams(location.search);
+      params.set('review', 'latest');
+      window.mdhoReviewUrl = location.origin + location.pathname + '?' + params.toString() + '#profile';
+    }
+  });
+  window.addEventListener('DOMContentLoaded', () => {
+    const scoreBox = document.getElementById('score-display-box');
+    if (scoreBox) emailPatchObserver.observe(scoreBox, { childList: true, subtree: true });
+  });
+})();
+</script>
+
+</body></html>`);
             popup.document.close();
         }
 
@@ -3540,6 +3731,7 @@
                     q.Subject = sub;
                     q.SubjectTitle = parentTitle;
                     q.Question = quizField(raw, ['Question', 'question', ' প্রশ্ন', 'প্রশ্ন'], '');
+                    q.ImageURL = quizField(raw, ['ImageURL', 'ImageUrl', 'imageUrl', 'Image', 'image', 'QuestionImage', 'questionImage', 'ছবির লিংক', 'প্রশ্নের ছবি'], '');
                     q.Option1 = quizField(raw, ['Option1', 'option1', 'Option A', 'OptionA', 'optionA', 'optiona', 'A'], '');
                     q.Option2 = quizField(raw, ['Option2', 'option2', 'Option B', 'OptionB', 'optionB', 'optionb', 'B'], '');
                     q.Option3 = quizField(raw, ['Option3', 'option3', 'Option C', 'OptionC', 'optionC', 'optionc', 'C'], '');
@@ -4099,7 +4291,8 @@
                 <div class="quiz-question py-3 px-1 md:px-2 border-b border-slate-200 dark:border-slate-700 space-y-2 relative">
                     <div class="flex gap-2 md:gap-3">
                         <div class="bg-brand-100 dark:bg-slate-800 text-brand-700 dark:text-brand-400 font-black px-2 py-1 rounded-md h-fit text-xs shrink-0">Q${index + 1}</div>
-                        <p class="font-black text-slate-900 dark:text-white text-base leading-snug pt-0.5">${q.Question}</p>
+                        <p class="font-black text-slate-900 dark:text-white text-base leading-snug pt-0.5">${escapeHTML(String(q.Question || ''))}</p>
+                        ${(() => { const imageUrl = q.ImageURL || q.ImageUrl || q.imageUrl || q.Image || q.image || q.QuestionImage || q.questionImage || ''; return imageUrl && /^https?:\/\//i.test(String(imageUrl)) ? `<img src="${escapeHTML(String(imageUrl))}" alt="প্রশ্নের ছবি" loading="lazy" class="quiz-question-image mt-3 max-h-72 w-auto max-w-full rounded-xl border border-slate-200 dark:border-slate-700 object-contain">` : ''; })()}
                     </div>
                     <div class="space-y-1 pt-1 pl-7 md:pl-9">
                         ${optionsHtml}
@@ -4589,7 +4782,8 @@
                     <div class="flex justify-between items-start gap-3 border-b border-slate-200 dark:border-slate-700 pb-2">
                         <div class="flex gap-2">
                             <span class="font-bold text-brand-600 dark:text-brand-400 text-sm md:text-base">Q${index + 1}.</span>
-                            <p class="font-bold text-slate-900 dark:text-white text-sm md:text-base leading-snug">${q.Question}</p>
+                            <p class="font-bold text-slate-900 dark:text-white text-sm md:text-base leading-snug">${escapeHTML(String(q.Question || ''))}</p>
+                            ${(() => { const imageUrl = q.ImageURL || q.ImageUrl || q.imageUrl || q.Image || q.image || q.QuestionImage || q.questionImage || ''; return imageUrl && /^https?:\/\//i.test(String(imageUrl)) ? `<img src="${escapeHTML(String(imageUrl))}" alt="প্রশ্নের ছবি" loading="lazy" class="mt-3 max-h-64 w-auto max-w-full rounded-xl border border-slate-200 dark:border-slate-700 object-contain">` : ''; })()}
                         </div>
                         ${skippedBadge}
                     </div>
@@ -4691,6 +4885,7 @@
                                 percentage: percentage,
                                 date: new Date().toLocaleString(),
                                 certificatePdfBase64: certificatePdfBase64,
+                                reviewUrl: window.location.origin + window.location.pathname + '?review=latest#profile',
                                 certificateFileName: 'MukulDhaliOfficial_Certificate_' + String(currentActiveSubject || 'Quiz').replace(/[^a-z0-9_-]/gi, '_') + '.pdf'
                             })
                         });
