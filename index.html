@@ -2778,13 +2778,57 @@
             return true;
         }
 
+        // Normalize Google Drive share links into direct image URLs. The Drive file must be shared as "Anyone with the link".
+        function normalizeQuestionImageUrl(value) {
+            const raw = String(value || '').trim();
+            if (!raw) return '';
+            const driveMatch = raw.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?[^#]*?id=)([A-Za-z0-9_-]+)/i);
+            if (driveMatch && driveMatch[1]) return 'https://drive.google.com/uc?export=view&id=' + encodeURIComponent(driveMatch[1]);
+            return /^https?:\/\//i.test(raw) ? raw : '';
+        }
+
+        // Resolve renamed quiz titles by stable QuizID/TopicID, without touching scores or reviews.
+        function refreshSavedHistoryTopicNames() {
+            try {
+                const storageKey = getStorageKey('fullQuizHistory');
+                const history = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                if (!Array.isArray(history) || !history.length) return history || [];
+                let changed = false;
+                history.forEach(item => {
+                    const oldQuizId = String(item.quizId || '').trim();
+                    const oldTopicId = String(item.topicId || '').trim();
+                    if (!oldQuizId && !oldTopicId) return; // Old records without IDs cannot be safely matched.
+                    for (const [subjectName, rows] of Object.entries(groupedQuizData || {})) {
+                        const row = (rows || []).find(q => {
+                            const quizId = String(q.QuizID || q.quizId || '').trim();
+                            const topicId = String(q.TopicID || q.topicId || '').trim();
+                            return (oldQuizId && quizId && oldQuizId === quizId) || (!oldQuizId && oldTopicId && topicId && oldTopicId === topicId);
+                        });
+                        if (row) {
+                            if (item.subject !== subjectName) { item.subject = subjectName; changed = true; }
+                            const quizId = String(row.QuizID || row.quizId || '').trim();
+                            const topicId = String(row.TopicID || row.topicId || '').trim();
+                            if (quizId && item.quizId !== quizId) { item.quizId = quizId; changed = true; }
+                            if (topicId && item.topicId !== topicId) { item.topicId = topicId; changed = true; }
+                            break;
+                        }
+                    }
+                });
+                if (changed) localStorage.setItem(storageKey, JSON.stringify(history));
+                return history;
+            } catch (err) {
+                console.warn('Could not refresh saved quiz titles:', err);
+                return [];
+            }
+        }
+
         function renderProfileSection() {
             const profileContainer = document.getElementById('profile-content');
             const loggedInUser = localStorage.getItem('portalUserEmail');
             const loggedInName = localStorage.getItem(getStorageKey('portalUserName'));
             const profilePic = localStorage.getItem(getStorageKey('portalUserPic'));
 
-            let fullQuizHistory = JSON.parse(localStorage.getItem(getStorageKey('fullQuizHistory'))) || [];
+            let fullQuizHistory = refreshSavedHistoryTopicNames();
             let totalQuizzes = fullQuizHistory.length;
             let avgScore = 0;
             let totalXP = 0;
@@ -3547,8 +3591,10 @@
                     // Standardize question and option keys so both old and new API responses work.
                     q.Subject = sub;
                     q.SubjectTitle = parentTitle;
+                    q.QuizID = String(quizField(raw, ['QuizID', 'QuizId', 'quizId', 'quizid', 'quiz_id'], '') || '').trim();
+                    q.TopicID = String(quizField(raw, ['TopicID', 'TopicId', 'topicId', 'topicid', 'topic_id'], '') || '').trim();
                     q.Question = quizField(raw, ['Question', 'question', ' প্রশ্ন', 'প্রশ্ন'], '');
-                    q.ImageURL = quizField(raw, ['ImageURL', 'ImageUrl', 'imageUrl', 'Image', 'image', 'QuestionImage', 'questionImage', 'ছবির লিংক', 'প্রশ্নের ছবি'], '');
+                    q.ImageURL = normalizeQuestionImageUrl(quizField(raw, ['ImageURL', 'ImageUrl', 'imageUrl', 'Image', 'image', 'QuestionImage', 'questionImage', 'ছবির লিংক', 'প্রশ্নের ছবি'], ''));
                     q.Option1 = quizField(raw, ['Option1', 'option1', 'Option A', 'OptionA', 'optionA', 'optiona', 'A'], '');
                     q.Option2 = quizField(raw, ['Option2', 'option2', 'Option B', 'OptionB', 'optionB', 'optionb', 'B'], '');
                     q.Option3 = quizField(raw, ['Option3', 'option3', 'Option C', 'OptionC', 'optionC', 'optionc', 'C'], '');
@@ -4109,7 +4155,7 @@
                     <div class="flex gap-2 md:gap-3">
                         <div class="bg-brand-100 dark:bg-slate-800 text-brand-700 dark:text-brand-400 font-black px-2 py-1 rounded-md h-fit text-xs shrink-0">Q${index + 1}</div>
                         <p class="font-black text-slate-900 dark:text-white text-base leading-snug pt-0.5">${escapeHTML(String(q.Question || ''))}</p>
-                        ${(() => { const imageUrl = q.ImageURL || q.ImageUrl || q.imageUrl || q.Image || q.image || q.QuestionImage || q.questionImage || ''; return imageUrl && /^https?:\/\//i.test(String(imageUrl)) ? `<img src="${escapeHTML(String(imageUrl))}" alt="প্রশ্নের ছবি" loading="lazy" class="quiz-question-image mt-3 max-h-72 w-auto max-w-full rounded-xl border border-slate-200 dark:border-slate-700 object-contain">` : ''; })()}
+                        ${(() => { const imageUrl = normalizeQuestionImageUrl(q.ImageURL || q.ImageUrl || q.imageUrl || q.Image || q.image || q.QuestionImage || q.questionImage || ''); return imageUrl ? `<img src="${escapeHTML(String(imageUrl))}" alt="প্রশ্নের ছবি" loading="lazy" class="quiz-question-image mt-3 max-h-72 w-auto max-w-full rounded-xl border border-slate-200 dark:border-slate-700 object-contain">` : ''; })()}
                     </div>
                     <div class="space-y-1 pt-1 pl-7 md:pl-9">
                         ${optionsHtml}
@@ -4600,7 +4646,7 @@
                         <div class="flex gap-2">
                             <span class="font-bold text-brand-600 dark:text-brand-400 text-sm md:text-base">Q${index + 1}.</span>
                             <p class="font-bold text-slate-900 dark:text-white text-sm md:text-base leading-snug">${escapeHTML(String(q.Question || ''))}</p>
-                            ${(() => { const imageUrl = q.ImageURL || q.ImageUrl || q.imageUrl || q.Image || q.image || q.QuestionImage || q.questionImage || ''; return imageUrl && /^https?:\/\//i.test(String(imageUrl)) ? `<img src="${escapeHTML(String(imageUrl))}" alt="প্রশ্নের ছবি" loading="lazy" class="mt-3 max-h-64 w-auto max-w-full rounded-xl border border-slate-200 dark:border-slate-700 object-contain">` : ''; })()}
+                            ${(() => { const imageUrl = normalizeQuestionImageUrl(q.ImageURL || q.ImageUrl || q.imageUrl || q.Image || q.image || q.QuestionImage || q.questionImage || ''); return imageUrl ? `<img src="${escapeHTML(String(imageUrl))}" alt="প্রশ্নের ছবি" loading="lazy" class="mt-3 max-h-64 w-auto max-w-full rounded-xl border border-slate-200 dark:border-slate-700 object-contain">` : ''; })()}
                         </div>
                         ${skippedBadge}
                     </div>
@@ -4658,8 +4704,11 @@
 
             localStorage.setItem(getStorageKey('lastQuizScore'), `${scoreFormatted} (${percentage}%)`);
             let fullQuizHistory = JSON.parse(localStorage.getItem(getStorageKey('fullQuizHistory'))) || [];
+            const activeQuizMeta = (groupedQuizData[currentActiveSubject] || [])[0] || {};
             fullQuizHistory.push({
                 subject: currentActiveSubject,
+                quizId: String(activeQuizMeta.QuizID || activeQuizMeta.quizId || '').trim(),
+                topicId: String(activeQuizMeta.TopicID || activeQuizMeta.topicId || '').trim(),
                 score: score,
                 total: totalQ,
                 percentage: percentage,
