@@ -1397,6 +1397,27 @@
             return payload;
         }
 
+        // Compare JSONB payloads by value, independent of object-key ordering.
+        function stableCloudValue(value) {
+            if (Array.isArray(value)) return value.map(stableCloudValue);
+            if (value && typeof value === 'object') {
+                return Object.keys(value).sort().reduce((out, key) => {
+                    out[key] = stableCloudValue(value[key]);
+                    return out;
+                }, {});
+            }
+            return value;
+        }
+
+        function cloudPayloadMatches(actual, expected) {
+            if (!actual || typeof actual !== 'object' || Array.isArray(actual)) return false;
+            const keys = new Set([...Object.keys(expected), ...Object.keys(actual)]);
+            for (const key of keys) {
+                if (JSON.stringify(stableCloudValue(actual[key])) !== JSON.stringify(stableCloudValue(expected[key]))) return false;
+            }
+            return true;
+        }
+
         async function syncLocalDataToCloud(options = {}) {
             const quiet = options.quiet !== false;
             if (!supabaseClient || applyingCloudData) return false;
@@ -1420,14 +1441,17 @@
                             updated_at: new Date().toISOString()
                         }, { onConflict: 'user_id' });
                         if (error) throw error;
-                        // Verify the row can be read back; this distinguishes a real cloud save
-                        // from a UI-only/local save and exposes RLS/table problems.
+                        // Read back and compare the exact payload; a row existing alone is not proof
+                        // that the intended profile/history/deletion was saved.
                         const { data: verifiedRow, error: verifyError } = await supabaseClient
-                            .from('portal_user_data').select('user_id, updated_at')
+                            .from('portal_user_data').select('user_id, data, updated_at')
                             .eq('user_id', user.id).maybeSingle();
                         if (verifyError) throw verifyError;
                         if (!verifiedRow || verifiedRow.user_id !== user.id) {
-                            throw new Error('Supabase-এ সেভের পর রেকর্ড যাচাই করা যায়নি। Table/RLS policy পরীক্ষা করুন।');
+                            throw new Error('Supabase-এ সেভের পর সঠিক অ্যাকাউন্টের রেকর্ড পাওয়া যায়নি।');
+                        }
+                        if (!cloudPayloadMatches(verifiedRow.data, payload)) {
+                            throw new Error('ক্লাউডে ডেটা লেখা হলেও যাচাইয়ে লোকাল ডেটার সঙ্গে মিল পাওয়া যায়নি। আবার Sync করুন।');
                         }
                         activeCloudUserId = user.id;
                         success = true;
@@ -2719,12 +2743,19 @@
                 if (selectedFileBase64 && localStorage.getItem(getStorageKey('portalUserPic')) !== selectedFileBase64) {
                     throw new Error('প্রোফাইল ছবি ব্রাউজারে সংরক্ষণ করা যায়নি।');
                 }
-                if (!saveSecurityQuestion()) { finalizeProfileUpdate(); return; }
-                // LocalStorage is already updated; queue automatic cloud sync and try immediately.
-                scheduleCloudSync(250);
-                const syncOk = await syncLocalDataToCloud();
-                if (!syncOk && supabaseClient) { showToast('প্রোফাইল লোকালি সেভ হয়েছে, কিন্তু ক্লাউডে সেভ হয়নি। ইন্টারনেট/লগইন সেশন যাচাই করুন।', 'error'); }
-                finalizeProfileUpdate();
+                if (!saveSecurityQuestion()) return;
+                // LocalStorage is already updated; cancel the queued timer and perform one verified upload.
+                if (cloudSyncTimer) { clearTimeout(cloudSyncTimer); cloudSyncTimer = null; }
+                const syncOk = await syncLocalDataToCloud({ quiet: true });
+                if (syncOk) {
+                    finalizeProfileUpdate('প্রোফাইল আপডেট হয়েছে এবং ক্লাউডে যাচাই হয়েছে।');
+                } else if (supabaseClient) {
+                    closeEditProfile();
+                    renderProfileSection(); updateHeaderBadge();
+                    showToast('প্রোফাইল এই ডিভাইসে সেভ হয়েছে, কিন্তু ক্লাউডে যাচাই হয়নি। Sync বোতাম চাপুন; Console/ত্রুটির বার্তা পরীক্ষা করুন।', 'error');
+                } else {
+                    finalizeProfileUpdate('প্রোফাইল এই ডিভাইসে আপডেট হয়েছে; ক্লাউড সিঙ্ক চালু নেই।');
+                }
             } catch (err) {
                 console.error(err);
                 showToast("প্রোফাইল আপডেট করতে সমস্যা হয়েছে!", "error");
@@ -2734,11 +2765,11 @@
             }
         }
 
-        function finalizeProfileUpdate() {
+        function finalizeProfileUpdate(message = 'প্রোফাইল সফলভাবে আপডেট হয়েছে!') {
             closeEditProfile();
-            showToast("প্রোফাইল সফলভাবে আপডেট হয়েছে!", "success");
+            showToast(message, 'success');
             renderProfileSection();
-            updateHeaderBadge(); 
+            updateHeaderBadge();
         }
 
         function openChangePassword() {
@@ -3066,8 +3097,9 @@
             if (!current.length) { showToast('মুছে ফেলার মতো কুইজ হিস্ট্রি নেই।', 'error'); return; }
             openConfirmModal(`এই অ্যাকাউন্টের ${current.length}টি কুইজ হিস্ট্রি সব ডিভাইস থেকে মুছে ফেলতে চান?`, async () => {
                 try {
-                    await persistQuizHistoryDeletion([], 'সব কুইজ হিস্ট্রি মুছে ফেলা হয়েছে।');
+                    // Clear the score before uploading so history deletion and score reset are one payload.
                     localStorage.removeItem(getStorageKey('lastQuizScore'));
+                    await persistQuizHistoryDeletion([], 'সব কুইজ হিস্ট্রি মুছে ফেলা হয়েছে।');
                     renderProfileSection();
                 } catch (e) {
                     console.error('Delete all quiz history failed:', e);
@@ -3085,18 +3117,11 @@
                         localStorage.removeItem(getStorageKey(base));
                     });
                     applyingCloudData = false;
-                    if (supabaseClient) {
-                        const { data: { user } } = await supabaseClient.auth.getUser();
-                        if (user) {
-                            const payload = readLocalCloudPayload();
-                            const { error } = await supabaseClient.from('portal_user_data').upsert({
-                                user_id: user.id, data: payload, updated_at: new Date().toISOString()
-                            }, { onConflict: 'user_id' });
-                            if (error) throw error;
-                        }
-                    }
+                    if (!supabaseClient) throw new Error('Supabase চালু নেই; ক্লাউড রিসেট যাচাই করা যায়নি।');
+                    const syncOk = await syncLocalDataToCloud({ quiet: true });
+                    if (!syncOk) throw new Error('ক্লাউডে রিসেট করা ডেটা যাচাই হয়নি। Sync সফল না হওয়া পর্যন্ত অন্য ডিভাইসে ডেটা মুছে গেছে ধরে নেবেন না।');
                     renderProfileSection(); renderBookmarks(); loadChatHistory();
-                    showToast('অ্যাপ ডেটা সব ডিভাইস থেকে রিসেট হয়েছে।', 'success');
+                    showToast('অ্যাপ ডেটা ক্লাউডে সেভ ও যাচাই হয়েছে।', 'success');
                     setTimeout(() => location.reload(), 700);
                 } catch (e) {
                     applyingCloudData = false;
