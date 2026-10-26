@@ -1078,6 +1078,9 @@
                 <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-4 rounded-xl text-sm font-black transition-all shadow-lg shadow-brand-600/30 hover:-translate-y-1 flex justify-center items-center gap-2 cursor-pointer mt-2">
                     <i class="fa-solid fa-floppy-disk"></i> পরিবর্তন সেভ করুন
                 </button>
+                <button type="button" onclick="syncCloudNow()" class="w-full border border-brand-300 dark:border-brand-700 text-brand-700 dark:text-brand-300 hover:bg-brand-50 dark:hover:bg-slate-700 py-3 rounded-xl text-sm font-bold transition-all flex justify-center items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> এখনই ক্লাউডে সিঙ্ক করুন
+                </button>
             </form>
         </div>
     </div>
@@ -1334,11 +1337,13 @@
             return email ? `${email}_${baseKey}` : `guest_${baseKey}`;
         }
 
-        // Cloud-backed account data sync. Supabase table portal_user_data is required (see setup SQL).
+        // Cloud-backed account data sync. LocalStorage remains the immediate, persistent cache.
         const CLOUD_SYNC_KEYS = ['portalUserName', 'fullQuizHistory', 'lastQuizScore', 'portalBookmarks', 'securityQuestion', 'aiChatHistory'];
         let cloudSyncTimer = null;
         let cloudSyncBusy = false;
         let cloudSyncPending = false;
+        let cloudSyncPromise = null;
+        let cloudSyncRetryCount = 0;
         let applyingCloudData = false;
         let activeCloudUserId = null;
 
@@ -1349,46 +1354,82 @@
                 payload[base] = value === null ? null : value;
             });
             const pic = localStorage.getItem(getStorageKey('portalUserPic'));
-            // Profile images are resized before saving; preserve absence as null but never silently discard a large image.
-            payload.portalUserPic = pic ? (pic.length <= 250000 ? pic : null) : null;
+            // Never silently replace an oversized profile picture with null.
+            payload.portalUserPic = pic || null;
             return payload;
         }
 
-        async function syncLocalDataToCloud() {
+        async function syncLocalDataToCloud(options = {}) {
+            const quiet = options.quiet !== false;
             if (!supabaseClient || applyingCloudData) return false;
-            // Queue another pass if a save happens while an earlier request is still running.
-            if (cloudSyncBusy) { cloudSyncPending = true; return true; }
-            cloudSyncBusy = true;
-            try {
-                const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
-                if (authError || !user) return false;
-                const payload = readLocalCloudPayload();
-                const { error } = await supabaseClient.from('portal_user_data').upsert({
-                    user_id: user.id,
-                    data: payload,
-                    updated_at: new Date().toISOString()
-                }, { onConflict: 'user_id' });
-                if (error) throw error;
-                activeCloudUserId = user.id;
-                return true;
-            } catch (e) {
-                console.warn('Cloud profile sync failed:', e);
-                if (typeof showToast === 'function') showToast('ক্লাউড সিঙ্ক ব্যর্থ: ' + (e?.message || 'Supabase টেবিল/Policy পরীক্ষা করুন।'), 'error');
-                return false;
-            } finally {
-                cloudSyncBusy = false;
-                if (cloudSyncPending) {
-                    cloudSyncPending = false;
-                    scheduleCloudSync();
-                }
+            if (cloudSyncPromise) {
+                cloudSyncPending = true;
+                return cloudSyncPromise;
             }
+            cloudSyncBusy = true;
+            cloudSyncPromise = (async () => {
+                let success = false;
+                try {
+                    // Repeat once more if data changed while a previous upload was in flight.
+                    do {
+                        cloudSyncPending = false;
+                        const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+                        if (authError) throw authError;
+                        if (!user) throw new Error('আগে আপনার অ্যাকাউন্টে লগইন করুন।');
+                        const payload = readLocalCloudPayload();
+                        const { error } = await supabaseClient.from('portal_user_data').upsert({
+                            user_id: user.id,
+                            data: payload,
+                            updated_at: new Date().toISOString()
+                        }, { onConflict: 'user_id' });
+                        if (error) throw error;
+                        activeCloudUserId = user.id;
+                        success = true;
+                    } while (cloudSyncPending);
+                    cloudSyncRetryCount = 0;
+                    if (!quiet && typeof showToast === 'function') showToast('সব ডেটা ক্লাউডে সিঙ্ক হয়েছে।', 'success');
+                    return true;
+                } catch (e) {
+                    console.warn('Cloud profile sync failed:', e);
+                    success = false;
+                    if (!quiet && typeof showToast === 'function') showToast('এখনও ক্লাউডে সেভ হয়নি। ইন্টারনেট ঠিক হলে আবার চেষ্টা করুন।', 'error');
+                    return false;
+                } finally {
+                    cloudSyncBusy = false;
+                    cloudSyncPromise = null;
+                    if (!success && cloudSyncRetryCount < 5 && navigator.onLine) {
+                        cloudSyncRetryCount++;
+                        const delay = Math.min(10000, 1500 * cloudSyncRetryCount);
+                        if (cloudSyncTimer) clearTimeout(cloudSyncTimer);
+                        cloudSyncTimer = setTimeout(() => { cloudSyncTimer = null; syncLocalDataToCloud(); }, delay);
+                    } else if (cloudSyncPending) {
+                        cloudSyncPending = false;
+                        scheduleCloudSync(300);
+                    }
+                }
+            })();
+            return cloudSyncPromise;
         }
 
-        function scheduleCloudSync() {
+        function scheduleCloudSync(delay = 700) {
             if (applyingCloudData) return;
             if (cloudSyncTimer) clearTimeout(cloudSyncTimer);
-            cloudSyncTimer = setTimeout(() => { syncLocalDataToCloud(); }, 900);
+            cloudSyncTimer = setTimeout(() => {
+                cloudSyncTimer = null;
+                syncLocalDataToCloud();
+            }, delay);
         }
+
+        async function syncCloudNow() {
+            if (cloudSyncTimer) { clearTimeout(cloudSyncTimer); cloudSyncTimer = null; }
+            cloudSyncRetryCount = 0;
+            return await syncLocalDataToCloud({ quiet: false });
+        }
+
+        window.addEventListener('online', () => {
+            cloudSyncRetryCount = 0;
+            scheduleCloudSync(300);
+        });
 
         async function restoreCloudDataToLocal(user) {
             if (!supabaseClient || !user) return;
@@ -1413,26 +1454,21 @@
                     }
                     activeCloudUserId = user.id;
                 } else {
-                    // One-time migration from the previous user_metadata storage, if present.
+                    // Migrate legacy metadata when available; otherwise seed this user's cloud row.
                     const legacy = user.user_metadata?.portal_portal_data;
                     if (legacy && typeof legacy === 'object') {
                         CLOUD_SYNC_KEYS.forEach(base => {
-                            if (legacy[base] !== undefined) localStorage.setItem(getStorageKey(base), legacy[base]);
+                            if (legacy[base] !== undefined) localStorage.setItem(getStorageKey(base), String(legacy[base]));
                         });
-                        if (legacy.portalUserPic) localStorage.setItem(getStorageKey('portalUserPic'), legacy.portalUserPic);
-                        applyingCloudData = false;
-                        await syncLocalDataToCloud();
-                        applyingCloudData = true;
-                    } else {
-                        // First login on a new device: seed cloud with current local data only if no cloud record exists.
-                        applyingCloudData = false;
-                        await syncLocalDataToCloud();
-                        applyingCloudData = true;
+                        if (legacy.portalUserPic) localStorage.setItem(getStorageKey('portalUserPic'), String(legacy.portalUserPic));
                     }
+                    applyingCloudData = false;
+                    await syncLocalDataToCloud();
+                    applyingCloudData = true;
                 }
             } catch (e) {
                 console.warn('Could not restore cloud profile data:', e);
-                if (typeof showToast === 'function') showToast('প্রোফাইল ডেটা সিঙ্ক হয়নি। Supabase SQL সেটআপ করা আছে কি না দেখুন।', 'error');
+                if (typeof showToast === 'function') showToast('প্রোফাইল ডেটা ক্লাউডে সিঙ্ক হয়নি। ইন্টারনেট/টেবিল Policy পরীক্ষা করুন।', 'error');
             } finally {
                 applyingCloudData = false;
             }
@@ -2619,9 +2655,11 @@
                     localStorage.setItem(getStorageKey('portalUserPic'), selectedFileBase64);
                 }
 
-                if (!saveSecurityQuestion()) return;
+                if (!saveSecurityQuestion()) { finalizeProfileUpdate(); return; }
+                // LocalStorage is already updated; queue automatic cloud sync and try immediately.
+                scheduleCloudSync(250);
                 const syncOk = await syncLocalDataToCloud();
-                if (!syncOk && supabaseClient) { showToast('প্রোফাইল লোকালি সেভ হয়েছে, কিন্তু ক্লাউডে সিঙ্ক হয়নি।', 'error'); }
+                if (!syncOk && supabaseClient) { showToast('প্রোফাইল লোকালি সেভ হয়েছে। ক্লাউডে আবার স্বয়ংক্রিয়ভাবে চেষ্টা হবে।', 'error'); }
                 finalizeProfileUpdate();
             } catch (err) {
                 console.error(err);
@@ -2980,23 +3018,18 @@
             const question = document.getElementById('security-question-select')?.value;
             const answer = (document.getElementById('security-question-answer')?.value || '').trim();
             const existing = JSON.parse(localStorage.getItem(getStorageKey('securityQuestion')) || 'null');
+            // Security question is optional for profile edits; blank answer means keep existing value.
+            if (!answer) return true;
             if (!question) { showToast('একটি সিকিউরিটি প্রশ্ন নির্বাচন করুন।', 'error'); return false; }
-            if (!answer && !existing) { showToast('সিকিউরিটি প্রশ্নের উত্তর লিখুন।', 'error'); return false; }
-            if (answer) {
-                const securityRecord = {
-                    question,
-                    answer: answer.toLocaleLowerCase(),
-                    updatedAt: Date.now()
-                };
-                localStorage.setItem(getStorageKey('securityQuestion'), JSON.stringify(securityRecord));
-                // Forgot-password flow uses an email-specific key; keep both stores in sync.
-                const email = (localStorage.getItem('portalUserEmail') || '').trim().toLowerCase();
-                if (email) {
-                    localStorage.setItem('secData_' + email, JSON.stringify({ q: question, a: answer.toLocaleLowerCase() }));
-                }
-            } else if (existing && existing.question !== question) {
-                showToast('প্রশ্ন পরিবর্তন করলে নতুন উত্তরও লিখুন।', 'error'); return false;
-            }
+            const securityRecord = {
+                question,
+                answer: answer.toLocaleLowerCase(),
+                updatedAt: Date.now()
+            };
+            localStorage.setItem(getStorageKey('securityQuestion'), JSON.stringify(securityRecord));
+            // Forgot-password flow uses an email-specific key; keep both stores in sync.
+            const email = (localStorage.getItem('portalUserEmail') || '').trim().toLowerCase();
+            if (email) localStorage.setItem('secData_' + email, JSON.stringify({ q: question, a: answer.toLocaleLowerCase() }));
             return true;
         }
 
