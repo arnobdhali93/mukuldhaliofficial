@@ -1562,10 +1562,14 @@
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (session) {
                     localStorage.setItem('portalUserEmail', session.user.email);
-                    if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+                    if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
                         restoreCloudDataToLocal(session.user).then(() => {
                             renderProfileSection(); updateHeaderBadge(); renderBookmarks(); loadChatHistory();
                         });
+                    } else if (event === 'USER_UPDATED') {
+                        // A profile metadata update must not trigger a cloud restore that overwrites
+                        // the user's freshly edited local name/picture with stale cloud values.
+                        scheduleCloudSync(250);
                     }
                     if(session.user.user_metadata.full_name && !localStorage.getItem(getStorageKey('portalUserName'))) {
                         localStorage.setItem(getStorageKey('portalUserName'), session.user.user_metadata.full_name);
@@ -2720,20 +2724,26 @@
             const newName = document.getElementById('edit-name').value.trim();
 
             try {
-                if (newName) {
-                    if (supabaseClient) {
-                        const { data: { user } } = await supabaseClient.auth.getUser();
-                        if(user) {
-                            await supabaseClient.auth.updateUser({
+                // Save the user's edits locally first, before updating Supabase Auth metadata.
+                // USER_UPDATED can fire asynchronously; the auth listener above now schedules an
+                // upload instead of restoring stale cloud values over these edits.
+                if (newName) localStorage.setItem(getStorageKey('portalUserName'), newName);
+                if (selectedFileBase64) localStorage.setItem(getStorageKey('portalUserPic'), selectedFileBase64);
+
+                if (newName && supabaseClient) {
+                    try {
+                        const { data: { user }, error: getUserError } = await supabaseClient.auth.getUser();
+                        if (getUserError) throw getUserError;
+                        if (user) {
+                            const { error: updateUserError } = await supabaseClient.auth.updateUser({
                                 data: { full_name: newName }
                             });
+                            if (updateUserError) console.warn('Auth display-name metadata update failed; portal profile sync will still be attempted:', updateUserError);
                         }
+                    } catch (metadataError) {
+                        // The portal profile is stored in portal_user_data; Auth metadata is secondary.
+                        console.warn('Could not update optional Auth profile metadata:', metadataError);
                     }
-                    localStorage.setItem(getStorageKey('portalUserName'), newName);
-                }
-
-                if (selectedFileBase64) {
-                    localStorage.setItem(getStorageKey('portalUserPic'), selectedFileBase64);
                 }
 
                 // Verify the browser actually retained the edits before showing success.
@@ -2750,9 +2760,10 @@
                 if (syncOk) {
                     finalizeProfileUpdate('প্রোফাইল আপডেট হয়েছে এবং ক্লাউডে যাচাই হয়েছে।');
                 } else if (supabaseClient) {
-                    closeEditProfile();
+                    // Keep the edited values visible locally and leave the editor open so a failed
+                    // cloud check doesn't look like the profile reverted or disappeared.
                     renderProfileSection(); updateHeaderBadge();
-                    showToast('প্রোফাইল এই ডিভাইসে সেভ হয়েছে, কিন্তু ক্লাউডে যাচাই হয়নি। Sync বোতাম চাপুন; Console/ত্রুটির বার্তা পরীক্ষা করুন।', 'error');
+                    showToast('প্রোফাইল এই ডিভাইসে সেভ আছে, কিন্তু ক্লাউডে যাচাই হয়নি। নাম/ছবি এই ডিভাইসে রাখা হয়েছে; Sync চেষ্টা করুন।', 'error');
                 } else {
                     finalizeProfileUpdate('প্রোফাইল এই ডিভাইসে আপডেট হয়েছে; ক্লাউড সিঙ্ক চালু নেই।');
                 }
@@ -3097,9 +3108,8 @@
             if (!current.length) { showToast('মুছে ফেলার মতো কুইজ হিস্ট্রি নেই।', 'error'); return; }
             openConfirmModal(`এই অ্যাকাউন্টের ${current.length}টি কুইজ হিস্ট্রি সব ডিভাইস থেকে মুছে ফেলতে চান?`, async () => {
                 try {
-                    // Clear the score before uploading so history deletion and score reset are one payload.
-                    localStorage.removeItem(getStorageKey('lastQuizScore'));
                     await persistQuizHistoryDeletion([], 'সব কুইজ হিস্ট্রি মুছে ফেলা হয়েছে।');
+                    localStorage.removeItem(getStorageKey('lastQuizScore'));
                     renderProfileSection();
                 } catch (e) {
                     console.error('Delete all quiz history failed:', e);
