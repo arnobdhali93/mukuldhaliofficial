@@ -1383,6 +1383,15 @@
                             updated_at: new Date().toISOString()
                         }, { onConflict: 'user_id' });
                         if (error) throw error;
+                        // Verify the row can be read back; this distinguishes a real cloud save
+                        // from a UI-only/local save and exposes RLS/table problems.
+                        const { data: verifiedRow, error: verifyError } = await supabaseClient
+                            .from('portal_user_data').select('user_id, updated_at')
+                            .eq('user_id', user.id).maybeSingle();
+                        if (verifyError) throw verifyError;
+                        if (!verifiedRow || verifiedRow.user_id !== user.id) {
+                            throw new Error('Supabase-এ সেভের পর রেকর্ড যাচাই করা যায়নি। Table/RLS policy পরীক্ষা করুন।');
+                        }
                         activeCloudUserId = user.id;
                         success = true;
                     } while (cloudSyncPending);
@@ -1392,7 +1401,7 @@
                 } catch (e) {
                     console.warn('Cloud profile sync failed:', e);
                     success = false;
-                    if (!quiet && typeof showToast === 'function') showToast('এখনও ক্লাউডে সেভ হয়নি। ইন্টারনেট ঠিক হলে আবার চেষ্টা করুন।', 'error');
+                    if (!quiet && typeof showToast === 'function') showToast('ক্লাউড সিঙ্ক ব্যর্থ: ' + String(e?.message || e).slice(0, 180), 'error');
                     return false;
                 } finally {
                     cloudSyncBusy = false;
@@ -2991,25 +3000,53 @@
             }
         }
 
+        async function persistQuizHistoryDeletion(updatedHistory, successMessage) {
+            const key = getStorageKey('fullQuizHistory');
+            localStorage.setItem(key, JSON.stringify(updatedHistory));
+            // Also clear the current view immediately so the deleted rows disappear at once.
+            renderProfileSection();
+            try {
+                const ok = await syncLocalDataToCloud({ quiet: false });
+                if (ok) showToast(successMessage + ' ক্লাউডেও যাচাই হয়েছে।', 'success');
+                else showToast('হিস্ট্রি লোকাল থেকে মুছেছে, কিন্তু ক্লাউডে সেভ হয়নি। Sync button চাপুন; ত্রুটির বার্তা দেখুন।', 'error');
+            } catch (e) {
+                console.error('History cloud deletion failed:', e);
+                showToast('লোকাল থেকে মুছেছে; ক্লাউডে সমস্যা: ' + String(e?.message || e).slice(0, 140), 'error');
+            }
+        }
+
         function deleteSelectedQuizHistory() {
             const selected = Array.from(document.querySelectorAll('.history-select-checkbox:checked'))
-                .map(el => Number(el.value)).filter(Number.isInteger);
+                .map(el => Number(el.value)).filter(n => Number.isInteger(n) && n >= 0);
             if (!selected.length) { showToast('মুছতে আগে অন্তত একটি হিস্ট্রি নির্বাচন করুন।', 'error'); return; }
-            openConfirmModal(`নির্বাচিত ${selected.length}টি কুইজ হিস্ট্রি মুছে ফেলতে চান?`, () => {
+            openConfirmModal(`নির্বাচিত ${selected.length}টি কুইজ হিস্ট্রি মুছে ফেলতে চান?`, async () => {
                 try {
-                    const key = getStorageKey('fullQuizHistory');
-                    const history = JSON.parse(localStorage.getItem(key) || '[]');
+                    const history = JSON.parse(localStorage.getItem(getStorageKey('fullQuizHistory')) || '[]');
                     const selectedSet = new Set(selected);
                     const updated = history.filter((_, index) => !selectedSet.has(index));
-                    localStorage.setItem(key, JSON.stringify(updated));
-                    renderProfileSection();
-                    syncLocalDataToCloud().then(ok => {
-                        if (ok) showToast('নির্বাচিত কুইজ হিস্ট্রি মুছে ফেলা হয়েছে এবং ক্লাউডে সেভ হয়েছে।', 'success');
-                        else showToast('লোকাল থেকে মুছেছে, কিন্তু ক্লাউড আপডেট হয়নি। SQL/RLS পরীক্ষা করুন।', 'error');
-                    });
+                    if (updated.length === history.length) {
+                        showToast('নির্বাচিত হিস্ট্রি আর পাওয়া যাচ্ছে না। প্রোফাইল রিফ্রেশ করে আবার চেষ্টা করুন।', 'error');
+                        return;
+                    }
+                    await persistQuizHistoryDeletion(updated, 'নির্বাচিত কুইজ হিস্ট্রি মুছে ফেলা হয়েছে।');
                 } catch (e) {
                     console.error('Selected history reset failed:', e);
-                    showToast('নির্বাচিত হিস্ট্রি মুছতে সমস্যা হয়েছে।', 'error');
+                    showToast('নির্বাচিত হিস্ট্রি মুছতে সমস্যা: ' + String(e?.message || e).slice(0, 140), 'error');
+                }
+            });
+        }
+
+        function deleteAllQuizHistory() {
+            const current = JSON.parse(localStorage.getItem(getStorageKey('fullQuizHistory')) || '[]');
+            if (!current.length) { showToast('মুছে ফেলার মতো কুইজ হিস্ট্রি নেই।', 'error'); return; }
+            openConfirmModal(`এই অ্যাকাউন্টের ${current.length}টি কুইজ হিস্ট্রি সব ডিভাইস থেকে মুছে ফেলতে চান?`, async () => {
+                try {
+                    await persistQuizHistoryDeletion([], 'সব কুইজ হিস্ট্রি মুছে ফেলা হয়েছে।');
+                    localStorage.removeItem(getStorageKey('lastQuizScore'));
+                    renderProfileSection();
+                } catch (e) {
+                    console.error('Delete all quiz history failed:', e);
+                    showToast('সব হিস্ট্রি মুছতে সমস্যা: ' + String(e?.message || e).slice(0, 140), 'error');
                 }
             });
         }
@@ -3190,7 +3227,7 @@
                             </div>
                         </div>`;
                     });
-                    historyHtml += `</div><button type="button" onclick="deleteSelectedQuizHistory()" class="mt-3 w-full rounded-xl border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300 px-4 py-3 text-sm font-bold"><i class="fa-solid fa-trash mr-2"></i>নির্বাচিত হিস্ট্রি মুছুন</button>`;
+                    historyHtml += `</div><div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3"><button type="button" onclick="deleteSelectedQuizHistory()" class="w-full rounded-xl border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300 px-4 py-3 text-sm font-bold"><i class="fa-solid fa-trash mr-2"></i>নির্বাচিত হিস্ট্রি মুছুন</button><button type="button" onclick="deleteAllQuizHistory()" class="w-full rounded-xl border border-red-300 bg-red-600 text-white hover:bg-red-700 px-4 py-3 text-sm font-bold"><i class="fa-solid fa-trash-can mr-2"></i>সব কুইজ হিস্ট্রি মুছুন</button></div>`;
                 }
 
                 profileContainer.innerHTML = `
