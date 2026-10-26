@@ -1338,6 +1338,7 @@
         const CLOUD_SYNC_KEYS = ['portalUserName', 'fullQuizHistory', 'lastQuizScore', 'portalBookmarks', 'securityQuestion', 'aiChatHistory'];
         let cloudSyncTimer = null;
         let cloudSyncBusy = false;
+        let cloudSyncPending = false;
         let applyingCloudData = false;
         let activeCloudUserId = null;
 
@@ -1354,11 +1355,13 @@
         }
 
         async function syncLocalDataToCloud() {
-            if (!supabaseClient || cloudSyncBusy || applyingCloudData) return false;
-            const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
-            if (authError || !user) return false;
+            if (!supabaseClient || applyingCloudData) return false;
+            // Queue another pass if a save happens while an earlier request is still running.
+            if (cloudSyncBusy) { cloudSyncPending = true; return true; }
             cloudSyncBusy = true;
             try {
+                const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+                if (authError || !user) return false;
                 const payload = readLocalCloudPayload();
                 const { error } = await supabaseClient.from('portal_user_data').upsert({
                     user_id: user.id,
@@ -1374,6 +1377,10 @@
                 return false;
             } finally {
                 cloudSyncBusy = false;
+                if (cloudSyncPending) {
+                    cloudSyncPending = false;
+                    scheduleCloudSync();
+                }
             }
         }
 
@@ -1390,7 +1397,8 @@
                 const { data: row, error } = await supabaseClient.from('portal_user_data')
                     .select('data, updated_at').eq('user_id', user.id).maybeSingle();
                 if (error) throw error;
-                if (row && row.data && typeof row.data === 'object') {
+                if (row && row.data && typeof row.data === 'object' &&
+                    Object.values(row.data).some(value => value !== null && value !== '')) {
                     const payload = row.data;
                     CLOUD_SYNC_KEYS.forEach(base => {
                         const key = getStorageKey(base);
