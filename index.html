@@ -1332,8 +1332,6 @@
 
         let supabaseClient;
 
-        // Get a real authenticated Supabase session before cloud database operations.
-        // The public API key is not a user's access token.
         async function getValidSupabaseSession() {
             if (!supabaseClient) throw new Error('Supabase চালু হয়নি। পেজটি রিফ্রেশ করুন।');
             let result = await supabaseClient.auth.getSession();
@@ -1346,6 +1344,11 @@
             }
             if (!session?.access_token || !session?.user?.id) {
                 throw new Error('Supabase লগইন সেশন পাওয়া যায়নি। লগআউট করে আবার লগইন করুন।');
+            }
+            const checked = await supabaseClient.auth.getUser(session.access_token);
+            if (checked.error) throw checked.error;
+            if (!checked.data?.user?.id || checked.data.user.id !== session.user.id) {
+                throw new Error('লগইন সেশন যাচাই করা যায়নি। আবার লগইন করুন।');
             }
             return session;
         }
@@ -1365,13 +1368,30 @@
         let applyingCloudData = false;
         let activeCloudUserId = null;
 
+        function readAccountStorageValue(baseKey) {
+            const email = String(localStorage.getItem('portalUserEmail') || '').trim();
+            const currentKey = getStorageKey(baseKey);
+            let value = localStorage.getItem(currentKey);
+            if (value !== null || !email) return value;
+            // Older builds may have used a lower-cased email in the storage key.
+            const normalizedKey = `${email.toLowerCase()}_${baseKey}`;
+            if (normalizedKey !== currentKey) {
+                value = localStorage.getItem(normalizedKey);
+                if (value !== null) {
+                    localStorage.setItem(currentKey, value);
+                    return value;
+                }
+            }
+            return null;
+        }
+
         function readLocalCloudPayload() {
             const payload = {};
             CLOUD_SYNC_KEYS.forEach(base => {
-                const value = localStorage.getItem(getStorageKey(base));
+                const value = readAccountStorageValue(base);
                 payload[base] = value === null ? null : value;
             });
-            const pic = localStorage.getItem(getStorageKey('portalUserPic'));
+            const pic = readAccountStorageValue('portalUserPic');
             // Never silently replace an oversized profile picture with null.
             payload.portalUserPic = pic || null;
             return payload;
@@ -1462,65 +1482,51 @@
             let shouldUploadLocal = false;
             applyingCloudData = true;
             try {
+                // Verify that the active session belongs to this account before touching its row.
+                const session = await getValidSupabaseSession();
+                if (session.user.id !== user.id) throw new Error('লগইন অ্যাকাউন্ট বদলে গেছে; পেজটি রিফ্রেশ করুন।');
                 const { data: row, error } = await supabaseClient.from('portal_user_data')
                     .select('data, updated_at').eq('user_id', user.id).maybeSingle();
                 if (error) throw error;
-                if (row && row.data && typeof row.data === 'object' &&
-                    Object.values(row.data).some(value => value !== null && value !== '')) {
-                    const payload = row.data;
-                    // IMPORTANT: do not overwrite a locally edited profile with stale cloud data.
-                    // Cloud fills missing local values; if both exist and differ, keep local and upload it.
-                    CLOUD_SYNC_KEYS.forEach(base => {
-                        if (!Object.prototype.hasOwnProperty.call(payload, base)) return;
-                        const key = getStorageKey(base);
-                        const localValue = localStorage.getItem(key);
-                        const cloudValue = payload[base] === null ? null : String(payload[base]);
-                        if (localValue === null || localValue === '') {
-                            if (cloudValue === null) localStorage.removeItem(key);
-                            else localStorage.setItem(key, cloudValue);
-                        } else if (cloudValue !== null && localValue !== cloudValue) {
-                            shouldUploadLocal = true;
-                        } else if (cloudValue === null && localValue !== null) {
-                            shouldUploadLocal = true;
-                        }
-                    });
-                    if (Object.prototype.hasOwnProperty.call(payload, 'portalUserPic')) {
-                        const key = getStorageKey('portalUserPic');
-                        const localPic = localStorage.getItem(key);
-                        const cloudPic = payload.portalUserPic === null ? null : String(payload.portalUserPic);
-                        if (localPic === null || localPic === '') {
-                            if (cloudPic === null) localStorage.removeItem(key);
-                            else localStorage.setItem(key, cloudPic);
-                        } else if (cloudPic !== localPic) {
-                            shouldUploadLocal = true;
-                        }
+                const payload = row && row.data && typeof row.data === 'object' ? row.data : {};
+                const hasCloudData = !!row && Object.values(payload).some(value => value !== null && value !== '');
+
+                // The cloud is the source of truth when it has a value (including [] for a deliberate history deletion).
+                // If the cloud field is missing/null, preserve local data and upload it instead of erasing it.
+                CLOUD_SYNC_KEYS.forEach(base => {
+                    const key = getStorageKey(base);
+                    const localValue = readAccountStorageValue(base);
+                    const hasField = Object.prototype.hasOwnProperty.call(payload, base);
+                    const cloudValue = hasField && payload[base] !== null ? String(payload[base]) : null;
+                    if (cloudValue !== null) {
+                        if (localValue !== cloudValue) localStorage.setItem(key, cloudValue);
+                    } else if (localValue !== null && localValue !== '') {
+                        shouldUploadLocal = true;
+                    } else if (hasCloudData && hasField) {
+                        // Keep an explicit null as empty locally, but don't treat it as an uploadable value.
+                        localStorage.removeItem(key);
                     }
-                    activeCloudUserId = user.id;
-                } else {
-                    // Empty/missing cloud row: preserve the current browser data and seed the cloud.
-                    const legacy = user.user_metadata?.portal_portal_data;
-                    if (legacy && typeof legacy === 'object') {
-                        CLOUD_SYNC_KEYS.forEach(base => {
-                            const key = getStorageKey(base);
-                            if ((localStorage.getItem(key) === null || localStorage.getItem(key) === '') && legacy[base] !== undefined) {
-                                localStorage.setItem(key, String(legacy[base]));
-                            } else if (legacy[base] !== undefined && localStorage.getItem(key) !== String(legacy[base])) {
-                                shouldUploadLocal = true;
-                            }
-                        });
-                        if (legacy.portalUserPic && !localStorage.getItem(getStorageKey('portalUserPic'))) {
-                            localStorage.setItem(getStorageKey('portalUserPic'), String(legacy.portalUserPic));
-                        }
-                    }
+                    if (!hasField) shouldUploadLocal = true;
+                });
+
+                const picKey = getStorageKey('portalUserPic');
+                const localPic = readAccountStorageValue('portalUserPic');
+                const cloudPic = Object.prototype.hasOwnProperty.call(payload, 'portalUserPic') && payload.portalUserPic !== null
+                    ? String(payload.portalUserPic) : null;
+                if (cloudPic !== null) {
+                    if (localPic !== cloudPic) localStorage.setItem(picKey, cloudPic);
+                } else if (localPic) {
                     shouldUploadLocal = true;
                 }
+                if (!row || !hasCloudData) shouldUploadLocal = true;
+                activeCloudUserId = user.id;
             } catch (e) {
                 console.warn('Could not restore cloud profile data:', e);
-                if (typeof showToast === 'function') showToast('প্রোফাইল ডেটা ক্লাউডে সিঙ্ক হয়নি। ইন্টারনেট/টেবিল Policy পরীক্ষা করুন।', 'error');
+                if (typeof showToast === 'function') showToast('ক্লাউড ডেটা লোড হয়নি: ' + String(e?.message || e).slice(0, 150), 'error');
             } finally {
                 applyingCloudData = false;
             }
-            if (shouldUploadLocal) scheduleCloudSync(300);
+            if (shouldUploadLocal) scheduleCloudSync(500);
         }
 
         try {
@@ -2717,7 +2723,7 @@
                 // LocalStorage is already updated; queue automatic cloud sync and try immediately.
                 scheduleCloudSync(250);
                 const syncOk = await syncLocalDataToCloud();
-                if (!syncOk && supabaseClient) { showToast('প্রোফাইল লোকালি সেভ হয়েছে। ক্লাউডে আবার স্বয়ংক্রিয়ভাবে চেষ্টা হবে।', 'error'); }
+                if (!syncOk && supabaseClient) { showToast('প্রোফাইল লোকালি সেভ হয়েছে, কিন্তু ক্লাউডে সেভ হয়নি। ইন্টারনেট/লগইন সেশন যাচাই করুন।', 'error'); }
                 finalizeProfileUpdate();
             } catch (err) {
                 console.error(err);
@@ -3027,7 +3033,7 @@
             try {
                 const ok = await syncLocalDataToCloud({ quiet: false });
                 if (ok) showToast(successMessage + ' ক্লাউডেও যাচাই হয়েছে।', 'success');
-                else showToast('হিস্ট্রি লোকাল থেকে মুছেছে, কিন্তু ক্লাউডে সেভ হয়নি। Sync button চাপুন; ত্রুটির বার্তা দেখুন।', 'error');
+                else showToast('হিস্ট্রি লোকাল থেকে মুছেছে, কিন্তু ক্লাউডে সেভ হয়নি। ইন্টারনেট/লগইন সেশন যাচাই করুন; ত্রুটির বার্তা দেখুন।', 'error');
             } catch (e) {
                 console.error('History cloud deletion failed:', e);
                 showToast('লোকাল থেকে মুছেছে; ক্লাউডে সমস্যা: ' + String(e?.message || e).slice(0, 140), 'error');
@@ -3080,8 +3086,7 @@
                     });
                     applyingCloudData = false;
                     if (supabaseClient) {
-                        const session = await getValidSupabaseSession();
-                        const user = session.user;
+                        const { data: { user } } = await supabaseClient.auth.getUser();
                         if (user) {
                             const payload = readLocalCloudPayload();
                             const { error } = await supabaseClient.from('portal_user_data').upsert({
