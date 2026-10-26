@@ -1332,13 +1332,13 @@
 
         let supabaseClient;
 
-        // Always obtain a real Supabase user session before accessing protected REST endpoints.
-        // The public/publishable API key is not a user's Bearer access token.
+        // Get a real authenticated Supabase session before cloud database operations.
+        // The public API key is not a user's access token.
         async function getValidSupabaseSession() {
             if (!supabaseClient) throw new Error('Supabase চালু হয়নি। পেজটি রিফ্রেশ করুন।');
-            let { data, error } = await supabaseClient.auth.getSession();
-            if (error) throw error;
-            let session = data?.session || null;
+            let result = await supabaseClient.auth.getSession();
+            if (result.error) throw result.error;
+            let session = result.data?.session || null;
             if (!session?.access_token) {
                 const refreshed = await supabaseClient.auth.refreshSession();
                 if (refreshed.error) throw refreshed.error;
