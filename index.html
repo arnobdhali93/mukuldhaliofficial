@@ -1332,6 +1332,24 @@
 
         let supabaseClient;
 
+        // Get a real authenticated Supabase session before cloud database operations.
+        // The public API key is not a user's access token.
+        async function getValidSupabaseSession() {
+            if (!supabaseClient) throw new Error('Supabase চালু হয়নি। পেজটি রিফ্রেশ করুন।');
+            let result = await supabaseClient.auth.getSession();
+            if (result.error) throw result.error;
+            let session = result.data?.session || null;
+            if (!session?.access_token) {
+                const refreshed = await supabaseClient.auth.refreshSession();
+                if (refreshed.error) throw refreshed.error;
+                session = refreshed.data?.session || null;
+            }
+            if (!session?.access_token || !session?.user?.id) {
+                throw new Error('Supabase লগইন সেশন পাওয়া যায়নি। লগআউট করে আবার লগইন করুন।');
+            }
+            return session;
+        }
+
         function getStorageKey(baseKey) {
             const email = localStorage.getItem('portalUserEmail');
             return email ? `${email}_${baseKey}` : `guest_${baseKey}`;
@@ -1373,9 +1391,8 @@
                     // Repeat once more if data changed while a previous upload was in flight.
                     do {
                         cloudSyncPending = false;
-                        const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
-                        if (authError) throw authError;
-                        if (!user) throw new Error('আগে আপনার অ্যাকাউন্টে লগইন করুন।');
+                        const session = await getValidSupabaseSession();
+                        const user = session.user;
                         const payload = readLocalCloudPayload();
                         const { error } = await supabaseClient.from('portal_user_data').upsert({
                             user_id: user.id,
@@ -1508,7 +1525,9 @@
 
         try {
             const { createClient } = window.supabase;
-            supabaseClient = createClient(supabaseUrl, supabaseKey);
+            supabaseClient = createClient(supabaseUrl, supabaseKey, {
+                auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+            });
 
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (session) {
@@ -3061,7 +3080,8 @@
                     });
                     applyingCloudData = false;
                     if (supabaseClient) {
-                        const { data: { user } } = await supabaseClient.auth.getUser();
+                        const session = await getValidSupabaseSession();
+                        const user = session.user;
                         if (user) {
                             const payload = readLocalCloudPayload();
                             const { error } = await supabaseClient.from('portal_user_data').upsert({
