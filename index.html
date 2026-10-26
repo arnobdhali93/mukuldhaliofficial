@@ -1433,6 +1433,7 @@
 
         async function restoreCloudDataToLocal(user) {
             if (!supabaseClient || !user) return;
+            let shouldUploadLocal = false;
             applyingCloudData = true;
             try {
                 const { data: row, error } = await supabaseClient.from('portal_user_data')
@@ -1441,30 +1442,51 @@
                 if (row && row.data && typeof row.data === 'object' &&
                     Object.values(row.data).some(value => value !== null && value !== '')) {
                     const payload = row.data;
+                    // IMPORTANT: do not overwrite a locally edited profile with stale cloud data.
+                    // Cloud fills missing local values; if both exist and differ, keep local and upload it.
                     CLOUD_SYNC_KEYS.forEach(base => {
+                        if (!Object.prototype.hasOwnProperty.call(payload, base)) return;
                         const key = getStorageKey(base);
-                        if (Object.prototype.hasOwnProperty.call(payload, base)) {
-                            if (payload[base] === null) localStorage.removeItem(key);
-                            else localStorage.setItem(key, String(payload[base]));
+                        const localValue = localStorage.getItem(key);
+                        const cloudValue = payload[base] === null ? null : String(payload[base]);
+                        if (localValue === null || localValue === '') {
+                            if (cloudValue === null) localStorage.removeItem(key);
+                            else localStorage.setItem(key, cloudValue);
+                        } else if (cloudValue !== null && localValue !== cloudValue) {
+                            shouldUploadLocal = true;
+                        } else if (cloudValue === null && localValue !== null) {
+                            shouldUploadLocal = true;
                         }
                     });
                     if (Object.prototype.hasOwnProperty.call(payload, 'portalUserPic')) {
-                        if (payload.portalUserPic === null) localStorage.removeItem(getStorageKey('portalUserPic'));
-                        else localStorage.setItem(getStorageKey('portalUserPic'), String(payload.portalUserPic));
+                        const key = getStorageKey('portalUserPic');
+                        const localPic = localStorage.getItem(key);
+                        const cloudPic = payload.portalUserPic === null ? null : String(payload.portalUserPic);
+                        if (localPic === null || localPic === '') {
+                            if (cloudPic === null) localStorage.removeItem(key);
+                            else localStorage.setItem(key, cloudPic);
+                        } else if (cloudPic !== localPic) {
+                            shouldUploadLocal = true;
+                        }
                     }
                     activeCloudUserId = user.id;
                 } else {
-                    // Migrate legacy metadata when available; otherwise seed this user's cloud row.
+                    // Empty/missing cloud row: preserve the current browser data and seed the cloud.
                     const legacy = user.user_metadata?.portal_portal_data;
                     if (legacy && typeof legacy === 'object') {
                         CLOUD_SYNC_KEYS.forEach(base => {
-                            if (legacy[base] !== undefined) localStorage.setItem(getStorageKey(base), String(legacy[base]));
+                            const key = getStorageKey(base);
+                            if ((localStorage.getItem(key) === null || localStorage.getItem(key) === '') && legacy[base] !== undefined) {
+                                localStorage.setItem(key, String(legacy[base]));
+                            } else if (legacy[base] !== undefined && localStorage.getItem(key) !== String(legacy[base])) {
+                                shouldUploadLocal = true;
+                            }
                         });
-                        if (legacy.portalUserPic) localStorage.setItem(getStorageKey('portalUserPic'), String(legacy.portalUserPic));
+                        if (legacy.portalUserPic && !localStorage.getItem(getStorageKey('portalUserPic'))) {
+                            localStorage.setItem(getStorageKey('portalUserPic'), String(legacy.portalUserPic));
+                        }
                     }
-                    applyingCloudData = false;
-                    await syncLocalDataToCloud();
-                    applyingCloudData = true;
+                    shouldUploadLocal = true;
                 }
             } catch (e) {
                 console.warn('Could not restore cloud profile data:', e);
@@ -1472,6 +1494,7 @@
             } finally {
                 applyingCloudData = false;
             }
+            if (shouldUploadLocal) scheduleCloudSync(300);
         }
 
         try {
@@ -2655,6 +2678,13 @@
                     localStorage.setItem(getStorageKey('portalUserPic'), selectedFileBase64);
                 }
 
+                // Verify the browser actually retained the edits before showing success.
+                if (newName && localStorage.getItem(getStorageKey('portalUserName')) !== newName) {
+                    throw new Error('নাম ব্রাউজারে সংরক্ষণ করা যায়নি।');
+                }
+                if (selectedFileBase64 && localStorage.getItem(getStorageKey('portalUserPic')) !== selectedFileBase64) {
+                    throw new Error('প্রোফাইল ছবি ব্রাউজারে সংরক্ষণ করা যায়নি।');
+                }
                 if (!saveSecurityQuestion()) { finalizeProfileUpdate(); return; }
                 // LocalStorage is already updated; queue automatic cloud sync and try immediately.
                 scheduleCloudSync(250);
