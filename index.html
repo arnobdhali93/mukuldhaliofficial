@@ -1348,14 +1348,15 @@
                 payload[base] = value === null ? null : value;
             });
             const pic = localStorage.getItem(getStorageKey('portalUserPic'));
-            payload.portalUserPic = pic && pic.length < 80000 ? pic : null;
+            // Profile images are resized before saving; preserve absence as null but never silently discard a large image.
+            payload.portalUserPic = pic ? (pic.length <= 250000 ? pic : null) : null;
             return payload;
         }
 
         async function syncLocalDataToCloud() {
-            if (!supabaseClient || cloudSyncBusy || applyingCloudData) return;
+            if (!supabaseClient || cloudSyncBusy || applyingCloudData) return false;
             const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
-            if (authError || !user) return;
+            if (authError || !user) return false;
             cloudSyncBusy = true;
             try {
                 const payload = readLocalCloudPayload();
@@ -1366,9 +1367,11 @@
                 }, { onConflict: 'user_id' });
                 if (error) throw error;
                 activeCloudUserId = user.id;
+                return true;
             } catch (e) {
                 console.warn('Cloud profile sync failed:', e);
-                if (typeof showToast === 'function') showToast('ক্লাউডে ডেটা সেভ হয়নি। Supabase-এর portal_user_data টেবিল সেটআপ পরীক্ষা করুন।', 'error');
+                if (typeof showToast === 'function') showToast('ক্লাউড সিঙ্ক ব্যর্থ: ' + (e?.message || 'Supabase টেবিল/Policy পরীক্ষা করুন।'), 'error');
+                return false;
             } finally {
                 cloudSyncBusy = false;
             }
@@ -1434,15 +1437,17 @@
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (session) {
                     localStorage.setItem('portalUserEmail', session.user.email);
-                    restoreCloudDataToLocal(session.user).then(() => {
-                        renderProfileSection(); updateHeaderBadge(); renderBookmarks(); loadChatHistory();
-                    });
-                    if(session.user.user_metadata.full_name) {
+                    if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+                        restoreCloudDataToLocal(session.user).then(() => {
+                            renderProfileSection(); updateHeaderBadge(); renderBookmarks(); loadChatHistory();
+                        });
+                    }
+                    if(session.user.user_metadata.full_name && !localStorage.getItem(getStorageKey('portalUserName'))) {
                         localStorage.setItem(getStorageKey('portalUserName'), session.user.user_metadata.full_name);
                     } else if (!localStorage.getItem(getStorageKey('portalUserName'))) {
                         localStorage.setItem(getStorageKey('portalUserName'), session.user.email.split('@')[0]);
                     }
-                } else {
+                } else if (event === 'SIGNED_OUT') {
                     localStorage.removeItem('portalUserEmail');
                     activeCloudUserId = null;
                 }
@@ -2528,8 +2533,8 @@
 
         function saveCroppedImage() {
             if(cropper) {
-                const canvas = cropper.getCroppedCanvas({ width: 256, height: 256, fillColor: '#fff' });
-                selectedFileBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                const canvas = cropper.getCroppedCanvas({ width: 128, height: 128, fillColor: '#fff' });
+                selectedFileBase64 = canvas.toDataURL('image/jpeg', 0.58);
 
                 const previewContainer = document.getElementById('edit-pic-preview-container');
                 previewContainer.innerHTML = `<img src="${selectedFileBase64}" class="w-full h-full object-cover">`;
@@ -2607,6 +2612,8 @@
                 }
 
                 if (!saveSecurityQuestion()) return;
+                const syncOk = await syncLocalDataToCloud();
+                if (!syncOk && supabaseClient) { showToast('প্রোফাইল লোকালি সেভ হয়েছে, কিন্তু ক্লাউডে সিঙ্ক হয়নি।', 'error'); }
                 finalizeProfileUpdate();
             } catch (err) {
                 console.error(err);
@@ -2920,7 +2927,10 @@
                     const updated = history.filter((_, index) => !selectedSet.has(index));
                     localStorage.setItem(key, JSON.stringify(updated));
                     renderProfileSection();
-                    showToast('নির্বাচিত কুইজ হিস্ট্রি মুছে ফেলা হয়েছে।', 'success');
+                    syncLocalDataToCloud().then(ok => {
+                        if (ok) showToast('নির্বাচিত কুইজ হিস্ট্রি মুছে ফেলা হয়েছে এবং ক্লাউডে সেভ হয়েছে।', 'success');
+                        else showToast('লোকাল থেকে মুছেছে, কিন্তু ক্লাউড আপডেট হয়নি। SQL/RLS পরীক্ষা করুন।', 'error');
+                    });
                 } catch (e) {
                     console.error('Selected history reset failed:', e);
                     showToast('নির্বাচিত হিস্ট্রি মুছতে সমস্যা হয়েছে।', 'error');
