@@ -1260,6 +1260,24 @@
                     <span class="google-g-mark" aria-hidden="true">G</span> Sign up with Google
                 </button>
             </form>
+
+            <!-- Email OTP verification shown only during new-account registration -->
+            <form id="signup-otp-form" onsubmit="handleSignupOtpVerify(event)" class="space-y-4 hidden animate-fade-in-up">
+                <div class="text-center mb-4">
+                    <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-envelope-circle-check text-2xl"></i></div>
+                    <h3 class="font-black text-2xl text-slate-900 dark:text-white mb-1">ইমেল OTP যাচাই</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">তোমার ইমেলে পাঠানো ৬ সংখ্যার কোডটি লিখুন</p>
+                    <p id="signup-otp-email-label" class="text-xs font-bold text-brand-600 dark:text-brand-400 mt-2 break-all"></p>
+                </div>
+                <div>
+                    <label for="signup-otp-code" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wide">OTP কোড</label>
+                    <input type="text" id="signup-otp-code" required inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="৬ সংখ্যার OTP" class="w-full p-4 text-center tracking-[0.5em] text-xl font-black rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-900 text-sm outline-none focus:border-brand-500 focus:ring-2 transition-all">
+                </div>
+                <button type="submit" id="signup-otp-btn" class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3.5 rounded-xl text-sm font-black transition-all shadow-lg flex justify-center items-center gap-2 cursor-pointer">
+                    <span>OTP যাচাই করে অ্যাকাউন্ট চালু করুন</span> <i class="fa-solid fa-shield-check"></i>
+                </button>
+                <button type="button" onclick="backToSignupFromOtp()" class="w-full border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 py-3 rounded-xl text-sm font-bold">ফিরে যান</button>
+            </form>
         </div>
     </div>
 
@@ -3043,13 +3061,21 @@
 
                     if (error) throw error;
 
-                    localStorage.setItem('secData_' + email, JSON.stringify({ q: secQ, a: secA }));
+                    // OTP verification requires Supabase Authentication > Providers > Email > Confirm email.
+                    if (data && data.session) {
+                        // If a session is returned immediately, email confirmation is probably disabled.
+                        throw new Error('EMAIL_CONFIRMATION_DISABLED');
+                    }
 
-                    showToast("রেজিস্ট্রেশন সফল হয়েছে! দয়া করে ইমেইল ভেরিফাই করুন অথবা লগইন করুন।", "success");
-                    closeAuthModal();
-
-                    if (window.confetti) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-                    switchAuthTab('login');
+                    sessionStorage.setItem('md_pending_signup', JSON.stringify({ name, email, password, secQ, secA }));
+                    document.getElementById('register-form').classList.add('hidden');
+                    document.getElementById('login-form').classList.add('hidden');
+                    document.getElementById('forgot-password-form').classList.add('hidden');
+                    document.getElementById('auth-tabs').classList.add('hidden');
+                    document.getElementById('signup-otp-form').classList.remove('hidden');
+                    document.getElementById('signup-otp-email-label').textContent = email;
+                    document.getElementById('signup-otp-code').value = '';
+                    showAuthMsg('তোমার ইমেলে OTP পাঠানো হয়েছে। ইনবক্স ও Spam/Junk ফোল্ডার দেখো।', 'success');
 
                 } else {
                     const email = document.getElementById('login-id').value.trim();
@@ -3072,12 +3098,59 @@
                 if(error.message.includes("Invalid login credentials")) errorMsg = "ইমেইল বা পাসওয়ার্ড ভুল!";
                 if(error.message.includes("already registered") || error.message.includes("User already exists")) errorMsg = "এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট খোলা আছে!";
                 if(error.message.includes("Password should be at least")) errorMsg = "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে!";
+                if(error.message === 'EMAIL_CONFIRMATION_DISABLED') errorMsg = 'Supabase-এ Confirm email চালু নেই। Authentication → Providers → Email-এ Confirm email চালু করে আবার চেষ্টা করুন।';
 
                 showAuthMsg(errorMsg, 'error');
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
+        }
+
+        async function handleSignupOtpVerify(e) {
+            e.preventDefault();
+            const btn = document.getElementById('signup-otp-btn');
+            const originalText = btn.innerHTML;
+            const email = String(document.getElementById('signup-otp-email-label')?.textContent || '').trim();
+            const token = String(document.getElementById('signup-otp-code')?.value || '').trim();
+            if (!email || !/^[0-9]{6}$/.test(token)) {
+                showAuthMsg('ইমেলে পাওয়া ৬ সংখ্যার OTP লিখুন।', 'error');
+                return;
+            }
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> OTP যাচাই হচ্ছে...';
+            showAuthMsg('', '');
+            try {
+                if (!supabaseClient) throw new Error('Supabase চালু নেই। পেজ রিফ্রেশ করে আবার চেষ্টা করুন।');
+                const { data, error } = await supabaseClient.auth.verifyOtp({ email, token, type: 'signup' });
+                if (error) throw error;
+                if (!data?.user) throw new Error('OTP যাচাই হয়েছে কি না নিশ্চিত করা যায়নি। আবার চেষ্টা করুন।');
+
+                let pending = {};
+                try { pending = JSON.parse(sessionStorage.getItem('md_pending_signup') || '{}'); } catch (_) {}
+                if (pending.email && pending.email.toLowerCase() === email.toLowerCase() && pending.secQ && pending.secA) {
+                    localStorage.setItem('secData_' + email, JSON.stringify({ q: pending.secQ, a: pending.secA }));
+                }
+                sessionStorage.removeItem('md_pending_signup');
+                showToast('ইমেল যাচাই সফল! তোমার অ্যাকাউন্ট তৈরি হয়েছে।', 'success');
+                closeAuthModal();
+                if (window.confetti) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            } catch (error) {
+                console.error('Signup OTP verification failed:', error);
+                let message = 'OTP যাচাই করা যায়নি। সঠিক কোড লিখে আবার চেষ্টা করুন।';
+                if (/expired|invalid/i.test(String(error?.message || ''))) message = 'OTP ভুল বা মেয়াদ শেষ হয়েছে। ইমেল ও কোড পরীক্ষা করুন; প্রয়োজনে নতুন করে Sign Up চেষ্টা করুন।';
+                showAuthMsg(message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        function backToSignupFromOtp() {
+            document.getElementById('signup-otp-form')?.classList.add('hidden');
+            document.getElementById('register-form')?.classList.remove('hidden');
+            document.getElementById('auth-tabs')?.classList.remove('hidden');
+            showAuthMsg('', '');
         }
 
         async function persistQuizHistoryDeletion(updatedHistory, successMessage) {
