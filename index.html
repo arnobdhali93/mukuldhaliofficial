@@ -5339,7 +5339,7 @@
                 return;
             }
             try {
-                const redirectTo = window.location.origin + window.location.pathname + window.location.hash;
+                const redirectTo = window.location.origin + window.location.pathname;
                 const { error } = await supabaseClient.auth.signInWithOAuth({
                     provider: 'google',
                     options: { redirectTo }
@@ -5347,7 +5347,10 @@
                 if (error) throw error;
             } catch (error) {
                 console.error('Google OAuth error:', error);
-                showAuthMsg('Google Login শুরু করা যায়নি। Supabase-এ Google Provider ও Redirect URL পরীক্ষা করুন।', 'error');
+                const msg = /unsupported provider|provider is not enabled/i.test(String(error?.message || error))
+                    ? 'Supabase Dashboard → Authentication → Providers → Google চালু করুন এবং Google Client ID/Secret যোগ করে Save করুন।'
+                    : 'Google Login শুরু করা যায়নি। Supabase Redirect URLs-এ আপনার deployed website URL যোগ আছে কি না পরীক্ষা করুন।';
+                showAuthMsg(msg, 'error');
             }
         };
 
@@ -5434,10 +5437,10 @@
                 .paper-header-main{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:3mm;align-items:start}
                 .brand{font:700 15pt 'Times New Roman',serif;margin:0 0 1.5mm;white-space:nowrap}.exam-name{font-size:17pt;font-weight:bold;line-height:1.08;white-space:nowrap}
                 .authority{margin-top:1mm;width:42mm;text-align:center}.signature{display:block;width:38mm;height:10mm;object-fit:contain;object-position:center;margin:0 auto -0.5mm}.authority-label{font-size:10pt;border-top:1px solid #111;display:inline-block;min-width:25mm;padding-top:.5mm;line-height:1}
-                .authority-date{font-family:'Caveat','Brush Script MT',cursive;font-size:14pt;font-weight:600;line-height:1;color:#111;margin-top:.5mm;transform:rotate(-2deg)}
+                .authority-brand{font-family:'Times New Roman',serif;font-size:10pt;font-weight:600;line-height:1;color:#111;opacity:.62;margin-top:.8mm;letter-spacing:.1px}
                 .center-title{text-align:center;font-size:14pt;font-weight:bold;line-height:1.22;padding-top:1mm}.center-title span{font-weight:normal}
-                .right-meta{text-align:right;font-size:11pt;line-height:1.25}.full-marks{font-weight:bold;white-space:nowrap}.exam-date{margin-top:1mm;white-space:nowrap}.score-box{display:inline-block;border:1.4px solid #222;padding:1mm 3mm 1.5mm;min-width:31mm;text-align:center;font-size:11pt;margin-top:1mm;line-height:1.05}.score-line{height:4mm;border-bottom:1px solid #111;margin:0 auto 1mm;width:100%}.score-box small{font-size:9pt;white-space:nowrap}
-                .student-row{position:absolute;left:52mm;right:66mm;bottom:1.5mm;font-size:12pt;font-weight:bold;display:flex;gap:2mm;align-items:center;white-space:nowrap}.blank{display:block;flex:1;border-bottom:1px dotted #222;height:5mm;min-width:25mm}
+                .right-meta{text-align:right;font-size:11pt;line-height:1.2}.exam-date{margin-top:1mm;white-space:nowrap}.marks-row{display:flex;align-items:center;justify-content:flex-end;gap:2mm;margin-top:1mm}.marks-label{font-family:'Kalpurush','SutonnyMJ','Noto Serif Bengali',serif;font-size:12pt;font-weight:bold;white-space:nowrap}.score-box{display:inline-block;border:1.4px solid #222;padding:1mm 2.5mm 1.5mm;min-width:27mm;text-align:center;font-size:10pt;line-height:1.05}.score-line{height:4mm;border-bottom:1px solid #111;margin:0 auto 1mm;width:100%}.score-box small{font-family:'Times New Roman',serif;font-size:9pt;font-weight:bold;white-space:nowrap}
+                .student-row{position:absolute;left:49mm;right:66mm;bottom:2.2mm;font-size:13pt;font-weight:bold;display:flex;gap:2mm;align-items:center;white-space:nowrap}.blank{display:block;flex:1;border-bottom:1px dotted #222;height:5mm;min-width:25mm}
                 .paper-columns{position:absolute;left:7mm;right:7mm;top:44mm;bottom:8mm;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:0;z-index:1}
                 .paper-page:not(.first-page) .paper-columns{top:7mm}
                 .paper-column{position:relative;min-width:0;height:100%;overflow:hidden;padding:0 5mm 0 2mm}.paper-column.left{border-right:1px solid #222;padding-left:2mm;padding-right:4mm}.paper-column.right{padding-left:4mm;padding-right:1mm}
@@ -5445,7 +5448,7 @@
                 @media screen{body{background:#e5e7eb}.paper-page{margin:10mm auto;box-shadow:0 2px 18px #0002}}
                 @media print{@page{size:A4 portrait;margin:0}html,body{width:210mm;margin:0;padding:0;background:#fff}.paper-page{width:210mm;height:297mm;margin:0;box-shadow:none}.paper-columns{bottom:8mm}.paper-column{overflow:hidden}.watermark span{color:rgba(49,155,232,.22)}}
             </style></head><body>
-            <div id="paper-header-template" style="display:none"><header class="paper-header"><div class="paper-header-main"><div><div class="brand">MukulDhaliOfficial</div><div class="exam-name">মক টেস্ট পরীক্ষা</div><div class="authority"><img class="signature" src="${signature}" alt="Authority Signature"><span class="authority-label">Authority</span><div class="authority-date">${authorityDate}</div></div></div><div class="center-title">${escape(parentTitle)}<br><span>(${escape(topic)})</span></div><div class="right-meta"><div class="full-marks">Full Marks : ${questions.length}</div><div class="exam-date">Date : ........................</div><div class="score-box"><div class="score-line"></div><small>(${questions.length} Questions)</small></div></div></div><div class="student-row"><span>Name :</span><span class="blank"></span></div></header></div><div id="paper-source" style="display:none">${paperQuestionItems.join('')}</div><div id="paper-pages"></div>
+            <div id="paper-header-template" style="display:none"><header class="paper-header"><div class="paper-header-main"><div><div class="brand">MukulDhaliOfficial</div><div class="exam-name">মক টেস্ট পরীক্ষা</div><div class="authority"><img class="signature" src="${signature}" alt="Authority Signature"><span class="authority-label">Authority</span><div class="authority-brand">MukulDhaliOfficial</div></div></div><div class="center-title">${escape(parentTitle)}<br><span>(${escape(topic)})</span></div><div class="right-meta"><div class="exam-date">Date : ........................</div><div class="marks-row"><span class="marks-label">প্রাপ্ত নম্বর :</span><div class="score-box"><div class="score-line"></div><small>Full Marks : ${questions.length}</small></div></div></div></div><div class="student-row"><span>Name :</span><span class="blank"></span></div></header></div><div id="paper-source" style="display:none">${paperQuestionItems.join('')}</div><div id="paper-pages"></div>
             <script>
             window.addEventListener('load',async()=>{
               const source=document.getElementById('paper-source');const root=document.getElementById('paper-pages');
