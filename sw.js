@@ -1,62 +1,112 @@
+
 /* MukulDhaliOfficial PWA service worker
- * Conservative caching: keeps the app shell available and avoids caching API responses.
+ * Cache the app's HTML shell for offline navigation.
+ * API calls and cross-origin resources are never cached.
  */
-const CACHE_NAME = 'mukuldhali-shell-v1';
-const APP_SHELL = ['./', './index.html', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
+const CACHE_NAME = 'mukuldhali-shell-v2';
+const INDEX_URL = new URL('./index.html', self.registration.scope).href;
+
+const SHELL_URLS = [
+  INDEX_URL,
+  new URL('./manifest.json', self.registration.scope).href,
+  new URL('./icons/icon-192.png', self.registration.scope).href,
+  new URL('./icons/icon-512.png', self.registration.scope).href
+];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_SHELL))
-      .then(() => self.skipWaiting())
-  );
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.add(INDEX_URL);
+
+    await Promise.all(SHELL_URLS.slice(1).map(async (url) => {
+      try {
+        await cache.add(url);
+      } catch (_) {
+        // Optional assets must not block installation.
+      }
+    }));
+
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
-      .then(() => self.clients.claim())
-  );
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+
+    await Promise.all(
+      keys
+        .filter((key) => key !== CACHE_NAME)
+        .map((key) => caches.delete(key))
+    );
+
+    await self.clients.claim();
+  })());
 });
 
 self.addEventListener('fetch', (event) => {
   const request = event.request;
+
   if (request.method !== 'GET') return;
 
   const url = new URL(request.url);
-  // Never cache Supabase/API calls or other cross-origin dynamic requests.
+
+  // Never cache APIs, CDNs, or external resources.
   if (url.origin !== self.location.origin) return;
+
   if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          if (response && response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put('./index.html', copy));
+    event.respondWith((async () => {
+      try {
+        const response = await fetch(request);
+
+        if (response && response.ok) {
+          const cache = await caches.open(CACHE_NAME);
+          await cache.put(INDEX_URL, response.clone());
+        }
+
+        return response;
+      } catch (_) {
+        const cachedPage = await caches.match(INDEX_URL);
+
+        if (cachedPage) return cachedPage;
+
+        return new Response(
+          '<!doctype html><html lang="bn">' +
+          '<meta charset="utf-8">' +
+          '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+          '<title>MukulDhaliOfficial — Offline</title>' +
+          '<body style="font-family:sans-serif;padding:2rem">' +
+          '<h2>ইন্টারনেট সংযোগ নেই</h2>' +
+          '<p>আগে অনলাইনে MukulDhaliOfficial খুলে আবার চেষ্টা করুন।</p>' +
+          '</body></html>',
+          {
+            headers: {
+              'Content-Type': 'text/html; charset=utf-8'
+            },
+            status: 200
           }
-          return response;
-        })
-        .catch(async () => {
-          const cached = await caches.match(request, { ignoreSearch: true });
-          return cached || caches.match('./index.html') || new Response(
-            '<!doctype html><meta charset="utf-8"><title>Offline</title><p style="font-family:sans-serif;padding:2rem">ইন্টারনেট সংযোগ নেই। আবার অনলাইনে এসে MukulDhaliOfficial খুলুন।</p>',
-            { headers: { 'Content-Type': 'text/html; charset=utf-8' }, status: 200 }
-          );
-        })
-    );
+        );
+      }
+    })());
+
     return;
   }
-  // Cache only same-origin app-shell files; do not cache API or arbitrary data.
-  if (APP_SHELL.some((path) => new URL(path, self.registration.scope).pathname === url.pathname)) {
-    event.respondWith(
-      caches.match(request).then((cached) => cached || fetch(request).then((response) => {
-        if (response && response.ok) {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
-        }
-        return response;
-      }))
-    );
+
+  // Cache only known app-shell assets.
+  if (SHELL_URLS.includes(url.href)) {
+    event.respondWith((async () => {
+      const cached = await caches.match(request);
+
+      if (cached) return cached;
+
+      const response = await fetch(request);
+
+      if (response && response.ok) {
+        const cache = await caches.open(CACHE_NAME);
+        await cache.put(request, response.clone());
+      }
+
+      return response;
+    })());
   }
 });
