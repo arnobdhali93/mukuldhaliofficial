@@ -15,7 +15,7 @@
     <meta property="og:title" content="MukulDhaliOfficial - Premium Education & Knowledge Portal">
     <meta property="og:description" content="ছাত্রছাত্রীদের জন্য একটি সম্পূর্ণ আধুনিক ও হাই-পারফরম্যান্স লার্নিং প্ল্যাটফর্ম। কুইজ, পিডিএফ এবং নিউজ আপডেট পান।">
     <meta property="og:image" content="https://i.ibb.co/your-logo-link.png">
-    <meta property="og:url" content="https://yourwebsite.com">
+    <meta property="og:url" content="https://mukuldhaliofficial.vercel.app/">
     <meta property="og:type" content="website">
 
     <!-- Twitter Card Meta Tags -->
@@ -492,6 +492,32 @@
         .quiz-shared-highlight { outline:3px solid #16a34a !important; box-shadow:0 0 0 6px rgba(22,163,74,.15) !important; background:#f0fdf4 !important; scroll-margin-top:100px; }
         .dark .quiz-shared-highlight { background:rgba(22,163,74,.15) !important; }
 </style>
+    <link rel="canonical" href="https://mukuldhaliofficial.vercel.app/">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+
+<style id="mdo-professional-accessibility-enhancements">
+  :focus-visible { outline: 3px solid #16a34a !important; outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  }
+  #mdo-back-to-top {
+    position: fixed; right: 16px; bottom: calc(18px + env(safe-area-inset-bottom)); z-index: 9998;
+    width: 46px; height: 46px; border: 0; border-radius: 999px; display: grid; place-items: center;
+    color: #fff; background: #15803d; box-shadow: 0 8px 24px rgba(15,23,42,.22);
+    opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity .2s ease, transform .2s ease, visibility .2s;
+  }
+  #mdo-back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
+  #mdo-connection-status {
+    position: fixed; top: calc(10px + env(safe-area-inset-top)); left: 50%; transform: translate(-50%,-12px);
+    z-index: 10000; max-width: calc(100vw - 28px); padding: 10px 16px; border-radius: 999px;
+    color: #fff; background: #b91c1c; font: 600 13px/1.35 system-ui,sans-serif; text-align: center;
+    box-shadow: 0 8px 24px rgba(15,23,42,.2); opacity: 0; visibility: hidden; transition: opacity .2s ease, transform .2s ease, visibility .2s;
+  }
+  #mdo-connection-status.is-visible { opacity: 1; visibility: visible; transform: translate(-50%,0); }
+  #mdo-connection-status.is-online { background: #15803d; }
+  @media (prefers-color-scheme: dark) { #mdo-back-to-top { background: #16a34a; } }
+</style>
+
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-brand-600 selection:text-white relative dark:bg-slate-900 dark:text-slate-100 overflow-x-hidden w-full transition-colors duration-300">
 
@@ -3099,6 +3125,9 @@
                 if(error.message.includes("already registered") || error.message.includes("User already exists")) errorMsg = "এই ইমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট খোলা আছে!";
                 if(error.message.includes("Password should be at least")) errorMsg = "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে!";
                 if(error.message === 'EMAIL_CONFIRMATION_DISABLED') errorMsg = 'Supabase-এ Confirm email চালু নেই। Authentication → Providers → Email-এ Confirm email চালু করে আবার চেষ্টা করুন।';
+                if(/rate limit|too many requests|email rate limit/i.test(String(error.message || ''))) errorMsg = 'অনেকবার চেষ্টা করা হয়েছে বা ইমেল পাঠানোর সীমা অতিক্রম করেছে। কিছুক্ষণ অপেক্ষা করে আবার চেষ্টা করুন; প্রয়োজনে Supabase-এর Auth email/SMTP সেটিংস দেখুন।';
+                if(/email not confirmed/i.test(String(error.message || ''))) errorMsg = 'ইমেল যাচাই সম্পূর্ণ হয়নি। ইমেলে পাওয়া OTP দিয়ে যাচাই করুন।';
+                if(errorMsg === 'একটি সমস্যা হয়েছে, আবার চেষ্টা করুন!' && error && error.message) errorMsg = 'রেজিস্ট্রেশন সমস্যা: ' + String(error.message).slice(0, 220);
 
                 showAuthMsg(errorMsg, 'error');
             } finally {
@@ -5570,5 +5599,41 @@
         <button type="button" onclick="saveGoogleSecuritySetup()" class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-black">সংরক্ষণ করুন ও এগিয়ে যান</button>
       </div>
     </div>
+
+<!-- MukulDhaliOfficial accessibility and connectivity helpers -->
+<div id="mdo-connection-status" role="status" aria-live="polite"></div>
+<button id="mdo-back-to-top" type="button" aria-label="পাতার উপরে ফিরে যান" title="উপরে যান">
+  <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<script id="mdo-professional-ux-enhancements">
+(() => {
+  'use strict';
+  const topButton = document.getElementById('mdo-back-to-top');
+  const status = document.getElementById('mdo-connection-status');
+  if (topButton) {
+    const updateTopButton = () => topButton.classList.toggle('is-visible', window.scrollY > 420);
+    window.addEventListener('scroll', updateTopButton, { passive: true });
+    updateTopButton();
+    topButton.addEventListener('click', () => {
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+  }
+  if (status) {
+    let hideTimer;
+    const showStatus = (message, online) => {
+      status.textContent = message;
+      status.classList.toggle('is-online', !!online);
+      status.classList.add('is-visible');
+      clearTimeout(hideTimer);
+      if (online) hideTimer = setTimeout(() => status.classList.remove('is-visible'), 3200);
+    };
+    window.addEventListener('offline', () => showStatus('ইন্টারনেট সংযোগ নেই। সংযোগ ফিরলে আবার চেষ্টা করুন।', false));
+    window.addEventListener('online', () => showStatus('ইন্টারনেট সংযোগ ফিরে এসেছে।', true));
+    if (!navigator.onLine) showStatus('ইন্টারনেট সংযোগ নেই।', false);
+  }
+})();
+</script>
+
 </body>
 </html>
