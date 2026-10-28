@@ -1,0 +1,36 @@
+{
+  "id": "./",
+  "name": "MukulDhaliOfficial Quiz & Learning Portal",
+  "short_name": "MukulDhali",
+  "description": "ছাত্রছাত্রীদের জন্য কুইজ, মক টেস্ট, পিডিএফ এবং শিক্ষামূলক কন্টেন্ট।",
+  "lang": "bn",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f8fafc",
+  "theme_color": "#16a34a",
+  "categories": [
+    "education"
+  ],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
