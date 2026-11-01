@@ -4226,7 +4226,7 @@
             <style>
               @page{size:A4 portrait;margin:0}
               *{box-sizing:border-box}
-              html,body{margin:0;padding:0;background:#e5e7eb;color:#111}
+              html,body{margin:0;padding:0;background:#e5e7eb;color:#111;-webkit-text-size-adjust:100%;text-size-adjust:100%}
               body{font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
               .toolbar{position:sticky;top:0;z-index:20;display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;padding:12px;background:#f1f5f9;border-bottom:1px solid #cbd5e1}
               .toolbar button{padding:11px 24px;border:0;border-radius:10px;background:#15803d;color:#fff;font:700 14px Arial,sans-serif;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.12)}
@@ -4239,15 +4239,15 @@
               .paper-page{container-type:inline-size;position:absolute;inset:0;isolation:isolate;width:210mm;height:297mm;margin:0;transform:scale(var(--preview-scale));transform-origin:top left;background:#fff;overflow:hidden;box-shadow:0 3px 18px rgba(15,23,42,.18);padding:4.5% 4.5% 5%}
               .page-watermark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none;z-index:0}
               .page-watermark span{display:block;font-family:Arial,sans-serif!important;font-size:10cqw;font-weight:800;color:rgba(49,155,232,.23)!important;transform:rotate(-45deg);white-space:nowrap;letter-spacing:.1cqw;line-height:1}
-              .paper-header{position:absolute;z-index:2;left:4.5cqw;right:4.5cqw;top:4cqw;height:12.5cqw;display:flex;align-items:flex-start;justify-content:space-between;gap:3cqw;border-bottom:1px solid #777;padding-bottom:2.3cqw}
+              .paper-header{position:absolute;z-index:2;left:4.5cqw;right:4.5cqw;top:2.5cqw;height:12.5cqw;display:flex;align-items:flex-start;justify-content:space-between;gap:3cqw;border-bottom:1px solid #777;padding-bottom:2.3cqw}
               .brand{font-family:'Times New Roman',serif;font-size:2.65cqw;font-weight:700;color:#14532d;line-height:1.1}
               .sub{font-size:1.75cqw;color:#333;margin-top:1.2cqw;line-height:1.25}
               .qr{width:12cqw;height:12cqw;object-fit:contain;flex:0 0 auto}
-              .paper-content{position:absolute;z-index:1;left:4.5cqw;right:4.5cqw;top:18.5cqw;bottom:4cqw;overflow:hidden}
-              .paper-page:not(.first-page) .paper-content{top:5cqw}
-              .item{position:relative;z-index:1;break-inside:avoid;page-break-inside:avoid;border:.35mm solid #d7dee7;border-radius:2mm;padding:1.6mm 2.1mm;margin:0 0 1.4mm;background:transparent}
-              .question{font-size:${printFontSize}pt;font-weight:600;line-height:1.24;white-space:pre-wrap;overflow-wrap:anywhere;font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important;margin:0}
-              .answer{font-size:${printFontSize}pt;font-weight:400;line-height:1.27;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:1.6mm;font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important}
+              .paper-content{position:absolute;z-index:1;left:4.5cqw;right:4.5cqw;top:16.5cqw;bottom:3cqw;overflow:hidden}
+              .paper-page:not(.first-page) .paper-content{top:3cqw}
+              .item{position:relative;z-index:1;break-inside:avoid;page-break-inside:avoid;border:.35mm solid #d7dee7;border-radius:2mm;padding:1.15mm 1.8mm;margin:0 0 .65mm;background:transparent}
+              .question{font-size:${printFontSize}pt!important;font-weight:600;line-height:1.24;white-space:pre-wrap;overflow-wrap:anywhere;font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important;margin:0}
+              .answer{font-size:${printFontSize}pt!important;font-weight:400;line-height:1.27;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:1.6mm;font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important}
               .answer-label{font-weight:700}
               .qimg{display:block;max-width:75%;max-height:35mm;object-fit:contain;margin:1.5mm 0 0}
               @media print{
@@ -4259,7 +4259,16 @@
                 .paper-page{width:210mm;height:297mm;margin:0;transform:none;padding:4.5% 4.5% 5%;box-shadow:none;overflow:hidden}
                 .page-watermark span{font-size:10cqw;color:rgba(49,155,232,.23)!important}
               }
-            </style></head><body>
+            /* Questions stay bold in BOTH Question+Answer and Only Question modes. */
+              .question{font-weight:700!important}
+              .only-question .question{font-weight:700!important}
+              @media print{
+                .question{font-weight:700!important}
+                .answer{font-weight:400!important}
+                .question,.answer{font-size:${printFontSize}pt!important;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+                .only-question .question{font-weight:700!important}
+              }
+            </style></head><body class="${includeAnswers ? 'with-answers' : 'only-question'}">
             <div class="toolbar"><button type="button" onclick="window.print()">Print / Download PDF</button><button type="button" class="close" onclick="window.close()">Close Preview</button></div>
             <div id="paper-source" style="display:none">${rows}</div><main id="paper-pages"></main>
             <script>
