@@ -925,11 +925,11 @@
                             </select>
                             <label for="qb-print-font-size" class="sr-only">প্রিন্টের ফন্ট সাইজ</label>
                             <select id="qb-print-font-size" title="প্রিন্টের ফন্ট সাইজ" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 font-bold text-sm">
-                                <option value="9">খুব ছোট (9 pt)</option>
-                                <option value="10">ছোট (10 pt)</option>
-                                <option value="11" selected>মাঝারি (11 pt)</option>
-                                <option value="12">বড় (12 pt)</option>
-                                <option value="14">আরও বড় (14 pt)</option>
+                                <option value="7">খুব ছোট (7 pt)</option>
+                                <option value="8">ছোট (8 pt)</option>
+                                <option value="9" selected>মাঝারি (9 pt)</option>
+                                <option value="10">বড় (10 pt)</option>
+                                <option value="11">আরও বড় (11 pt)</option>
                             </select>
                             <button onclick="printQuestionBank()" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-bold"><i class="fa-solid fa-print mr-1"></i> Print</button>
                             <button onclick="qbShareLink('topic',qbCurrentSubject,qbCurrentTopic)" class="px-3 py-2 rounded-xl bg-emerald-50 text-emerald-700 dark:bg-slate-700 dark:text-emerald-300 font-bold" title="টপিক শেয়ার করুন"><i class="fa-solid fa-share-nodes"></i></button>
@@ -4210,7 +4210,7 @@
             const mode = document.getElementById('qb-print-mode')?.value || 'answer';
             const includeAnswers = mode === 'answer';
             const selectedFontSize = Number(document.getElementById('qb-print-font-size')?.value || 11);
-            const printFontSize = [9, 10, 11, 12, 14].includes(selectedFontSize) ? selectedFontSize : 11;
+            const printFontSize = [7, 8, 9, 10, 11].includes(selectedFontSize) ? selectedFontSize : 9;
             const title = qbEscape(qbCurrentSubject + ' — ' + qbCurrentTopic);
             const rows = qbCurrentQuestions.map((q,i)=>`<article class="item">
                 <div class="question">${i+1}. ${qbEscape(q.question)}</div>
@@ -4242,9 +4242,9 @@
               .qr{width:12cqw;height:12cqw;object-fit:contain;flex:0 0 auto}
               .paper-content{position:absolute;z-index:1;left:4.5cqw;right:4.5cqw;top:18.5cqw;bottom:4cqw;overflow:hidden}
               .paper-page:not(.first-page) .paper-content{top:5cqw}
-              .item{position:relative;z-index:1;break-inside:avoid;page-break-inside:avoid;border:.35mm solid #d7dee7;border-radius:2mm;padding:2.2mm 2.6mm;margin:0 0 2mm;background:rgba(255,255,255,.80)}
-              .question{font-size:${printFontSize}pt;font-weight:600;line-height:1.32;white-space:pre-wrap;overflow-wrap:anywhere;font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important;margin:0}
-              .answer{font-size:${printFontSize}pt;font-weight:400;line-height:1.36;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:1.6mm;font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important}
+              .item{position:relative;z-index:1;break-inside:avoid;page-break-inside:avoid;border:.35mm solid #d7dee7;border-radius:2mm;padding:1.6mm 2.1mm;margin:0 0 1.4mm;background:transparent}
+              .question{font-size:${printFontSize}pt;font-weight:600;line-height:1.24;white-space:pre-wrap;overflow-wrap:anywhere;font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important;margin:0}
+              .answer{font-size:${printFontSize}pt;font-weight:400;line-height:1.27;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:1.6mm;font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important}
               .answer-label{font-weight:700}
               .qimg{display:block;max-width:75%;max-height:35mm;object-fit:contain;margin:1.5mm 0 0}
               @media print{
@@ -4261,6 +4261,9 @@
             window.addEventListener('load',async()=>{
               const source=document.getElementById('paper-source');
               const root=document.getElementById('paper-pages');
+              // Load the final Bengali font before measuring; this prevents one-question-per-page
+              // pagination caused by measuring with a temporary fallback font.
+              if(document.fonts&&document.fonts.ready){try{await document.fonts.ready;}catch(e){}}
               const originals=Array.from(source.children);
               await Promise.all(Array.from(source.querySelectorAll('img')).map(img=>{
                 img.loading='eager';
@@ -4282,7 +4285,10 @@
               }
               function fits(target,item){
                 target.appendChild(item);
-                if(item.getBoundingClientRect().bottom<=target.getBoundingClientRect().bottom+1)return true;
+                // scrollHeight is more reliable than comparing the last item's bounding box
+                // against an absolutely positioned container on mobile Safari.
+                const fitsHeight = target.scrollHeight <= target.clientHeight + 2;
+                if(fitsHeight)return true;
                 target.removeChild(item);
                 return false;
               }
@@ -4302,7 +4308,6 @@
               window.scrollTo(0,0);
               // Open the native print dialog automatically after the A4 preview is laid out.
               const openPrint=()=>{try{window.focus();window.print();}catch(e){console.error('Print dialog error:',e);}};
-              if(document.fonts&&document.fonts.ready){try{await document.fonts.ready;}catch(e){}}
               setTimeout(openPrint,500);
             });
             <\/script></body></html>`);
