@@ -908,7 +908,7 @@
                         <i class="fa-solid fa-circle-info text-emerald-600 text-xl"></i>
                         <p class="text-slate-700 dark:text-slate-300 text-sm font-bold">প্রথমে বিষয়, তারপর টপিক নির্বাচন করে প্রশ্ন ও উত্তর দেখুন।</p>
                     </div>
-                    <div id="qb-subjects" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"><p class="col-span-full text-center py-12 text-slate-500">প্রশ্নের তালিকা লোড হচ্ছে...</p></div>
+                    <div id="qb-subjects" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5"><p class="col-span-full text-center py-12 text-slate-500">প্রশ্নের তালিকা লোড হচ্ছে...</p></div>
                 </div>
                 <div id="qb-topic-view" class="hidden space-y-5">
                     <div class="flex items-center gap-3 flex-wrap"><button onclick="qbBackToSubjects()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 font-bold"><i class="fa-solid fa-arrow-left mr-2"></i>সব বিষয়</button><h3 id="qb-current-subject" class="text-xl font-black"></h3></div>
@@ -4131,11 +4131,11 @@
             const groups = qbGroupTopics();
             const names = Object.keys(groups).filter(n => (n+' '+groups[n].map(t=>t.topic).join(' ')).toLowerCase().includes(filter.toLowerCase()));
             box.innerHTML = names.length ? names.map((name,index) => `<div class="relative overflow-hidden rounded-2xl border border-emerald-100 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-lg hover:border-emerald-400 transition">
-                <button type="button" onclick="qbOpenSubject(this.dataset.subject)" data-subject="${qbEscape(name)}" class="w-full min-h-32 text-left p-5 pr-16 flex items-center gap-4">
-                    <span class="w-14 h-14 shrink-0 rounded-2xl flex items-center justify-center bg-emerald-50 dark:bg-slate-700 text-emerald-700 dark:text-emerald-300 text-2xl"><i class="fa-solid fa-book-open"></i></span>
-                    <span class="min-w-0"><strong class="block text-xl font-black text-slate-900 dark:text-white">${qbEscape(name)}</strong><span class="text-sm text-slate-500 mt-2 block">${groups[name].length}টি টপিক · ${groups[name].reduce((n,t)=>n+Number(t.questionCount||0),0)}টি প্রশ্ন</span></span>
+                <button type="button" onclick="qbOpenSubject(this.dataset.subject)" data-subject="${qbEscape(name)}" class="w-full min-h-36 h-full text-center p-3 pt-5 flex flex-col items-center justify-center gap-2">
+                    <span class="w-12 h-12 shrink-0 rounded-2xl flex items-center justify-center bg-emerald-50 dark:bg-slate-700 text-emerald-700 dark:text-emerald-300 text-xl"><i class="fa-solid fa-book-open"></i></span>
+                    <span class="min-w-0 w-full"><strong class="block text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-snug break-words">${qbEscape(name)}</strong><span class="text-xs text-slate-500 mt-1.5 block">${groups[name].length}টি টপিক · ${groups[name].reduce((n,t)=>n+Number(t.questionCount||0),0)}টি প্রশ্ন</span></span>
                 </button>
-                <button type="button" onclick="qbShareLink('subject',this.dataset.subject)" data-subject="${qbEscape(name)}" class="absolute right-3 top-3 p-3 rounded-xl text-emerald-700 bg-emerald-50 dark:bg-slate-700 dark:text-emerald-300 hover:bg-emerald-100" title="বিষয় শেয়ার করুন" aria-label="বিষয় শেয়ার করুন"><i class="fa-solid fa-share-nodes"></i></button>
+                <button type="button" onclick="qbShareLink('subject',this.dataset.subject)" data-subject="${qbEscape(name)}" class="absolute right-2 top-2 p-2 rounded-lg text-emerald-700 bg-emerald-50 dark:bg-slate-700 dark:text-emerald-300 hover:bg-emerald-100" title="বিষয় শেয়ার করুন" aria-label="বিষয় শেয়ার করুন"><i class="fa-solid fa-share-nodes"></i></button>
             </div>`).join('') : '<p class="col-span-full text-center py-12 text-slate-500">কোনো বিষয় পাওয়া যায়নি।</p>';
         }
         function filterQuestionBank() { renderQuestionBankSubjects(document.getElementById('qb-search')?.value || ''); }
@@ -4201,58 +4201,101 @@
             if (!qbCurrentQuestions.length) { showToast('প্রিন্ট করার মতো প্রশ্ন নেই।','error'); return; }
             const mode = document.getElementById('qb-print-mode')?.value || 'answer';
             const includeAnswers = mode === 'answer';
-            const title = qbEscape(qbCurrentSubject+' — '+qbCurrentTopic);
+            const title = qbEscape(qbCurrentSubject + ' — ' + qbCurrentTopic);
             const rows = qbCurrentQuestions.map((q,i)=>`<article class="item">
                 <div class="question">${i+1}. ${qbEscape(q.question)}</div>
                 ${q.imageURL?`<img class="qimg" src="${qbEscape(normalizeQuestionImageUrl(q.imageURL))}" alt="প্রশ্নের ছবি">`:''}
                 ${includeAnswers?`<div class="answer"><strong class="answer-label">উত্তর:</strong> ${qbEscape(q.answer)}</div>`:''}
             </article>`).join('');
             const qrData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQAQMAAAC6caSPAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAACMklEQVR4nO3cMW7DMAwFUAYdMuYIOYqPZh/NR8kRMnowwkr6JGUFLVoUkNzhc3Et63kiJFFWKsJg9I6bRrzS7byhed7lrnLNzQ+pXdINCckIsliCTq/sN5lUnyIf6LqWq72nNJKQDCEfOUW3TFIGW0bbUwTeo7knCclwcotrNO4kJCeTFFddL/mppHkf8SAhOYHYMIoMTiTWqFJu5IelAglJBxLh5JKWo14lrbYs9SAhGUG+iELs6fRtLxKSfsQz2ab2FJj3a9GOjLb0JiEZQSTP5mmK9wz2KV5iqxPRVvQkJL8nKS0t2SbbTi/pierG15ZOECQkA4jGwFj3LbG2FHhkdDvAkpB0JIIBVreayS9P76jA664RCckIYpmcI7eqHpaReoh23ich6Uy8upnsKw/CF6s+/zeZTELSlwj2gtQrcC+6c/Z6lRQ9dxKSQURyna5vG0TqA6z3apcKJCRdSVl53q3rM+r1eY9v4oiXD8UkJCNIyU+0F1Kuc7nfrIRy4plMQtKd2GfvFQ313KUd1cBOvG00kZD8jWhsUS5+5Nw2Myc9pKVqrcRJSDqSJjAgxuHJ3GQVuVMSkhHk7ZTaYYNIrQ6qGb34i0lIehP7I+b7up2OheYjHkpT8pCQ9CTHH+Zkb1978KH8WPKokpCcQVTtFxB+1FyQ0Wu8h4TkDFJieVuGIprinYSkJxEEBthrc7TSzgj7ZiYJySgSYfP+ZP8iA+lty9L18HISkt6Ewfh38QlT3xGnOqZaTAAAAABJRU5ErkJggg==';
-            const w = window.open('','_blank');
-            if(!w){showToast('পপ-আপ অনুমতি দিন, তারপর আবার চেষ্টা করুন।','error');return;}
+            const w = window.open('', '_blank');
+            if (!w) { showToast('পপ-আপ অনুমতি দিন, তারপর আবার চেষ্টা করুন।','error'); return; }
+            w.document.open();
             w.document.write(`<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title>
-            <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-            <link href="https://fonts.googleapis.com/css2?family=Tinos:wght@400;700&display=swap" rel="stylesheet">
             <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
             <style>
               @page{size:A4 portrait;margin:0}
               *{box-sizing:border-box}
               html,body{margin:0;padding:0;background:#e5e7eb;color:#111}
-              body{font-family:'Times New Roman','Kalpurush',serif!important;font-size:12pt;line-height:1.62;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-              .toolbar{position:sticky;top:0;z-index:10;display:flex;justify-content:center;align-items:center;padding:12px;background:#f1f5f9;border-bottom:1px solid #cbd5e1}
-              .toolbar button{padding:10px 22px;border:0;border-radius:9px;background:#15803d;color:#fff;font:700 12pt Arial,sans-serif;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.12)}
-              .paper{position:relative;isolation:isolate;width:210mm;min-height:297mm;margin:18px auto;padding:15mm;background:#fff;overflow:hidden;box-shadow:0 3px 18px rgba(15,23,42,.18)}
+              body{font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+              .toolbar{position:sticky;top:0;z-index:20;display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;padding:12px;background:#f1f5f9;border-bottom:1px solid #cbd5e1}
+              .toolbar button{padding:11px 24px;border:0;border-radius:10px;background:#15803d;color:#fff;font:700 14px Arial,sans-serif;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.12)}
+              .toolbar .close{background:#475569}
+              #paper-pages{padding:1px 0 24px}
+              .paper-page{container-type:inline-size;position:relative;isolation:isolate;width:min(210mm,calc(100vw - 20px));aspect-ratio:210/297;height:auto;margin:14px auto;background:#fff;overflow:hidden;box-shadow:0 3px 18px rgba(15,23,42,.18);padding:4.5% 4.5% 5%;break-after:page;page-break-after:always}
+              .paper-page:last-child{break-after:auto;page-break-after:auto}
               .page-watermark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none;z-index:0}
-              .page-watermark span{display:block;font-family:Arial,sans-serif!important;font-size:43pt;font-weight:800;color:rgba(49,155,232,.22)!important;transform:rotate(-45deg);white-space:nowrap;letter-spacing:1px;line-height:1}
-              .content{position:relative;z-index:1}
-              header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:0 0 10px;margin:0 0 14px;border-bottom:1px solid #777}
-              .brand{font-family:'Times New Roman',serif;font-size:19pt;font-weight:700;color:#14532d}
-              .sub{font-size:11pt;color:#333;margin-top:2px}
-              .qr{width:78px;height:78px;object-fit:contain;flex:0 0 auto}
-              .item{break-inside:avoid;page-break-inside:avoid;padding:9px 0 11px;margin:0}
-              .question{font-weight:700; -webkit-text-stroke:.08px currentColor;text-shadow:none;line-height:1.7;white-space:pre-wrap;font-family:'Times New Roman','Kalpurush',serif!important}
-              .answer{font-weight:400; -webkit-text-stroke:0;text-shadow:none;line-height:1.7;white-space:pre-wrap;margin-top:4px;padding:0;border:0;background:transparent;box-shadow:none;font-family:'Times New Roman','Kalpurush',serif!important}
+              .page-watermark span{display:block;font-family:Arial,sans-serif!important;font-size:10cqw;font-weight:800;color:rgba(49,155,232,.23)!important;transform:rotate(-45deg);white-space:nowrap;letter-spacing:.1cqw;line-height:1}
+              .paper-header{position:absolute;z-index:2;left:4.5cqw;right:4.5cqw;top:4cqw;height:12.5cqw;display:flex;align-items:flex-start;justify-content:space-between;gap:3cqw;border-bottom:1px solid #777;padding-bottom:2.3cqw}
+              .brand{font-family:'Times New Roman',serif;font-size:2.65cqw;font-weight:700;color:#14532d;line-height:1.1}
+              .sub{font-size:1.75cqw;color:#333;margin-top:1.2cqw;line-height:1.25}
+              .qr{width:12cqw;height:12cqw;object-fit:contain;flex:0 0 auto}
+              .paper-content{position:absolute;z-index:1;left:4.5cqw;right:4.5cqw;top:18.5cqw;bottom:5cqw;overflow:hidden}
+              .paper-page:not(.first-page) .paper-content{top:6cqw}
+              .item{break-inside:avoid;page-break-inside:avoid;padding:0 0 2.8cqw;margin:0 0 2.2cqw}
+              .question{font-size:1.62cqw;font-weight:600;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important}
+              .answer{font-size:1.52cqw;font-weight:400;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:1.4cqw;font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important}
               .answer-label{font-weight:700}
-              .qimg{display:block;max-width:75%;max-height:220px;object-fit:contain;margin:8px 0}
-              @media(max-width:700px){
-                .paper{width:calc(100% - 16px);min-height:0;margin:8px;padding:9mm 7mm;box-shadow:0 2px 12px rgba(15,23,42,.15)}
-                .brand{font-size:17pt}.qr{width:66px;height:66px}
-                .page-watermark span{font-size:30pt}
-              }
+              .qimg{display:block;max-width:75%;max-height:24cqw;object-fit:contain;margin:1.5cqw 0}
               @media print{
-                html,body{width:210mm;background:#fff!important}
+                html,body{width:210mm;margin:0!important;padding:0!important;background:#fff!important}
                 .toolbar{display:none!important}
-                .paper{width:210mm;min-height:297mm;margin:0;padding:15mm;box-shadow:none;overflow:visible}
-                .page-watermark{position:absolute;inset:0;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
-                .item{break-inside:avoid;page-break-inside:avoid}
+                #paper-pages{padding:0}
+                .paper-page{width:210mm;height:297mm;aspect-ratio:auto;margin:0;padding:4.5% 4.5% 5%;box-shadow:none;overflow:hidden}
+                .page-watermark span{font-size:10cqw;color:rgba(49,155,232,.23)!important}
               }
             </style></head><body>
-            <div class="toolbar"><button onclick="window.print()">Print / Download PDF</button></div>
-            <main class="paper">
-              <div class="page-watermark" aria-hidden="true"><span>MukulDhaliOfficial</span></div>
-              <div class="content"><header><div><div class="brand">MukulDhaliOfficial</div><div class="sub">${title}</div><div class="sub">${includeAnswers?'প্রশ্ন ও উত্তর':'শুধুমাত্র প্রশ্ন'}</div></div><img class="qr" src="${qrData}" alt="QR Code"></header>${rows}</div>
-            </main>
-            <script>window.addEventListener('load',()=>{if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{});});<\/script></body></html>`);
+            <div class="toolbar"><button type="button" onclick="window.print()">Print / Download PDF</button><button type="button" class="close" onclick="window.close()">Close Preview</button></div>
+            <div id="paper-source" style="display:none">${rows}</div><main id="paper-pages"></main>
+            <script>
+            window.addEventListener('load',async()=>{
+              const source=document.getElementById('paper-source');
+              const root=document.getElementById('paper-pages');
+              const originals=Array.from(source.children);
+              await Promise.all(Array.from(source.querySelectorAll('img')).map(img=>{
+                img.loading='eager';
+                if(img.complete&&img.naturalWidth)return Promise.resolve();
+                return new Promise(resolve=>{img.onload=resolve;img.onerror=resolve;setTimeout(resolve,2500)});
+              }));
+              const header=document.createElement('header');
+              header.className='paper-header';
+              header.innerHTML='<div><div class="brand">MukulDhaliOfficial</div><div class="sub">${title}</div><div class="sub">${includeAnswers?'প্রশ্ন ও উত্তর':'শুধুমাত্র প্রশ্ন'}</div></div><img class="qr" src="${qrData}" alt="QR Code">';
+              let pageNo=0,current=null;
+              function makePage(first){
+                const page=document.createElement('section');
+                page.className='paper-page'+(first?' first-page':'');
+                page.innerHTML='<div class="page-watermark" aria-hidden="true"><span>Mukul Dhali Official</span></div><main class="paper-content"></main>';
+                if(first)page.insertBefore(header.cloneNode(true),page.children[1]);
+                root.appendChild(page);
+                pageNo++;
+                return {page,content:page.querySelector('.paper-content')};
+              }
+              function fits(target,item){
+                target.appendChild(item);
+                if(item.getBoundingClientRect().bottom<=target.getBoundingClientRect().bottom+1)return true;
+                target.removeChild(item);
+                return false;
+              }
+              current=makePage(true);
+              for(const original of originals){
+                const item=original.cloneNode(true);
+                if(fits(current.content,item))continue;
+                current=makePage(false);
+                if(!fits(current.content,item)){
+                  item.style.breakInside='auto';
+                  item.style.pageBreakInside='auto';
+                  current.content.style.overflow='visible';
+                  current.content.appendChild(item);
+                }
+              }
+              source.remove();
+              window.scrollTo(0,0);
+              // Open the native print dialog automatically after the A4 preview is laid out.
+              const openPrint=()=>{try{window.focus();window.print();}catch(e){console.error('Print dialog error:',e);}};
+              if(document.fonts&&document.fonts.ready){try{await document.fonts.ready;}catch(e){}}
+              setTimeout(openPrint,500);
+            });
+            <\/script></body></html>`);
             w.document.close();
         }
         function resolveQuestionBankShareRoute() {
