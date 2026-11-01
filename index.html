@@ -4246,7 +4246,7 @@
               .paper-content{position:absolute;z-index:1;left:4.5cqw;right:4.5cqw;top:16.5cqw;bottom:3cqw;overflow:hidden}
               .paper-page:not(.first-page) .paper-content{top:3cqw}
               .item{position:relative;z-index:1;break-inside:avoid;page-break-inside:avoid;border:.35mm solid #d7dee7;border-radius:2mm;padding:1.15mm 1.8mm;margin:0 0 .65mm;background:transparent}
-              .question{font-size:${printFontSize}pt!important;font-weight:600;line-height:1.24;white-space:pre-wrap;overflow-wrap:anywhere;font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important;margin:0}
+              .question{font-size:${printFontSize}pt!important;font-weight:700!important;-webkit-text-stroke:.28px currentColor;text-shadow:.18px 0 currentColor,-.18px 0 currentColor;line-height:1.24;white-space:pre-wrap;overflow-wrap:anywhere;font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important;margin:0}
               .answer{font-size:${printFontSize}pt!important;font-weight:400;line-height:1.27;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:1.6mm;font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important}
               .answer-label{font-weight:700}
               .qimg{display:block;max-width:75%;max-height:35mm;object-fit:contain;margin:1.5mm 0 0}
@@ -4259,12 +4259,20 @@
                 .paper-page{width:210mm;height:297mm;margin:0;transform:none;padding:4.5% 4.5% 5%;box-shadow:none;overflow:hidden}
                 .page-watermark span{font-size:10cqw;color:rgba(49,155,232,.23)!important}
               }
-            /* Questions stay bold in BOTH Question+Answer and Only Question modes. */
-              .question{font-weight:700!important}
+            /* Force visibly bold Bengali question glyphs in preview AND print. */
+              .question{
+                font-weight:700!important;
+                -webkit-text-stroke:.28px currentColor!important;
+                text-shadow:.18px 0 currentColor,-.18px 0 currentColor!important;
+              }
               .only-question .question{font-weight:700!important}
               @media print{
-                .question{font-weight:700!important}
-                .answer{font-weight:400!important}
+                .question{
+                  font-weight:700!important;
+                  -webkit-text-stroke:.28px currentColor!important;
+                  text-shadow:.18px 0 currentColor,-.18px 0 currentColor!important;
+                }
+                .answer{font-weight:400!important;-webkit-text-stroke:0!important;text-shadow:none!important}
                 .question,.answer{font-size:${printFontSize}pt!important;-webkit-text-size-adjust:100%;text-size-adjust:100%}
                 .only-question .question{font-weight:700!important}
               }
