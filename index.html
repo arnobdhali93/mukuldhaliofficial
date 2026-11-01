@@ -4231,9 +4231,12 @@
               .toolbar{position:sticky;top:0;z-index:20;display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;padding:12px;background:#f1f5f9;border-bottom:1px solid #cbd5e1}
               .toolbar button{padding:11px 24px;border:0;border-radius:10px;background:#15803d;color:#fff;font:700 14px Arial,sans-serif;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.12)}
               .toolbar .close{background:#475569}
-              #paper-pages{padding:1px 0 24px}
-              .paper-page{container-type:inline-size;position:relative;isolation:isolate;width:min(210mm,calc(100vw - 20px));aspect-ratio:210/297;height:auto;margin:14px auto;background:#fff;overflow:hidden;box-shadow:0 3px 18px rgba(15,23,42,.18);padding:4.5% 4.5% 5%;break-after:page;page-break-after:always}
-              .paper-page:last-child{break-after:auto;page-break-after:auto}
+              #paper-pages{padding:1px 0 24px;--preview-scale:min(1,calc((100vw - 40px) / 793.7))}
+              /* Every preview page is laid out at real A4 dimensions. Only its visual
+                 presentation is scaled down on narrow screens; pagination uses A4 metrics. */
+              .page-shell{position:relative;width:calc(210mm * var(--preview-scale));height:calc(297mm * var(--preview-scale));margin:14px auto;break-after:page;page-break-after:always}
+              .page-shell:last-child{break-after:auto;page-break-after:auto}
+              .paper-page{container-type:inline-size;position:absolute;inset:0;isolation:isolate;width:210mm;height:297mm;margin:0;transform:scale(var(--preview-scale));transform-origin:top left;background:#fff;overflow:hidden;box-shadow:0 3px 18px rgba(15,23,42,.18);padding:4.5% 4.5% 5%}
               .page-watermark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none;z-index:0}
               .page-watermark span{display:block;font-family:Arial,sans-serif!important;font-size:10cqw;font-weight:800;color:rgba(49,155,232,.23)!important;transform:rotate(-45deg);white-space:nowrap;letter-spacing:.1cqw;line-height:1}
               .paper-header{position:absolute;z-index:2;left:4.5cqw;right:4.5cqw;top:4cqw;height:12.5cqw;display:flex;align-items:flex-start;justify-content:space-between;gap:3cqw;border-bottom:1px solid #777;padding-bottom:2.3cqw}
@@ -4251,7 +4254,9 @@
                 html,body{width:210mm;margin:0!important;padding:0!important;background:#fff!important}
                 .toolbar{display:none!important}
                 #paper-pages{padding:0}
-                .paper-page{width:210mm;height:297mm;aspect-ratio:auto;margin:0;padding:4.5% 4.5% 5%;box-shadow:none;overflow:hidden}
+                .page-shell{width:210mm;height:297mm;margin:0;break-after:page;page-break-after:always}
+                .page-shell:last-child{break-after:auto;page-break-after:auto}
+                .paper-page{width:210mm;height:297mm;margin:0;transform:none;padding:4.5% 4.5% 5%;box-shadow:none;overflow:hidden}
                 .page-watermark span{font-size:10cqw;color:rgba(49,155,232,.23)!important}
               }
             </style></head><body>
@@ -4264,6 +4269,8 @@
               // Load the final Bengali font before measuring; this prevents one-question-per-page
               // pagination caused by measuring with a temporary fallback font.
               if(document.fonts&&document.fonts.ready){try{await document.fonts.ready;}catch(e){}}
+              const scale=Math.min(1,(window.innerWidth-40)/793.7);
+              root.style.setProperty('--preview-scale',String(Math.max(.25,scale)));
               const originals=Array.from(source.children);
               await Promise.all(Array.from(source.querySelectorAll('img')).map(img=>{
                 img.loading='eager';
@@ -4275,34 +4282,95 @@
               header.innerHTML='<div><div class="brand">MukulDhaliOfficial</div><div class="sub">${title}</div><div class="sub">${includeAnswers?'প্রশ্ন ও উত্তর':'শুধুমাত্র প্রশ্ন'}</div></div><img class="qr" src="${qrData}" alt="QR Code">';
               let pageNo=0,current=null;
               function makePage(first){
+                const shell=document.createElement('div');
+                shell.className='page-shell';
                 const page=document.createElement('section');
                 page.className='paper-page'+(first?' first-page':'');
                 page.innerHTML='<div class="page-watermark" aria-hidden="true"><span>Mukul Dhali Official</span></div><main class="paper-content"></main>';
                 if(first)page.insertBefore(header.cloneNode(true),page.children[1]);
-                root.appendChild(page);
+                shell.appendChild(page);
+                root.appendChild(shell);
                 pageNo++;
-                return {page,content:page.querySelector('.paper-content')};
+                return {page,shell,content:page.querySelector('.paper-content')};
               }
               function fits(target,item){
                 target.appendChild(item);
-                // scrollHeight is more reliable than comparing the last item's bounding box
-                // against an absolutely positioned container on mobile Safari.
-                const fitsHeight = target.scrollHeight <= target.clientHeight + 2;
+                // All pages are measured at the same physical A4 width/height as print.
+                const box=target.getBoundingClientRect();
+                const itemBox=item.getBoundingClientRect();
+                const fitsHeight=itemBox.bottom <= box.bottom + 1;
                 if(fitsHeight)return true;
                 target.removeChild(item);
                 return false;
               }
+              function visualLines(element){
+                const groups=new Map();
+                const walker=document.createTreeWalker(element,NodeFilter.SHOW_TEXT);
+                let node;
+                while((node=walker.nextNode())){
+                  for(let i=0;i<node.textContent.length;i++){
+                    const range=document.createRange();
+                    range.setStart(node,i);range.setEnd(node,i+1);
+                    const rect=range.getBoundingClientRect();
+                    const key=rect.height?Math.round(rect.top):((groups.size?Array.from(groups.keys()).pop():0));
+                    if(!groups.has(key))groups.set(key,'');
+                    groups.set(key,groups.get(key)+node.textContent[i]);
+                  }
+                }
+                return Array.from(groups.values()).map(v=>v.replace(/[\\t ]+$/g,'')).filter(v=>v.length);
+              }
+              function makeLineFragment(lines,start,end,withImage){
+                const fragment=document.createElement('article');
+                fragment.className='item';
+                const q=lines.slice(start,end).filter(x=>x.type==='q').map(x=>x.text);
+                const a=lines.slice(start,end).filter(x=>x.type==='a').map(x=>x.text);
+                if(q.length){const qd=document.createElement('div');qd.className='question';qd.textContent=q.join('\\n');fragment.appendChild(qd);}
+                if(withImage){
+                  const image=originals[currentOriginalIndex]?.querySelector('.qimg');
+                  if(image)fragment.appendChild(image.cloneNode(true));
+                }
+                if(a.length){const ad=document.createElement('div');ad.className='answer';ad.textContent=a.join('\\n');fragment.appendChild(ad);}
+                return fragment;
+              }
               current=makePage(true);
+              let currentOriginalIndex=0;
               for(const original of originals){
                 const item=original.cloneNode(true);
-                if(fits(current.content,item))continue;
+                if(fits(current.content,item)){currentOriginalIndex++;continue;}
                 current=makePage(false);
-                if(!fits(current.content,item)){
-                  item.style.breakInside='auto';
-                  item.style.pageBreakInside='auto';
-                  current.content.style.overflow='visible';
-                  current.content.appendChild(item);
+                if(fits(current.content,item)){currentOriginalIndex++;continue;}
+                // A single Q&A larger than a full A4 page is split at rendered text-line
+                // boundaries and continued on subsequent A4 pages.
+                // Measure a live clone at the real A4 width; the source template is hidden.
+                current.content.appendChild(item);
+                const liveQuestion=item.querySelector('.question')||item;
+                const liveAnswer=includeAnswers?item.querySelector('.answer'):null;
+                const qLines=visualLines(liveQuestion);
+                const aLines=liveAnswer?visualLines(liveAnswer):[];
+                current.content.removeChild(item);
+                const lines=[...qLines.map(text=>({type:'q',text})),...aLines.map(text=>({type:'a',text}))];
+                let cursor=0,firstPart=true;
+                while(cursor<lines.length){
+                  let bestEnd=cursor;
+                  let low=cursor+1,high=lines.length;
+                  while(low<=high){
+                    const mid=Math.floor((low+high)/2);
+                    const candidate=makeLineFragment(lines,cursor,mid,firstPart);
+                    if(fits(current.content,candidate)){bestEnd=mid;current.content.removeChild(candidate);low=mid+1;}
+                    else{high=mid-1;}
+                  }
+                  if(bestEnd===cursor){
+                    const forced=makeLineFragment(lines,cursor,cursor+1,firstPart);
+                    current.content.appendChild(forced);
+                    bestEnd=cursor+1;
+                  }else{
+                    const accepted=makeLineFragment(lines,cursor,bestEnd,firstPart);
+                    current.content.appendChild(accepted);
+                  }
+                  cursor=bestEnd;firstPart=false;
+                  if(cursor<lines.length)current=makePage(false);
                 }
+                currentOriginalIndex++;
               }
               source.remove();
               window.scrollTo(0,0);
