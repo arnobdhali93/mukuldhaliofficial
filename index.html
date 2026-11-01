@@ -884,14 +884,25 @@
                         <i class="fa-solid fa-circle-info text-emerald-600 text-xl"></i>
                         <p class="text-slate-700 dark:text-slate-300 text-sm font-bold">প্রথমে বিষয়, তারপর টপিক নির্বাচন করে প্রশ্ন ও উত্তর দেখুন।</p>
                     </div>
-                    <div id="qb-subjects" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"><p class="col-span-full text-center py-12 text-slate-500">প্রশ্নের তালিকা লোড হচ্ছে...</p></div>
+                    <div id="qb-subjects" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"><p class="col-span-full text-center py-12 text-slate-500">প্রশ্নের তালিকা লোড হচ্ছে...</p></div>
                 </div>
                 <div id="qb-topic-view" class="hidden space-y-5">
                     <div class="flex items-center gap-3 flex-wrap"><button onclick="qbBackToSubjects()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 font-bold"><i class="fa-solid fa-arrow-left mr-2"></i>সব বিষয়</button><h3 id="qb-current-subject" class="text-xl font-black"></h3></div>
-                    <div id="qb-topics" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+                    <div id="qb-topics" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
                 </div>
                 <div id="qb-question-view" class="hidden space-y-5">
-                    <div class="flex items-center justify-between gap-3 flex-wrap"><button onclick="qbBackToTopics()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 font-bold"><i class="fa-solid fa-arrow-left mr-2"></i>টপিক</button><div class="flex gap-2 flex-wrap"><button onclick="printQuestionBank('question')" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-bold"><i class="fa-solid fa-print mr-1"></i> Only Question</button><button onclick="printQuestionBank('answer')" class="px-4 py-2 rounded-xl bg-emerald-600 text-white font-bold"><i class="fa-solid fa-file-pdf mr-1"></i> Question + Answer</button></div></div>
+                    <div class="flex items-center justify-between gap-3 flex-wrap">
+                        <button onclick="qbBackToTopics()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 font-bold"><i class="fa-solid fa-arrow-left mr-2"></i>টপিক</button>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <label for="qb-print-mode" class="text-sm font-bold text-slate-600 dark:text-slate-300">প্রিন্টের ধরন</label>
+                            <select id="qb-print-mode" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 font-bold text-sm">
+                                <option value="answer" selected>Question + Answer</option>
+                                <option value="question">Only Question</option>
+                            </select>
+                            <button onclick="printQuestionBank()" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-bold"><i class="fa-solid fa-print mr-1"></i> Print</button>
+                            <button onclick="qbShareLink('topic',qbCurrentSubject,qbCurrentTopic)" class="px-3 py-2 rounded-xl bg-emerald-50 text-emerald-700 dark:bg-slate-700 dark:text-emerald-300 font-bold" title="টপিক শেয়ার করুন"><i class="fa-solid fa-share-nodes"></i></button>
+                        </div>
+                    </div>
                     <h3 id="qb-current-topic" class="text-xl md:text-2xl font-black"></h3>
                     <div id="qb-questions" class="space-y-4"></div>
                 </div>
@@ -4066,25 +4077,64 @@
             questionBankTopics.forEach(t => { (map[t.subject] ||= []).push(t); });
             return map;
         }
+        function qbSetShareRoute(subject, topic) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('qbs', subject);
+            if (topic) url.searchParams.set('qbt', topic);
+            else url.searchParams.delete('qbt');
+            url.hash = 'question-bank';
+            window.history.replaceState(null, '', url.toString());
+        }
+        window.qbShareLink = function(kind, subject, topic) {
+            const url = new URL(window.location.origin + window.location.pathname);
+            url.searchParams.set('qbs', subject);
+            if (kind === 'topic' && topic) url.searchParams.set('qbt', topic);
+            url.hash = 'question-bank';
+            const label = kind === 'subject' ? 'বিষয়' : 'টপিক';
+            const name = kind === 'subject' ? subject : (subject + ' — ' + topic);
+            shareContent('MukulDhaliOfficial প্রশ্ন ও উত্তর — ' + name,
+                'MukulDhaliOfficial-এ ' + label + ': “' + name + '” এর প্রশ্ন ও উত্তর দেখুন।',
+                url.toString());
+        };
         function renderQuestionBankSubjects(filter='') {
             const box = document.getElementById('qb-subjects'); if (!box) return;
             const groups = qbGroupTopics();
             const names = Object.keys(groups).filter(n => (n+' '+groups[n].map(t=>t.topic).join(' ')).toLowerCase().includes(filter.toLowerCase()));
-            box.innerHTML = names.length ? names.map(name => `<button onclick="qbOpenSubject(this.dataset.subject)" data-subject="${qbEscape(name)}" class="text-left p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-emerald-500 hover:shadow-lg transition"><span class="flex items-center justify-between"><strong class="text-lg">${qbEscape(name)}</strong><i class="fa-solid fa-chevron-right text-emerald-600"></i></span><span class="text-sm text-slate-500 mt-2 block">${groups[name].length}টি টপিক · ${groups[name].reduce((n,t)=>n+Number(t.questionCount||0),0)}টি প্রশ্ন</span></button>`).join('') : '<p class="col-span-full text-center py-12 text-slate-500">কোনো বিষয় পাওয়া যায়নি।</p>';
+            box.innerHTML = names.length ? names.map((name,index) => `<div class="relative overflow-hidden rounded-2xl border border-emerald-100 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-lg hover:border-emerald-400 transition">
+                <button type="button" onclick="qbOpenSubject(this.dataset.subject)" data-subject="${qbEscape(name)}" class="w-full min-h-32 text-left p-5 pr-16 flex items-center gap-4">
+                    <span class="w-14 h-14 shrink-0 rounded-2xl flex items-center justify-center bg-emerald-50 dark:bg-slate-700 text-emerald-700 dark:text-emerald-300 text-2xl"><i class="fa-solid fa-book-open"></i></span>
+                    <span class="min-w-0"><strong class="block text-xl font-black text-slate-900 dark:text-white">${qbEscape(name)}</strong><span class="text-sm text-slate-500 mt-2 block">${groups[name].length}টি টপিক · ${groups[name].reduce((n,t)=>n+Number(t.questionCount||0),0)}টি প্রশ্ন</span></span>
+                </button>
+                <button type="button" onclick="qbShareLink('subject',this.dataset.subject)" data-subject="${qbEscape(name)}" class="absolute right-3 top-3 p-3 rounded-xl text-emerald-700 bg-emerald-50 dark:bg-slate-700 dark:text-emerald-300 hover:bg-emerald-100" title="বিষয় শেয়ার করুন" aria-label="বিষয় শেয়ার করুন"><i class="fa-solid fa-share-nodes"></i></button>
+            </div>`).join('') : '<p class="col-span-full text-center py-12 text-slate-500">কোনো বিষয় পাওয়া যায়নি।</p>';
         }
         function filterQuestionBank() { renderQuestionBankSubjects(document.getElementById('qb-search')?.value || ''); }
         function qbShowView(id) { ['qb-subject-view','qb-topic-view','qb-question-view'].forEach(x=>document.getElementById(x)?.classList.toggle('hidden',x!==id)); }
         function qbOpenSubject(subject) {
             qbCurrentSubject = subject;
+            qbSetShareRoute(subject, '');
             document.getElementById('qb-current-subject').textContent = subject;
             const topics = questionBankTopics.filter(t=>t.subject===subject);
-            document.getElementById('qb-topics').innerHTML = topics.map(t=>`<button onclick="qbOpenTopic(this.dataset.topic)" data-topic="${qbEscape(t.topic)}" class="text-left p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-emerald-500 transition"><span class="flex justify-between items-center gap-2"><strong>${qbEscape(t.topic)}</strong><i class="fa-solid ${t.hasPassword?'fa-lock':'fa-chevron-right'} text-emerald-600"></i></span><span class="text-sm text-slate-500 mt-2 block">${Number(t.questionCount||0)}টি প্রশ্ন ${t.hasPassword?'· পাসওয়ার্ড সুরক্ষিত':''}</span></button>`).join('');
+            document.getElementById('qb-topics').innerHTML = topics.map(t=>`<div class="relative overflow-hidden rounded-2xl border border-emerald-100 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-lg hover:border-emerald-400 transition">
+                <button type="button" onclick="qbOpenTopic(this.dataset.topic)" data-topic="${qbEscape(t.topic)}" class="w-full min-h-28 text-left p-5 pr-16 flex items-center gap-4">
+                    <span class="w-12 h-12 shrink-0 rounded-xl flex items-center justify-center bg-emerald-50 dark:bg-slate-700 text-emerald-700 dark:text-emerald-300 text-xl"><i class="fa-solid ${t.hasPassword?'fa-lock':'fa-bookmark'}"></i></span>
+                    <span class="min-w-0"><strong class="block font-black text-slate-900 dark:text-white">${qbEscape(t.topic)}</strong><span class="text-sm text-slate-500 mt-2 block">${Number(t.questionCount||0)}টি প্রশ্ন ${t.hasPassword?'· পাসওয়ার্ড সুরক্ষিত':''}</span></span>
+                </button>
+                <button type="button" onclick="qbShareLink('topic',this.dataset.subject,this.dataset.topic)" data-subject="${qbEscape(qbCurrentSubject)}" data-topic="${qbEscape(t.topic)}" class="absolute right-3 top-3 p-3 rounded-xl text-emerald-700 bg-emerald-50 dark:bg-slate-700 dark:text-emerald-300 hover:bg-emerald-100" title="টপিক শেয়ার করুন" aria-label="টপিক শেয়ার করুন"><i class="fa-solid fa-share-nodes"></i></button>
+            </div>`).join('');
             qbShowView('qb-topic-view');
         }
-        function qbBackToSubjects(){qbShowView('qb-subject-view');}
-        function qbBackToTopics(){qbShowView('qb-topic-view');}
+        function qbBackToSubjects(){
+            const url = new URL(window.location.href); url.searchParams.delete('qbs'); url.searchParams.delete('qbt'); url.hash='question-bank'; window.history.replaceState(null,'',url.toString());
+            qbShowView('qb-subject-view');
+        }
+        function qbBackToTopics(){
+            qbSetShareRoute(qbCurrentSubject, '');
+            qbShowView('qb-topic-view');
+        }
         async function qbOpenTopic(topic) {
             qbCurrentTopic = topic;
+            qbSetShareRoute(qbCurrentSubject, topic);
             const meta = questionBankTopics.find(t=>t.subject===qbCurrentSubject && t.topic===topic);
             let questions = questionBankPublic.filter(q=>q.subject===qbCurrentSubject && q.topic===topic);
             if (meta?.hasPassword && !qbUnlocked[JSON.stringify([qbCurrentSubject,topic])]) {
@@ -4103,18 +4153,67 @@
             qbCurrentQuestions = questions;
             document.getElementById('qb-current-topic').textContent = qbCurrentSubject+' — '+topic;
             const box = document.getElementById('qb-questions');
-            box.innerHTML = questions.length ? questions.map((q,i)=>`<article class="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800"><p class="font-bold text-slate-900 dark:text-white">${i+1}. ${qbEscape(q.question)}</p>${q.imageURL?`<img src="${qbEscape(normalizeQuestionImageUrl(q.imageURL))}" alt="প্রশ্নের ছবি" loading="lazy" class="max-w-full max-h-80 object-contain rounded-xl mt-3">`:''}<div class="mt-3 p-3 rounded-xl bg-emerald-50 dark:bg-slate-700"><strong class="text-emerald-700 dark:text-emerald-300">উত্তর:</strong> <span>${qbEscape(q.answer)}</span></div></article>`).join('') : '<p class="text-center py-10 text-slate-500">এই টপিকে কোনো প্রশ্ন নেই।</p>';
+            box.innerHTML = questions.length ? questions.map((q,i)=>`<article class="py-4 border-b border-slate-200 dark:border-slate-700 last:border-0">
+                <p class="font-bold text-slate-900 dark:text-white leading-relaxed">${i+1}. ${qbEscape(q.question)}</p>
+                ${q.imageURL?`<img src="${qbEscape(normalizeQuestionImageUrl(q.imageURL))}" alt="প্রশ্নের ছবি" loading="lazy" class="max-w-full max-h-80 object-contain mt-3">`:''}
+                <div class="mt-2 text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line"><strong class="font-normal">উত্তর:</strong> ${qbEscape(q.answer)}</div>
+            </article>`).join('') : '<p class="text-center py-10 text-slate-500">এই টপিকে কোনো প্রশ্ন নেই।</p>';
             qbShowView('qb-question-view');
         }
-        function printQuestionBank(mode) {
+        function printQuestionBank() {
             if (!qbCurrentQuestions.length) { showToast('প্রিন্ট করার মতো প্রশ্ন নেই।','error'); return; }
+            const mode = document.getElementById('qb-print-mode')?.value || 'answer';
             const includeAnswers = mode === 'answer';
             const title = qbEscape(qbCurrentSubject+' — '+qbCurrentTopic);
-            const rows = qbCurrentQuestions.map((q,i)=>`<div class="item"><div class="question">${i+1}. ${qbEscape(q.question)}</div>${q.imageURL?`<img class="qimg" src="${qbEscape(normalizeQuestionImageUrl(q.imageURL))}">`:''}${includeAnswers?`<div class="answer"><b>উত্তর:</b> ${qbEscape(q.answer)}</div>`:''}</div>`).join('');
-            const qrData = 'https://chart.googleapis.com/chart?cht=qr&chs=110x110&chl='+encodeURIComponent(location.origin+location.pathname+'#question-bank');
-            const w = window.open('','_blank'); if(!w){showToast('পপ-আপ অনুমতি দিন, তারপর আবার চেষ্টা করুন।','error');return;}
-            w.document.write(`<!doctype html><html lang="bn"><head><meta charset="utf-8"><title>${title}</title><style>@page{size:A4;margin:16mm}body{font-family:Arial,'Noto Sans Bengali',sans-serif;color:#111}header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #166534;padding-bottom:10px;margin-bottom:18px}h1{font-size:22px;margin:0 0 5px;color:#14532d}.sub{font-size:13px;color:#555}.qr{width:82px;height:82px}.item{break-inside:avoid;border-bottom:1px solid #ddd;padding:12px 0}.question{font-weight:700;line-height:1.7}.answer{margin-top:7px;padding:7px 10px;background:#f0fdf4;border-left:3px solid #16a34a;line-height:1.6}.qimg{display:block;max-width:75%;max-height:240px;object-fit:contain;margin:8px 0}@media print{button{display:none}}</style></head><body><header><div><h1>MukulDhaliOfficial</h1><div class="sub">${title}</div><div class="sub">${includeAnswers?'প্রশ্ন ও উত্তর':'শুধুমাত্র প্রশ্ন'}</div></div><img class="qr" src="${qrData}"></header>${rows}<script>window.onload=()=>setTimeout(()=>window.print(),500);<\/script></body></html>`);
+            const rows = qbCurrentQuestions.map((q,i)=>`<article class="item">
+                <div class="question">${i+1}. ${qbEscape(q.question)}</div>
+                ${q.imageURL?`<img class="qimg" src="${qbEscape(normalizeQuestionImageUrl(q.imageURL))}" alt="প্রশ্নের ছবি">`:''}
+                ${includeAnswers?`<div class="answer"><span class="answer-label">উত্তর:</span> ${qbEscape(q.answer)}</div>`:''}
+            </article>`).join('');
+            const qrData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQAQMAAAC6caSPAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAACMklEQVR4nO3cMW7DMAwFUAYdMuYIOYqPZh/NR8kRMnowwkr6JGUFLVoUkNzhc3Et63kiJFFWKsJg9I6bRrzS7byhed7lrnLNzQ+pXdINCckIsliCTq/sN5lUnyIf6LqWq72nNJKQDCEfOUW3TFIGW0bbUwTeo7knCclwcotrNO4kJCeTFFddL/mppHkf8SAhOYHYMIoMTiTWqFJu5IelAglJBxLh5JKWo14lrbYs9SAhGUG+iELs6fRtLxKSfsQz2ab2FJj3a9GOjLb0JiEZQSTP5mmK9wz2KV5iqxPRVvQkJL8nKS0t2SbbTi/pierG15ZOECQkA4jGwFj3LbG2FHhkdDvAkpB0JIIBVreayS9P76jA664RCckIYpmcI7eqHpaReoh23ich6Uy8upnsKw/CF6s+/zeZTELSlwj2gtQrcC+6c/Z6lRQ9dxKSQURyna5vG0TqA6z3apcKJCRdSVl53q3rM+r1eY9v4oiXD8UkJCNIyU+0F1Kuc7nfrIRy4plMQtKd2GfvFQ313KUd1cBOvG00kZD8jWhsUS5+5Nw2Myc9pKVqrcRJSDqSJjAgxuHJ3GQVuVMSkhHk7ZTaYYNIrQ6qGb34i0lIehP7I+b7up2OheYjHkpT8pCQ9CTHH+Zkb1978KH8WPKokpCcQVTtFxB+1FyQ0Wu8h4TkDFJieVuGIprinYSkJxEEBthrc7TSzgj7ZiYJySgSYfP+ZP8iA+lty9L18HISkt6Ewfh38QlT3xGnOqZaTAAAAABJRU5ErkJggg==';
+            const w = window.open('','_blank');
+            if(!w){showToast('পপ-আপ অনুমতি দিন, তারপর আবার চেষ্টা করুন।','error');return;}
+            w.document.write(`<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title>
+            <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+            <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
+            <style>
+              @page{size:A4 portrait;margin:15mm}
+              *{box-sizing:border-box}
+              html,body{margin:0;padding:0;background:#fff!important;color:#111}
+              body{font-family:'Times New Roman','Kalpurush',serif!important;font-size:12pt;line-height:1.65;position:relative;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+              .page-watermark{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;overflow:hidden}
+              .page-watermark span{font-family:'Times New Roman',serif;font-size:46pt;font-weight:700;color:rgba(30,90,60,.075);transform:rotate(-32deg);white-space:nowrap;letter-spacing:2px}
+              .content{position:relative;z-index:1;background:transparent}
+              header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:0 0 10px;margin:0 0 14px;border-bottom:1px solid #777}
+              .brand{font-family:'Times New Roman',serif;font-size:19pt;font-weight:700;color:#14532d}
+              .sub{font-size:11pt;color:#333;margin-top:2px}
+              .qr{width:78px;height:78px;object-fit:contain;flex:0 0 auto}
+              .item{break-inside:avoid;page-break-inside:avoid;padding:9px 0 11px;margin:0}
+              .question{font-weight:700;line-height:1.7;white-space:pre-wrap}
+              .answer{font-weight:400;line-height:1.7;white-space:pre-wrap;margin-top:4px;padding:0;border:0!important;background:transparent!important;box-shadow:none!important}
+              .answer-label{font-weight:400}
+              .qimg{display:block;max-width:75%;max-height:220px;object-fit:contain;margin:8px 0}
+              .toolbar{position:sticky;top:0;z-index:5;text-align:center;padding:10px;background:#f1f5f9}
+              .toolbar button{padding:9px 18px;border:0;border-radius:8px;background:#15803d;color:#fff;font-weight:700}
+              @media print{.toolbar{display:none}body{background:#fff!important}.page-watermark{position:fixed}.item{break-inside:avoid}}
+            </style></head><body>
+            <div class="toolbar"><button onclick="window.print()">Print / Download PDF</button></div>
+            <div class="page-watermark"><span>MukulDhaliOfficial</span></div>
+            <main class="content"><header><div><div class="brand">MukulDhaliOfficial</div><div class="sub">${title}</div><div class="sub">${includeAnswers?'প্রশ্ন ও উত্তর':'শুধুমাত্র প্রশ্ন'}</div></div><img class="qr" src="${qrData}" alt="QR Code"></header>${rows}</main>
+            <script>window.addEventListener('load',()=>setTimeout(()=>window.print(),700));<\/script></body></html>`);
             w.document.close();
+        }
+        function resolveQuestionBankShareRoute() {
+            const params = new URLSearchParams(window.location.search);
+            const subject = params.get('qbs');
+            const topic = params.get('qbt');
+            if (!subject) return;
+            const found = questionBankTopics.some(t=>t.subject===subject);
+            if (!found) return;
+            showSection('question-bank', null);
+            qbOpenSubject(subject);
+            if (topic && questionBankTopics.some(t=>t.subject===subject && t.topic===topic)) qbOpenTopic(topic);
         }
         function checkQuestionBankUpdates(data) {
             const topics = Array.isArray(data.QuestionBankTopics) ? data.QuestionBankTopics : [];
@@ -4186,6 +4285,7 @@
             questionBankTopics = Array.isArray(data.QuestionBankTopics) ? data.QuestionBankTopics : questionBankTopics;
             questionBankPublic = Array.isArray(data.QuestionBank) ? data.QuestionBank : questionBankPublic;
             if (Array.isArray(data.QuestionBankTopics)) renderQuestionBankSubjects(document.getElementById('qb-search')?.value || '');
+            if (isFresh && Array.isArray(data.QuestionBankTopics)) resolveQuestionBankShareRoute();
             if (isFresh && Array.isArray(data.QuestionBankTopics)) checkQuestionBankUpdates(data);
             if(data.BreakingNews) {
                 document.getElementById('breaking-news-text').innerHTML = `📢 ${data.BreakingNews}`;
