@@ -4153,10 +4153,10 @@
             qbCurrentQuestions = questions;
             document.getElementById('qb-current-topic').textContent = qbCurrentSubject+' — '+topic;
             const box = document.getElementById('qb-questions');
-            box.innerHTML = questions.length ? questions.map((q,i)=>`<article class="py-4 border-b border-slate-200 dark:border-slate-700 last:border-0">
-                <p class="font-bold text-slate-900 dark:text-white leading-relaxed">${i+1}. ${qbEscape(q.question)}</p>
+            box.innerHTML = questions.length ? questions.map((q,i)=>`<article class="qb-question-card rounded-xl border border-emerald-200 dark:border-slate-600 bg-emerald-50/70 dark:bg-slate-800/70 p-4 mb-4">
+                <p class="qb-question-text text-slate-900 dark:text-white leading-relaxed" style="font-family:'Times New Roman','Kalpurush',serif;font-weight:700!important">${i+1}. ${qbEscape(q.question)}</p>
                 ${q.imageURL?`<img src="${qbEscape(normalizeQuestionImageUrl(q.imageURL))}" alt="প্রশ্নের ছবি" loading="lazy" class="max-w-full max-h-80 object-contain mt-3">`:''}
-                <div class="mt-2 text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line"><strong class="font-normal">উত্তর:</strong> ${qbEscape(q.answer)}</div>
+                <div class="qb-answer-text mt-3 text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line" style="font-family:'Times New Roman','Kalpurush',serif;font-weight:400"> <strong class="qb-answer-label" style="font-weight:700!important">উত্তর:</strong> ${qbEscape(q.answer)}</div>
             </article>`).join('') : '<p class="text-center py-10 text-slate-500">এই টপিকে কোনো প্রশ্ন নেই।</p>';
             qbShowView('qb-question-view');
         }
@@ -4166,9 +4166,9 @@
             const includeAnswers = mode === 'answer';
             const title = qbEscape(qbCurrentSubject+' — '+qbCurrentTopic);
             const rows = qbCurrentQuestions.map((q,i)=>`<article class="item">
-                <div class="question">${i+1}. ${qbEscape(q.question)}</div>
+                <div class="question"><strong>${i+1}. ${qbEscape(q.question)}</strong></div>
                 ${q.imageURL?`<img class="qimg" src="${qbEscape(normalizeQuestionImageUrl(q.imageURL))}" alt="প্রশ্নের ছবি">`:''}
-                ${includeAnswers?`<div class="answer"><span class="answer-label">উত্তর:</span> ${qbEscape(q.answer)}</div>`:''}
+                ${includeAnswers?`<div class="answer"><strong class="answer-label">উত্তর:</strong> ${qbEscape(q.answer)}</div>`:''}
             </article>`).join('');
             const qrData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQAQMAAAC6caSPAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAACMklEQVR4nO3cMW7DMAwFUAYdMuYIOYqPZh/NR8kRMnowwkr6JGUFLVoUkNzhc3Et63kiJFFWKsJg9I6bRrzS7byhed7lrnLNzQ+pXdINCckIsliCTq/sN5lUnyIf6LqWq72nNJKQDCEfOUW3TFIGW0bbUwTeo7knCclwcotrNO4kJCeTFFddL/mppHkf8SAhOYHYMIoMTiTWqFJu5IelAglJBxLh5JKWo14lrbYs9SAhGUG+iELs6fRtLxKSfsQz2ab2FJj3a9GOjLb0JiEZQSTP5mmK9wz2KV5iqxPRVvQkJL8nKS0t2SbbTi/pierG15ZOECQkA4jGwFj3LbG2FHhkdDvAkpB0JIIBVreayS9P76jA664RCckIYpmcI7eqHpaReoh23ich6Uy8upnsKw/CF6s+/zeZTELSlwj2gtQrcC+6c/Z6lRQ9dxKSQURyna5vG0TqA6z3apcKJCRdSVl53q3rM+r1eY9v4oiXD8UkJCNIyU+0F1Kuc7nfrIRy4plMQtKd2GfvFQ313KUd1cBOvG00kZD8jWhsUS5+5Nw2Myc9pKVqrcRJSDqSJjAgxuHJ3GQVuVMSkhHk7ZTaYYNIrQ6qGb34i0lIehP7I+b7up2OheYjHkpT8pCQ9CTHH+Zkb1978KH8WPKokpCcQVTtFxB+1FyQ0Wu8h4TkDFJieVuGIprinYSkJxEEBthrc7TSzgj7ZiYJySgSYfP+ZP8iA+lty9L18HISkt6Ewfh38QlT3xGnOqZaTAAAAABJRU5ErkJggg==';
             const w = window.open('','_blank');
@@ -4183,16 +4183,16 @@
               html,body{margin:0;padding:0;background:#fff!important;color:#111}
               body{font-family:'Times New Roman','Kalpurush',serif!important;font-size:12pt;line-height:1.65;position:relative;-webkit-print-color-adjust:exact;print-color-adjust:exact}
               .page-watermark{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;overflow:hidden}
-              .page-watermark span{font-family:'Times New Roman',serif;font-size:46pt;font-weight:700;color:rgba(30,90,60,.075);transform:rotate(-32deg);white-space:nowrap;letter-spacing:2px}
+              .page-watermark span{font-family:Arial,'Times New Roman',sans-serif;font-size:58pt;font-weight:900;color:rgba(49,155,232,.22);transform:rotate(-48deg);white-space:nowrap;letter-spacing:1px}
               .content{position:relative;z-index:1;background:transparent}
               header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:0 0 10px;margin:0 0 14px;border-bottom:1px solid #777}
               .brand{font-family:'Times New Roman',serif;font-size:19pt;font-weight:700;color:#14532d}
               .sub{font-size:11pt;color:#333;margin-top:2px}
               .qr{width:78px;height:78px;object-fit:contain;flex:0 0 auto}
               .item{break-inside:avoid;page-break-inside:avoid;padding:9px 0 11px;margin:0}
-              .question{font-weight:700;line-height:1.7;white-space:pre-wrap}
-              .answer{font-weight:400;line-height:1.7;white-space:pre-wrap;margin-top:4px;padding:0;border:0!important;background:transparent!important;box-shadow:none!important}
-              .answer-label{font-weight:400}
+              .question,.question strong{font-weight:700!important;line-height:1.7;white-space:pre-wrap;font-family:'Times New Roman','Kalpurush',serif!important}
+              .answer{font-weight:400!important;line-height:1.7;white-space:pre-wrap;margin-top:4px;padding:0;border:0!important;background:transparent!important;box-shadow:none!important;font-family:'Times New Roman','Kalpurush',serif!important}
+              .answer-label{font-weight:700!important}
               .qimg{display:block;max-width:75%;max-height:220px;object-fit:contain;margin:8px 0}
               .toolbar{position:sticky;top:0;z-index:5;text-align:center;padding:10px;background:#f1f5f9}
               .toolbar button{padding:9px 18px;border:0;border-radius:8px;background:#15803d;color:#fff;font-weight:700}
