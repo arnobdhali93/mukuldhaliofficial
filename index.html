@@ -4132,6 +4132,13 @@
             qbSetShareRoute(qbCurrentSubject, '');
             qbShowView('qb-topic-view');
         }
+        (function addQuestionBankTypographyFix(){
+            if (document.getElementById('qb-typography-fix')) return;
+            const style = document.createElement('style');
+            style.id = 'qb-typography-fix';
+            style.textContent = `.qb-question-text,.qb-question-text strong,.qb-question-strong{font-weight:900!important;-webkit-text-stroke:.55px currentColor!important;text-shadow:0 0 .45px currentColor!important}.qb-answer-text{font-weight:400!important;-webkit-text-stroke:0!important;text-shadow:none!important}.qb-answer-label{font-weight:900!important;-webkit-text-stroke:.55px currentColor!important;text-shadow:0 0 .45px currentColor!important}`;
+            document.head.appendChild(style);
+        })();
         async function qbOpenTopic(topic) {
             qbCurrentTopic = topic;
             qbSetShareRoute(qbCurrentSubject, topic);
@@ -4154,9 +4161,9 @@
             document.getElementById('qb-current-topic').textContent = qbCurrentSubject+' — '+topic;
             const box = document.getElementById('qb-questions');
             box.innerHTML = questions.length ? questions.map((q,i)=>`<article class="qb-question-card rounded-xl border border-emerald-200 dark:border-slate-600 bg-emerald-50/70 dark:bg-slate-800/70 p-4 mb-4">
-                <p class="qb-question-text text-slate-900 dark:text-white leading-relaxed" style="font-family:'Times New Roman','Kalpurush',serif;font-weight:700!important">${i+1}. ${qbEscape(q.question)}</p>
+                <p class="qb-question-text text-slate-900 dark:text-white leading-relaxed"><strong class="qb-question-strong">${i+1}. ${qbEscape(q.question)}</strong></p>
                 ${q.imageURL?`<img src="${qbEscape(normalizeQuestionImageUrl(q.imageURL))}" alt="প্রশ্নের ছবি" loading="lazy" class="max-w-full max-h-80 object-contain mt-3">`:''}
-                <div class="qb-answer-text mt-3 text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line" style="font-family:'Times New Roman','Kalpurush',serif;font-weight:400"> <strong class="qb-answer-label" style="font-weight:700!important">উত্তর:</strong> ${qbEscape(q.answer)}</div>
+                <div class="qb-answer-text mt-3 text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line"><strong class="qb-answer-label">উত্তর:</strong> ${qbEscape(q.answer)}</div>
             </article>`).join('') : '<p class="text-center py-10 text-slate-500">এই টপিকে কোনো প্রশ্ন নেই।</p>';
             qbShowView('qb-question-view');
         }
@@ -4166,7 +4173,7 @@
             const includeAnswers = mode === 'answer';
             const title = qbEscape(qbCurrentSubject+' — '+qbCurrentTopic);
             const rows = qbCurrentQuestions.map((q,i)=>`<article class="item">
-                <div class="question"><strong>${i+1}. ${qbEscape(q.question)}</strong></div>
+                <div class="question"><strong class="question-strong">${i+1}. ${qbEscape(q.question)}</strong></div>
                 ${q.imageURL?`<img class="qimg" src="${qbEscape(normalizeQuestionImageUrl(q.imageURL))}" alt="প্রশ্নের ছবি">`:''}
                 ${includeAnswers?`<div class="answer"><strong class="answer-label">উত্তর:</strong> ${qbEscape(q.answer)}</div>`:''}
             </article>`).join('');
@@ -4175,33 +4182,41 @@
             if(!w){showToast('পপ-আপ অনুমতি দিন, তারপর আবার চেষ্টা করুন।','error');return;}
             w.document.write(`<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title>
             <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-            <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css2?family=Tinos:wght@400;700&display=swap" rel="stylesheet">
             <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
             <style>
               @page{size:A4 portrait;margin:15mm}
               *{box-sizing:border-box}
               html,body{margin:0;padding:0;background:#fff!important;color:#111}
-              body{font-family:'Times New Roman','Kalpurush',serif!important;font-size:12pt;line-height:1.65;position:relative;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+              body{font-family:'Times New Roman','Kalpurush',serif!important;font-size:12pt;line-height:1.65;position:relative;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
               .page-watermark{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;overflow:hidden}
-              .page-watermark span{font-family:Arial,'Times New Roman',sans-serif;font-size:58pt;font-weight:900;color:rgba(49,155,232,.22);transform:rotate(-48deg);white-space:nowrap;letter-spacing:1px}
+              .page-watermark span{display:block;font-family:Arial,sans-serif!important;font-size:43pt;font-weight:900;color:rgba(49,155,232,.30)!important;-webkit-text-stroke:.5px rgba(49,155,232,.12);transform:rotate(-45deg);white-space:nowrap;letter-spacing:1px;line-height:1}
               .content{position:relative;z-index:1;background:transparent}
               header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:0 0 10px;margin:0 0 14px;border-bottom:1px solid #777}
               .brand{font-family:'Times New Roman',serif;font-size:19pt;font-weight:700;color:#14532d}
               .sub{font-size:11pt;color:#333;margin-top:2px}
               .qr{width:78px;height:78px;object-fit:contain;flex:0 0 auto}
               .item{break-inside:avoid;page-break-inside:avoid;padding:9px 0 11px;margin:0}
-              .question,.question strong{font-weight:700!important;line-height:1.7;white-space:pre-wrap;font-family:'Times New Roman','Kalpurush',serif!important}
-              .answer{font-weight:400!important;line-height:1.7;white-space:pre-wrap;margin-top:4px;padding:0;border:0!important;background:transparent!important;box-shadow:none!important;font-family:'Times New Roman','Kalpurush',serif!important}
-              .answer-label{font-weight:700!important}
+              .question,.question-strong{font-weight:900!important;-webkit-text-stroke:.55px currentColor;text-shadow:0 0 .45px currentColor;line-height:1.7;white-space:pre-wrap;font-family:'Times New Roman','Kalpurush',serif!important}
+              .answer{font-weight:400!important;-webkit-text-stroke:0!important;text-shadow:none!important;line-height:1.7;white-space:pre-wrap;margin-top:4px;padding:0;border:0!important;background:transparent!important;box-shadow:none!important;font-family:'Times New Roman','Kalpurush',serif!important}
+              .answer *{font-weight:400!important;-webkit-text-stroke:0!important;text-shadow:none!important}
+              .answer-label{font-weight:900!important;-webkit-text-stroke:.55px currentColor!important;text-shadow:0 0 .45px currentColor!important}
               .qimg{display:block;max-width:75%;max-height:220px;object-fit:contain;margin:8px 0}
               .toolbar{position:sticky;top:0;z-index:5;text-align:center;padding:10px;background:#f1f5f9}
               .toolbar button{padding:9px 18px;border:0;border-radius:8px;background:#15803d;color:#fff;font-weight:700}
-              @media print{.toolbar{display:none}body{background:#fff!important}.page-watermark{position:fixed}.item{break-inside:avoid}}
+              @media print{
+                @page{size:A4 portrait;margin:15mm}
+                html,body{width:auto;min-height:0;background:#fff!important}
+                .toolbar{display:none!important}
+                .page-watermark{position:fixed;inset:0;z-index:0;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
+                .content{position:relative;z-index:1}
+                .item{break-inside:avoid;page-break-inside:avoid}
+              }
             </style></head><body>
             <div class="toolbar"><button onclick="window.print()">Print / Download PDF</button></div>
-            <div class="page-watermark"><span>MukulDhaliOfficial</span></div>
+            <div class="page-watermark" aria-hidden="true"><span>MukulDhaliOfficial</span></div>
             <main class="content"><header><div><div class="brand">MukulDhaliOfficial</div><div class="sub">${title}</div><div class="sub">${includeAnswers?'প্রশ্ন ও উত্তর':'শুধুমাত্র প্রশ্ন'}</div></div><img class="qr" src="${qrData}" alt="QR Code"></header>${rows}</main>
-            <script>window.addEventListener('load',()=>setTimeout(()=>window.print(),700));<\/script></body></html>`);
+            <script>window.addEventListener('load',()=>setTimeout(()=>window.print(),900));<\/script></body></html>`);
             w.document.close();
         }
         function resolveQuestionBankShareRoute() {
