@@ -931,6 +931,11 @@
                                 <option value="10">বড় (10 pt)</option>
                                 <option value="11">আরও বড় (11 pt)</option>
                             </select>
+                            <label for="qb-print-orientation" class="text-sm font-bold text-slate-600 dark:text-slate-300">পেজ</label>
+                            <select id="qb-print-orientation" title="প্রিন্ট পেজের দিক" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 font-bold text-sm">
+                                <option value="portrait" selected>Portrait</option>
+                                <option value="landscape">Landscape</option>
+                            </select>
                             <button onclick="printQuestionBank()" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-bold"><i class="fa-solid fa-print mr-1"></i> Print</button>
                             <button onclick="qbShareLink('topic',qbCurrentSubject,qbCurrentTopic)" class="px-3 py-2 rounded-xl bg-emerald-50 text-emerald-700 dark:bg-slate-700 dark:text-emerald-300 font-bold" title="টপিক শেয়ার করুন"><i class="fa-solid fa-share-nodes"></i></button>
                         </div>
@@ -4174,9 +4179,29 @@
             if (document.getElementById('qb-typography-fix')) return;
             const style = document.createElement('style');
             style.id = 'qb-typography-fix';
-            style.textContent = `.qb-question-text,.qb-question-text strong,.qb-question-strong{font-weight:700!important;-webkit-text-stroke:.08px currentColor!important;text-shadow:none!important}.qb-answer-text{font-weight:400!important;-webkit-text-stroke:0!important;text-shadow:none!important}.qb-answer-label{font-weight:700!important;-webkit-text-stroke:.08px currentColor!important;text-shadow:none!important}`;
+            style.textContent = `${qbQuestionTableCSS()}.qb-question-text,.qb-question-text strong,.qb-question-strong{font-weight:700!important;-webkit-text-stroke:.08px currentColor!important;text-shadow:none!important}.qb-answer-text{font-weight:400!important;-webkit-text-stroke:0!important;text-shadow:none!important}.qb-answer-label{font-weight:700!important;-webkit-text-stroke:.08px currentColor!important;text-shadow:none!important}`;
             document.head.appendChild(style);
         })();
+        function qbRenderTableData(raw) {
+            if (!raw) return '';
+            let data;
+            try { data = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch (e) {
+                return `<div class="qb-table-note">${qbEscape(raw)}</div>`;
+            }
+            if (!data || !Array.isArray(data.rows)) return '';
+            const headers = Array.isArray(data.headers) ? data.headers : [];
+            return `<div class="qb-table-wrap"><table class="qb-data-table"><thead><tr>${headers.map(x=>`<th>${qbEscape(x)}</th>`).join('')}</tr></thead><tbody>${data.rows.map(row=>`<tr>${(Array.isArray(row)?row:[]).map(cell=>`<td>${qbEscape(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+        }
+        function qbQuestionExtraHTML(q, printMode) {
+            const type = String(q.questionType || 'SHORT').toUpperCase();
+            const section = q.section ? `<div class="qb-section-label">${qbEscape(q.section)}</div>` : '';
+            const marks = q.marks ? `<span class="qb-marks">[${qbEscape(q.marks)} নম্বর]</span>` : '';
+            const table = (type === 'TABLE' || type === 'TABLE_MATCH' || q.tableData) ? qbRenderTableData(q.tableData) : '';
+            return `${section}${marks}${table}`;
+        }
+        function qbQuestionTableCSS() {
+            return `.qb-section-label{font-weight:800;margin:8px 0 4px;color:inherit}.qb-marks{font-weight:700;margin-left:8px;white-space:nowrap}.qb-table-wrap{overflow-x:auto;margin:8px 0}.qb-data-table{border-collapse:collapse;width:100%;font:inherit;background:transparent}.qb-data-table th,.qb-data-table td{border:1px solid #64748b;padding:6px 8px;text-align:left;vertical-align:top}.qb-data-table th{font-weight:800;background:#f1f5f9;color:#111}`;
+        }
         async function qbOpenTopic(topic) {
             qbCurrentTopic = topic;
             qbSetShareRoute(qbCurrentSubject, topic);
@@ -4199,7 +4224,9 @@
             document.getElementById('qb-current-topic').textContent = qbCurrentSubject+' — '+topic;
             const box = document.getElementById('qb-questions');
             box.innerHTML = questions.length ? questions.map((q,i)=>`<article class="qb-question-card rounded-xl border border-emerald-200 dark:border-slate-600 bg-emerald-50/70 dark:bg-slate-800/70 p-4 mb-4">
-                <p class="qb-question-text text-slate-900 dark:text-white leading-relaxed"><strong class="qb-question-strong">${i+1}. ${qbEscape(q.question)}</strong></p>
+                <p class="qb-question-text text-slate-900 dark:text-white leading-relaxed"><strong class="qb-question-strong">${i+1}. ${qbEscape(q.question)}</strong> ${q.marks?`<span class="qb-marks">[${qbEscape(q.marks)} নম্বর]</span>`:''}</p>
+                ${q.section?`<div class="qb-section-label">${qbEscape(q.section)}</div>`:''}
+                ${(String(q.questionType||'').toUpperCase()==='TABLE'||String(q.questionType||'').toUpperCase()==='TABLE_MATCH'||q.tableData)?qbRenderTableData(q.tableData):''}
                 ${q.imageURL?`<img src="${qbEscape(normalizeQuestionImageUrl(q.imageURL))}" alt="প্রশ্নের ছবি" loading="lazy" class="max-w-full max-h-80 object-contain mt-3">`:''}
                 <div class="qb-answer-text mt-3 text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line"><strong class="qb-answer-label">উত্তর:</strong> ${qbEscape(q.answer)}</div>
             </article>`).join('') : '<p class="text-center py-10 text-slate-500">এই টপিকে কোনো প্রশ্ন নেই।</p>';
@@ -4211,12 +4238,23 @@
             const includeAnswers = mode === 'answer';
             const selectedFontSize = Number(document.getElementById('qb-print-font-size')?.value || 11);
             const printFontSize = [7, 8, 9, 10, 11].includes(selectedFontSize) ? selectedFontSize : 9;
+            const orientation = document.getElementById('qb-print-orientation')?.value === 'landscape' ? 'landscape' : 'portrait';
+            const pageWidth = orientation === 'landscape' ? 297 : 210;
+            const pageHeight = orientation === 'landscape' ? 210 : 297;
             const title = qbEscape(qbCurrentSubject + ' — ' + qbCurrentTopic);
-            const rows = qbCurrentQuestions.map((q,i)=>`<article class="item">
-                <div class="question">${i+1}. ${qbEscape(q.question)}</div>
+            let activeSection = '';
+            const rows = qbCurrentQuestions.map((q,i)=>{
+                const section = String(q.section || '').trim();
+                const sectionHeading = section && section !== activeSection ? `<div class="section-heading">${qbEscape(section)}</div>` : '';
+                if (section) activeSection = section;
+                const tableHTML = (String(q.questionType||'').toUpperCase()==='TABLE' || String(q.questionType||'').toUpperCase()==='TABLE_MATCH' || q.tableData) ? qbRenderTableData(q.tableData) : '';
+                return `${sectionHeading}<article class="item">
+                <div class="question">${i+1}. ${qbEscape(q.question)} ${q.marks?`<span class="marks">[${qbEscape(q.marks)} নম্বর]</span>`:''}</div>
                 ${q.imageURL?`<img class="qimg" src="${qbEscape(normalizeQuestionImageUrl(q.imageURL))}" alt="প্রশ্নের ছবি">`:''}
+                ${tableHTML}
                 ${includeAnswers?`<div class="answer"><strong class="answer-label">উত্তর:</strong> ${qbEscape(q.answer)}</div>`:''}
-            </article>`).join('');
+            </article>`;
+            }).join('');
             const qrData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQAQMAAAC6caSPAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAACMklEQVR4nO3cMW7DMAwFUAYdMuYIOYqPZh/NR8kRMnowwkr6JGUFLVoUkNzhc3Et63kiJFFWKsJg9I6bRrzS7byhed7lrnLNzQ+pXdINCckIsliCTq/sN5lUnyIf6LqWq72nNJKQDCEfOUW3TFIGW0bbUwTeo7knCclwcotrNO4kJCeTFFddL/mppHkf8SAhOYHYMIoMTiTWqFJu5IelAglJBxLh5JKWo14lrbYs9SAhGUG+iELs6fRtLxKSfsQz2ab2FJj3a9GOjLb0JiEZQSTP5mmK9wz2KV5iqxPRVvQkJL8nKS0t2SbbTi/pierG15ZOECQkA4jGwFj3LbG2FHhkdDvAkpB0JIIBVreayS9P76jA664RCckIYpmcI7eqHpaReoh23ich6Uy8upnsKw/CF6s+/zeZTELSlwj2gtQrcC+6c/Z6lRQ9dxKSQURyna5vG0TqA6z3apcKJCRdSVl53q3rM+r1eY9v4oiXD8UkJCNIyU+0F1Kuc7nfrIRy4plMQtKd2GfvFQ313KUd1cBOvG00kZD8jWhsUS5+5Nw2Myc9pKVqrcRJSDqSJjAgxuHJ3GQVuVMSkhHk7ZTaYYNIrQ6qGb34i0lIehP7I+b7up2OheYjHkpT8pCQ9CTHH+Zkb1978KH8WPKokpCcQVTtFxB+1FyQ0Wu8h4TkDFJieVuGIprinYSkJxEEBthrc7TSzgj7ZiYJySgSYfP+ZP8iA+lty9L18HISkt6Ewfh38QlT3xGnOqZaTAAAAABJRU5ErkJggg==';
             const w = window.open('', '_blank');
             if (!w) { showToast('পপ-আপ অনুমতি দিন, তারপর আবার চেষ্টা করুন।','error'); return; }
@@ -4224,7 +4262,7 @@
             w.document.write(`<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title>
             <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
             <style>
-              @page{size:A4 portrait;margin:0}
+              @page{size:A4 ${orientation};margin:0}
               *{box-sizing:border-box}
               html,body{margin:0;padding:0;background:#e5e7eb;color:#111;-webkit-text-size-adjust:100%;text-size-adjust:100%}
               body{font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
@@ -4234,9 +4272,9 @@
               #paper-pages{padding:1px 0 24px;--preview-scale:min(1,calc((100vw - 40px) / 793.7))}
               /* Every preview page is laid out at real A4 dimensions. Only its visual
                  presentation is scaled down on narrow screens; pagination uses A4 metrics. */
-              .page-shell{position:relative;width:calc(210mm * var(--preview-scale));height:calc(297mm * var(--preview-scale));margin:14px auto;break-after:page;page-break-after:always}
+              .page-shell{position:relative;width:calc(${pageWidth}mm * var(--preview-scale));height:calc(${pageHeight}mm * var(--preview-scale));margin:14px auto;break-after:page;page-break-after:always}
               .page-shell:last-child{break-after:auto;page-break-after:auto}
-              .paper-page{container-type:inline-size;position:absolute;inset:0;isolation:isolate;width:210mm;height:297mm;margin:0;transform:scale(var(--preview-scale));transform-origin:top left;background:#fff;overflow:hidden;box-shadow:0 3px 18px rgba(15,23,42,.18);padding:4.5% 4.5% 5%}
+              .paper-page{container-type:inline-size;position:absolute;inset:0;isolation:isolate;width:${pageWidth}mm;height:${pageHeight}mm;margin:0;transform:scale(var(--preview-scale));transform-origin:top left;background:#fff;overflow:hidden;box-shadow:0 3px 18px rgba(15,23,42,.18);padding:4.5% 4.5% 5%}
               .page-watermark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none;z-index:0}
               .page-watermark span{display:block;font-family:Arial,sans-serif!important;font-size:10cqw;font-weight:800;color:rgba(49,155,232,.23)!important;transform:rotate(-45deg);white-space:nowrap;letter-spacing:.1cqw;line-height:1}
               .paper-header{position:absolute;z-index:2;left:4.5cqw;right:4.5cqw;top:2.5cqw;height:12.5cqw;display:flex;align-items:flex-start;justify-content:space-between;gap:3cqw;border-bottom:1px solid #777;padding-bottom:2.3cqw}
@@ -4250,13 +4288,16 @@
               .answer{font-size:${printFontSize}pt!important;font-weight:400;line-height:1.27;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:1.6mm;font-family:'Times New Roman','Kalpurush','SutonnyMJ',serif!important}
               .answer-label{font-weight:700}
               .qimg{display:block;max-width:75%;max-height:35mm;object-fit:contain;margin:1.5mm 0 0}
+              .section-heading{font-weight:800;text-align:center;margin:2mm 0 1mm;font-size:${printFontSize+1}pt}
+              .marks{font-weight:700;white-space:nowrap}
+              .qb-table-wrap{margin:2mm 0;overflow:visible}.qb-data-table{border-collapse:collapse;width:100%;font:inherit}.qb-data-table th,.qb-data-table td{border:1px solid #64748b;padding:1.5mm 2mm;text-align:left;vertical-align:top}.qb-data-table th{font-weight:800;background:#f1f5f9;color:#111}
               @media print{
-                html,body{width:210mm;margin:0!important;padding:0!important;background:#fff!important}
+                html,body{width:${pageWidth}mm;margin:0!important;padding:0!important;background:#fff!important}
                 .toolbar{display:none!important}
                 #paper-pages{padding:0}
-                .page-shell{width:210mm;height:297mm;margin:0;break-after:page;page-break-after:always}
+                .page-shell{width:${pageWidth}mm;height:${pageHeight}mm;margin:0;break-after:page;page-break-after:always}
                 .page-shell:last-child{break-after:auto;page-break-after:auto}
-                .paper-page{width:210mm;height:297mm;margin:0;transform:none;padding:4.5% 4.5% 5%;box-shadow:none;overflow:hidden}
+                .paper-page{width:${pageWidth}mm;height:${pageHeight}mm;margin:0;transform:none;padding:4.5% 4.5% 5%;box-shadow:none;overflow:hidden}
                 .page-watermark span{font-size:10cqw;color:rgba(49,155,232,.23)!important}
               }
             /* Force visibly bold Bengali question glyphs in preview AND print. */
@@ -4286,7 +4327,8 @@
               // Load the final Bengali font before measuring; this prevents one-question-per-page
               // pagination caused by measuring with a temporary fallback font.
               if(document.fonts&&document.fonts.ready){try{await document.fonts.ready;}catch(e){}}
-              const scale=Math.min(1,(window.innerWidth-40)/793.7);
+              const previewWidth=${pageWidth}===210?793.7:1122.5;
+              const scale=Math.min(1,(window.innerWidth-40)/previewWidth);
               root.style.setProperty('--preview-scale',String(Math.max(.25,scale)));
               const originals=Array.from(source.children);
               await Promise.all(Array.from(source.querySelectorAll('img')).map(img=>{
