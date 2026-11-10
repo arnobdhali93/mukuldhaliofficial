@@ -914,12 +914,19 @@
                     <div class="flex items-center gap-3 flex-wrap"><button onclick="qbBackToSubjects()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 font-bold"><i class="fa-solid fa-arrow-left mr-2"></i>সব বিষয়</button><h3 id="qb-current-subject" class="text-xl font-black"></h3></div>
                     <div id="qb-topics" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
                 </div>
+                <div id="qb-mode-view" class="hidden space-y-5">
+                    <div class="flex items-center gap-3 flex-wrap"><button onclick="qbBackToTopics()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 font-bold"><i class="fa-solid fa-arrow-left mr-2"></i>টপিক</button><h3 id="qb-mode-topic-title" class="text-xl font-black"></h3></div>
+                    <p class="text-slate-600 dark:text-slate-300 font-semibold">কীভাবে প্রশ্ন দেখতে ও প্রিন্ট করতে চাও?</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <button type="button" onclick="qbSelectDisplayMode('question')" class="p-6 rounded-2xl border-2 border-emerald-200 hover:border-emerald-500 bg-white dark:bg-slate-800 text-left shadow-sm"><span class="block text-2xl mb-2 text-emerald-600"><i class="fa-solid fa-file-lines"></i></span><strong class="block text-lg">শুধু প্রশ্ন</strong><span class="text-sm text-slate-500">উত্তর ছাড়া প্রশ্নপত্র</span></button>
+                        <button type="button" onclick="qbSelectDisplayMode('answer')" class="p-6 rounded-2xl border-2 border-blue-200 hover:border-blue-500 bg-white dark:bg-slate-800 text-left shadow-sm"><span class="block text-2xl mb-2 text-blue-600"><i class="fa-solid fa-file-circle-check"></i></span><strong class="block text-lg">প্রশ্ন ও উত্তর</strong><span class="text-sm text-slate-500">প্রতিটি প্রশ্নের সঙ্গে উত্তর</span></button>
+                    </div>
+                </div>
                 <div id="qb-question-view" class="hidden space-y-5">
                     <div class="flex items-center justify-between gap-3 flex-wrap">
                         <button onclick="qbBackToTopics()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 font-bold"><i class="fa-solid fa-arrow-left mr-2"></i>টপিক</button>
                         <div class="flex items-center gap-2 flex-wrap">
-                            <label for="qb-print-mode" class="text-sm font-bold text-slate-600 dark:text-slate-300">প্রিন্টের ধরন</label>
-                            <select id="qb-print-mode" class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 font-bold text-sm">
+                            <select id="qb-print-mode" class="hidden" aria-hidden="true" tabindex="-1">
                                 <option value="answer" selected>Question + Answer</option>
                                 <option value="question">Only Question</option>
                             </select>
@@ -4152,7 +4159,7 @@
             </div>`).join('') : '<p class="col-span-full text-center py-12 text-slate-500">কোনো বিষয় পাওয়া যায়নি।</p>';
         }
         function filterQuestionBank() { renderQuestionBankSubjects(document.getElementById('qb-search')?.value || ''); }
-        function qbShowView(id) { ['qb-subject-view','qb-topic-view','qb-question-view'].forEach(x=>document.getElementById(x)?.classList.toggle('hidden',x!==id)); }
+        function qbShowView(id) { ['qb-subject-view','qb-topic-view','qb-mode-view','qb-question-view'].forEach(x=>document.getElementById(x)?.classList.toggle('hidden',x!==id)); }
         function qbOpenSubject(subject) {
             qbCurrentSubject = subject;
             qbSetShareRoute(subject, '');
@@ -4202,7 +4209,8 @@
         function qbQuestionTableCSS() {
             return `.qb-section-label{font-weight:800;margin:8px 0 4px;color:inherit}.qb-marks{font-weight:700;margin-left:8px;white-space:nowrap}.qb-table-wrap{overflow-x:auto;margin:8px 0}.qb-data-table{border-collapse:collapse;width:100%;font:inherit;background:transparent}.qb-data-table th,.qb-data-table td{border:1px solid #64748b;padding:6px 8px;text-align:left;vertical-align:top}.qb-data-table th{font-weight:800;background:transparent;color:#111}`;
         }
-        async function qbOpenTopic(topic) {
+        let qbSelectedDisplayMode = 'question';
+        async function qbOpenTopic(topic, selectedMode) {
             qbCurrentTopic = topic;
             qbSetShareRoute(qbCurrentSubject, topic);
             const meta = questionBankTopics.find(t=>t.subject===qbCurrentSubject && t.topic===topic);
@@ -4222,13 +4230,21 @@
             }
             qbCurrentQuestions = questions;
             document.getElementById('qb-current-topic').textContent = qbCurrentSubject+' — '+topic;
+            document.getElementById('qb-mode-topic-title').textContent = qbCurrentSubject+' — '+topic;
+            if (selectedMode) { qbSelectDisplayMode(selectedMode); return; }
+            qbShowView('qb-mode-view');
+        }
+        function qbSelectDisplayMode(mode) {
+            qbSelectedDisplayMode = mode === 'answer' ? 'answer' : 'question';
+            const printMode = document.getElementById('qb-print-mode');
+            if (printMode) printMode.value = qbSelectedDisplayMode;
             const box = document.getElementById('qb-questions');
-            box.innerHTML = questions.length ? questions.map((q,i)=>`<article class="qb-question-card rounded-xl border border-emerald-200 dark:border-slate-600 bg-emerald-50/70 dark:bg-slate-800/70 p-4 mb-4">
+            box.innerHTML = qbCurrentQuestions.length ? qbCurrentQuestions.map((q,i)=>`<article class="qb-question-card rounded-none border-0 border-b border-slate-300 dark:border-slate-600 bg-transparent p-0 pb-3 mb-3 shadow-none">
                 <p class="qb-question-text text-slate-900 dark:text-white leading-relaxed"><strong class="qb-question-strong">${i+1}. ${qbEscape(q.question)}</strong> ${q.marks?`<span class="qb-marks">[${qbEscape(q.marks)} নম্বর]</span>`:''}</p>
                 ${q.section?`<div class="qb-section-label">${qbEscape(q.section)}</div>`:''}
                 ${(String(q.questionType||'').toUpperCase()==='TABLE'||String(q.questionType||'').toUpperCase()==='TABLE_MATCH'||q.tableData)?qbRenderTableData(q.tableData):''}
                 ${q.imageURL?`<img src="${qbEscape(normalizeQuestionImageUrl(q.imageURL))}" alt="প্রশ্নের ছবি" loading="lazy" class="max-w-full max-h-80 object-contain mt-3">`:''}
-                <div class="qb-answer-text mt-3 text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line"><strong class="qb-answer-label">উত্তর:</strong> ${qbEscape(q.answer)}</div>
+                ${qbSelectedDisplayMode==='answer'?`<div class="qb-answer-text mt-2 text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line"><strong class="qb-answer-label">উত্তর:</strong> ${qbEscape(q.answer)}</div>`:''}
             </article>`).join('') : '<p class="text-center py-10 text-slate-500">এই টপিকে কোনো প্রশ্ন নেই।</p>';
             qbShowView('qb-question-view');
         }
@@ -4269,7 +4285,7 @@
               .toolbar{position:sticky;top:0;z-index:20;display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;padding:12px;background:#f1f5f9;border-bottom:1px solid #cbd5e1}
               .toolbar button{padding:11px 24px;border:0;border-radius:10px;background:#15803d;color:#fff;font:700 14px Arial,sans-serif;cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.12)}
               .toolbar .close{background:#475569}
-              #paper-pages{padding:1px 0 24px;--preview-scale:min(1,calc((100vw - 40px) / 793.7))}
+              #paper-pages{padding:1px 0 24px;--preview-scale:min(1,calc((100vw - 40px) / ${pageWidth===297?'1122.5':'793.7'}))}
               /* Every preview page is laid out at real A4 dimensions. Only its visual
                  presentation is scaled down on narrow screens; pagination uses A4 metrics. */
               .page-shell{position:relative;width:calc(${pageWidth}mm * var(--preview-scale));height:calc(${pageHeight}mm * var(--preview-scale));margin:14px auto;break-after:page;page-break-after:always}
@@ -4283,6 +4299,7 @@
               .qr{width:12cqw;height:12cqw;object-fit:contain;flex:0 0 auto}
               .paper-content{position:absolute;z-index:1;left:5cqw;right:5cqw;top:16.5cqw;bottom:3cqw;overflow:hidden}
               .paper-page:not(.first-page) .paper-content{top:3cqw}
+              ${orientation==='landscape'?'.paper-content{column-count:2;column-gap:10mm;column-rule:1px solid #b8b8b8;column-fill:auto}.item,.section-heading,.qb-table-wrap{break-inside:avoid;page-break-inside:avoid}.section-heading{ text-align:center; }':''}
               .item{position:relative;z-index:1;break-inside:avoid;page-break-inside:avoid;border:0!important;border-radius:0!important;padding:0!important;margin:0 0 1.15mm!important;background:transparent!important;box-shadow:none!important}
               .question{display:block;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important}
               .section-heading{font-weight:800;text-align:center;margin:3mm 0 1.5mm;font-size:${printFontSize+1}pt;break-after:avoid;page-break-after:avoid}
@@ -4364,7 +4381,8 @@
                 const box=target.getBoundingClientRect();
                 const itemBox=item.getBoundingClientRect();
                 const fitsHeight=itemBox.bottom <= box.bottom + 1;
-                if(fitsHeight)return true;
+                const fitsWidth=${orientation==='landscape'?'itemBox.right <= box.right + 1':'true'};
+                if(fitsHeight && fitsWidth)return true;
                 target.removeChild(item);
                 return false;
               }
